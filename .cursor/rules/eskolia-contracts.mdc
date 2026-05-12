@@ -1,0 +1,59 @@
+---
+description: Eskolia — fichiers canoniques, collections Firestore, accès staff
+alwaysApply: true
+---
+
+# Contrats projet Eskolia
+
+Même **politique `alwaysApply`** que `eskolia.mdc` : les deux restent chargés en permanence tant que le projet est petit (voir section « Politique `.cursor/rules` » dans `eskolia.mdc`).
+
+## Fichiers canoniques (éditer ici, pas un doublon orphelin)
+
+| Zone | Fichier à modifier | Note |
+|------|-------------------|------|
+| Router | `lib/core/router/app_router.dart` | Source des imports d’écrans |
+| Settings | `lib/features/settings/presentation/settings_screen.dart` | Barrel `settings/settings_screen.dart` → réexporte `presentation/` |
+| Notifications | `lib/features/notifications/presentation/notifications_screen.dart` | Barrel `notifications/notifications_screen.dart` |
+| Mot de passe oublié | `lib/features/auth/presentation/forgot_password_screen.dart` | Barrel `auth/forgot_password_screen.dart` |
+| Liste lobbies | `lib/features/lobby/presentation/lobbys_screen.dart` | Barrel `lobby/lobby_list_screen.dart` |
+| Détail lobby | `lib/features/lobby/presentation/lobby_detail_screen.dart` | Import direct depuis `lobby/` dans le router |
+| Hub quiz (liste modes) | `lib/features/quiz/presentation/quiz_setup_screen.dart` | Barrel `quiz/quiz_setup_screen.dart` |
+| Docs métier (RGPD / liens / accès cours) | `lib/features/docs/presentation/docs_screen.dart` | Route shell `/docs` |
+
+## Deux zones « données utilisateur / jeu »
+
+- **`lib/data/repositories/user_repository.dart`** — document Firestore `users/{uid}` (xp, badges, `role`, etc.) ; importé par profil, settings, labo, flashcards, quêtes…
+- **`lib/data/repositories/leaderboard_repository.dart`**, **`battle_repository.dart`**, **`quiz_repository.dart`** (collection **`sessions`**) — usage classement / home / historique selon imports.
+- **`lib/features/quiz/data/quiz_repository.dart`** — **autre** classe : QCM depuis **assets**, sous-collections **`users/{uid}/quizResults`**, Labo ; ne pas supposer que c’est le même que `lib/data/repositories/quiz_repository.dart`.
+
+## Collections Firestore repérées dans le code (référence)
+
+Aligner toute nouvelle écriture avec ces chemins **et** avec les **règles Firestore** déployées sur le projet Firebase (fichier `firestore.rules` **absent** de ce repo — ne pas inventer des accès client interdits).
+
+| Collection / chemin | Usage principal |
+|----------------------|-------------------|
+| `users/{uid}` | Profil, XP, `role`, etc. |
+| `users/{uid}/settings/{doc}` | Préférences (`SettingsRepository`) |
+| `users/{uid}/notifications/{doc}` | Notifications |
+| `users/{uid}/quizResults` | Résultats QCM (`features/quiz/data/quiz_repository`) |
+| `login_aliases/{id}` | Connexion par pseudo (`AuthRepository`) |
+| `formations` | Doc(s) déclenchés pour recharger le catalogue parcours (`ParcoursRepository`) |
+| `lobbies` | Lobbies multijoueurs |
+| `battles` | Données battle (`lib/data/repositories/battle_repository.dart`) |
+| `leaderboard_daily/{dayKey}/scores/{userId}` | Meilleur score quiz du jour, lisible par tous les joueurs connectés (`LeaderboardRepository`) |
+| `sessions` | Autre repo quiz session (`lib/data/repositories/quiz_repository.dart`) |
+| `labo_question_drafts` | Brouillons + questions approuvées Labo |
+| `community_tips` | Astuces communauté |
+| `signalements` | Signalements modération |
+
+## Staff / admin (ne pas se tromper de source de vérité)
+
+- **`UserModel.isStaff`** : `role == 'admin'` ou `role == 'moderator'` sur **`users/{uid}`** (Firestore).
+- **`lib/core/config/staff_bootstrap.dart`** : `kBootstrapStaffEmails` — **secours dev** ; commentaire dans le fichier : en prod, préférer le champ `role` sur le doc utilisateur.
+- **`lib/features/admin/data/staff_capability.dart`** — `userHasStaffAccess(user, authEmail)` : staff si `isStaff` **ou** email dans le bootstrap.
+- Écrans admin : passent par **`StaffGateScaffold`** — toute nouvelle route sensible doit réutiliser ce modèle (pas seulement cacher un bouton).
+
+## Rappels
+
+- **`labo_question_drafts`** : le dépôt « questions approuvées » lit aussi cette collection (`LaboApprovedQuestionRepository`) — cohérence des statuts côté règles Firestore.
+- **`AuthRepository`** : contient un **commentaire** d’exemple de règle pour `login_aliases` — à garder aligné avec la prod.

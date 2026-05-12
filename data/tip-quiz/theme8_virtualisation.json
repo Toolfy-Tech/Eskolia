@@ -1,0 +1,162 @@
+[
+  {
+    "id": 236,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts de base",
+    "question": "Qu'est-ce qu'une machine virtuelle (VM) ?",
+    "answer": "C'est un ordinateur logiciel (virtuel) autonome qui s'exécute à l'intérieur d'un véritable ordinateur physique, en partageant ses composants.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 237,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts de base",
+    "question": "Pourquoi utiliser une machine virtuelle plutôt qu'une machine physique pour tester un nouveau logiciel ?",
+    "answer": "Pour isoler l'environnement de test : si le logiciel fait planter la machine virtuelle ou contient un virus, le véritable ordinateur physique (l'hôte) reste intact et protégé.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 238,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts de base",
+    "question": "Qu'est-ce qu'un hyperviseur ?",
+    "answer": "C'est le logiciel central (le chef d'orchestre) qui permet de créer, gérer et exécuter plusieurs machines virtuelles sur une même machine physique.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 239,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts de base",
+    "question": "Qu'est-ce que le logiciel VirtualBox ?",
+    "answer": "C'est un hyperviseur de bureau gratuit et open-source (actuellement géré par Oracle), très utilisé pour créer et exécuter des machines virtuelles sur PC ou Mac.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 240,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "VirtualBox basiques",
+    "question": "Que représente la mémoire vive (RAM) allouée lors de la création d'une VM ?",
+    "answer": "C'est la portion de la mémoire RAM de l'ordinateur physique qui est temporairement prêtée et réservée au fonctionnement de la machine virtuelle lorsqu'elle est allumée.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 241,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "VirtualBox basiques",
+    "question": "Faut-il obligatoirement installer un système d'exploitation dans une machine virtuelle fraîchement créée ?",
+    "answer": "Oui, comme pour un ordinateur neuf acheté vide, une VM a besoin qu'on lui insère un support d'installation (ex: un fichier ISO Windows ou Linux) pour installer un OS.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 242,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts de base",
+    "question": "Quelle est la différence entre la machine 'hôte' (host) et la machine 'invitée' (guest) ?",
+    "answer": "L'hôte est l'ordinateur physique matériel. La machine invitée est la machine virtuelle logicielle qui s'exécute par-dessus cet hôte.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 243,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "VirtualBox basiques",
+    "question": "Quel raccourci clavier (par défaut) permet de 'libérer' la souris si elle reste coincée à l'intérieur de l'écran d'une VM VirtualBox sans Additions Invité ?",
+    "answer": "La touche 'Host' ou 'Hôte', qui correspond généralement à la touche 'Ctrl' située à droite du clavier.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 244,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts avancés",
+    "question": "Quelle est la différence fondamentale entre un hyperviseur de Type 1 et de Type 2 ?",
+    "answer": "Le Type 1 (Bare-Metal) s'installe directement sur le matériel physique (sans OS intermédiaire). Le Type 2 (ex: VirtualBox) s'installe par-dessus un système d'exploitation classique existant (Windows, Linux, macOS).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 245,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Fonctionnalités VirtualBox",
+    "question": "À quoi sert la fonctionnalité de 'Snapshot' (Instantané) dans VirtualBox ?",
+    "answer": "Elle prend une photo de l'état exact de la VM (fichiers, RAM, réglages) à un instant précis, permettant d'annuler les modifications en revenant à cet état en cas de problème ultérieur.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 246,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Réseau virtuel",
+    "question": "Dans VirtualBox, comment fonctionne le mode réseau 'NAT' configuré par défaut ?",
+    "answer": "La VM a accès à Internet en utilisant l'adresse IP de l'hôte, mais elle est placée dans un sous-réseau privé isolé : l'hôte et les machines extérieures ne peuvent pas communiquer directement avec elle.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 247,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Réseau virtuel",
+    "question": "Quelle est la particularité du mode réseau 'Accès par pont' (Bridge) dans VirtualBox ?",
+    "answer": "La VM se connecte directement au réseau physique local (ex: la box internet) et reçoit sa propre adresse IP, la rendant visible et accessible sur le réseau comme n'importe quel autre vrai PC.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 248,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Fonctionnalités VirtualBox",
+    "question": "Que sont les 'Additions Invité' (Guest Additions) dans VirtualBox ?",
+    "answer": "Un ensemble de pilotes (drivers) et d'applications système à installer à l'intérieur de la VM pour optimiser l'affichage (plein écran) et l'intégration (presse-papiers partagé, glisser-déposer) avec l'hôte.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 249,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "VirtualBox basiques",
+    "question": "Qu'est-ce qu'un fichier de disque dur virtuel portant l'extension .VDI ?",
+    "answer": "Virtual Disk Image. C'est le format de conteneur natif utilisé par VirtualBox pour simuler le disque dur physique de la machine virtuelle.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 250,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts avancés",
+    "question": "Concernant le stockage d'une VM, quelle est la différence entre une taille 'dynamiquement allouée' et une 'taille fixe' ?",
+    "answer": "Le disque dynamique (plus lent) n'occupe de l'espace physique qu'au fur et à mesure de son remplissage. Le fixe (plus performant) réserve immédiatement la totalité de la taille allouée sur le disque de l'hôte.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 251,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Réseau virtuel",
+    "question": "À quoi sert le mode 'Réseau interne' dans les réglages d'une carte réseau VirtualBox ?",
+    "answer": "Il permet de connecter plusieurs machines virtuelles entre elles sur un switch virtuel totalement isolé, sans leur donner accès à Internet ni à la machine hôte.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 252,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Dépannage",
+    "question": "Si vous tentez de démarrer une VM et qu'une erreur mentionnant 'VT-x / AMD-V désactivé' apparaît, d'où vient le blocage ?",
+    "answer": "La technologie d'assistance matérielle à la virtualisation n'a pas été activée dans le BIOS ou l'UEFI de l'ordinateur physique hôte.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 253,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Fonctionnalités VirtualBox",
+    "question": "Dans VirtualBox, quel est le prérequis technique indispensable pour pouvoir utiliser la fonctionnalité de 'Dossier partagé' entre l'hôte et l'invité ?",
+    "answer": "Il faut impérativement avoir installé au préalable les 'Additions Invité' (Guest Additions) dans le système d'exploitation de la machine virtuelle.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 254,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts avancés",
+    "question": "Contrairement à VirtualBox (Type 2), citez au moins un exemple d'hyperviseur de Type 1 (Bare-Metal) utilisé dans le monde professionnel.",
+    "answer": "VMware ESXi, Microsoft Hyper-V Server, ou Proxmox VE.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 255,
+    "theme": "Virtualisation & VirtualBox",
+    "sous_theme": "Concepts avancés",
+    "question": "En virtualisation d'entreprise, que désigne le 'Provisioning fin' (Thin Provisioning) pour le stockage ?",
+    "answer": "C'est l'équivalent de l'allocation dynamique : le système de stockage physique n'alloue l'espace au disque virtuel que lorsque la VM y écrit réellement des données, permettant de surengager l'espace disque physique disponible.",
+    "difficulte": "avance"
+  }
+]

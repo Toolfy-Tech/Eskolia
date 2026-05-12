@@ -1,0 +1,227 @@
+[
+  {
+    "id": "O05-C02-001",
+    "category": "Sécurité",
+    "chapter": "Détection",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quel service en ligne gratuit permet de scanner un fichier suspect avec plus de 70 antivirus différents en même temps ?",
+    "answer": "VirusTotal (virustotal.com)",
+    "comment": "Astuce de pro : C'est le premier réflexe à avoir si vous trouvez un fichier bizarre. Si plus de 5 antivirus le marquent comme dangereux, supprimez-le."
+  },
+  {
+    "id": "O05-C02-002",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un antivirus basé sur les 'Signatures' peut détecter un nouveau virus créé il y a seulement 10 minutes.",
+    "answer": "Faux",
+    "comment": "La signature nécessite que le virus soit déjà connu et répertorié dans la base de données. Pour les nouveaux virus, on utilise l'analyse heuristique."
+  },
+  {
+    "id": "O05-C02-003",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Qu'est-ce que l'analyse 'Heuristique' (ou comportementale) d'un antivirus ?",
+    "answer": "C'est une méthode qui surveille les actions d'un programme. S'il tente de modifier des fichiers système ou de s'auto-copier, l'antivirus le bloque même s'il ne le connaît pas.",
+    "comment": "C'est l'intelligence artificielle de l'antivirus qui cherche des comportements suspects."
+  },
+  {
+    "id": "O05-C02-004",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Ordonnez les actions de l'antivirus lors de la détection d'une menace :",
+    "options": ["Mise en quarantaine", "Analyse du fichier", "Alerte de l'utilisateur", "Suppression finale"],
+    "answer": ["Analyse du fichier", "Alerte de l'utilisateur", "Mise en quarantaine", "Suppression finale"],
+    "comment": "La mise en quarantaine permet de 'geler' le fichier sans le supprimer, au cas où ce serait un faux positif."
+  },
+  {
+    "id": "O05-C02-005",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Qu'est-ce qu'un 'Faux Positif' en cybersécurité ?",
+    "answer": "C'est lorsqu'un fichier sain est détecté par erreur comme un virus par l'antivirus.",
+    "comment": "Astuce de pro : Cela arrive souvent avec les logiciels de maintenance ou les scripts d'administration que les techniciens utilisent."
+  },
+  {
+    "id": "O05-C02-006",
+    "category": "Sécurité",
+    "chapter": "Soft Skills",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Comment expliquer à un client ce qu'est la 'Quarantaine' de son antivirus ?",
+    "answer": "C'est comme une prison de haute sécurité pour les fichiers suspects. Le fichier est enfermé dans une cage où il ne peut plus rien faire de mal, en attendant que vous décidiez si on doit le supprimer ou le libérer.",
+    "comment": "Critère de réussite : Utiliser l'image de la prison ou de l'isolement sécurisé."
+  },
+  {
+    "id": "O05-C02-007",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #2001 : 'Mon antivirus a détecté un virus dans un fichier important de mon travail. Il l'a mis en quarantaine, mais j'en ai besoin tout de suite !' ",
+    "checklist": [
+      "Vérifier le nom de la menace détectée (Lien VirusTotal).",
+      "Vérifier si le fichier est vraiment sain (Faux positif ?).",
+      "Restaurer le fichier depuis la quarantaine si c'est une erreur.",
+      "Ajouter une exception (exclusion) dans l'antivirus pour ce fichier."
+    ],
+    "answer": "Gestion d'un faux positif ou d'un besoin de restauration depuis la quarantaine.",
+    "comment": "Réflexe TIP : Ne restaurez JAMAIS un fichier sans être sûr à 200% qu'il est sain, sinon vous réinfectez le poste immédiatement."
+  },
+  {
+    "id": "O05-C02-008",
+    "category": "Sécurité",
+    "chapter": "Détection",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel outil Windows (vu en Section 02) permet de voir les processus bizarres qui tournent en arrière-plan et qui pourraient être des malwares ?",
+    "answer": "Le Gestionnaire des tâches (onglet Détails).",
+    "comment": "Astuce de pro : Un malware a souvent un nom de processus qui ressemble à un vrai (ex: svch0st.exe au lieu de svchost.exe)."
+  },
+  {
+    "id": "O05-C02-009",
+    "category": "Sécurité",
+    "chapter": "Analyse",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un technicien analyse un fichier .exe suspect.",
+    "indices": [
+      "Indice 1 : VirusTotal affiche 0/70 détections.",
+      "Indice 2 : Le fichier tente pourtant de se connecter à une adresse IP inconnue en Russie dès qu'il est lancé (Lien Section 03 - Netstat).",
+      "Indice 3 : C'est un virus de type 'Zero-Day' encore inconnu des bases de signatures."
+    ],
+    "answer": "Attaque Zero-Day (Menace nouvelle non encore répertoriée).",
+    "comment": "Technique de pro : Le 0/70 sur VirusTotal ne garantit pas à 100% qu'un fichier est sain, surtout s'il est très récent."
+  },
+  {
+    "id": "O05-C02-010",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Il est recommandé d'installer deux antivirus différents en même temps sur son PC pour doubler la protection.",
+    "answer": "Faux",
+    "comment": "DANGER : Deux antivirus vont se battre pour le contrôle du système, ralentir énormément le PC et risquent de se détecter l'un l'autre comme des menaces."
+  },
+  {
+    "id": "O05-C02-011",
+    "category": "Sécurité",
+    "chapter": "Détection",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'acronyme EDR par rapport à un simple Antivirus ?",
+    "answer": "Endpoint Detection and Response.",
+    "comment": "C'est un antivirus beaucoup plus poussé qui enregistre tout l'historique du PC pour comprendre comment une attaque s'est déroulée."
+  },
+  {
+    "id": "O05-C02-012",
+    "category": "Sécurité",
+    "chapter": "Analyse",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Pourquoi certains malwares demandent-ils de 'Désactiver votre antivirus' pendant l'installation d'un logiciel pirate ?",
+    "answer": "Parce qu'ils savent que l'analyse comportementale de l'antivirus va bloquer l'infection dès qu'elle commencera.",
+    "comment": "Astuce de pro : C'est le signal d'alerte n°1. Si on vous demande de couper la sécurité, c'est que le fichier est malveillant."
+  },
+  {
+    "id": "O05-C02-013",
+    "category": "Sécurité",
+    "chapter": "Soft Skills",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Comment expliquer à un utilisateur pourquoi son PC doit redémarrer pour finir de supprimer un virus ?",
+    "answer": "Le virus est actuellement 'réveillé' et se cache dans la mémoire vive (RAM) du PC. Pour le supprimer, on doit éteindre le PC pour qu'il s'endorme, et le 'nettoyer' juste avant qu'il ne se réveille au prochain démarrage.",
+    "comment": "Critère de réussite : Mentionner que le virus est actif en mémoire vive (RAM - Lien Section 01)."
+  },
+  {
+    "id": "O05-C02-014",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Quelle est la hiérarchie de confiance pour les pilotes (Drivers) sous Windows ?",
+    "options": ["Pilote non signé (Risqué)", "Pilote signé par le constructeur", "Pilote certifié WHQL (Microsoft)"],
+    "answer": ["Pilote certifié WHQL (Microsoft)", "Pilote signé par le constructeur", "Pilote non signé (Risqué)"],
+    "comment": "Windows 10/11 bloque par défaut l'installation de pilotes non signés car ils peuvent contenir des Rootkits."
+  },
+  {
+    "id": "O05-C02-015",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #2005 : 'J'ai supprimé le virus avec l'antivirus, mais à chaque fois que je redémarre, il revient tout seul !'",
+    "checklist": [
+      "Vérifier s'il n'y a pas un autre PC infecté sur le réseau (Ver - Lien Section 03).",
+      "Vérifier les tâches planifiées bizarres (Lien Section 04).",
+      "Vérifier le dossier 'Démarrage' de Windows (Lien Section 02).",
+      "Scanner avec un antivirus bootable hors-ligne."
+    ],
+    "answer": "Présence d'un mécanisme de persistance (le virus a programmé son propre retour).",
+    "comment": "Réflexe TIP : Un virus intelligent se cache à plusieurs endroits. Si on n'en supprime qu'un, les autres le réinstallent."
+  },
+  {
+    "id": "O05-C02-016",
+    "category": "Sécurité",
+    "chapter": "Détection",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle commande PowerShell (en admin) permet de lister toutes les connexions réseau actives pour voir si un virus communique avec l'extérieur ?",
+    "answer": "netstat -abno",
+    "comment": "Astuce de pro : L'option '-b' affiche le nom du logiciel (.exe) responsable de la connexion. Très efficace pour débusquer un Spyware."
+  },
+  {
+    "id": "O05-C02-017",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Windows Defender (intégré à Windows) est aujourd'hui considéré comme un antivirus très performant et suffisant pour la plupart des usages.",
+    "answer": "Vrai",
+    "comment": "Il a énormément progressé et fait désormais partie des meilleurs antivirus gratuits du marché."
+  },
+  {
+    "id": "O05-C02-018",
+    "category": "Sécurité",
+    "chapter": "Analyse",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Le PC de la comptabilité se met à envoyer des milliers d'emails tout seul.",
+    "indices": [
+      "Indice 1 : L'utilisateur n'a pas ouvert son logiciel de messagerie.",
+      "Indice 2 : Le port 25 (SMTP - Lien Section 03) est saturé en sortie.",
+      "Indice 3 : Le PC a été transformé en 'Zombie' au sein d'un Botnet.",
+      "Indice 4 : Un malware de type 'Spambot' est installé."
+    ],
+    "answer": "Infection par un Spambot (PC utilisé comme relais de spam).",
+    "comment": "Technique de pro : Dans ce cas, l'adresse IP publique de l'entreprise risque d'être bannie (blacklistée) de tout internet en quelques heures."
+  },
+  {
+    "id": "O05-C02-019",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "C",
+    "type": "visual_id",
+    "question": "Quelle extension de fichier Windows est la plus dangereuse car elle peut exécuter n'importe quel code ?",
+    "answer": "L'extension .exe (Exécutable).",
+    "comment": "D'autres sont aussi risquées comme .bat, .ps1, .vbs ou même .scr."
+  },
+  {
+    "id": "O05-C02-020",
+    "category": "Sécurité",
+    "chapter": "Antivirus",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Pourquoi est-il vital de garder son antivirus (et ses bases de signatures) à jour quotidiennement ?",
+    "answer": "Parce que des milliers de nouveaux virus sont créés chaque jour. Un antivirus pas à jour est comme un vaccin contre une maladie de l'année dernière : il ne protège plus.",
+    "comment": "Astuce de pro : Windows Update gère heureusement les mises à jour de Defender automatiquement."
+  }
+]

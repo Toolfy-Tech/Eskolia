@@ -1,0 +1,175 @@
+[
+  {
+    "id": "O06-C01-001",
+    "category": "IA",
+    "chapter": "Prompt Engineering",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'acronyme R.O.C.T. pour rédiger un bon prompt ?",
+    "answer": "Rôle, Objectif, Contexte, format de Sortie (ou Taille).",
+    "comment": "C'est la structure de base pour obtenir une réponse précise de l'IA sans perdre de temps."
+  },
+  {
+    "id": "O06-C01-002",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Pourquoi est-il crucial de définir un 'Rôle' (R) à l'IA dès le début du prompt ?",
+    "answer": "Pour orienter son vocabulaire et son expertise vers un domaine précis (ex: Technicien Réseau vs Poète).",
+    "comment": "Astuce de pro : Commencer par 'Agis comme un expert en cybersécurité' change radicalement la qualité technique des conseils donnés."
+  },
+  {
+    "id": "O06-C01-003",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Plus un prompt est court et direct (ex: 'Aide-moi'), plus l'IA sera efficace pour résoudre un bug complexe.",
+    "answer": "Faux",
+    "comment": "L'IA a besoin de 'Contexte' (C) pour ne pas inventer des solutions inutiles. Un prompt trop court génère des réponses trop génériques."
+  },
+  {
+    "id": "O06-C01-004",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Ordonnez les éléments d'un prompt R.O.C.T. idéal pour dépanner un script PowerShell :",
+    "options": [
+      "T : Donne-moi le code corrigé et commente chaque ligne.",
+      "C : Le script renvoie l'erreur 'Access Denied' sur Windows 11.",
+      "O : Aide-moi à corriger ce script qui liste les dossiers.",
+      "R : Agis comme un administrateur système senior."
+    ],
+    "answer": [
+      "R : Agis comme un administrateur système senior.",
+      "O : Aide-moi à corriger ce script qui liste les dossiers.",
+      "C : Le script renvoie l'erreur 'Access Denied' sur Windows 11.",
+      "T : Donne-moi le code corrigé et commente chaque ligne."
+    ],
+    "comment": "Suivre cet ordre logique permet à l'IA de 'comprendre' qui elle est avant de savoir ce qu'elle doit faire."
+  },
+  {
+    "id": "O06-C01-005",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Comment expliquer l'élément 'Contexte' (C) à un collègue qui trouve que l'IA répond toujours à côté de la plaque ?",
+    "answer": "C'est comme donner les antécédents médicaux à un médecin : si vous ne lui dites pas sur quel système vous travaillez ou quel message d'erreur précis vous avez, il ne peut pas poser le bon diagnostic.",
+    "comment": "Critère de réussite : Utiliser l'image du diagnostic médical ou de l'enquête policière."
+  },
+  {
+    "id": "O06-C01-006",
+    "category": "IA",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #2201 : 'L'IA me donne un script pour configurer mon routeur Cisco, mais les commandes ne marchent pas sur mon matériel.'",
+    "checklist": [
+      "Vérifier si le modèle précis du routeur a été donné dans le 'Contexte'.",
+      "Demander à l'IA de vérifier la compatibilité avec la version spécifique d'IOS (Lien Section 03).",
+      "Préciser le 'Rôle' (Expert Cisco certifié CCNA).",
+      "Demander à l'IA de citer ses sources ou la documentation officielle."
+    ],
+    "answer": "Manque de précision dans le contexte technique (Modèle/Version) fourni à l'IA.",
+    "comment": "Réflexe TIP : Une IA peut 'halluciner' des commandes si elle ne connaît pas exactement le matériel cible."
+  },
+  {
+    "id": "O06-C01-007",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Que signifie le 'T' (Format de Sortie) dans R.O.C.T. ?",
+    "answer": "C'est la forme que doit prendre la réponse (ex: un tableau, une liste à puces, un bloc de code, un email).",
+    "comment": "Astuce de pro : Demander 'réponds sous forme de tableau' est très utile pour comparer deux technologies réseau (Lien Section 03)."
+  },
+  {
+    "id": "O06-C01-008",
+    "category": "IA",
+    "chapter": "Prompt Engineering",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Dans un prompt, comment appelle-t-on le fait de donner un exemple à l'IA pour qu'elle comprenne ce que vous attendez ?",
+    "answer": "Le Few-Shot Prompting.",
+    "comment": "C'est très efficace pour apprendre à l'IA à rédiger des tickets d'incident toujours de la même manière."
+  },
+  {
+    "id": "O06-C01-009",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un technicien demande à l'IA : 'Comment réparer Windows ?'. L'IA répond par un texte de 5 pages très généraliste.",
+    "indices": [
+      "Indice 1 : Le prompt manque d'Objectif (O) précis.",
+      "Indice 2 : Aucun message d'erreur n'a été fourni (Contexte - C).",
+      "Indice 3 : Le Format (T) n'a pas été limité (ex: 'donne-moi 3 étapes rapides')."
+    ],
+    "answer": "Prompt trop vague (Manque de O, C et T).",
+    "comment": "Technique de pro : 'Réparer Windows' est trop vaste. 'Réparer l'erreur 0x800... lors d'une mise à jour' est un Objectif (O) efficace."
+  },
+  {
+    "id": "O06-C01-010",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : On peut utiliser le R.O.C.T. pour demander à l'IA de vulgariser un concept complexe pour un client (Soft Skills).",
+    "answer": "Vrai",
+    "comment": "Rôle : Vulgarisateur scientifique / Objectif : Expliquer le RAID 5 / Contexte : Client de 70 ans sans connaissances IT / Format : 3 lignes avec une métaphore simple."
+  },
+  {
+    "id": "O06-C01-011",
+    "category": "IA",
+    "chapter": "Prompt Engineering",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'expression 'GIGO' dans le monde de l'informatique et de l'IA ?",
+    "answer": "Garbage In, Garbage Out (Ordures en entrée, ordures en sortie).",
+    "comment": "Si votre prompt est mauvais (poubelle), la réponse de l'IA sera forcément mauvaise (poubelle)."
+  },
+  {
+    "id": "O06-C01-012",
+    "category": "IA",
+    "chapter": "Maintenance",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Comment l'IA peut-elle aider un technicien qui doit analyser un log d'événement Windows de 200 lignes (Lien Section 02) ?",
+    "answer": "En copiant le log et en demandant à l'IA d'identifier uniquement les lignes d'erreur critiques et leurs causes probables.",
+    "comment": "Astuce de pro : C'est un gain de temps massif pour le diagnostic de haut niveau."
+  },
+  {
+    "id": "O06-C01-013",
+    "category": "IA",
+    "chapter": "Soft Skills",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez à un stagiaire pourquoi il ne faut pas dire 'S'il te plaît' ou 'Merci' à l'IA dans un prompt professionnel.",
+    "answer": "L'IA n'a pas de sentiments. Ces mots occupent inutilement de la place dans le 'contexte' (tokens) au lieu de laisser la place à des informations techniques utiles.",
+    "comment": "Critère de réussite : Mentionner que la politesse n'améliore pas la précision technique et consomme des ressources."
+  },
+  {
+    "id": "O06-C01-014",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Dans le cadre d'une création de rapport, que représente chaque lettre de ROCT ?",
+    "options": ["Réseau", "Rôle", "Organisation", "Objectif", "Contexte", "Client", "Taille", "Technique"],
+    "answer": ["Rôle", "Objectif", "Contexte", "Taille"],
+    "comment": "Note : Le 'T' peut signifier Taille, Type de document ou format de Sortie."
+  },
+  {
+    "id": "O06-C01-015",
+    "category": "IA",
+    "chapter": "Diagnostic",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle est la meilleure façon d'obtenir un script PowerShell sécurisé de la part d'une IA ?",
+    "answer": "Lui demander d'ajouter des commentaires détaillés et de vérifier les erreurs (Error Handling) dans son propre code.",
+    "comment": "Astuce de pro : L'IA a tendance à donner le code le plus court. En lui demandant d'être 'robuste', elle ajoutera des sécurités indispensables en entreprise."
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "id": 191,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Concepts Cloud",
+    "question": "Qu'est-ce que le Cloud Computing de manière simple ?",
+    "answer": "C'est le fait d'accéder à des serveurs, du stockage, des bases de données et des logiciels via Internet (le cloud) au lieu d'utiliser le disque dur local de son ordinateur.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 192,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Concepts Cloud",
+    "question": "Que signifie l'acronyme SaaS dans le cloud ?",
+    "answer": "Software as a Service (Logiciel en tant que service). L'utilisateur loue l'accès à un logiciel hébergé sur le web sans avoir à l'installer ou à le maintenir (ex: Microsoft 365, Gmail).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 193,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Concepts Cloud",
+    "question": "Quelle est la différence fondamentale entre IaaS et PaaS ?",
+    "answer": "L'IaaS (Infrastructure) fournit des ressources brutes comme des machines virtuelles. Le PaaS (Plateforme) fournit un environnement prêt à l'emploi pour les développeurs, gérant l'OS en arrière-plan.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 194,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Concepts Cloud",
+    "question": "Qu'appelle-t-on un Cloud Hybride ?",
+    "answer": "C'est une infrastructure informatique qui combine un Cloud privé (sur site) et un Cloud public (ex: Azure, AWS), permettant le partage de données et d'applications entre les deux.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 195,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Microsoft 365 & Outils",
+    "question": "À quoi sert principalement Microsoft OneDrive ?",
+    "answer": "C'est un service de stockage cloud individuel qui permet de sauvegarder, synchroniser et partager ses fichiers personnels professionnels depuis n'importe quel appareil.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 196,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Microsoft 365 & Outils",
+    "question": "Quelle est la fonction centrale de Microsoft Teams ?",
+    "answer": "C'est une plateforme de communication collaborative intégrant messagerie instantanée, visioconférence, appels et partage de fichiers au sein d'une équipe.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 197,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Microsoft 365 & Outils",
+    "question": "Quelle est la différence entre Office 2021 (licence classique) et Microsoft 365 ?",
+    "answer": "Office 2021 est un achat unique sans mises à jour de fonctionnalités. Microsoft 365 est un abonnement qui inclut des mises à jour continues et des services cloud (OneDrive, Teams).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 198,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Microsoft 365 & Outils",
+    "question": "Quelle est la différence d'usage principale entre OneDrive et SharePoint ?",
+    "answer": "OneDrive est destiné au stockage des fichiers privés d'un individu. SharePoint est conçu pour stocker et organiser les fichiers partagés par toute une équipe ou un service.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 199,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Microsoft 365 & Outils",
+    "question": "Si un utilisateur supprime par erreur un fichier partagé dans SharePoint, comment le récupérer ?",
+    "answer": "Il se trouve dans la Corbeille du site SharePoint (pendant 93 jours). Si l'utilisateur l'y supprime aussi, un administrateur peut le récupérer dans la 'Corbeille de second niveau'.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 200,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Administration M365",
+    "question": "Qu'est-ce qu'Exchange Online ?",
+    "answer": "C'est le service de serveur de messagerie hébergé dans le cloud de Microsoft, chargé de gérer les e-mails, les calendriers et les contacts.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 201,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Administration M365",
+    "question": "Comment un technicien accède-t-il au centre d'administration général de Microsoft 365 ?",
+    "answer": "En se connectant au portail web 'admin.microsoft.com' avec un compte possédant les droits d'administrateur.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 202,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Administration M365",
+    "question": "Qu'est-ce qu'une 'boîte aux lettres partagée' (Shared Mailbox) dans Exchange ?",
+    "answer": "Une adresse e-mail commune (ex: info@entreprise.com) consultable par plusieurs utilisateurs habilités, qui ne nécessite pas l'achat d'une licence Microsoft 365 dédiée.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 203,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Administration M365",
+    "question": "Qu'est-ce qu'un 'groupe de distribution' dans l'administration M365 ?",
+    "answer": "C'est une adresse e-mail virtuelle qui sert uniquement à redistribuer les messages reçus vers une liste d'utilisateurs membres (mailing list).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 204,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Administration M365",
+    "question": "Quel langage de script en ligne de commande est massivement utilisé pour automatiser l'administration de Microsoft 365 et Exchange Online ?",
+    "answer": "PowerShell (via les modules spécifiques comme ExchangeOnlineManagement ou Microsoft.Graph).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 205,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Quel est le nouveau nom officiel donné par Microsoft au service 'Azure Active Directory' (Azure AD) ?",
+    "answer": "Microsoft Entra ID.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 206,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Quelle est la fonction principale d'Entra ID (ex-Azure AD) ?",
+    "answer": "C'est le service basé sur le cloud de Microsoft dédié à la gestion des identités (utilisateurs, groupes) et au contrôle des accès aux applications.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 207,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Que signifie l'état 'Joint à Azure AD' (Azure AD Joined) pour un ordinateur Windows 10/11 ?",
+    "answer": "L'appareil est connecté et enregistré directement dans le cloud Microsoft pour l'authentification des utilisateurs, sans dépendre d'un serveur local.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 208,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Quelle fonctionnalité d'Entra ID permet de bloquer une connexion ou d'exiger la MFA selon la localisation ou l'état de l'appareil ?",
+    "answer": "L'Accès Conditionnel (Conditional Access).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 209,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Quel est le rôle de l'outil Azure AD Connect (ou Entra Connect) dans une architecture hybride ?",
+    "answer": "Il synchronise automatiquement les comptes utilisateurs et les mots de passe du serveur Active Directory local vers l'annuaire cloud Entra ID.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 210,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Identité (Entra ID)",
+    "question": "Qu'est-ce que l'authentification 'Pass-through' (PTA) avec Entra ID ?",
+    "answer": "Une méthode où le cloud Entra ID ne stocke pas les mots de passe, mais valide les tentatives de connexion en interrogeant directement le serveur Active Directory local en temps réel.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 211,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Gestion des appareils (Intune)",
+    "question": "Qu'est-ce que Microsoft Intune ?",
+    "answer": "Une solution cloud de Microsoft permettant la gestion des appareils mobiles (MDM) et la gestion des applications mobiles (MAM) d'une entreprise.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 212,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Gestion des appareils (Intune)",
+    "question": "Que permet de faire Intune si le PC portable ou le smartphone d'un collaborateur est volé ?",
+    "answer": "De verrouiller l'appareil à distance ou de lancer un effacement complet (Wipe) pour détruire toutes les données de l'entreprise.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 213,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Gestion des appareils (Intune)",
+    "question": "À quoi sert la technologie Windows Autopilot ?",
+    "answer": "Elle automatise le déploiement des PC neufs : l'ordinateur se configure tout seul via Internet dès le premier allumage, sans que l'informaticien ait besoin de cloner une image disque (Master).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 214,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Gestion des appareils (Intune)",
+    "question": "Dans Intune, qu'est-ce qu'une 'Stratégie de conformité' (Compliance Policy) ?",
+    "answer": "Un ensemble de règles de sécurité (ex: exiger le chiffrement BitLocker, un antivirus à jour) que l'appareil doit respecter pour être autorisé à accéder aux données de l'entreprise.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 215,
+    "theme": "M365 & Cloud",
+    "sous_theme": "Gestion des appareils (Intune)",
+    "question": "Quelle est la différence d'approche entre les modes MDM (Mobile Device Management) et MAM (Mobile Application Management) ?",
+    "answer": "Le MDM prend le contrôle total de l'appareil entier. Le MAM contrôle et sécurise uniquement les applications d'entreprise isolées, idéal pour le matériel personnel (BYOD).",
+    "difficulte": "avance"
+  }
+]

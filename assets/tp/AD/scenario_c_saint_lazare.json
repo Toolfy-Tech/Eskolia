@@ -1,0 +1,441 @@
+{
+  "id": "scenario_c",
+  "title": "Saint-Lazare Digital",
+  "subtitle": "Sécuriser l'infrastructure d'un hôpital",
+  "emoji": "🏥",
+  "color": "#E74C3C",
+  "difficulty": "avance",
+  "difficulty_label": "Avancé",
+  "description": "Tu administres l'Active Directory d'un hôpital régional. Les données médicales sont ultra-sensibles, le RGPD s'applique strictement. Chaque action doit être réfléchie et sécurisée.",
+  "domain": "lazare.local",
+  "dc_name": "DC-LAZARE",
+  "server_ip": "192.168.20.10",
+  "os": "Windows Server 2022",
+  "total_missions": 16,
+  "estimated_hours": "10–14h",
+  "prerequisite": "scenario_a",
+  "context_intro": "Le Centre Hospitalier Saint-Lazare est en pleine transformation numérique. Tu viens d'être recruté comme administrateur système. Ton prédécesseur a laissé une infrastructure désorganisée : des comptes génériques partagés entre plusieurs soignants, des mots de passe jamais expirés, aucun audit de sécurité. Le Délégué à la Protection des Données (DPO) est sur le dos de la direction : en cas de fuite de données médicales, l'hôpital risque une amende RGPD colossale. Ta mission : remettre tout ça d'aplomb.",
+  "rgpd_banner": "⚠️ Contexte RGPD actif — Les données médicales sont des données sensibles au sens de l'article 9 du RGPD. Chaque décision d'accès doit être justifiée et documentée.",
+  "badges": [
+    {
+      "id": "lazare_fondateur",
+      "title": "Fondateur du domaine sécurisé",
+      "description": "A structuré le domaine hospitalier lazare.local",
+      "icon": "🏗️",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "lazare_securite",
+      "title": "Gardien des données",
+      "description": "A mis en place les politiques de sécurité et d'audit",
+      "icon": "🔒",
+      "unlocked_after_level": 3
+    },
+    {
+      "id": "lazare_expert",
+      "title": "Admin Saint-Lazare",
+      "description": "A terminé le scénario Saint-Lazare en intégralité",
+      "icon": "🏥",
+      "unlocked_after_level": 5
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Infrastructure hospitalière",
+      "description": "Créer le domaine lazare.local avec les paramètres de sécurité adaptés à un environnement médical.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "C-0-1",
+          "order": 1,
+          "title": "Préparer le serveur hospitalier",
+          "unlocked_by": null,
+          "estimated_minutes": 15,
+          "objective": "Configurer l'IP fixe du serveur et le renommer DC-LAZARE.",
+          "context": "Dans un hôpital, la disponibilité du système d'information est critique : si l'Active Directory tombe, les médecins ne peuvent plus se connecter pour consulter les dossiers patients. Un serveur avec une IP qui change ou un nom incohérent, c'est un risque d'indisponibilité. La rigueur commence dès la configuration initiale.",
+          "steps": [
+            "Ouvre les paramètres de la carte réseau (Windows + R → ncpa.cpl)",
+            "Configure l'IPv4 : IP = 192.168.20.10 | Masque = 255.255.255.0 | Passerelle = 192.168.20.1 | DNS = 127.0.0.1",
+            "Renomme le serveur en DC-LAZARE et redémarre",
+            "Après redémarrage, vérifie la configuration avec ipconfig /all dans l'invite de commandes"
+          ],
+          "help": {
+            "text": "Besoin d'un rappel sur la configuration réseau ?",
+            "where": "La procédure est identique aux scénarios A et B. Panneau de configuration → Centre Réseau → Modifier les paramètres de la carte → Clic droit → Propriétés → IPv4."
+          },
+          "expected_result": [
+            "L'IP 192.168.20.10 est configurée en statique",
+            "Le DNS préféré est 127.0.0.1",
+            "Le serveur répond au nom DC-LAZARE"
+          ]
+        },
+        {
+          "id": "C-0-2",
+          "order": 2,
+          "title": "Créer le domaine lazare.local",
+          "unlocked_by": "C-0-1",
+          "estimated_minutes": 30,
+          "objective": "Installer AD DS et promouvoir le serveur pour créer la forêt lazare.local.",
+          "context": "Tu es maintenant à l'aise avec la création d'un domaine. Dans ce scénario, l'enjeu est de bien réfléchir aux choix de configuration avant d'agir — dans un hôpital, une erreur de configuration peut avoir des conséquences sur la prise en charge des patients si les soignants ne peuvent plus accéder aux systèmes.",
+          "steps": [
+            "Gestionnaire de serveur → Ajouter des rôles → Services de domaine Active Directory",
+            "Clique sur le drapeau jaune → Promouvoir ce serveur en contrôleur de domaine",
+            "Nouvelle forêt | Nom : lazare.local",
+            "Choisis un mot de passe DSRM très solide (c'est un hôpital — la sécurité est maximale)",
+            "Laisse les options par défaut et installe — le serveur redémarre"
+          ],
+          "help": {
+            "text": "Tu hésites sur les options de niveau fonctionnel ?",
+            "where": "Laisse le niveau fonctionnel par défaut proposé par l'assistant. Dans un environnement réel, ce choix dépendrait des autres serveurs présents dans l'infrastructure. Pour ce TP, le niveau par défaut convient parfaitement."
+          },
+          "expected_result": [
+            "Le serveur a redémarré en contrôleur de domaine",
+            "L'écran de connexion affiche LAZARE\\Administrateur",
+            "La console dsa.msc montre le domaine lazare.local"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Structure des services médicaux",
+      "description": "Créer une arborescence d'OUs qui reflète l'organisation stricte d'un hôpital.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "C-1-1",
+          "order": 1,
+          "title": "Créer l'arborescence médicale",
+          "unlocked_by": "C-0-2",
+          "estimated_minutes": 20,
+          "objective": "Créer la structure d'OUs qui représente les services de l'hôpital.",
+          "context": "Dans un hôpital, les services médicaux ont des niveaux de confidentialité très différents. Le service de psychiatrie a des règles de confidentialité encore plus strictes que les autres (secret médical renforcé). La structure des OUs doit permettre d'appliquer des politiques de sécurité distinctes à chaque service. C'est la base de toute la conformité RGPD.",
+          "steps": [
+            "Dans dsa.msc, crée l'OU racine SAINT_LAZARE sous lazare.local",
+            "Dans SAINT_LAZARE, crée : Soins, Urgences, Laboratoire, Psychiatrie, Administration_IT",
+            "Crée aussi dans SAINT_LAZARE : Groupes, Chariots_Mobiles",
+            "L'OU Psychiatrie doit avoir une protection supplémentaire : active la protection contre la suppression accidentelle et note qu'elle contiendra des données ultra-sensibles",
+            "Applique la protection contre la suppression accidentelle à toutes les OUs"
+          ],
+          "help": {
+            "text": "Pourquoi séparer la Psychiatrie des autres services ?",
+            "where": "Le secret médical en psychiatrie est renforcé par la loi française. Les dossiers psychiatriques ne peuvent pas être accessibles aux mêmes personnes que les dossiers classiques. En créant une OU séparée, tu pourras appliquer des GPO et des permissions spécifiques à ce service."
+          },
+          "expected_result": [
+            "L'OU SAINT_LAZARE est à la racine de lazare.local",
+            "Les 7 sous-OUs sont créées avec la protection contre la suppression accidentelle",
+            "L'arborescence reflète l'organisation des services de l'hôpital"
+          ]
+        },
+        {
+          "id": "C-1-2",
+          "order": 2,
+          "title": "Créer les groupes de sécurité médicaux",
+          "unlocked_by": "C-1-1",
+          "estimated_minutes": 20,
+          "objective": "Créer les groupes G_Infirmiers, G_Medecins, G_Urgences et G_Acces_Psy.",
+          "context": "Dans un hôpital, les droits d'accès sont déterminés par le métier et le service. Un infirmier de Soins n'a pas accès aux mêmes dossiers qu'un médecin des Urgences. Et personne n'a accès aux dossiers de Psychiatrie sauf les soignants habilités. Ces groupes seront la base de tout le système d'autorisation.",
+          "steps": [
+            "Dans l'OU Groupes, crée G_Infirmiers (Global, Sécurité)",
+            "Crée G_Medecins (Global, Sécurité)",
+            "Crée G_Urgences (Global, Sécurité)",
+            "Crée G_Acces_Psy (Global, Sécurité) — ce groupe aura des droits spéciaux en mission C-3-2",
+            "Laisse les groupes vides pour l'instant — les membres seront ajoutés à la mission suivante"
+          ],
+          "help": {
+            "text": "Faut-il créer un groupe par service ou par métier ?",
+            "where": "Dans un hôpital, les deux approches coexistent. Des groupes par métier (G_Medecins) permettent de donner des droits communs à tous les médecins. Des groupes par service (G_Urgences) permettent de gérer les accès propres à un service. On peut imbriquer les deux : un médecin des urgences sera dans G_Medecins ET dans G_Urgences."
+          },
+          "expected_result": [
+            "Les 4 groupes de sécurité existent dans l'OU Groupes",
+            "G_Acces_Psy est bien distinct des autres — il contrôlera l'accès aux données de psychiatrie"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Comptes nominatifs et RGPD",
+      "description": "Créer des comptes strictement nominatifs — aucun compte générique n'est toléré dans un environnement médical.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "C-2-1",
+          "order": 1,
+          "title": "Créer les comptes du personnel médical",
+          "unlocked_by": "C-1-2",
+          "estimated_minutes": 25,
+          "objective": "Créer des comptes nominatifs pour 5 membres du personnel médical répartis dans les services.",
+          "context": "Le RGPD est formel : dans un hôpital, chaque accès aux données médicales doit être traçable jusqu'à une personne identifiée. Les comptes génériques de type 'infirmier_soins' ou 'medecin_urgences' sont strictement interdits. Si le DPO trouve un compte générique, c'est une non-conformité immédiate. Chaque soignant doit avoir son propre compte avec son vrai nom.",
+          "steps": [
+            "Dans l'OU Soins, crée : Gregory House | Login : g.house | Service : Soins",
+            "Dans l'OU Urgences, crée : Meredith Grey | Login : m.grey | Service : Urgences",
+            "Dans l'OU Laboratoire, crée : Walter White | Login : w.white | Service : Laboratoire",
+            "Dans l'OU Psychiatrie, crée : Hannibal Lecter | Login : h.lecter | Service : Psychiatrie",
+            "Pour chacun : ajoute le Service dans l'onglet Organisation de ses propriétés",
+            "Ajoute g.house et m.grey dans G_Infirmiers, m.grey dans G_Urgences, h.lecter dans G_Acces_Psy"
+          ],
+          "help": {
+            "text": "Pourquoi remplir le champ Service dans les propriétés ?",
+            "where": "Dans un hôpital, l'appartenance à un service détermine les droits d'accès. Renseigner le champ Service dans l'onglet Organisation permet de retrouver facilement tous les membres d'un service via une recherche dans l'AD, et de générer des rapports pour le DPO."
+          },
+          "expected_result": [
+            "5 comptes nominatifs existent dans leurs OUs respectives",
+            "Aucun compte générique n'a été créé",
+            "Le champ Service est renseigné pour chaque compte",
+            "Les groupes contiennent les bons membres"
+          ]
+        },
+        {
+          "id": "C-2-2",
+          "order": 2,
+          "title": "Connecter les chariots mobiles au domaine",
+          "unlocked_by": "C-2-1",
+          "estimated_minutes": 25,
+          "objective": "Joindre un PC au domaine et le placer dans l'OU Chariots_Mobiles.",
+          "context": "Les chariots informatiques sont des PC mobiles que les soignants utilisent au chevet des patients pour consulter les dossiers médicaux. Ils se connectent en WiFi sur le réseau de l'hôpital. Ces machines ont une particularité : les médecins ne doivent pas être déconnectés en plein milieu d'une consultation — on reviendra sur ce point dans la mission GPO.",
+          "steps": [
+            "Sur le PC client, configure le DNS préféré à 192.168.20.10",
+            "Joint le PC au domaine lazare.local",
+            "Après redémarrage, depuis dsa.msc, déplace l'objet ordinateur vers l'OU Chariots_Mobiles",
+            "Renomme le PC CART-URG-01 si ce n'est pas déjà fait",
+            "Teste la connexion avec le compte m.grey (infirmière des Urgences)"
+          ],
+          "help": {
+            "text": "Comment renommer un ordinateur qui est déjà dans le domaine ?",
+            "where": "Sur le PC client, clic droit sur Ce PC → Propriétés → Renommer ce PC. Après le renommage, le PC redémarrera et l'objet ordinateur dans dsa.msc affichera le nouveau nom automatiquement (après quelques minutes de synchronisation)."
+          },
+          "expected_result": [
+            "Le PC est membre du domaine lazare.local",
+            "L'objet ordinateur est dans l'OU Chariots_Mobiles sous le nom CART-URG-01",
+            "m.grey peut se connecter sur ce PC avec ses identifiants de domaine"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Sécurité et GPO hospitalières",
+      "description": "Appliquer des politiques de sécurité strictes adaptées aux contraintes médicales et au RGPD.",
+      "emoji": "🔴",
+      "color": "#EF4444",
+      "missions": [
+        {
+          "id": "C-3-1",
+          "order": 1,
+          "title": "Verrouillage automatique des postes médicaux",
+          "unlocked_by": "C-2-2",
+          "estimated_minutes": 25,
+          "objective": "Créer une GPO qui force le verrouillage de l'écran après 3 minutes d'inactivité sur tous les postes sauf les chariots mobiles.",
+          "context": "Un poste médical laissé ouvert sans surveillance, c'est une faille critique : n'importe qui peut consulter le dossier d'un patient affiché à l'écran. La règle RGPD est claire : les données médicales ne doivent jamais être visibles sans authentification. 3 minutes d'inactivité, c'est le standard dans les hôpitaux. Mais les chariots mobiles ont une exception : un médecin en pleine intervention ne peut pas taper son mot de passe toutes les 3 minutes.",
+          "steps": [
+            "Dans gpmc.msc, crée GPO_Verrouillage_Postes liée à l'OU SAINT_LAZARE",
+            "Configuration utilisateur → Modèles d'administration → Panneau de configuration → Personnalisation",
+            "Active Activer l'écran de veille et configure une durée de 180 secondes (3 minutes)",
+            "Active Protéger l'écran de veille par un mot de passe",
+            "Maintenant crée une deuxième GPO GPO_Pas_Verrouillage_Chariots liée à l'OU Chariots_Mobiles",
+            "Dans cette GPO, désactive l'écran de veille et active l'option Appliqué (Enforced) sur cette GPO",
+            "L'Enforced garantit que les chariots ne seront jamais verrouillés même si la GPO générale essaie de l'imposer"
+          ],
+          "help": {
+            "text": "Pourquoi utiliser Enforced sur la GPO des chariots ?",
+            "where": "Sans Enforced, la GPO générale de verrouillage (liée à SAINT_LAZARE) hériterait vers l'OU Chariots_Mobiles et forcerait quand même le verrouillage. Avec Enforced sur la GPO des chariots, celle-ci prend la priorité absolue et les chariots ne se verrouillent pas. C'est l'application concrète du conflit d'héritage GPO."
+          },
+          "expected_result": [
+            "Un poste dans l'OU Soins se verrouille après 3 minutes d'inactivité",
+            "Le chariot CART-URG-01 ne se verrouille pas malgré la règle générale",
+            "gpresult /r sur le chariot montre que la GPO_Pas_Verrouillage_Chariots s'applique"
+          ]
+        },
+        {
+          "id": "C-3-2",
+          "order": 2,
+          "title": "Politique de mot de passe renforcée pour la psychiatrie",
+          "unlocked_by": "C-3-1",
+          "estimated_minutes": 30,
+          "objective": "Créer une stratégie de mot de passe spécifique pour le groupe G_Acces_Psy : 12 caractères minimum, verrouillage après 3 tentatives.",
+          "context": "Les données de psychiatrie sont les plus sensibles de l'hôpital. Les personnes qui y accèdent (G_Acces_Psy) doivent avoir des mots de passe plus forts que le reste du personnel. Windows Server permet de créer des politiques de mot de passe différentes selon les groupes grâce aux Fine-Grained Password Policies (FGPP). C'est une fonctionnalité avancée, mais l'interface graphique la rend accessible.",
+          "steps": [
+            "Ouvre le Centre d'administration Active Directory (dsac.exe via le menu Démarrer → Outils d'administration)",
+            "Dans l'arborescence, navigue vers lazare.local → System → Password Settings Container",
+            "Clic droit dans la zone de droite → Nouveau → Paramètres de mot de passe",
+            "Nom : PSO_Psychiatrie | Priorité : 10",
+            "Configure : longueur minimale 12 | Complexité activée | Historique 12 mots de passe | Verrouillage après 3 tentatives",
+            "Dans la section S'applique directement à, clique sur Ajouter et sélectionne G_Acces_Psy",
+            "Valide — la politique s'applique immédiatement aux membres du groupe"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas le Centre d'administration Active Directory ?",
+            "where": "Cherche dsac.exe dans le menu Démarrer, ou passe par le Gestionnaire de serveur → Outils → Centre d'administration Active Directory. C'est une console différente de dsa.msc (Utilisateurs et ordinateurs AD) — plus moderne et avec des fonctionnalités supplémentaires comme les FGPP."
+          },
+          "expected_result": [
+            "PSO_Psychiatrie est visible dans Password Settings Container",
+            "La politique est liée au groupe G_Acces_Psy",
+            "h.lecter (membre de G_Acces_Psy) est soumis à la politique de 12 caractères",
+            "Un autre utilisateur hors du groupe n'est pas soumis à cette politique renforcée"
+          ]
+        },
+        {
+          "id": "C-3-3",
+          "order": 3,
+          "title": "Déléguer la gestion des soignants aux chefs de service",
+          "unlocked_by": "C-3-2",
+          "estimated_minutes": 20,
+          "objective": "Permettre au chef du service Soins de réinitialiser les mots de passe de son équipe.",
+          "context": "Le service IT de l'hôpital est composé de seulement 2 personnes pour 400 utilisateurs. Il est impossible de gérer tous les appels de support pour les mots de passe oubliés. On délègue donc aux chefs de service le droit de réinitialiser les mots de passe de leur équipe — rien de plus. Le principe du moindre privilège est encore plus critique ici : on ne donne jamais plus de droits que nécessaire sur des données médicales.",
+          "steps": [
+            "Dans dsa.msc, clic droit sur l'OU Soins → Délégation de contrôle",
+            "Ajoute l'utilisateur g.house (chef du service Soins dans notre scénario)",
+            "Délègue uniquement : Réinitialiser les mots de passe utilisateur et forcer le changement au prochain login",
+            "Termine l'assistant",
+            "Répète la même délégation sur l'OU Urgences pour m.grey"
+          ],
+          "help": {
+            "text": "La délégation doit-elle être faite sur chaque OU de service ?",
+            "where": "Oui, dans ce cas précis. On veut que g.house puisse gérer uniquement les mots de passe de SON service (Soins), pas ceux de l'Urgences ou de la Psychiatrie. Chaque chef de service reçoit la délégation uniquement sur son OU."
+          },
+          "expected_result": [
+            "g.house peut réinitialiser les mots de passe dans l'OU Soins",
+            "g.house NE PEUT PAS réinitialiser les mots de passe dans l'OU Urgences",
+            "g.house NE PEUT PAS modifier des comptes dans l'OU Psychiatrie"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Audit et traçabilité RGPD",
+      "description": "Mettre en place la journalisation des accès pour répondre aux exigences du RGPD et du DPO.",
+      "emoji": "🔍",
+      "color": "#8B5CF6",
+      "missions": [
+        {
+          "id": "C-4-1",
+          "order": 1,
+          "title": "Activer l'audit complet des connexions",
+          "unlocked_by": "C-3-3",
+          "estimated_minutes": 25,
+          "objective": "Configurer l'audit des connexions réussies ET échouées sur le domaine hospitalier.",
+          "context": "Dans un hôpital, le DPO a besoin de pouvoir répondre à la question : 'Qui a accédé aux dossiers du patient X le jour Y ?' Pour ça, chaque connexion au domaine doit être enregistrée dans les journaux d'événements du DC. L'audit des succès ET des échecs est obligatoire — les échecs détectent les tentatives d'intrusion, les succès permettent de retracer les accès.",
+          "steps": [
+            "Dans gpmc.msc, modifie la Default Domain Controllers Policy",
+            "Configuration ordinateur → Stratégies → Paramètres Windows → Paramètres de sécurité → Stratégies locales → Stratégie d'audit",
+            "Active Auditer les événements de connexion aux comptes : Succès ET Échec",
+            "Active Auditer la gestion des comptes : Succès ET Échec",
+            "Active Auditer les accès aux objets : Succès ET Échec (pour les fichiers)",
+            "Force la mise à jour sur le DC avec gpupdate /force",
+            "Vérifie dans l'Observateur d'événements → Journaux Windows → Sécurité que des événements apparaissent"
+          ],
+          "help": {
+            "text": "Tu vois des milliers d'événements dans le journal Sécurité, comment filtrer ?",
+            "where": "Dans l'Observateur d'événements, clique sur Filtrer le journal actuel dans le menu de droite. Les ID importants : 4624 = connexion réussie, 4625 = connexion échouée, 4720 = compte créé, 4722 = compte activé, 4725 = compte désactivé."
+          },
+          "expected_result": [
+            "Les trois catégories d'audit sont activées dans la Default Domain Controllers Policy",
+            "Des événements de sécurité (ID 4624 et 4625) apparaissent dans l'Observateur d'événements après des connexions",
+            "Un événement 4720 apparaît si tu crées un nouveau compte utilisateur"
+          ]
+        },
+        {
+          "id": "C-4-2",
+          "order": 2,
+          "title": "Auditer les accès au dossier patients",
+          "unlocked_by": "C-4-1",
+          "estimated_minutes": 25,
+          "objective": "Créer le partage Dossiers_Patients$ et activer l'audit d'accès sur ce dossier.",
+          "context": "L'audit configuré à l'étape précédente enregistre les connexions au domaine. Mais le DPO veut aussi savoir qui a ouvert quel fichier dans le partage des dossiers patients. C'est l'audit d'accès aux objets — on le configure directement sur le dossier via ses propriétés NTFS.",
+          "steps": [
+            "Crée le dossier C:\\Partages\\DossiersPatients sur le serveur",
+            "Partage-le en masqué : Dossiers_Patients$",
+            "Permissions NTFS : G_Infirmiers et G_Medecins avec Modification, G_Acces_Psy avec Modification",
+            "Dans les propriétés NTFS → onglet Sécurité → Avancé → onglet Audit",
+            "Ajoute une entrée d'audit : Tout le monde | Type : Succès ET Échec | Lecture et Écriture",
+            "Teste l'accès avec g.house — vérifie que l'événement d'accès apparaît dans l'Observateur"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas l'onglet Audit dans les propriétés du dossier ?",
+            "where": "Dans les propriétés du dossier → onglet Sécurité → bouton Avancé (en bas) → onglet Audit en haut de la fenêtre Paramètres de sécurité avancés. Cet onglet n'est visible que si tu es connecté en administrateur du domaine."
+          },
+          "expected_result": [
+            "Le partage Dossiers_Patients$ existe et est invisible en navigation réseau",
+            "Les groupes médicaux ont accès au partage avec les droits appropriés",
+            "L'audit d'accès est configuré sur le dossier",
+            "Un accès de g.house génère un événement dans l'Observateur d'événements (ID 4663)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Procédures de départ et conformité",
+      "description": "Gérer les départs du personnel de manière sécurisée et vérifier la conformité RGPD de l'infrastructure.",
+      "emoji": "📋",
+      "color": "#64748B",
+      "missions": [
+        {
+          "id": "C-5-1",
+          "order": 1,
+          "title": "Procédure de départ sécurisé d'un employé",
+          "unlocked_by": "C-4-2",
+          "estimated_minutes": 20,
+          "objective": "Appliquer la procédure complète de départ pour le compte w.white (départ de l'hôpital).",
+          "context": "Walter White quitte l'hôpital aujourd'hui. Dans un contexte médical, la procédure de départ doit être appliquée immédiatement et complètement : toute minute avec un compte actif après le départ est un risque de fuite de données. La procédure respecte aussi le RGPD : le compte ne doit pas être supprimé immédiatement (on pourrait en avoir besoin pour un audit), mais il doit être neutralisé.",
+          "steps": [
+            "Dans dsa.msc, retrouve le compte w.white",
+            "Étape 1 — Désactiver le compte : clic droit → Désactiver le compte",
+            "Étape 2 — Retirer de tous les groupes : propriétés → onglet Membre de → sélectionne tous les groupes sauf Domain Users → Supprimer",
+            "Étape 3 — Déplacer le compte : déplace-le vers une OU dédiée aux anciens employés (crée-la si elle n'existe pas : SAINT_LAZARE → Anciens_Employes)",
+            "Étape 4 — Ajoute une note dans la Description du compte : 'Départ le [date] - À supprimer dans 5 ans'",
+            "Vérifie que w.white ne peut plus se connecter au domaine"
+          ],
+          "help": {
+            "text": "Pourquoi garder le compte 5 ans avant de le supprimer ?",
+            "where": "Le RGPD impose une durée de conservation des données de santé de 20 ans dans les établissements de santé. Un compte AD peut être nécessaire pour des audits ultérieurs. La durée de 5 ans pour les comptes informatiques est une recommandation courante, mais varie selon la politique de l'établissement."
+          },
+          "expected_result": [
+            "Le compte w.white est désactivé",
+            "w.white n'appartient plus à aucun groupe de sécurité (sauf Domain Users)",
+            "Le compte est dans l'OU Anciens_Employes",
+            "La description du compte contient la date de départ",
+            "w.white ne peut plus se connecter au domaine"
+          ]
+        },
+        {
+          "id": "C-5-2",
+          "order": 2,
+          "title": "Bilan de conformité RGPD de l'infrastructure",
+          "unlocked_by": "C-5-1",
+          "estimated_minutes": 30,
+          "objective": "Vérifier que l'infrastructure AD répond aux principales exigences RGPD en cochant une checklist de conformité.",
+          "context": "Le DPO de l'hôpital va faire une inspection de l'infrastructure AD la semaine prochaine. Tu dois t'assurer que tout est en ordre. Ce bilan final est l'occasion de vérifier que chaque bonne pratique mise en place tout au long de ce scénario est bien fonctionnelle. Dans la vraie vie, ce type de vérification se fait régulièrement et les résultats sont documentés dans le registre des traitements.",
+          "steps": [
+            "Vérifie qu'aucun compte générique n'existe dans dsa.msc (recherche les comptes sans prénom ou avec des noms suspects)",
+            "Vérifie que tous les comptes actifs sont dans des OUs dédiées (pas dans le conteneur Users par défaut)",
+            "Vérifie que les GPO de verrouillage sont bien appliquées (teste sur un poste)",
+            "Vérifie que l'audit est actif dans l'Observateur d'événements (cherche des événements récents)",
+            "Vérifie que le partage Dossiers_Patients$ n'est pas visible en navigation réseau",
+            "Vérifie que le compte de l'employé parti (w.white) est bien désactivé et hors des groupes",
+            "Vérifie que la politique de mot de passe renforcée de la psychiatrie est active (pssc.exe → Password Settings Container)"
+          ],
+          "help": {
+            "text": "Comment faire une recherche globale de comptes dans tout le domaine ?",
+            "where": "Dans dsa.msc, clique sur le menu Affichage → Active Afficher les utilisateurs, groupes et ordinateurs en tant que conteneurs. Ensuite utilise Action → Rechercher pour faire des recherches sur tout le domaine. Tu peux filtrer par type d'objet, par département, etc."
+          },
+          "expected_result": [
+            "Aucun compte générique partagé n'existe",
+            "Tous les comptes actifs sont dans des OUs dédiées",
+            "Le verrouillage automatique des postes est actif (sauf chariots)",
+            "L'audit de sécurité génère des événements dans l'Observateur",
+            "Le partage des dossiers patients est masqué et protégé",
+            "La procédure de départ a été correctement appliquée à w.white",
+            "La politique de mot de passe spéciale psychiatrie est en place"
+          ]
+        }
+      ]
+    }
+  ]
+}

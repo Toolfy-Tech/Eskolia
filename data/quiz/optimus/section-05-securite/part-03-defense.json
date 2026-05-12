@@ -1,0 +1,226 @@
+[
+  {
+    "id": "O05-C03-001",
+    "category": "Sécurité",
+    "chapter": "Défense",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quel service en ligne permet de vérifier si votre adresse email ou vos mots de passe ont déjà été fuité lors d'un piratage massif ?",
+    "answer": "HaveIBeenPwned (haveibeenpwned.com)",
+    "comment": "Astuce de pro : Un technicien doit conseiller à ses utilisateurs de vérifier régulièrement leur compte et de changer de mot de passe si 'pwned' apparaît en rouge."
+  },
+  {
+    "id": "O05-C03-002",
+    "category": "Sécurité",
+    "chapter": "Pare-feu",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Dans un pare-feu d'entreprise, on ne configure que les règles entrantes (Inbound) pour empêcher les pirates de rentrer.",
+    "answer": "Faux",
+    "comment": "On doit aussi configurer les règles sortantes (Outbound) pour empêcher un malware déjà installé de communiquer avec son serveur de contrôle (Lien Section 03)."
+  },
+  {
+    "id": "O05-C03-003",
+    "category": "Sécurité",
+    "chapter": "Outils",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel outil de la suite Sysinternals est bien plus puissant que le Gestionnaire des tâches pour voir les processus cachés et leurs signatures ?",
+    "answer": "Process Explorer",
+    "comment": "Il permet notamment de voir en un clic si un processus est considéré comme malveillant par VirusTotal."
+  },
+  {
+    "id": "O05-C03-004",
+    "category": "Sécurité",
+    "chapter": "Défense",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Vous suspectez un malware qui se lance tout seul au démarrage du PC. Dans quel ordre utilisez-vous ces outils ?",
+    "options": ["Autoruns (Sysinternals)", "Gestionnaire des tâches (onglet Démarrage)", "Scan Malwarebytes"],
+    "answer": ["Gestionnaire des tâches (onglet Démarrage)", "Autoruns (Sysinternals)", "Scan Malwarebytes"],
+    "comment": "On commence par le plus simple (Gestionnaire), puis on utilise l'artillerie lourde (Autoruns) pour débusquer les services cachés avant de nettoyer."
+  },
+  {
+    "id": "O05-C03-005",
+    "category": "Sécurité",
+    "chapter": "Outils",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #2101 : 'Je dois tester un petit logiciel téléchargé sur un site douteux, mais je n'ai pas de PC de test et je ne veux pas infecter mon Windows.'",
+    "checklist": [
+      "Vérifier si le PC supporte la virtualisation (Lien Section 01/02).",
+      "Activer la 'Sandbox Windows' via 'optionalfeatures'.",
+      "Lancer le logiciel suspect dans cet environnement isolé.",
+      "Fermer la Sandbox pour détruire toute trace du logiciel après le test."
+    ],
+    "answer": "Utilisation de la Sandbox Windows (Bac à sable) pour un test sécurisé.",
+    "comment": "Réflexe TIP : La Sandbox est une machine virtuelle légère et temporaire intégrée à Windows Pro/Entreprise."
+  },
+  {
+    "id": "O05-C03-006",
+    "category": "Sécurité",
+    "chapter": "Hygiène",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez le concept de 'Principe du moindre privilège' à un utilisateur qui veut être administrateur de son poste.",
+    "answer": "C'est comme dans un hôpital : tout le monde n'a pas les clés de la pharmacie. Vous avez les clés de votre bureau (utilisateur standard) pour travailler. Si un virus vous vole vos clés, il ne pourra pas ouvrir la pharmacie (le système).",
+    "comment": "Critère de réussite : Utiliser l'image des clés ou de l'accès limité pour protéger l'ensemble."
+  },
+  {
+    "id": "O05-C03-007",
+    "category": "Sécurité",
+    "chapter": "Pare-feu",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel est le raccourci (Win+R) pour accéder directement à la console de gestion avancée du Pare-feu Windows ?",
+    "answer": "wf.msc",
+    "comment": "wf pour 'Windows Firewall'. Indispensable pour créer des règles de ports précises (Lien Section 03)."
+  },
+  {
+    "id": "O05-C03-008",
+    "category": "Sécurité",
+    "chapter": "Maintenance",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Pourquoi est-il déconseillé d'utiliser des 'Nettoyeurs de registre' (type CCleaner) de manière automatique après une désinfection ?",
+    "answer": "Car ils risquent de supprimer des clés légitimes et de rendre Windows instable sans vraiment apporter de sécurité.",
+    "comment": "Astuce de pro : Un technicien ne touche au registre qu'à la main ou avec des outils ciblés pour régler un problème précis (Lien Section 02)."
+  },
+  {
+    "id": "O05-C03-009",
+    "category": "Sécurité",
+    "chapter": "Anonymat",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Utiliser un VPN garantit un anonymat total et empêche les autorités de retrouver votre identité réelle.",
+    "answer": "Faux",
+    "comment": "Le VPN masque votre IP aux sites visités, mais le fournisseur VPN connaît votre identité et peut conserver des logs de connexion."
+  },
+  {
+    "id": "O05-C03-010",
+    "category": "Sécurité",
+    "chapter": "Outils",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un technicien veut analyser un PC sans laisser aucune trace sur le disque dur de la machine (investigation numérique).",
+    "indices": [
+      "Indice 1 : Il utilise un système d'exploitation qui tourne uniquement en RAM (Lien Section 01).",
+      "Indice 2 : Toutes les données sont effacées dès qu'il débranche sa clé USB.",
+      "Indice 3 : C'est l'OS utilisé par les journalistes et lanceurs d'alerte."
+    ],
+    "answer": "Tails OS (The Amnesic Incognito Live System).",
+    "comment": "Technique de pro : C'est l'outil ultime pour travailler sur une machine compromise sans risque de contamination persistante."
+  },
+  {
+    "id": "O05-C03-011",
+    "category": "Sécurité",
+    "chapter": "Outils",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Quel outil gratuit de suppression de malwares, édité par Microsoft, est déjà présent sur tous les PC Windows ?",
+    "answer": "MRT (Outil de suppression de logiciels malveillants).",
+    "comment": "On le lance avec la commande 'mrt' dans Win+R. Il est mis à jour chaque mois via Windows Update."
+  },
+  {
+    "id": "O05-C03-012",
+    "category": "Sécurité",
+    "chapter": "Défense",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Qu'est-ce que le 'MFA' (ou 2FA) et pourquoi est-ce la protection n°1 contre le vol de compte ?",
+    "answer": "Multi-Factor Authentication. Cela demande une deuxième preuve d'identité (code SMS, application, clé USB) en plus du mot de passe.",
+    "comment": "Astuce de pro : Même si un pirate vole votre mot de passe, il ne peut pas se connecter sans votre téléphone."
+  },
+  {
+    "id": "O05-C03-013",
+    "category": "Sécurité",
+    "chapter": "Logiciels",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Comment expliquer la différence entre Malwarebytes et un antivirus classique à un client ?",
+    "answer": "L'antivirus est comme un garde à la porte qui empêche les voleurs d'entrer. Malwarebytes est comme un détective qu'on appelle après le cambriolage pour trouver les voleurs cachés sous le lit.",
+    "comment": "Critère de réussite : Mentionner que Malwarebytes est excellent pour le nettoyage après infection (Post-infection)."
+  },
+  {
+    "id": "O05-C03-014",
+    "category": "Sécurité",
+    "chapter": "Maintenance",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Ordre des actions avant de tester un script PowerShell 'puissant mais risqué' sur une VM :",
+    "options": ["Prendre un Snapshot", "Exécuter le script", "Désactiver le réseau de la VM", "Restaurer le snapshot en cas d'erreur"],
+    "answer": ["Prendre un Snapshot", "Désactiver le réseau de la VM", "Exécuter le script", "Restaurer le snapshot en cas d'erreur"],
+    "comment": "Le snapshot est votre 'vie supplémentaire' en cas de crash total du système invité (Lien Section 04)."
+  },
+  {
+    "id": "O05-C03-015",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #2110 : 'J'ai reçu un appel du service technique Microsoft (en anglais) me disant que mon PC envoyait des virus. Ils m'ont fait installer 'AnyDesk' pour réparer.'",
+    "checklist": [
+      "Identifier l'arnaque au faux support technique (Scam).",
+      "Faire désinstaller immédiatement le logiciel de prise en main à distance.",
+      "Vérifier si l'utilisateur a donné ses coordonnées bancaires.",
+      "Effectuer un scan complet du PC pour vérifier si les escrocs n'ont pas laissé de porte dérobée (RAT)."
+    ],
+    "answer": "Arnaque au faux support technique (Tech Support Scam).",
+    "comment": "Réflexe TIP : Microsoft n'appelle jamais les particuliers. C'est de l'ingénierie sociale pure (Couche 8)."
+  },
+  {
+    "id": "O05-C03-016",
+    "category": "Sécurité",
+    "chapter": "Mots de passe",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quel type de logiciel est recommandé pour gérer 50 mots de passe différents et complexes sans les oublier ?",
+    "answer": "Un gestionnaire de mots de passe (ex: KeePass, Bitwarden).",
+    "comment": "Astuce de pro : KeePass est souvent privilégié en entreprise car il permet de stocker la base de données localement (Hors-ligne/Cloud privé)."
+  },
+  {
+    "id": "O05-C03-017",
+    "category": "Sécurité",
+    "chapter": "Anonymat",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Le mode 'Navigation privée' de votre navigateur empêche votre fournisseur d'accès internet (Orange, Free, etc.) de voir les sites que vous visitez.",
+    "answer": "Faux",
+    "comment": "La navigation privée ne cache rien à votre FAI ni aux sites visités. Elle empêche seulement l'enregistrement de l'historique sur votre propre ordinateur."
+  },
+  {
+    "id": "O05-C03-018",
+    "category": "Sécurité",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un administrateur réseau remarque des tentatives de connexion SSH (Port 22 - Lien Section 03) toutes les 2 secondes sur son routeur.",
+    "indices": [
+      "Indice 1 : Les tentatives viennent d'adresses IP du monde entier.",
+      "Indice 2 : Les noms d'utilisateurs testés sont 'admin', 'root', 'user1'.",
+      "Indice 3 : C'est une attaque automatisée cherchant à deviner le mot de passe."
+    ],
+    "answer": "Attaque par Force Brute (Brute Force Attack).",
+    "comment": "Technique de pro : Pour s'en protéger, il faut changer le port par défaut, utiliser des clés SSH au lieu de mots de passe, ou bannir l'IP après 3 échecs (Fail2Ban)."
+  },
+  {
+    "id": "O05-C03-019",
+    "category": "Sécurité",
+    "chapter": "Défense",
+    "tier": "C",
+    "type": "visual_id",
+    "question": "Comment appelle-t-on le fait de n'autoriser QUE les logiciels connus dans une entreprise et de bloquer tout le reste par défaut ?",
+    "answer": "Le Whitelisting (Liste blanche).",
+    "comment": "C'est l'inverse du Blacklisting (chercher les coupables). C'est beaucoup plus sûr mais plus difficile à gérer au quotidien."
+  },
+  {
+    "id": "O05-C03-020",
+    "category": "Sécurité",
+    "chapter": "Maintenance",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Pourquoi un technicien doit-il désactiver le Wi-Fi et le Bluetooth sur un PC portable s'il travaille sur un dossier 'Confidentiel Défense' ?",
+    "answer": "Pour supprimer tout risque d'interception des données par les ondes (attaques de proximité) ou de rebond via un malware sans fil.",
+    "comment": "Astuce de pro : En sécurité maximale, on travaille dans une zone isolée sans aucune onde (Cage de Faraday)."
+  }
+]

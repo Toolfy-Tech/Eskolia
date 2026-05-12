@@ -1,0 +1,36 @@
+{
+  "feeds": [
+    {
+      "id": "it_connect",
+      "label": "IT-Connect",
+      "rssUrl": "https://www.it-connect.fr/feed/"
+    },
+    {
+      "id": "le_crabe_info",
+      "label": "Le Crabe Info",
+      "rssUrl": "https://lecrabeinfo.net/feed/"
+    },
+    {
+      "id": "malekal",
+      "label": "Malekal",
+      "rssUrl": "https://www.malekal.com/feed/"
+    },
+    {
+      "id": "rdr_it",
+      "label": "RDR-IT",
+      "rssUrl": "https://rdr-it.com/feed/"
+    },
+    {
+      "id": "syskb",
+      "label": "SysKB",
+      "rssUrl": "https://www.syskb.com/feed/"
+    },
+    {
+      "id": "tech2tech",
+      "label": "Tech2Tech",
+      "rssUrl": "https://www.tech2tech.fr/feed/"
+    }
+  ],
+  "maxItemsPerFeed": 5,
+  "maxItemsShown": 15
+}

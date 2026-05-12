@@ -1,0 +1,153 @@
+{
+  "_instructions": {
+    "langue": "Français",
+    "description": "Modèle de quiz Eskolia — à remplir et importer lors de la création d'un lobby multijoueur.",
+    "etapes": [
+      "1. Remplissez le bloc 'quiz' (titre, description, auteur).",
+      "2. Remplacez les questions d'exemple par les vôtres.",
+      "3. Choisissez le type de chaque question (voir ci-dessous).",
+      "4. Sauvegardez le fichier en .json et importez-le dans Eskolia.",
+      "5. Ce bloc '_instructions' est ignoré à l'import."
+    ],
+    "limites": {
+      "questions_min": 2,
+      "questions_max": 50,
+      "title_max": "80 caractères"
+    },
+    "types_de_questions": {
+      "classic": {
+        "description": "Question ouverte standard. Le host juge si la réponse du joueur correspond à la réponse attendue.",
+        "champs_requis": ["question", "answer", "difficulty"],
+        "champs_optionnels": ["hint", "context"]
+      },
+      "ticket": {
+        "description": "Scénario d'incident présenté sous forme de ticket. Même mécanique que classic mais avec une mise en forme visuelle 'TICKET D'INCIDENT' pour l'ambiance.",
+        "champs_requis": ["question", "answer", "difficulty"],
+        "champs_optionnels": ["hint", "context"]
+      },
+      "diagnostic_indices": {
+        "description": "Question de diagnostic avec indices progressifs. Le host peut révéler les indices un par un pendant la phase de question. Plus d'indices révélés = moins de points (malus de 25% par indice).",
+        "champs_requis": ["question", "answer", "difficulty", "indices"],
+        "champs_optionnels": ["hint", "context"],
+        "note_indices": "Tableau d'au moins 1 indice. Prévoir 2 à 4 indices du plus vague au plus précis."
+      },
+      "sequence": {
+        "description": "Les joueurs remettent des éléments dans le bon ordre par glisser-déposer. Le score est calculé automatiquement selon le nombre de positions correctes — pas de jugement manuel par le host.",
+        "champs_requis": ["question", "answer", "difficulty", "items"],
+        "champs_optionnels": ["hint", "context"],
+        "note_items": "Tableau des éléments dans l'ORDRE CORRECT (min 2, max recommandé 6). Les joueurs les verront mélangés. Le champ 'answer' est une description lisible affichée pendant la correction."
+      }
+    },
+    "difficultes": {
+      "facile": "Mémorisation, définitions, acronymes — 1 à 2 ans d'expérience.",
+      "moyen": "Compréhension, procédures, comparaisons — technicien confirmé.",
+      "difficile": "Analyse, diagnostic, cas complexes — expert ou spécialiste."
+    },
+    "champs_detail": {
+      "question": "Texte de la question (obligatoire, non vide).",
+      "answer": "Réponse attendue — peut être longue, le host juge la proximité (obligatoire).",
+      "difficulty": "facile | moyen | difficile (obligatoire).",
+      "type": "classic | ticket | diagnostic_indices (optionnel, défaut : classic).",
+      "hint": "Explication affichée après la correction — aide à comprendre la bonne réponse (optionnel).",
+      "context": "Ligne de contexte affichée au-dessus de la question, ex : 'Réseau — Couche 3' (optionnel).",
+      "indices": "Tableau de chaînes — uniquement pour diagnostic_indices. Du plus vague au plus précis (obligatoire pour ce type).",
+      "items": "Tableau de chaînes — uniquement pour sequence. Éléments dans l'ordre correct, min 2 (obligatoire pour ce type)."
+    }
+  },
+  "quiz": {
+    "title": "Mon quiz personnalisé",
+    "description": "Décrivez le thème, le niveau et le contexte de votre quiz.",
+    "author": "Votre nom ou pseudo"
+  },
+  "questions": [
+    {
+      "_commentaire": "--- TYPE 1 : classic --- Question ouverte standard",
+      "type": "classic",
+      "context": "Réseau — Commandes",
+      "question": "Quelle commande Windows affiche la configuration IP d'une carte réseau ?",
+      "answer": "ipconfig",
+      "difficulty": "facile",
+      "hint": "Commande CMD, abréviation de 'IP configuration'. Ajoutez /all pour les détails complets."
+    },
+    {
+      "_commentaire": "--- TYPE 1 : classic --- Sans context ni hint",
+      "type": "classic",
+      "question": "Quelle est la différence entre un switch et un hub ?",
+      "answer": "Un switch envoie les trames uniquement au port de destination (commutation MAC), tandis qu'un hub diffuse sur tous les ports (broadcast physique).",
+      "difficulty": "moyen",
+      "hint": "Le switch apprend les adresses MAC et maintient une table de commutation."
+    },
+    {
+      "_commentaire": "--- TYPE 2 : ticket --- Scénario incident, même logique que classic",
+      "type": "ticket",
+      "context": "Active Directory — Authentification",
+      "question": "Un utilisateur ne peut plus se connecter à son poste depuis ce matin. Son compte existe dans l'AD, son mot de passe est correct, mais l'authentification échoue. Quelle est la première vérification à effectuer ?",
+      "answer": "Vérifier si le compte est verrouillé dans l'AD (propriétés du compte → onglet Compte → décocher 'Le compte est verrouillé').",
+      "difficulty": "moyen",
+      "hint": "Un verrouillage de compte survient après N tentatives infructueuses définies dans la GPO de mot de passe."
+    },
+    {
+      "_commentaire": "--- TYPE 3 : diagnostic_indices --- Indices révélés progressivement par le host",
+      "type": "diagnostic_indices",
+      "context": "Réseau — Diagnostic",
+      "question": "Un poste ne peut pas accéder à Internet mais se connecte au réseau local. Identifiez la cause probable.",
+      "answer": "La passerelle par défaut est manquante ou incorrecte.",
+      "difficulty": "difficile",
+      "indices": [
+        "Le ping vers les autres postes du LAN fonctionne.",
+        "Le ping vers l'adresse IP de la box (ex. 192.168.1.1) échoue.",
+        "La commande ipconfig ne montre pas de passerelle par défaut."
+      ],
+      "hint": "Sans passerelle, le poste ne sait pas où envoyer les paquets hors du sous-réseau local."
+    },
+    {
+      "_commentaire": "--- TYPE 4 : sequence --- Glisser-déposer, score automatique",
+      "type": "sequence",
+      "context": "Réseau — Modèle OSI",
+      "question": "Remets les couches du modèle OSI dans l'ordre, de la couche la plus basse (1) à la plus haute (7).",
+      "answer": "Physique → Liaison → Réseau → Transport → Session → Présentation → Application",
+      "difficulty": "moyen",
+      "items": [
+        "Physique",
+        "Liaison de données",
+        "Réseau",
+        "Transport",
+        "Session",
+        "Présentation",
+        "Application"
+      ],
+      "hint": "Mnémotechnique (bas → haut) : 'Please Do Not Throw Sausage Pizza Away'."
+    },
+    {
+      "_commentaire": "--- TYPE 4 : sequence --- Procédure AD",
+      "type": "sequence",
+      "context": "Active Directory — Procédure",
+      "question": "Remets les étapes de création d'un utilisateur dans l'AD dans le bon ordre.",
+      "answer": "Ouvrir ADUC → Naviguer vers l'OU → Nouvel utilisateur → Saisir les informations → Définir le mot de passe → Terminer",
+      "difficulty": "facile",
+      "items": [
+        "Ouvrir Utilisateurs et ordinateurs Active Directory (ADUC)",
+        "Naviguer vers l'OU cible",
+        "Clic droit → Nouveau → Utilisateur",
+        "Saisir le nom, prénom et identifiant",
+        "Définir et confirmer le mot de passe",
+        "Cliquer sur Terminer"
+      ],
+      "hint": "ADUC se trouve dans Outils du Gestionnaire de serveur ou via 'dsa.msc'."
+    },
+    {
+      "_commentaire": "--- TYPE 3 : diagnostic_indices --- Exemple AD",
+      "type": "diagnostic_indices",
+      "context": "Active Directory — GPO",
+      "question": "Une GPO créée et liée à une OU n'est pas appliquée sur les postes de cette OU. Quelle est la cause la plus probable ?",
+      "answer": "La GPO est en état 'Désactivée' ou le lien est désactivé dans la console GPMC.",
+      "difficulty": "difficile",
+      "indices": [
+        "Gpresult /r sur un poste affecté ne liste pas la GPO.",
+        "La GPO apparaît bien dans la console GPMC liée à l'OU.",
+        "Le lien de la GPO sur l'OU affiche une icône différente des autres liens."
+      ],
+      "hint": "Vérifiez l'état du lien GPO (clic droit → Lien activé) et l'état de la GPO elle-même (onglet Détails → État de la GPO)."
+    }
+  ]
+}

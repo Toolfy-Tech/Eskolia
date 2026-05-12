@@ -1,0 +1,52 @@
+---
+description: Eskolia — Flutter/Firebase, UI, routing, checklist agent
+alwaysApply: true
+---
+
+# Eskolia — règles agent
+
+## Politique `.cursor/rules` (petit projet)
+- **`eskolia.mdc`** et **`eskolia-contracts.mdc`** restent tous les deux en **`alwaysApply: true`** : peu d’utilisateurs (2–3), contexte contrats court, le risque d’erreur prime sur l’économie de tokens ; pas de **`globs`** tant que ce n’est pas nécessaire.
+- **À réévaluer** quand le repo ou l’équipe grossit, ou si les réponses Cursor deviennent lentes : envisager `alwaysApply: false` + `globs` ciblés sur une partie des règles.
+
+## Stack
+- Flutter Dart `>=3.5` (`pubspec.yaml`) ; **Firebase** (Auth, Firestore, Storage) ; **go_router** ; `ProviderScope` (Riverpod) dans `main` — la plupart des écrans restent **StatefulWidget + Repository**.
+- **Pas** de Next.js / React / Tailwind dans ce dépôt.
+- **Web** : `firebase.json` = Hosting SPA (`rewrites` → `index.html`) ; persistance auth web gérée dans `AuthRepository`.
+
+## UI (design system)
+- `lib/core/theme/eskolia_visual.dart` : `bgDeep`, `neonViolet`, `neonCyan`, `neonGreen`, `borderPrimary` / `borderLive`, `glow()`.
+- `lib/core/theme/eskolia_layout.dart` : `screenPaddingH`, `screenPaddingBottom`, `cardRadius`, `contentMaxWidth`.
+- Écrans : `Stack` + `EskoliaAmbientBackground` ; `EskoliaAppBar.standard` ; `GradientBorderCard` si le flux existant le fait ; padding bas : `kEskoliaBottomNavReserve` dans le shell.
+
+## Arborescence
+- `lib/features/<domaine>/data/` + `presentation/` ; `lib/core/` ; `lib/shared/widgets/`.
+- **Contrats détaillés** (Firestore, fichiers canoniques, staff) : voir **`.cursor/rules/eskolia-contracts.mdc`**.
+
+## Routing (`app_router.dart`)
+- Enregistrer les chemins **statiques** avant `/quiz/:sessionId` pour éviter qu’un paramètre les absorbe.
+- Routes avec **extra** typé (`QuizSession`, args flashcards) : garder le même schéma de garde (`is!` → écran de repli).
+
+## Assets & parcours
+- **Profil / inscription** : pas d’avatars personnages dans l’app (initiale sur fond dégradé). Les anciens champs Firestore `avatarUrl` / `avatarPreset` peuvent encore exister sur d’anciens comptes : le client les ignore.
+- **Référence illustration hors bundle** (optionnel, marketing / futures itérations) : `assets/characters/CASTING_10_PERSONNAGES.md` — non listé dans `pubspec` tant qu’aucun asset n’est servi par l’app.
+- **Données dialogue / lore embarqué** : `data/lore/tip_dialogues.json` (voir `pubspec.yaml`) — contenu narratif à maintenir aligné produit.
+- Tout nouveau fichier sous `data/` → entrée dans `pubspec.yaml` > `flutter` > `assets` (chemins souvent **explicites** ; voir commentaires du `pubspec`).
+- Parcours **TIP** / **Optimus** : pas de mélange des banques **linéaires** ; ids `tip_…` / `optimus_…` et `questionsTrack` respectifs (`data/curriculum/{tip|optimus}`, QCM optionnels sous `data/questions/…`).
+
+## Code
+- Fichiers `snake_case.dart` ; `mounted` après `await` avant `setState` / navigation.
+- Pas de `return` dans `finally` ; pas de `print` (préférer `debugPrint` en debug).
+- Ne pas étendre le scope (refactor gratuit, `.md` non demandés).
+
+## Checklist avant de répondre / modifier
+1. Tâche bien sur **ce repo Flutter** (pas une stack web imaginée).
+2. Lire le **fichier canonique** (voir `eskolia-contracts.mdc`) + 1–2 voisins même feature.
+3. Nouvelle route → `app_router.dart` ; nouvel asset → `pubspec.yaml`.
+4. Toucher Firestore → **vérifier** collection / champs dans les repos existants + **règles déployées** (non versionnées ici en général).
+5. Zone staff/admin → `userHasStaffAccess` + doc `users/{uid}` ; ne jamais faire confiance au seul client.
+6. Lancer ou mentionner `flutter analyze` sur les fichiers modifiés quand pertinent.
+
+## Pièges fréquents
+- **Deux familles de repos** : profil / battles / sessions → `lib/data/repositories/` ; quiz QCM assets + `quizResults` → `lib/features/quiz/data/quiz_repository.dart` — ne pas fusionner ni confondre les imports.
+- **Barrels** : importer depuis le barrel du router est OK ; **éditer** le fichier sous `presentation/` (ou la cible réelle du `export`).

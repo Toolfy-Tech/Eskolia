@@ -1,0 +1,183 @@
+[
+  {
+    "id": "O04-C04-001",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie PCI dans le cadre de la continuité informatique ?",
+    "answer": "Plan de Continuité Informatique : ensemble des mesures techniques de redondance pour que le système d'information ne s'arrête jamais.",
+    "comment": "Le PCI est la déclinaison informatique du PCA. Il précise les solutions techniques (clusters, réplication, haute disponibilité) à mettre en œuvre pour éviter toute interruption."
+  },
+  {
+    "id": "O04-C04-002",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie PRI dans le cadre de la reprise après sinistre ?",
+    "answer": "Plan de Reprise Informatique : procédure technique décrivant comment reconstruire le système d'information après un incident majeur.",
+    "comment": "Le PRI est la déclinaison informatique du PRA. Il liste les étapes concrètes : restaurer les serveurs dans l'ordre, tester les services, remettre les utilisateurs au travail."
+  },
+  {
+    "id": "O04-C04-003",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle est la différence concrète entre un PCA et un PCI ?",
+    "answer": "Le PCA est le plan global de l'entreprise (RH, locaux, logistique, communication). Le PCI est sa partie strictement informatique : redondance des serveurs, réplication des données, haute disponibilité.",
+    "comment": "Astuce de pro : Un PCA sans PCI est incomplet. On peut avoir un site de repli physique, mais sans système informatique opérationnel, personne ne peut travailler."
+  },
+  {
+    "id": "O04-C04-004",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle est la différence concrète entre un PRA et un PRI ?",
+    "answer": "Le PRA décrit la reprise globale de l'activité (communication de crise, chaîne de décision, continuité métier). Le PRI décrit uniquement la reprise technique du système d'information.",
+    "comment": "Astuce de pro : En pratique, c'est le responsable informatique (DSI) qui pilote le PRI, tandis que le PRA est coordonné par la direction générale."
+  },
+  {
+    "id": "O04-C04-005",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un PCA coûte moins cher à mettre en œuvre qu'un PRA, car il évite les interruptions de service.",
+    "answer": "Faux",
+    "comment": "Un PCA est bien plus coûteux car il exige une infrastructure doublée fonctionnant en permanence (serveurs redondants, liens réseau multiples, réplication temps réel). Le PRA accepte une interruption, donc il n'a pas besoin de matériel tournant à vide."
+  },
+  {
+    "id": "O04-C04-006",
+    "category": "Maintenance",
+    "chapter": "Snapshots",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quel est le réflexe de pro à adopter AVANT toute manipulation risquée sur une machine virtuelle (mise à jour majeure, modification de configuration critique) ?",
+    "answer": "Prendre un snapshot de la machine virtuelle juste avant la manipulation.",
+    "comment": "Astuce de pro : Si la manipulation tourne mal, la restauration du snapshot est quasi-immédiate. Sans snapshot, une mauvaise mise à jour peut nécessiter des heures de réinstallation (Lien Section 02 - Virtualisation)."
+  },
+  {
+    "id": "O04-C04-007",
+    "category": "Maintenance",
+    "chapter": "Snapshots",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un snapshot de machine virtuelle est une sauvegarde fiable pour protéger les données sur le long terme.",
+    "answer": "Faux",
+    "comment": "Un snapshot copie l'ÉTAT de la machine (comme une photo), pas les données en profondeur. Il est lié au disque virtuel d'origine : si le disque est supprimé ou corrompu, le snapshot disparaît avec lui."
+  },
+  {
+    "id": "O04-C04-008",
+    "category": "Maintenance",
+    "chapter": "Snapshots",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #1720 : 'Notre VM de production accumule 12 snapshots depuis 6 mois. Elle est de plus en plus lente. Comment corriger ça sans perdre les données ?'",
+    "checklist": [
+      "Vérifier qu'une sauvegarde complète récente existe AVANT toute opération sur les snapshots.",
+      "Identifier le snapshot propre le plus récent à conserver.",
+      "Consolider (merger) les anciens snapshots depuis la console d'administration de l'hyperviseur.",
+      "Supprimer les snapshots inutiles une fois la consolidation terminée.",
+      "Mettre en place une règle de rétention (ex : 3 snapshots maximum, durée 48h)."
+    ],
+    "answer": "Accumulation de snapshots provoquant une dégradation des performances : le système doit lire dans plusieurs couches de delta simultanément.",
+    "comment": "Réflexe TIP : Un snapshot n'est pas fait pour durer. Il doit être utilisé comme filet de sécurité à court terme, puis supprimé ou consolidé sous 24 à 48h."
+  },
+  {
+    "id": "O04-C04-009",
+    "category": "Maintenance",
+    "chapter": "Snapshots",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Ordonnez les étapes pour effectuer une mise à jour risquée d'un serveur virtuel en toute sécurité :",
+    "options": [
+      "Supprimer le snapshot si la mise à jour est validée",
+      "Prendre un snapshot de la VM avant la manipulation",
+      "Lancer la mise à jour et tester le fonctionnement",
+      "Restaurer le snapshot si la mise à jour provoque des erreurs"
+    ],
+    "answer": [
+      "Prendre un snapshot de la VM avant la manipulation",
+      "Lancer la mise à jour et tester le fonctionnement",
+      "Supprimer le snapshot si la mise à jour est validée",
+      "Restaurer le snapshot si la mise à jour provoque des erreurs"
+    ],
+    "comment": "Les étapes 3 et 4 sont alternatives selon le résultat. Ne jamais garder un snapshot indéfiniment une fois la manipulation validée."
+  },
+  {
+    "id": "O04-C04-010",
+    "category": "Maintenance",
+    "chapter": "RPO / RTO",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un cabinet d'expertise comptable a un RTO contractuel de 2h. Lors d'un test de reprise, la restauration a pris 9 heures.",
+    "indices": [
+      "Indice 1 : Les sauvegardes sont stockées uniquement sur Azure (Lien Section 03 - WAN).",
+      "Indice 2 : La connexion internet du cabinet est une fibre 100 Mbit/s symétrique.",
+      "Indice 3 : Le volume à restaurer est de 800 Go.",
+      "Indice 4 : Il n'existe aucune copie locale sur NAS ou disque externe."
+    ],
+    "answer": "RTO non respecté : la restauration depuis le Cloud est trop lente faute de copie locale rapide.",
+    "comment": "Technique de pro : À 100 Mbit/s, restaurer 800 Go depuis Internet prend théoriquement ~18h. Pour tenir un RTO court, il faut TOUJOURS une copie locale (NAS, disque) en complément du Cloud."
+  },
+  {
+    "id": "O04-C04-011",
+    "category": "Maintenance",
+    "chapter": "RPO / RTO",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Une entreprise sauvegarde ses données tous les vendredis soir à 20h. Un incident survient le jeudi suivant à 16h. Quel est leur RPO réel dans ce scénario ?",
+    "answer": "Environ 6 jours et 20 heures. Toutes les données produites du vendredi 20h au jeudi 16h sont perdues.",
+    "comment": "Astuce de pro : Un RPO d'une semaine est souvent inacceptable. Il faut calculer le coût réel d'une semaine de données perdues pour justifier des sauvegardes plus fréquentes (quotidiennes, voire horaires)."
+  },
+  {
+    "id": "O04-C04-012",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez la différence entre PCA et PRA à un dirigeant non-technique en utilisant une image simple.",
+    "answer": "PCA : c'est comme avoir une deuxième voiture identique prête à partir si la première tombe en panne — on ne s'arrête jamais. PRA : c'est comme appeler un taxi après une panne — on attend un moment, mais on finit par repartir.",
+    "comment": "Critère de réussite : Mentionner que le PCA évite toute interruption (donc plus coûteux) et que le PRA accepte une interruption contrôlée (donc plus économique à mettre en œuvre)."
+  },
+  {
+    "id": "O04-C04-013",
+    "category": "Maintenance",
+    "chapter": "RPO / RTO",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #1725 : 'La direction demande un RPO de 30 minutes et un RTO de 1 heure pour notre ERP. Notre technicien dit que c'est impossible avec notre NAS unique et notre sauvegarde nocturne.'",
+    "checklist": [
+      "Expliquer que le RPO actuel est d'environ 8h (une nuit entière de données potentiellement perdues).",
+      "Proposer des sauvegardes toutes les 30 minutes via réplication ou snapshots fréquents.",
+      "Expliquer que le RTO de 1h implique une copie locale rapide (NAS dédié, pas Cloud seul).",
+      "Proposer une infrastructure redondante (cluster, réplication synchrone) pour le PCI.",
+      "Chiffrer le coût de l'évolution pour arbitrage avec la direction."
+    ],
+    "answer": "RPO 30 min + RTO 1h nécessitent une infrastructure redondante incompatible avec un NAS unique et une sauvegarde nocturne.",
+    "comment": "Réflexe TIP : Plus le RPO et le RTO sont courts, plus l'infrastructure doit être sophistiquée et coûteuse. C'est à la direction d'arbitrer entre le coût du risque et le coût de la solution."
+  },
+  {
+    "id": "O04-C04-014",
+    "category": "Maintenance",
+    "chapter": "Outils",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "À quelle plateforme de virtualisation est destiné Proxmox Backup Server, et quel est son avantage principal face à VEEAM ?",
+    "answer": "Proxmox Backup Server est conçu pour les environnements Proxmox VE (hyperviseur open source). Son principal avantage est d'être gratuit et open source, avec une déduplication native très efficace.",
+    "comment": "Astuce de pro : Pour une PME utilisant déjà Proxmox VE, Proxmox Backup Server est la solution naturelle. VEEAM reste la référence pour les environnements VMware/Hyper-V en entreprise."
+  },
+  {
+    "id": "O04-C04-015",
+    "category": "Maintenance",
+    "chapter": "Plans",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un snapshot de machine virtuelle peut tenir lieu de sauvegarde dans le cadre d'un PRI (Plan de Reprise Informatique).",
+    "answer": "Faux",
+    "comment": "Un snapshot est lié au serveur physique hôte. Si celui-ci disparaît (incendie, vol, panne matérielle totale), les snapshots disparaissent avec lui. Un PRI s'appuie sur des sauvegardes externes ou hors site indépendantes du matériel d'origine."
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "name": "eskolia",
+  "private": true,
+  "description": "Firebase Hosting / Firestore pour l'app web Flutter Eskolia",
+  "scripts": {
+    "quiz:quality": "dart run tool/quiz_quality_gate.dart",
+    "build:web": "flutter build web --release",
+    "preview:web": "npm run build:web && firebase serve --only hosting --port 5000",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "deploy:indexes": "firebase deploy --only firestore:indexes",
+    "deploy:web": "npm run build:web && firebase deploy --only hosting",
+    "deploy": "firebase deploy"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.0.0"
+  }
+}

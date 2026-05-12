@@ -1,0 +1,155 @@
+// Eskolia — règles Firestore (déployer : `firebase deploy --only firestore`)
+// Collections utilisées par l’app : login_aliases, users (+ quizResults, settings,
+// notifications), formations, sessions, battles, lobbies, leaderboard_daily,
+// community_tips, labo_question_drafts, signalements.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function userDocExists() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userRole() {
+      return userDocExists()
+          ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+          : '';
+    }
+
+    function isStaff() {
+      return signedIn() && userRole() in ['admin', 'moderator'];
+    }
+
+    // Connexion par pseudo : lecture d’un doc précis sans auth (pas de list).
+    match /login_aliases/{aliasId} {
+      allow get: if aliasId is string
+          && aliasId.size() >= 2
+          && aliasId.size() <= 64;
+      allow list: if false;
+      allow create: if signedIn()
+          && request.auth.uid == request.resource.data.uid
+          && request.resource.data.email is string
+          && request.resource.data.keys().hasAll(['email', 'uid']);
+      allow update, delete: if signedIn()
+          && request.auth.uid == resource.data.uid;
+    }
+
+    // Profils + classements (requêtes orderBy sur users).
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if isSelf(userId);
+      allow update: if isSelf(userId);
+      allow delete: if false;
+
+      match /quizResults/{resultId} {
+        allow read, create: if isSelf(userId);
+        allow update, delete: if false;
+      }
+
+      match /settings/{docId} {
+        allow read, write: if isSelf(userId);
+      }
+
+      match /notifications/{docId} {
+        allow read, write: if isSelf(userId);
+      }
+    }
+
+    // Déclencheur léger pour rafraîchir le parcours (contenu réel = assets).
+    match /formations/{docId} {
+      allow read: if signedIn();
+      allow write: if isStaff();
+    }
+
+    match /sessions/{sessionId} {
+      allow create: if signedIn()
+          && request.resource.data.userId == request.auth.uid;
+      allow read, update: if signedIn()
+          && resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    match /battles/{battleId} {
+      allow read, write: if signedIn();
+    }
+
+    match /lobbies/{lobbyId} {
+      allow read, write: if signedIn();
+    }
+
+    match /community_tips/{tipId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+          && request.resource.data.authorId == request.auth.uid;
+      allow update: if signedIn() && (
+        isStaff()
+        || (
+          request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['upCount', 'downCount', 'voters'])
+          && request.resource.data.authorId == resource.data.authorId
+          && request.resource.data.body == resource.data.body
+          && request.resource.data.moduleId == resource.data.moduleId
+          && request.resource.data.status == resource.data.status
+        )
+      );
+      allow delete: if false;
+    }
+
+    match /labo_question_drafts/{draftId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+          && request.resource.data.authorId == request.auth.uid;
+      allow update: if isStaff();
+      allow delete: if false;
+    }
+
+    match /signalements/{reportId} {
+      allow create: if signedIn();
+      allow read: if signedIn() && (
+        isStaff()
+        || resource.data.userId == request.auth.uid
+      );
+      allow update: if isStaff();
+      allow delete: if false;
+    }
+
+    // Classement public « quiz du jour » : meilleur score par joueur et par jour.
+    match /leaderboard_daily/{dayKey}/scores/{userId} {
+      allow read: if signedIn();
+      allow create: if isSelf(userId)
+          && dayKey is string
+          && dayKey.size() == 8
+          && request.resource.data.keys().hasOnly(['username', 'score', 'total', 'updatedAt'])
+          && request.resource.data.username is string
+          && request.resource.data.username.size() > 0
+          && request.resource.data.username.size() <= 64
+          && request.resource.data.score is int
+          && request.resource.data.total is int
+          && request.resource.data.score >= 0
+          && request.resource.data.total >= 1
+          && request.resource.data.score <= request.resource.data.total;
+      allow update: if isSelf(userId)
+          && request.resource.data.keys().hasOnly(['username', 'score', 'total', 'updatedAt'])
+          && request.resource.data.username is string
+          && request.resource.data.username.size() > 0
+          && request.resource.data.username.size() <= 64
+          && request.resource.data.score is int
+          && request.resource.data.total is int
+          && request.resource.data.score >= resource.data.score
+          && request.resource.data.total >= 1
+          && request.resource.data.score <= request.resource.data.total;
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

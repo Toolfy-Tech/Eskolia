@@ -1,0 +1,47 @@
+const List<String> kEskoliaTips = [
+  // Windows Server & Active Directory
+  'Le DNS préféré d\'un contrôleur de domaine doit toujours pointer vers lui-même (127.0.0.1).',
+  'Une OU Active Directory protégée contre la suppression accidentelle nécessite le mode Affichage avancé pour être supprimée.',
+  'La commande gpupdate /force force l\'application immédiate des GPO sans redémarrage.',
+  'Le mot de passe DSRM est le dernier recours en cas de panne critique de l\'Active Directory — ne jamais le perdre.',
+  'Les permissions NTFS s\'appliquent en local ET via le réseau. Les permissions de partage, uniquement via le réseau.',
+  'Un partage réseau terminant par \$ (ex: RH\$) est masqué lors de la navigation réseau.',
+  'La délégation de contrôle dans AD permet de donner des droits précis sans passer par Domain Admins.',
+  'Get-ADUser -Filter * -Properties LastLogonDate permet d\'identifier les comptes inactifs.',
+  'Le schéma Active Directory ne peut qu\'être étendu, jamais réduit — chaque attribut ajouté est permanent.',
+  'Un contrôleur de domaine en lecture seule (RODC) est idéal pour les sites distants à faible sécurité physique.',
+  // Réseaux
+  'Une adresse IP en /24 couvre 254 hôtes utilisables (256 - adresse réseau - broadcast).',
+  'Le protocole DHCP utilise les ports UDP 67 (serveur) et 68 (client).',
+  'Un VLAN segmente un réseau physique en plusieurs réseaux logiques indépendants.',
+  'La commande ipconfig /all affiche la configuration IP complète incluant les serveurs DNS.',
+  'Le protocole DNS utilise le port 53 en UDP (requêtes) et TCP (transferts de zone).',
+  'tracert (Windows) et traceroute (Linux) permettent de suivre le chemin des paquets réseau.',
+  'Un sous-réseau en /30 ne contient que 2 adresses hôtes — utile pour les liaisons point-à-point.',
+  'nslookup permet de tester la résolution DNS depuis la ligne de commande.',
+  'Le protocole ARP résout les adresses IP en adresses MAC sur un réseau local.',
+  'Une interface réseau en mode trunk transporte le trafic de plusieurs VLANs simultanément.',
+  // Cybersécurité
+  'Le principe du moindre privilège : un utilisateur ne doit avoir que les droits strictement nécessaires.',
+  'Une attaque par force brute peut être limitée par une politique de verrouillage de compte après N tentatives.',
+  'L\'audit des connexions échouées (Event ID 4625) permet de détecter les tentatives d\'intrusion.',
+  'LAPS génère un mot de passe administrateur local unique par machine — évite la propagation latérale.',
+  'Le chiffrement BitLocker protège les données d\'un disque même en cas de vol physique du matériel.',
+  'Une attaque de type pass-the-hash exploite le condensat NTLM sans connaître le mot de passe en clair.',
+  // Bonnes pratiques
+  'Avant toute intervention, notez l\'état initial du système — date, heure, symptômes observés.',
+  'La règle 3-2-1 des sauvegardes : 3 copies, sur 2 supports différents, dont 1 hors site.',
+  'Un ticket de support doit toujours contenir : utilisateur, date, symptôme, actions effectuées, résultat.',
+  'Tester une restauration de sauvegarde régulièrement — une sauvegarde non testée n\'est pas fiable.',
+  'En cas de ransomware : isoler la machine du réseau immédiatement avant toute autre action.',
+  'Documenter chaque intervention dans un journal d\'activité — indispensable pour les audits.',
+  // RGPD
+  'Le RGPD impose une notification de violation de données dans les 72h à l\'autorité compétente.',
+  'Les données médicales sont des données sensibles au sens de l\'article 9 du RGPD.',
+  'Principe de minimisation RGPD : ne collecter que les données strictement nécessaires à la finalité.',
+  // PowerShell & outils
+  'Get-EventLog -LogName Security -InstanceId 4625 liste les dernières tentatives de connexion échouées.',
+  'Le paramètre -WhatIf sur une commande PowerShell simule l\'exécution sans rien modifier.',
+  'Export-Csv permet d\'exporter des objets PowerShell vers un fichier CSV exploitable dans Excel.',
+  'Get-Service permet de lister et filtrer l\'état des services Windows depuis la console.',
+];

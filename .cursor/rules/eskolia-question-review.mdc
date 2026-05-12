@@ -1,0 +1,106 @@
+---
+description: Standard de creation/relecture quiz TIP/TAI (qualite, difficultes, formats)
+globs: data/questions/**/*.json
+alwaysApply: false
+---
+
+# Regle quiz TIP/TAI
+
+Appliquer ces contraintes a toute creation, regeneration ou relecture de quiz pedagogiques.
+Pour le parcours Optimus, suivre aussi le blueprint de production:
+`docs/optimus-quiz-blueprint.md`.
+
+## 1) Formulation des questions
+
+- Une seule idee par question, vocabulaire technique precis et contexte clair.
+- Pas de double negation, pas d'indice qui revele la bonne reponse.
+- La bonne reponse doit etre objectivement defendable pour un technicien TIP/TAI.
+- L'explication doit apporter une valeur pedagogique concrete (pas seulement "c'est B").
+- Francais irreprochable obligatoire: accents, orthographe, accords, conjugaison et ponctuation.
+- Interdiction de livrer des formulations non accentuees quand le mot francais en exige.
+- Interdiction de mentionner explicitement le "chapitre" dans les enonces, options ou explications (ex: "selon le chapitre", "dans ce chapitre", "d'apres le chapitre").
+- Les questions doivent reutiliser le savoir du cours sans faire reference textuelle directe a la source pedagogique.
+
+## 2) Contraintes de forme des reponses
+
+- 4 propositions pour les QCM classiques (A/B/C/D), de longueur homogene.
+- Ecart de longueur maximal autorise: +/-20% entre la plus courte et la plus longue.
+- Structure grammaticale uniforme sur les options d'une meme question.
+- Parentheses: eviter de les mettre uniquement sur la bonne reponse.
+- Ponctuation finale coherente sur toutes les options.
+- Connecteurs logiques: eviter que seule la bonne reponse en contienne.
+- Chiffres/dates: eviter que seule la bonne reponse en contienne.
+- Meme niveau de detail entre options; pas de reponse ultra specifique isolee.
+- Aucun formatage differentiel (gras/italique) sauf si applique a toutes les options.
+- La bonne reponse ne doit pas etre systematiquement la plus longue ou la plus detaillee.
+
+## 3) Qualite pedagogique des distracteurs
+
+- Chaque distracteur doit cibler une confusion reelle de debutant (concept voisin, erreur frequente, mauvais reflexe terrain).
+- Aucun distracteur absurde, hors sujet ou evidemment faux.
+- Aucun piege de langage gratuit sans interet pedagogique.
+- Uniquement une bonne reponse possible dans le contexte donne.
+
+## 4) Distribution et anti-biais
+
+- Bonnes reponses reparties entre A/B/C/D, sans schema repetitif.
+- Jamais la meme lettre plus de 2 fois consecutives.
+- Sur un bloc de 10 QCM, viser max 3 occurrences par lettre.
+- Questions Vrai/Faux: repartition cible 50/50 sur le lot.
+
+## 5) Difficultes cibles
+
+- 30% facile: definition/reconnaissance directe.
+- 50% moyen: application, comparaison, cause probable.
+- 20% difficile: analyse de situation complexe, liens multi-concepts.
+- Encodage attendu dans les donnees: difficulte 1/2/3 coherente avec facile/moyen/difficile.
+
+## 6) Formats a appliquer par defaut
+
+- QCM classique: 40%
+- Vrai/Faux: 20%
+- Association / Matching: 20%
+- Mise en ordre: 20%
+
+## 7) Regles specifiques par format
+
+- Champ `type` obligatoire pour chaque question: `qcm`, `vrai_faux`, `association` ou `mise_en_ordre`.
+- QCM: 4 options plausibles, une seule correcte, explication obligatoire.
+- Vrai/Faux: format strict a 2 options exactes `["Vrai", "Faux"]`, avec `answer` + `correct_index` coherents.
+- Vrai/Faux: ne pas prefixer l'enonce par "Affirmation :" ; rediger directement la phrase a evaluer.
+- Vrai/Faux: justification pedagogique courte obligatoire dans `explanation`.
+- Association: paires non ambigues, termes et definitions de granularite comparable.
+- Mise en ordre: etapes atomiques, ordre valide, et justification de la sequence.
+- Quand le schema le permet, activer explicitement `shuffle_answers: true`.
+
+## 8) Ancrage au cours
+
+- Chaque question doit provenir du contenu reel du cours/curriculum cible.
+- Interdiction d'inventer des notions non presentes dans le chapitre ou la section source.
+- En cas de doute, reformuler la question pour rester strictement dans le perimetre pedagogique fourni.
+
+## 9) Norme redactionnelle FR (obligatoire)
+
+- Les enonces, options et explications doivent etre rediges en francais naturel, fluide et correct.
+- Les accents doivent etre presents partout ou requis (majuscules incluses si necessaire).
+- Aucune livraison "ASCII degradee" pour les quiz pedagogiques: la qualite linguistique fait partie de la qualite pedagogique.
+- Avant livraison d'un lot, faire une passe de relecture linguistique specifique (forme + accents + coherence terminologique).
+
+## 10) Checklist de validation avant livraison
+
+1. Respect strict des proportions de formats (40/20/20/20) et des difficultes (30/50/20).
+2. Controle longueur/forme (regle des +/-20% et symetrie syntaxique).
+3. Controle anti-biais (A/B/C/D, pas >2 consecutives, V/F a 50/50).
+4. Verification de plausibilite de tous les distracteurs.
+5. Verification de la correction technique et de la valeur des explications.
+6. Verification de l'ancrage au contenu du cours (aucune invention).
+7. `shuffle_answers: true` present quand le format de fichier supporte ce champ.
+8. Verification linguistique FR complete (accents, orthographe, accords, ponctuation).
+9. Passe "mode horloger" effectuee avant livraison (anti-biais, homogénéité, lisibilité, cohérence pédagogique).
+
+## 11) Regle de livraison
+
+- Ne jamais annoncer un lot comme "livre" sans passe horloger complete.
+- Si des warnings subsistent apres generation brute, appliquer une passe de correction avant presentation utilisateur.
+- Le mode horloger reste pragmatique: corriger en priorite les biais evidents (bonne reponse visiblement avantagée), sans sur-optimiser au point de degrader le naturel pedagogique des formulations.
+- Ne jamais proposer un lot N+1 a l'utilisateur avant d'avoir fait la passe horloger du lot N.

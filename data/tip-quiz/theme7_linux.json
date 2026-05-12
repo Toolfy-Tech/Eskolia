@@ -1,0 +1,162 @@
+[
+  {
+    "id": 216,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande permet d'afficher le chemin complet du répertoire courant (dans lequel on se trouve) ?",
+    "answer": "pwd (print working directory).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 217,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande est utilisée pour lister le contenu d'un répertoire ?",
+    "answer": "ls",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 218,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande permet de changer de répertoire (naviguer dans les dossiers) ?",
+    "answer": "cd (change directory).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 219,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande permet de copier un fichier d'un emplacement à un autre ?",
+    "answer": "cp",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 220,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande sert à la fois à déplacer un fichier et à le renommer ?",
+    "answer": "mv (move).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 221,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Navigation & Fichiers",
+    "question": "Quelle commande utiliseriez-vous pour créer un nouveau dossier (répertoire) vide ?",
+    "answer": "mkdir (make directory).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 222,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Gestion des permissions",
+    "question": "Quelle commande permet de modifier les droits d'accès (permissions) d'un fichier ou d'un répertoire ?",
+    "answer": "chmod",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 223,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Gestion des permissions",
+    "question": "Que signifie la permission '777' attribuée à un fichier sous Linux ?",
+    "answer": "Cela donne tous les droits (Lecture, Écriture et Exécution) à tout le monde (Propriétaire, Groupe et Autres).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 224,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Gestion des permissions",
+    "question": "Quelle commande permet de changer l'utilisateur propriétaire d'un fichier ?",
+    "answer": "chown (change owner).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 225,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Gestion des permissions",
+    "question": "À quoi sert le 'Sticky Bit' lorsqu'il est appliqué à un répertoire partagé (ex: /tmp) ?",
+    "answer": "Il empêche un utilisateur de supprimer ou renommer les fichiers des autres, même s'il possède les droits d'écriture sur le répertoire parent.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 226,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Utilisateurs & Droits",
+    "question": "À quoi sert la commande 'sudo' placée devant une autre commande ?",
+    "answer": "Elle permet d'exécuter la commande avec les privilèges d'un autre utilisateur, généralement le superutilisateur (root/administrateur).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 227,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Utilisateurs & Droits",
+    "question": "Dans quel fichier texte trouve-t-on la liste des comptes utilisateurs du système ?",
+    "answer": "/etc/passwd",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 228,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Utilisateurs & Droits",
+    "question": "Quelle commande permet de basculer complètement vers une autre session utilisateur (ex: root) dans le terminal ?",
+    "answer": "su (substitute user / switch user).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 229,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Utilisateurs & Droits",
+    "question": "Quelle commande est utilisée pour créer un nouveau compte utilisateur sur le système ?",
+    "answer": "useradd (ou le script interactif adduser sur Debian/Ubuntu).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 230,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Paquets & Processus",
+    "question": "Sous Debian ou Ubuntu, quelle commande permet de mettre à jour le catalogue local des paquets disponibles ?",
+    "answer": "apt update (ou apt-get update).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 231,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Paquets & Processus",
+    "question": "Quelle commande affiche en temps réel les processus en cours d'exécution et la consommation des ressources (CPU, RAM) ?",
+    "answer": "top (ou htop, qui est une version plus visuelle).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 232,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Paquets & Processus",
+    "question": "Comment forcer l'arrêt brutal d'un processus récalcitrant à l'aide de son identifiant (PID) ?",
+    "answer": "En utilisant la commande : kill -9 [PID]",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 233,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Paquets & Processus",
+    "question": "Quel est le tout premier processus lancé au démarrage d'un système Linux moderne, portant toujours le PID numéro 1 ?",
+    "answer": "Le processus systemd (ou historiquement init). Il est le père de tous les autres processus.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 234,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Texte & Recherche",
+    "question": "Quelle commande est utilisée pour rechercher une chaîne de caractères (ou une expression régulière) spécifique à l'intérieur d'un fichier texte ?",
+    "answer": "grep",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 235,
+    "theme": "Linux fondamentaux",
+    "sous_theme": "Texte & Recherche",
+    "question": "Que fait le symbole de barre verticale '|' (appelé 'pipe') entre deux commandes Linux ?",
+    "answer": "Il redirige la sortie (résultat) de la première commande pour qu'elle serve directement d'entrée à la seconde commande.",
+    "difficulte": "avance"
+  }
+]

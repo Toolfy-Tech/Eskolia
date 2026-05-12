@@ -1,0 +1,141 @@
+[
+  {
+    "id": "O01-C02-004",
+    "category": "Hardware",
+    "chapter": "Mémoire vive",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'acronyme RAM et quelle est sa particularité par rapport au stockage ?",
+    "answer": "Random Access Memory. Sa particularité est d'être volatile (son contenu s'efface à l'extinction).",
+    "comment": "C'est la mémoire de travail où le CPU pioche les instructions immédiatement nécessaires."
+  },
+  {
+    "id": "O01-C02-005",
+    "category": "Hardware",
+    "chapter": "Mémoire vive",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Un client achète de la RAM DDR4 3600MHz mais son PC indique qu'elle tourne à 2133MHz. Quelle manipulation a-t-il oubliée ?",
+    "answer": "Activer le profil XMP (Intel) ou EXPO (AMD) dans le BIOS/UEFI.",
+    "comment": "Astuce de pro : Par défaut, la carte mère applique une fréquence de sécurité 'JEDEC'. Sans activation manuelle du profil d'overclocking constructeur, vous perdez de la performance payée."
+  },
+  {
+    "id": "O01-C02-006",
+    "category": "Hardware",
+    "chapter": "Mémoire vive",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #205 : 'J'ai rajouté une barrette de 16 Go pour avoir 32 Go au total. Mon PC démarre, mais je ne vois aucune différence de performance en montage vidéo, et Windows dit 16 Go utilisables (16 Go réservés au système).'",
+    "checklist": [
+      "Vérifier si la barrette est bien clipsée (entendre le clic).",
+      "Vérifier la compatibilité (DDR4 vs DDR5).",
+      "Inverser les slots pour tester si un slot est défaillant.",
+      "Vérifier si les barrettes sont identiques (fréquence/latence)."
+    ],
+    "answer": "La barrette est mal insérée ou le slot est défectueux.",
+    "comment": "Réflexe TIP : 'Réservé au système' signifie souvent que le matériel est détecté électriquement mais inutilisable par l'OS à cause d'une erreur d'initialisation matérielle."
+  },
+  {
+    "id": "O01-C02-007",
+    "category": "Hardware",
+    "chapter": "Mémoire vive",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Comment s'appelle le format de RAM utilisé pour les ordinateurs portables (plus court que le format bureau) ?",
+    "answer": "SO-DIMM (Small Outline Dual In-line Memory Module)",
+    "comment": "Attention : Ils sont physiquement incompatibles avec les slots DIMM des PC de bureau."
+  },
+  {
+    "id": "O01-C02-008",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Défragmenter régulièrement un SSD permet de prolonger sa durée de vie et d'augmenter sa vitesse.",
+    "answer": "Faux",
+    "comment": "C'est l'inverse ! Défragmenter un SSD use inutilement ses cellules de mémoire flash sans gain de vitesse. Windows utilise la commande 'TRIM' pour optimiser les SSD."
+  },
+  {
+    "id": "O01-C02-009",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Classez ces technologies de stockage de la plus LENTE à la plus RAPIDE en lecture séquentielle :",
+    "options": ["SSD NVMe Gen 4", "HDD 7200 tr/min", "SSD SATA III", "SSD NVMe Gen 3"],
+    "answer": ["HDD 7200 tr/min", "SSD SATA III", "SSD NVMe Gen 3", "SSD NVMe Gen 4"],
+    "comment": "Ordre de grandeur : HDD (~150 Mo/s) < SATA (~550 Mo/s) < NVMe G3 (~3500 Mo/s) < NVMe G4 (~7000 Mo/s)."
+  },
+  {
+    "id": "O01-C02-010",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Un utilisateur tente d'installer un SSD M.2 NVMe sur une vieille carte mère. Le SSD rentre parfaitement dans le slot, mais il n'apparaît pas dans le BIOS ni dans Windows.",
+    "indices": [
+      "Indice 1 : Le manuel de la carte mère indique que le slot M.2 est câblé en 'SATA mode only'.",
+      "Indice 2 : Le SSD utilisé possède une seule encoche (Clé M).",
+      "Indice 3 : Le port SATA n°1 de la carte mère est actuellement utilisé par un vieux disque dur."
+    ],
+    "answer": "Incompatibilité de protocole (Slot M.2 SATA vs SSD NVMe).",
+    "comment": "Note cruciale : Ce n'est pas parce que ça rentre physiquement que c'est compatible électriquement. Certains slots partagent aussi leurs lignes avec des ports SATA classiques."
+  },
+  {
+    "id": "O01-C02-011",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez à un client pourquoi il ne peut pas copier un film de 10 Go sur sa clé USB de 32 Go, alors qu'elle est presque vide.",
+    "answer": "Sa clé est formatée en FAT32, un système qui ne peut pas gérer des fichiers de plus de 4 Go. Il doit la reformater en NTFS ou exFAT.",
+    "comment": "Critère de réussite : Mentionner la limite des 4 Go du format FAT32."
+  },
+  {
+    "id": "O01-C02-012",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle est la principale différence entre un disque dur SAS et un disque dur SATA pour un technicien serveur ?",
+    "answer": "Le SAS possède deux ports (Dual Port) pour la redondance et tourne plus vite (10k/15k tr/min).",
+    "comment": "Astuce de pro : On peut brancher un disque SATA sur un contrôleur SAS, mais l'inverse est impossible physiquement."
+  },
+  {
+    "id": "O01-C02-013",
+    "category": "Hardware",
+    "chapter": "Mémoire vive",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'appellation 'ECC' pour une barrette de RAM et où l'utilise-t-on ?",
+    "answer": "Error-Correcting Code. On l'utilise principalement dans les serveurs et workstations.",
+    "comment": "Elle permet de détecter et corriger les corruptions de données à la volée pour éviter les crashs système."
+  },
+  {
+    "id": "O01-C02-014",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes logicielles pour rendre un nouveau disque dur utilisable sous Windows :",
+    "options": ["Créer une partition", "Formater en NTFS/exFAT", "Initialiser le disque (MBR/GPT)"],
+    "answer": ["Initialiser le disque (MBR/GPT)", "Créer une partition", "Formater en NTFS/exFAT"],
+    "comment": "Sans initialisation, Windows ne peut pas écrire la table des partitions sur le support."
+  },
+  {
+    "id": "O01-C02-015",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #302 : 'Mon PC met 3 minutes à démarrer et 'mouline' sans arrêt. Le Gestionnaire des tâches montre le disque à 100% alors que je ne fais rien.'",
+    "checklist": [
+      "Vérifier si c'est un HDD ou un SSD.",
+      "Vérifier l'état de santé avec CrystalDiskInfo (S.M.A.R.T).",
+      "Vérifier les mises à jour Windows Update en arrière-plan.",
+      "Vérifier la présence de malwares."
+    ],
+    "answer": "Disque dur (HDD) en fin de vie ou saturé par les processus système.",
+    "comment": "Réflexe TIP : C'est le moment idéal pour proposer au client un clonage vers un SSD : c'est l'upgrade la plus rentable pour le confort utilisateur."
+  }
+]

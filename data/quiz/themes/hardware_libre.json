@@ -1,0 +1,35 @@
+[
+  {
+    "id": "T01-001",
+    "category": "Hardware",
+    "chapter": "Composants",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle principal du CPU (Processeur) ?",
+    "answer": "C'est le cerveau de l'ordinateur, il exécute les instructions des programmes et effectue les calculs.",
+    "comment": "Un CPU moderne possède plusieurs coeurs pour faire du multitâche.",
+    "authorName": "Eskolia Team"
+  },
+  {
+    "id": "T01-002",
+    "category": "Hardware",
+    "chapter": "Composants",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert la mémoire RAM ?",
+    "answer": "Elle stocke temporairement les données en cours d'utilisation par le système pour un accès extrêmement rapide.",
+    "comment": "La RAM est volatile : elle s'efface à l'extinction du PC.",
+    "authorName": "Eskolia Team"
+  },
+  {
+    "id": "T01-003",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Le RAID 1 (Mirroring) permet de doubler la vitesse de lecture et d'écriture des données.",
+    "answer": "Faux",
+    "comment": "Le RAID 1 sert uniquement à la sécurité (copie identique). Pour doubler la vitesse, on utilise le RAID 0.",
+    "authorName": "Eskolia Team"
+  }
+]

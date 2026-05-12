@@ -1,0 +1,322 @@
+[
+  {
+    "id": 41,
+    "theme": "Windows",
+    "sous_theme": "Interface & navigation",
+    "question": "Quel raccourci clavier permet d'ouvrir rapidement l'Explorateur de fichiers ?",
+    "answer": "Windows + E",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 42,
+    "theme": "Windows",
+    "sous_theme": "Interface & navigation",
+    "question": "Où se trouve la corbeille par défaut lors d'une nouvelle installation de Windows ?",
+    "answer": "Sur le bureau.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 43,
+    "theme": "Windows",
+    "sous_theme": "Interface & navigation",
+    "question": "Comment afficher le menu des liens rapides (aussi appelé menu Power User) ?",
+    "answer": "En faisant un clic droit sur le bouton Démarrer ou avec le raccourci Windows + X.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 44,
+    "theme": "Windows",
+    "sous_theme": "Interface & navigation",
+    "question": "Quelle est l'utilité de l'interface appelée 'God Mode' (Mode Dieu) sous Windows ?",
+    "answer": "Elle rassemble sous un seul et même dossier tous les paramètres et outils d'administration du panneau de configuration.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 45,
+    "theme": "Windows",
+    "sous_theme": "Interface & navigation",
+    "question": "Quel est le nom de l'exécutable (processus) qui gère l'affichage du bureau, de la barre des tâches et de l'explorateur de fichiers ?",
+    "answer": "explorer.exe",
+    "difficulte": "avance"
+  },
+  {
+    "id": 46,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Qu'est-ce qu'un compte utilisateur de type 'Administrateur' ?",
+    "answer": "C'est un compte possédant les droits complets pour modifier le système, installer des logiciels et gérer les autres utilisateurs.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 47,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Quel raccourci clavier permet de verrouiller instantanément sa session Windows ?",
+    "answer": "Windows + L (Lock)",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 48,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Que signifie le sigle UAC sous Windows et quel est son rôle ?",
+    "answer": "User Account Control. Il affiche une alerte pour demander confirmation avant l'exécution d'un programme nécessitant des droits d'administrateur.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 49,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Quelle est la différence fondamentale entre un compte local et un compte Microsoft ?",
+    "answer": "Le compte local est restreint à l'ordinateur physique, tandis que le compte Microsoft permet de synchroniser ses paramètres et données via le cloud.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 50,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Quelle console d'administration Microsoft (MMC) permet de créer et gérer finement les utilisateurs et groupes locaux ?",
+    "answer": "lusrmgr.msc (Utilisateurs et groupes locaux).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 51,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "Comment modifier le mot de passe d'un autre utilisateur en ligne de commande si l'on est administrateur ?",
+    "answer": "En utilisant la commande : net user [nom_utilisateur] [nouveau_mot_de_passe]",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 52,
+    "theme": "Windows",
+    "sous_theme": "Gestion des utilisateurs",
+    "question": "À quoi sert le groupe natif 'Utilisateurs du Bureau à distance' ?",
+    "answer": "Il autorise spécifiquement les utilisateurs qui en sont membres à se connecter à la machine à distance via le protocole RDP.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 53,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Quelle commande permet d'ouvrir l'éditeur du Registre Windows ?",
+    "answer": "regedit",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 54,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Qu'est-ce qu'un service Windows ?",
+    "answer": "Un programme qui s'exécute en arrière-plan, sans interface graphique, souvent dès le démarrage de l'ordinateur.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 55,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Quelle commande permet d'accéder à la console de gestion des services ?",
+    "answer": "services.msc",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 56,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Quels sont les deux modes de démarrage les plus courants pour un service Windows ?",
+    "answer": "Démarrage Automatique (au lancement de l'OS) et démarrage Manuel (sur demande d'un utilisateur ou d'une application).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 57,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Quelles sont les deux ruches (hives) principales utilisées dans le Registre Windows pour stocker les paramètres ?",
+    "answer": "HKEY_LOCAL_MACHINE (HKLM) pour le système global, et HKEY_CURRENT_USER (HKCU) pour l'utilisateur en cours.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 58,
+    "theme": "Windows",
+    "sous_theme": "Registre & services",
+    "question": "Quel est l'intérêt de configurer un service en 'Automatique (début différé)' ?",
+    "answer": "Le service ne démarrera qu'après le chargement des composants critiques, ce qui permet d'accélérer le temps de démarrage global du système.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 59,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Quelle commande est utilisée pour lister le contenu du répertoire courant dans l'invite de commande (cmd) ?",
+    "answer": "dir",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 60,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Quelle commande permet de naviguer et de changer de dossier dans le terminal ?",
+    "answer": "cd (Change Directory)",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 61,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Comment effacer le contenu affiché dans la fenêtre de l'invite de commande ?",
+    "answer": "Avec la commande cls (Clear Screen).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 62,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Quelle est la principale différence entre l'invite de commande (cmd) et PowerShell ?",
+    "answer": "CMD est un ancien shell basé sur du texte simple. PowerShell est un environnement de script moderne, plus puissant et orienté objet.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 63,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Quelle commande permet de créer un nouveau dossier en ligne de commande ?",
+    "answer": "mkdir (ou md)",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 64,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Quelle commande affiche de manière détaillée l'adresse MAC des cartes réseau de la machine ?",
+    "answer": "ipconfig /all (ou getmac)",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 65,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "Que fait exactement la commande 'taskkill /F /IM chrome.exe' ?",
+    "answer": "Elle force (/F) la fermeture de tous les processus correspondants au nom d'image (/IM) 'chrome.exe'.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 66,
+    "theme": "Windows",
+    "sous_theme": "Ligne de commande",
+    "question": "En PowerShell, qu'est-ce qu'un Cmdlet (Command-let) ?",
+    "answer": "C'est une commande native PowerShell, légère et spécialisée, généralement structurée sous la forme 'Verbe-Nom' (ex: Get-Process).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 67,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Quel raccourci clavier ouvre directement le Gestionnaire des tâches sans passer par un écran intermédiaire ?",
+    "answer": "Ctrl + Maj + Échap",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 68,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "À quoi sert la commande 'sfc /scannow' ?",
+    "answer": "Elle analyse l'intégrité de tous les fichiers système protégés et remplace les fichiers corrompus par une copie en cache.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 69,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Qu'est-ce que l'Observateur d'événements (Event Viewer) ?",
+    "answer": "Un outil d'administration qui centralise et affiche les journaux (logs) du système, des applications et de la sécurité.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 70,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Où devez-vous aller pour initialiser un nouveau disque dur et lui créer une partition sous Windows ?",
+    "answer": "Dans le gestionnaire de disques (diskmgmt.msc).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 71,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Comment forcer Windows à démarrer en mode sans échec lors du prochain redémarrage via l'interface ?",
+    "answer": "En utilisant l'outil Configuration du système (msconfig), onglet Démarrer, et en cochant 'Démarrage sécurisé'.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 72,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Quel outil permet de vérifier si un pilote (driver) matériel est manquant ou en erreur (triangle jaune) ?",
+    "answer": "Le Gestionnaire de périphériques (devmgmt.msc).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 73,
+    "theme": "Windows",
+    "sous_theme": "Maintenance & dépannage",
+    "question": "Lors d'un écran bleu (BSOD), quel type de fichier est généré par Windows pour permettre une analyse approfondie du crash ?",
+    "answer": "Un fichier d'image mémoire, souvent appelé fichier dump ou minidump (.dmp).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 74,
+    "theme": "Windows",
+    "sous_theme": "Réseau sous Windows",
+    "question": "Quelle commande permet d'afficher l'adresse IP d'un ordinateur sous Windows ?",
+    "answer": "ipconfig",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 75,
+    "theme": "Windows",
+    "sous_theme": "Réseau sous Windows",
+    "question": "Où se trouve le fichier 'hosts' sous Windows, utilisé pour forcer la résolution DNS locale ?",
+    "answer": "C:\\Windows\\System32\\drivers\\etc\\hosts",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 76,
+    "theme": "Windows",
+    "sous_theme": "Réseau sous Windows",
+    "question": "Quelle commande utiliser pour vérifier la connectivité réseau basique vers un serveur distant (ex: Google) ?",
+    "answer": "ping (ex: ping 8.8.8.8)",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 77,
+    "theme": "Windows",
+    "sous_theme": "Réseau sous Windows",
+    "question": "Quelle commande liste toutes les connexions réseau actives, les ports en écoute et affiche le PID (Process ID) associé à chaque connexion ?",
+    "answer": "netstat -ano",
+    "difficulte": "avance"
+  },
+  {
+    "id": 78,
+    "theme": "Windows",
+    "sous_theme": "Sauvegardes & restauration",
+    "question": "Qu'est-ce qu'un point de restauration Windows ?",
+    "answer": "C'est une 'photographie' de l'état du système (fichiers système, registre, programmes) à un instant précis, permettant d'annuler des modifications instables.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 79,
+    "theme": "Windows",
+    "sous_theme": "Sauvegardes & restauration",
+    "question": "L'outil 'Historique des fichiers' (File History) est-il conçu pour sauvegarder le système d'exploitation ou vos données personnelles ?",
+    "answer": "Il est conçu pour sauvegarder automatiquement vos données personnelles (dossiers du profil utilisateur, documents, bureau, images).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 80,
+    "theme": "Windows",
+    "sous_theme": "Sauvegardes & restauration",
+    "question": "Qu'est-ce qu'une 'Image système' dans l'outil de sauvegarde Windows ?",
+    "answer": "C'est une copie exacte d'un lecteur complet (incluant Windows et les partitions de démarrage) permettant de restaurer un ordinateur entier en cas de panne critique du disque dur.",
+    "difficulte": "intermediaire"
+  }
+]

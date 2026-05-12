@@ -1,0 +1,282 @@
+[
+  {
+    "id": 156,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Quelle est l'une des premières questions essentielles à poser à un utilisateur confronté à un bug soudain ?",
+    "answer": "'Que faisiez-vous ou qu'avez-vous modifié juste avant que le problème ne survienne ?' ou 'Avez-vous un message d'erreur exact affiché à l'écran ?'",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 157,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Pourquoi la première étape de dépannage suggérée est-elle souvent de redémarrer l'ordinateur ?",
+    "answer": "Car cela vide la mémoire vive (RAM), réinitialise les services et relance les processus système bloqués, résolvant ainsi une grande partie des bugs temporaires.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 158,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Dans une démarche de diagnostic basée sur le modèle OSI, quelle est la différence entre une approche Top-Down et Bottom-Up ?",
+    "answer": "L'approche ascendante (Bottom-Up) commence par tester le matériel et les câbles. L'approche descendante (Top-Down) commence par tester l'application ou le logiciel lui-même.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 159,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Qu'est-ce que le principe de dichotomie (ou isolation par élimination) en dépannage informatique ?",
+    "answer": "C'est le fait de diviser le système défaillant en sous-parties et de les tester séparément pour écarter rapidement ce qui fonctionne et isoler le composant en panne.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 160,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Que signifie 'escalader' un ticket ou un incident ?",
+    "answer": "C'est le fait de transférer le problème à un niveau de support supérieur (comme le niveau 2 ou 3) parce qu'on ne possède pas les droits d'accès ou les compétences pour le résoudre.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 161,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Un utilisateur n'arrive plus à imprimer. Quelles vérifications de niveau matériel (couche 1) faites-vous en premier lieu ?",
+    "answer": "Vérifier que l'imprimante est bien allumée, qu'il y a du papier et de l'encre, et qu'elle est physiquement connectée au réseau ou au PC (câble USB/Ethernet branché).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 162,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Pourquoi est-il crucial pour un technicien de chercher à reproduire un bug signalé par un utilisateur ?",
+    "answer": "Pour confirmer que le problème est réel (et non une simple erreur de manipulation) et pour s'assurer plus tard que la solution appliquée a bien fonctionné de façon définitive.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 163,
+    "theme": "Support utilisateur",
+    "sous_theme": "Méthodologie de diagnostic",
+    "question": "Si un logiciel métier 'plante' de manière aléatoire sans message d'erreur clair à l'écran, où le technicien doit-il chercher des indices sous Windows ?",
+    "answer": "Dans l'Observateur d'événements (Event Viewer), notamment en filtrant les erreurs critiques et avertissements dans les journaux 'Application' et 'Système'.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 164,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "Qu'est-ce qu'un outil de 'Ticketing' (ou logiciel de Helpdesk) ?",
+    "answer": "C'est un logiciel permettant d'enregistrer, de suivre, de prioriser et de garder l'historique de toutes les demandes d'assistance et incidents signalés par les utilisateurs.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 165,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "Que signifie l'acronyme SLA dans le domaine du support IT et à quoi sert-il ?",
+    "answer": "Service Level Agreement (Accord de niveau de service). Il définit contractuellement les temps maximums garantis pour la prise en charge et la résolution d'un ticket.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 166,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "Selon les bonnes pratiques, quelle est la différence entre un Incident et une Demande de service ?",
+    "answer": "Un incident est une panne ou interruption imprévue à réparer. Une demande de service est une requête standard (ex: demander un nouveau clavier, créer un compte).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 167,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "Comment calcule-t-on de manière classique la priorité d'un ticket d'incident dans un système ITSM ?",
+    "answer": "La priorité est le croisement entre l'Impact (le nombre d'utilisateurs ou services touchés) et l'Urgence (le délai critique avant que cela n'affecte gravement l'entreprise).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 168,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "Qu'est-ce que la méthode ITIL ?",
+    "answer": "C'est un ensemble mondialement reconnu de bonnes pratiques pour la gestion des services informatiques (ITSM), visant à aligner l'informatique sur les besoins réels de l'entreprise.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 169,
+    "theme": "Support utilisateur",
+    "sous_theme": "Tickets & ITSM",
+    "question": "En méthodologie ITIL, quelle est la différence fondamentale entre la Gestion des Incidents et la Gestion des Problèmes ?",
+    "answer": "L'incident vise à rétablir le service au plus vite (même par contournement). La gestion des problèmes cherche à identifier et éliminer définitivement la cause racine (root cause) de pannes récurrentes.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 170,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Un utilisateur a oublié son mot de passe de session d'entreprise (lié au domaine Windows). Que faites-vous après avoir vérifié son identité ?",
+    "answer": "On réinitialise son mot de passe depuis la console Active Directory et on coche la case 'L'utilisateur doit changer le mot de passe à la prochaine session'.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 171,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Un PC de bureau fixe ne démarre pas du tout (aucun bruit de ventilateur, aucune LED allumée). Quelle est la première piste à vérifier ?",
+    "answer": "Un problème d'alimentation électrique : câble débranché, bloc multiprise éteint, interrupteur de l'alimentation sur '0', ou alimentation hors-service.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 172,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Le PC est allumé (on entend le système tourner) mais l'écran reste noir avec un message 'No signal'. Que vérifiez-vous en premier ?",
+    "answer": "L'intégrité et le branchement du câble vidéo (HDMI, DisplayPort) entre le PC et l'écran, et s'assurer que l'écran est réglé sur la bonne source d'entrée.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 173,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "L'utilisateur signale qu'il n'a 'plus Internet'. Vous remarquez une icône de globe terrestre en bas à droite de son écran. Que vérifiez-vous en priorité ?",
+    "answer": "Si le câble réseau RJ45 est bien enfoncé des deux côtés, ou si le Wi-Fi n'a pas été coupé accidentellement (mode avion ou touche physique sur le clavier).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 174,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Un utilisateur trouve son PC subitement extrêmement lent. Quel outil natif de Windows ouvrez-vous immédiatement pour établir un premier diagnostic ?",
+    "answer": "Le Gestionnaire des tâches (onglet Processus ou Performance) pour identifier quel logiciel ou processus sature le CPU, la RAM ou le disque à 100%.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 175,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Une clé USB n'apparaît pas dans l'Explorateur Windows lorsqu'on la branche, mais fait le bruit de connexion. Où allez-vous pour vérifier s'il s'agit d'un conflit de lettre de lecteur ?",
+    "answer": "Dans l'utilitaire Gestion des disques de Windows (diskmgmt.msc).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 176,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "L'utilisateur ne vous entend pas lors d'une visioconférence Teams. Quelles sont les causes logicielles de base à vérifier sur son poste ?",
+    "answer": "Vérifier si Windows n'est pas sur 'Muet' ou si le mauvais périphérique de sortie audio (ex: écran au lieu du casque) est sélectionné dans Teams ou Windows.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 177,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Un utilisateur a supprimé un dossier par erreur sur un lecteur réseau partagé (Serveur de fichiers). Peut-il le retrouver dans la corbeille de son propre PC ?",
+    "answer": "Non. Les fichiers supprimés sur un serveur réseau ne vont pas dans la corbeille locale. Il faut restaurer une version précédente ou recourir aux sauvegardes du serveur.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 178,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Lorsqu'un utilisateur se connecte à Windows, le système affiche 'Vous avez été connecté avec un profil temporaire' et son bureau est vide. Qu'est-ce que cela signifie ?",
+    "answer": "Son profil utilisateur local ou le registre associé est corrompu, empêchant Windows de charger sa vraie session. Il crée donc un profil jetable en attendant réparation.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 179,
+    "theme": "Support utilisateur",
+    "sous_theme": "Problèmes courants",
+    "question": "Que signifie généralement l'alerte Windows 'Conflit d'adresse IP détecté' sur un réseau d'entreprise ?",
+    "answer": "Un équipement sur le réseau a été configuré manuellement avec une adresse IP statique qui avait déjà été attribuée à une autre machine par le serveur DHCP.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 180,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "Pourquoi est-il très important de 'reformuler' le problème exposé par l'utilisateur au début d'un appel au support ?",
+    "answer": "Pour s'assurer d'avoir bien compris son problème, le rassurer sur la bonne prise en compte de sa demande, et éviter de partir sur un faux diagnostic.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 181,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "Lorsqu'on guide un utilisateur novice par téléphone pour résoudre un problème, quelle est la règle d'or concernant le vocabulaire ?",
+    "answer": "Il faut bannir le jargon technique et les acronymes, utiliser des mots simples, des analogies, et le guider de manière visuelle (ex: 'cliquez sur la roue crantée en haut à droite').",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 182,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "Comment gérer au mieux un utilisateur particulièrement frustré ou en colère au téléphone ?",
+    "answer": "Garder son calme, ne pas le prendre personnellement, faire preuve d'empathie active ('Je comprends que ce soit bloquant'), et orienter immédiatement la conversation vers la recherche de solutions.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 183,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "Quelle est la bonne pratique absolue avant de clôturer un ticket d'incident et de quitter l'utilisateur ?",
+    "answer": "Lui demander d'effectuer lui-même la manipulation ou de rouvrir son logiciel pour qu'il valide devant vous que le problème est bien résolu de son point de vue.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 184,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "Que doit systématiquement faire un technicien avant de lancer une prise en main à distance sur le poste d'un utilisateur ?",
+    "answer": "Lui demander oralement ou par écrit l'autorisation de se connecter, et lui conseiller de fermer d'éventuels documents personnels ou confidentiels à l'écran.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 185,
+    "theme": "Support utilisateur",
+    "sous_theme": "Communication",
+    "question": "En cas d'incident majeur (ex: coupure totale du réseau de l'entreprise), que doit faire l'équipe support en priorité d'un point de vue communication ?",
+    "answer": "Mettre en place une communication proactive (email global, bandeau intranet, message d'attente téléphonique) pour informer de la panne en cours et éviter d'être submergé d'appels répétitifs.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 186,
+    "theme": "Support utilisateur",
+    "sous_theme": "Documentation",
+    "question": "Qu'est-ce qu'une Base de Connaissances (Knowledge Base) dans un service informatique ?",
+    "answer": "C'est une plateforme centralisée regroupant les tutoriels, documentations, solutions connues et procédures de dépannage, accessible à l'équipe IT (et parfois aux utilisateurs).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 187,
+    "theme": "Support utilisateur",
+    "sous_theme": "Documentation",
+    "question": "Pourquoi faut-il détailler les actions réalisées dans le champ de clôture d'un ticket, même si la solution était simple ?",
+    "answer": "Pour alimenter l'historique en cas de récidive, aider les collègues qui tomberaient sur le même problème, et justifier le travail effectué pour les statistiques.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 188,
+    "theme": "Support utilisateur",
+    "sous_theme": "Documentation",
+    "question": "Quels sont les éléments indispensables à inclure dans une procédure ou un tutoriel destiné aux utilisateurs finaux ?",
+    "answer": "Un titre explicite, le contexte ou les prérequis, des étapes numérotées courtes et simples, et idéalement des captures d'écran avec les zones à cliquer surlignées.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 189,
+    "theme": "Support utilisateur",
+    "sous_theme": "Documentation",
+    "question": "Quel est le risque principal si une base de connaissances n'est pas régulièrement mise à jour (audit documentaire) ?",
+    "answer": "Elle devient obsolète en contenant des procédures inadaptées aux nouvelles versions logicielles, ce qui induit les techniciens en erreur et fait perdre du temps.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 190,
+    "theme": "Support utilisateur",
+    "sous_theme": "Documentation",
+    "question": "Si une même méthode de purge du cache résout 5 problèmes d'applications différentes, comment l'organiser dans la base documentaire ?",
+    "answer": "Il faut créer un article unique pour cette méthode précise, puis insérer un lien vers cet article dans les 5 autres fiches d'incidents (principe DRY : Don't Repeat Yourself), facilitant ainsi les futures mises à jour.",
+    "difficulte": "avance"
+  }
+]

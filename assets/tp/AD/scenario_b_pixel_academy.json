@@ -1,0 +1,426 @@
+{
+  "id": "scenario_b",
+  "title": "Pixel Academy",
+  "subtitle": "Gérer le domaine d'une école avec fort turnover",
+  "emoji": "🎨",
+  "color": "#9B59B6",
+  "difficulty": "intermediaire",
+  "difficulty_label": "Intermédiaire",
+  "description": "Tu administres le réseau d'une école d'art numérique de 300 étudiants. Chaque année une promotion part, une nouvelle arrive. Apprends à gérer un domaine scolaire avec ses contraintes spécifiques.",
+  "domain": "pixel.local",
+  "dc_name": "DC-PIXEL",
+  "server_ip": "192.168.10.10",
+  "os": "Windows Server 2022",
+  "total_missions": 16,
+  "estimated_hours": "8–12h",
+  "prerequisite": "scenario_a",
+  "context_intro": "Bienvenue à la Pixel Academy, école d'art numérique avec 300 étudiants répartis sur 3 promotions. Tu es l'unique administrateur réseau. Chaque rentrée de septembre, 100 nouveaux étudiants arrivent. Chaque juin, 100 diplômés partent. Les professeurs ont besoin d'espaces sécurisés pour leurs sujets d'examen. Et les étudiants ne doivent pas avoir accès au panneau de configuration pendant les TP. Le scénario A t'a appris les bases — ici tu vas les appliquer dans un contexte plus complexe.",
+  "badges": [
+    {
+      "id": "pixel_fondateur",
+      "title": "Architecte du campus",
+      "description": "A structuré le domaine pixel.local",
+      "icon": "🏫",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "pixel_gestionnaire",
+      "title": "Gestionnaire de l'école",
+      "description": "A mis en place comptes, groupes et partages",
+      "icon": "📋",
+      "unlocked_after_level": 3
+    },
+    {
+      "id": "pixel_expert",
+      "title": "Admin Pixel Academy",
+      "description": "A terminé le scénario Pixel Academy en intégralité",
+      "icon": "🎨",
+      "unlocked_after_level": 5
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Fondations du campus",
+      "description": "Créer le domaine pixel.local depuis un Windows Server vierge.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "B-0-1",
+          "order": 1,
+          "title": "Préparer le serveur de l'école",
+          "unlocked_by": null,
+          "estimated_minutes": 15,
+          "objective": "Configurer l'IP fixe du serveur et le renommer DC-PIXEL.",
+          "context": "Comme pour tout contrôleur de domaine, la première étape est de donner une identité réseau stable au serveur. L'école utilise le réseau 192.168.10.0/24. Ton serveur sera le point central de toute l'infrastructure — 300 étudiants et une cinquantaine de professeurs et personnels en dépendront chaque jour.",
+          "steps": [
+            "Ouvre les paramètres réseau de la carte (Windows + R → ncpa.cpl)",
+            "Clic droit sur la carte réseau → Propriétés → IPv4",
+            "Configure : IP = 192.168.10.10 | Masque = 255.255.255.0 | Passerelle = 192.168.10.1 | DNS préféré = 127.0.0.1",
+            "Clic droit sur le menu Démarrer → Système → Renommer ce PC",
+            "Entre le nom DC-PIXEL et redémarre"
+          ],
+          "help": {
+            "text": "Tu ne te souviens plus comment configurer l'IP ?",
+            "where": "C'est la même procédure que dans le Scénario A, mission 0-1. Panneau de configuration → Centre Réseau → Modifier les paramètres de la carte → Clic droit → Propriétés → IPv4."
+          },
+          "expected_result": [
+            "L'IP 192.168.10.10 est bien configurée en statique",
+            "Le DNS préféré est 127.0.0.1",
+            "Le serveur s'appelle DC-PIXEL après redémarrage"
+          ]
+        },
+        {
+          "id": "B-0-2",
+          "order": 2,
+          "title": "Installer AD DS et créer le domaine pixel.local",
+          "unlocked_by": "B-0-1",
+          "estimated_minutes": 30,
+          "objective": "Installer le rôle Active Directory et promouvoir le serveur pour créer la forêt pixel.local.",
+          "context": "Tu connais déjà cette procédure depuis le Scénario A. Cette fois tu vas plus vite — l'objectif est de te mettre en autonomie sur la création d'un domaine from scratch. C'est une compétence fondamentale : dans ta carrière de TIP, tu seras peut-être amené à créer un domaine pour un nouveau client ou une nouvelle agence.",
+          "steps": [
+            "Gestionnaire de serveur → Gérer → Ajouter des rôles et fonctionnalités",
+            "Installe le rôle Services de domaine Active Directory",
+            "Clique sur le drapeau jaune → Promouvoir ce serveur en contrôleur de domaine",
+            "Nouvelle forêt | Nom de domaine : pixel.local",
+            "Définis un mot de passe DSRM et note-le",
+            "Laisse toutes les options par défaut et installe",
+            "Le serveur redémarre automatiquement"
+          ],
+          "help": {
+            "text": "Tu bloques sur une étape de l'assistant de promotion ?",
+            "where": "Revois la mission A-0-3 du Scénario A qui détaille chaque écran de l'assistant. Les étapes sont identiques ici, seul le nom de domaine change (pixel.local au lieu de aerotech.local)."
+          },
+          "expected_result": [
+            "Le serveur a redémarré et l'écran de connexion affiche PIXEL\\Administrateur",
+            "La console dsa.msc est accessible depuis Outils dans le Gestionnaire de serveur",
+            "Le domaine pixel.local est visible dans l'arborescence de dsa.msc"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Architecture de l'école",
+      "description": "Structurer les OUs en tenant compte des différentes populations : étudiants par promotion, professeurs, administration.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "B-1-1",
+          "order": 1,
+          "title": "Créer la structure des OUs scolaires",
+          "unlocked_by": "B-0-2",
+          "estimated_minutes": 20,
+          "objective": "Créer l'arborescence d'OUs qui reflète l'organisation de la Pixel Academy.",
+          "context": "Une école a des populations très différentes : des étudiants avec des restrictions sévères, des professeurs avec plus de liberté, et une administration avec des accès complets. La structure des OUs doit refléter ces différences pour pouvoir appliquer des règles distinctes à chaque groupe. La grande nouveauté par rapport au Scénario A : les étudiants sont organisés par promotion pour faciliter la gestion annuelle du turnover.",
+          "steps": [
+            "Dans dsa.msc, crée l'OU racine PIXEL_ACADEMY sous pixel.local (avec protection contre suppression accidentelle)",
+            "Dans PIXEL_ACADEMY, crée : Administration, Professeurs, Groupes, Machines_TP",
+            "Dans PIXEL_ACADEMY, crée l'OU Etudiants",
+            "À l'intérieur de l'OU Etudiants, crée 3 sous-OUs : Promo2023, Promo2024, Promo2025",
+            "Applique la protection contre la suppression accidentelle à toutes les OUs"
+          ],
+          "help": {
+            "text": "Pourquoi créer des sous-OUs par promotion plutôt qu'une seule OU Etudiants ?",
+            "where": "Avec des sous-OUs par promotion, tu pourras en fin d'année désactiver ou supprimer tous les comptes d'une promotion en ciblant une seule OU, sans toucher aux autres. C'est beaucoup plus pratique quand on gère 100 étudiants qui partent chaque juin."
+          },
+          "expected_result": [
+            "L'OU PIXEL_ACADEMY est à la racine de pixel.local",
+            "Les OUs Administration, Professeurs, Groupes, Machines_TP existent dans PIXEL_ACADEMY",
+            "L'OU Etudiants contient 3 sous-OUs : Promo2023, Promo2024, Promo2025",
+            "Toutes les OUs sont protégées contre la suppression accidentelle"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Comptes et groupes",
+      "description": "Créer les comptes du personnel et des étudiants, et organiser les groupes de sécurité.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "B-2-1",
+          "order": 1,
+          "title": "Créer les comptes du personnel",
+          "unlocked_by": "B-1-1",
+          "estimated_minutes": 20,
+          "objective": "Créer le compte du directeur pédagogique et de 3 professeurs dans les bonnes OUs.",
+          "context": "Avant de gérer les 300 étudiants, commence par les comptes du personnel permanent. Ces comptes auront des droits différents de ceux des étudiants — ils seront membres de groupes spécifiques qui leur donnent accès aux ressources pédagogiques.",
+          "steps": [
+            "Dans l'OU Administration, crée : Marc Leduc | Login : m.leduc | Titre : Directeur Pédagogique",
+            "Dans l'OU Professeurs, crée 3 professeurs fictifs avec des logins cohérents (ex: p.martin, s.bernard, c.dubois)",
+            "Pour chacun : coche L'utilisateur doit changer le mot de passe à la prochaine ouverture de session",
+            "Crée également un compte dans l'OU Etudiants → Promo2025 pour les tests futurs"
+          ],
+          "help": {
+            "text": "Comment donner un titre à un utilisateur dans l'AD ?",
+            "where": "Dans les propriétés du compte utilisateur, va dans l'onglet Organisation. Tu y trouveras les champs Titre, Département, Société. Ces informations apparaîtront dans le carnet d'adresses de l'entreprise."
+          },
+          "expected_result": [
+            "m.leduc existe dans l'OU Administration",
+            "3 professeurs existent dans l'OU Professeurs",
+            "Au moins 1 étudiant de test existe dans Promo2025",
+            "Tous les comptes obligent le changement de MDP à la première connexion"
+          ]
+        },
+        {
+          "id": "B-2-2",
+          "order": 2,
+          "title": "Créer les groupes de sécurité de l'école",
+          "unlocked_by": "B-2-1",
+          "estimated_minutes": 20,
+          "objective": "Créer G_Professeurs, G_Etudiants_Actifs et G_Admins_IT avec leurs membres.",
+          "context": "Ces groupes seront utilisés partout : dans les permissions des partages, dans le ciblage des GPO, et pour les délégations. Un groupe bien nommé et bien maintenu est la différence entre une infra saine et une infra incontrôlable. Ici on crée trois groupes aux rôles bien distincts.",
+          "steps": [
+            "Dans l'OU Groupes, crée G_Professeurs (Global, Sécurité)",
+            "Ouvre G_Professeurs → onglet Membres → ajoute les 3 professeurs créés précédemment",
+            "Crée G_Etudiants_Actifs (Global, Sécurité) et ajoute l'étudiant de test",
+            "Crée G_Admins_IT (Global, Sécurité) — laisse-le vide pour l'instant",
+            "Vérifie les membres de chaque groupe dans l'onglet Membres"
+          ],
+          "help": {
+            "text": "Comment ajouter plusieurs membres d'un coup dans un groupe ?",
+            "where": "Dans l'onglet Membres du groupe, clique sur Ajouter. Dans la boîte de dialogue, tu peux taper plusieurs noms séparés par un point-virgule. Tu peux aussi cliquer sur Avancé → Rechercher pour faire une recherche filtrée et sélectionner plusieurs résultats."
+          },
+          "expected_result": [
+            "G_Professeurs contient les 3 comptes professeurs",
+            "G_Etudiants_Actifs contient l'étudiant de test",
+            "G_Admins_IT existe dans l'OU Groupes"
+          ]
+        },
+        {
+          "id": "B-2-3",
+          "order": 3,
+          "title": "Connecter les machines de TP au domaine",
+          "unlocked_by": "B-2-2",
+          "estimated_minutes": 25,
+          "objective": "Joindre une machine Windows au domaine et la placer dans l'OU Machines_TP.",
+          "context": "Les salles de TP de la Pixel Academy ont des PC que les étudiants utilisent pendant les cours. Ces machines doivent être membres du domaine pour que les GPO s'appliquent et que les étudiants puissent s'y connecter avec leur compte. La procédure est la même que dans le Scénario A.",
+          "steps": [
+            "Sur le PC client, configure le DNS préféré à 192.168.10.10",
+            "Vérifie la connexion au DC avec ping 192.168.10.10",
+            "Joint le PC au domaine pixel.local (clic droit Ce PC → Propriétés → Modifier → Domaine)",
+            "Après redémarrage, dans dsa.msc sur le serveur : déplace l'objet ordinateur du conteneur Computers vers l'OU Machines_TP",
+            "Renomme le PC TP-S1-PC01 si ce n'est pas déjà fait"
+          ],
+          "help": {
+            "text": "La jointure échoue avec un message d'erreur DNS ?",
+            "where": "Vérifie que le DNS préféré du PC client est bien 192.168.10.10 (l'IP du DC). C'est la cause numéro 1 des échecs de jointure. Le PC doit pouvoir résoudre le nom pixel.local, ce qui ne fonctionne qu'avec le DNS du DC."
+          },
+          "expected_result": [
+            "Le PC client est membre du domaine pixel.local",
+            "L'objet ordinateur est dans l'OU Machines_TP (pas dans Computers)",
+            "Un compte professeur peut se connecter sur ce PC avec ses identifiants de domaine"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Partages et ressources",
+      "description": "Créer les espaces de partage pédagogiques avec des permissions adaptées à chaque population.",
+      "emoji": "🟠",
+      "color": "#F97316",
+      "missions": [
+        {
+          "id": "B-3-1",
+          "order": 1,
+          "title": "Créer les partages pédagogiques",
+          "unlocked_by": "B-2-3",
+          "estimated_minutes": 30,
+          "objective": "Créer le partage Sujets$ (réservé aux professeurs) et le partage Rendus (accessible aux étudiants).",
+          "context": "L'école a deux besoins distincts : un espace sécurisé où les professeurs stockent les sujets d'examen (que les étudiants ne doivent jamais voir avant l'examen), et un espace de dépôt où les étudiants remettent leurs travaux. Ces deux partages ont des permissions très différentes.",
+          "steps": [
+            "Sur le serveur, crée les dossiers : C:\\Partages\\Sujets et C:\\Partages\\Rendus",
+            "Partage Sujets$ (masqué) : permissions NTFS → G_Professeurs avec Modification, supprime Tout le monde",
+            "Partage Rendus : permissions NTFS → G_Professeurs avec Contrôle total, G_Etudiants_Actifs avec Modification",
+            "Teste depuis un compte professeur : accès à \\\\DC-PIXEL\\Sujets$ et \\\\DC-PIXEL\\Rendus",
+            "Teste depuis le compte étudiant de test : accès à Rendus uniquement, Sujets$ inaccessible"
+          ],
+          "help": {
+            "text": "Comment vérifier que Sujets$ est bien invisible ?",
+            "where": "Sur un PC client, ouvre l'Explorateur de fichiers et tape \\\\DC-PIXEL dans la barre d'adresse. Tu verras la liste des partages visibles — Sujets$ ne doit pas apparaître dans cette liste. Par contre, taper directement \\\\DC-PIXEL\\Sujets$ dans la barre d'adresse doit fonctionner pour les professeurs."
+          },
+          "expected_result": [
+            "\\\\DC-PIXEL\\Sujets$ est accessible aux professeurs mais invisible en navigation",
+            "\\\\DC-PIXEL\\Rendus est accessible aux professeurs et aux étudiants",
+            "Un étudiant ne peut pas accéder à \\\\DC-PIXEL\\Sujets$"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "GPO pédagogiques",
+      "description": "Appliquer des restrictions et configurations adaptées aux salles de TP et aux différentes populations.",
+      "emoji": "🔴",
+      "color": "#EF4444",
+      "missions": [
+        {
+          "id": "B-4-1",
+          "order": 1,
+          "title": "Restreindre l'environnement étudiant",
+          "unlocked_by": "B-3-1",
+          "estimated_minutes": 25,
+          "objective": "Créer une GPO qui bloque l'accès au Panneau de configuration et à l'invite de commandes pour les étudiants.",
+          "context": "Pendant les TP, les étudiants n'ont pas besoin d'accéder aux paramètres système de Windows. Laisser ces accès ouverts risquerait de voir des machines reconfigurées, des paramètres réseau modifiés, ou des logiciels installés sans autorisation. On va créer une GPO liée à l'OU Etudiants qui bloque ces accès.",
+          "steps": [
+            "Dans gpmc.msc, crée la GPO GPO_Restrictions_Etudiants liée à l'OU Etudiants",
+            "Modifie la GPO → Configuration utilisateur → Modèles d'administration → Panneau de configuration",
+            "Active Interdire l'accès au Panneau de configuration et aux Paramètres du PC",
+            "Navigue vers Configuration utilisateur → Modèles d'administration → Système",
+            "Active Empêcher l'accès à l'invite de commandes (laisser Non pour les scripts)",
+            "Teste avec le compte étudiant sur un PC client après gpupdate /force"
+          ],
+          "help": {
+            "text": "Les restrictions ne s'appliquent pas après gpupdate /force ?",
+            "where": "Vérifie deux choses : (1) le PC client est bien dans l'OU Machines_TP et (2) le compte étudiant est bien dans une sous-OU d'Etudiants. La GPO s'applique aux utilisateurs de l'OU Etudiants, pas aux machines. Si le compte étudiant est dans une autre OU, les restrictions ne s'appliqueront pas."
+          },
+          "expected_result": [
+            "Connecté en étudiant : le Panneau de configuration est inaccessible",
+            "Connecté en étudiant : cmd.exe affiche un message d'erreur et se ferme",
+            "Connecté en professeur : le Panneau de configuration et cmd.exe fonctionnent normalement"
+          ]
+        },
+        {
+          "id": "B-4-2",
+          "order": 2,
+          "title": "Mapper le lecteur Sujets pour les professeurs",
+          "unlocked_by": "B-4-1",
+          "estimated_minutes": 20,
+          "objective": "Créer une GPO qui connecte automatiquement le lecteur S: vers \\\\DC-PIXEL\\Sujets$ pour les professeurs uniquement.",
+          "context": "Les professeurs ont besoin d'accéder facilement à leurs sujets d'examen. Plutôt que de mémoriser le chemin réseau complet, le lecteur S: (pour Sujets) apparaîtra automatiquement dans leur Explorateur de fichiers à chaque connexion — et uniquement pour eux.",
+          "steps": [
+            "Crée la GPO GPO_Lecteurs_Profs liée à l'OU PIXEL_ACADEMY",
+            "Configuration utilisateur → Préférences → Paramètres Windows → Mappages de lecteurs",
+            "Nouveau lecteur mappé : Action Créer | Chemin : \\\\DC-PIXEL\\Sujets$ | Lettre : S",
+            "Onglet Commun → Ciblage au niveau de l'élément → Nouveau → Groupe de sécurité : G_Professeurs",
+            "Valide et teste sur un PC client avec un compte professeur"
+          ],
+          "help": {
+            "text": "Le lecteur S: apparaît aussi pour les étudiants ?",
+            "where": "Vérifie que le ciblage au niveau de l'élément est bien configuré sur G_Professeurs dans l'onglet Commun de la règle de mappage. Sans ce ciblage, la règle s'applique à tous les utilisateurs couverts par la GPO."
+          },
+          "expected_result": [
+            "Connecté en professeur : le lecteur S: apparaît automatiquement dans l'Explorateur",
+            "Le lecteur S: pointe vers \\\\DC-PIXEL\\Sujets$",
+            "Connecté en étudiant : le lecteur S: n'apparaît pas"
+          ]
+        },
+        {
+          "id": "B-4-3",
+          "order": 3,
+          "title": "Limiter la durée de session des étudiants",
+          "unlocked_by": "B-4-2",
+          "estimated_minutes": 20,
+          "objective": "Configurer une GPO qui déconnecte automatiquement les étudiants après 3 heures de session.",
+          "context": "Les salles de TP sont partagées entre plusieurs groupes d'étudiants dans la journée. Pour éviter qu'une session reste ouverte indéfiniment et bloque l'accès aux machines, on configure une limite de temps de session. Après 3 heures, Windows déconnecte automatiquement l'utilisateur.",
+          "steps": [
+            "Dans la GPO GPO_Restrictions_Etudiants, retourne dans l'éditeur",
+            "Configuration ordinateur → Paramètres Windows → Paramètres de sécurité → Stratégies locales → Options de sécurité",
+            "Cherche Ouverture de session interactive : limite d'inactivité de la machine",
+            "Active et configure à 10800 secondes (3 heures)",
+            "Note : certaines versions de Windows Server proposent ce paramètre sous Configuration utilisateur → Modèles d'administration → Composants Windows → Explorateur de fichiers"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas le bon paramètre dans l'éditeur GPO ?",
+            "where": "Le paramètre exact varie selon la version de Windows Server. Cherche dans les deux chemins indiqués dans les étapes. Tu peux aussi utiliser la fonction Recherche de l'éditeur GPO : dans le menu Action → Rechercher, tape 'inactivité' ou 'session' pour localiser rapidement le bon paramètre."
+          },
+          "expected_result": [
+            "Le paramètre de limite de session est configuré dans la GPO",
+            "La valeur correspond bien à 3 heures (10800 secondes)"
+          ]
+        },
+        {
+          "id": "B-4-4",
+          "order": 4,
+          "title": "Déléguer la gestion des étudiants à la scolarité",
+          "unlocked_by": "B-4-3",
+          "estimated_minutes": 20,
+          "objective": "Permettre au service scolarité de déverrouiller les comptes et réinitialiser les mots de passe des étudiants.",
+          "context": "Le service scolarité reçoit régulièrement des appels d'étudiants qui ont oublié leur mot de passe ou dont le compte est verrouillé. Plutôt que de solliciter l'administrateur réseau à chaque fois, on délègue ces droits spécifiques au service scolarité — uniquement sur l'OU Etudiants.",
+          "steps": [
+            "Dans dsa.msc, clic droit sur l'OU Etudiants → Délégation de contrôle",
+            "Ajoute le groupe G_Admins_IT (ou un utilisateur Scolarité si tu en as créé un)",
+            "Coche les tâches : Réinitialiser les mots de passe et Lire toutes les informations utilisateur",
+            "Termine l'assistant",
+            "Teste : connecte-toi avec le compte délégué et tente de réinitialiser un mot de passe étudiant"
+          ],
+          "help": {
+            "text": "La délégation doit-elle être faite sur l'OU Etudiants ou sur chaque sous-OU de promotion ?",
+            "where": "Fais-la sur l'OU Etudiants — la délégation s'hérite automatiquement vers toutes les sous-OUs (Promo2023, Promo2024, Promo2025). Pas besoin de la répéter sur chaque promotion."
+          },
+          "expected_result": [
+            "La délégation est configurée sur l'OU Etudiants",
+            "Le compte délégué peut réinitialiser les mots de passe des étudiants",
+            "Le compte délégué ne peut pas toucher aux comptes de l'OU Professeurs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Gestion de fin d'année",
+      "description": "Désactiver les comptes de la promotion sortante et préparer l'arrivée de la nouvelle promotion.",
+      "emoji": "🎓",
+      "color": "#8B5CF6",
+      "missions": [
+        {
+          "id": "B-5-1",
+          "order": 1,
+          "title": "Désactiver les comptes de la promotion sortante",
+          "unlocked_by": "B-4-4",
+          "estimated_minutes": 20,
+          "objective": "Désactiver tous les comptes de l'OU Promo2023 en fin d'année scolaire.",
+          "context": "C'est le scénario de juin : la promotion 2023 vient d'obtenir son diplôme. Leurs comptes doivent être désactivés immédiatement pour éviter qu'ils continuent à accéder aux ressources de l'école. On désactive plutôt que de supprimer — au cas où un diplômé aurait besoin d'un accès temporaire dans les semaines qui suivent pour récupérer ses travaux.",
+          "steps": [
+            "Dans dsa.msc, navigue vers l'OU Etudiants → Promo2023",
+            "Sélectionne tous les comptes de cette OU (Ctrl + A)",
+            "Clic droit sur la sélection → Désactiver le compte",
+            "Confirme la désactivation",
+            "Vérifie que les icônes des comptes affichent maintenant une flèche vers le bas (comptes désactivés)"
+          ],
+          "help": {
+            "text": "Comment sélectionner tous les comptes d'une OU en une seule fois ?",
+            "where": "Clique sur le premier compte dans la liste, puis appuie sur Ctrl + A pour tout sélectionner. Ensuite clic droit sur la sélection. Attention à bien être dans la bonne OU avant de sélectionner."
+          },
+          "expected_result": [
+            "Tous les comptes de Promo2023 affichent l'icône de compte désactivé",
+            "Un compte de Promo2023 ne peut plus se connecter au domaine",
+            "Les comptes de Promo2024 et Promo2025 ne sont pas affectés"
+          ]
+        },
+        {
+          "id": "B-5-2",
+          "order": 2,
+          "title": "Préparer l'arrivée de la nouvelle promotion",
+          "unlocked_by": "B-5-1",
+          "estimated_minutes": 25,
+          "objective": "Créer l'OU Promo2026, créer 5 comptes étudiants de test et les ajouter à G_Etudiants_Actifs.",
+          "context": "C'est le scénario de septembre : la nouvelle promotion 2026 arrive. Il faut créer leurs comptes dans la bonne OU et les ajouter au groupe G_Etudiants_Actifs pour qu'ils aient automatiquement accès aux ressources de l'école (partages, lecteurs mappés, etc.). En production, cette opération se fait avec un fichier CSV fourni par le service scolarité.",
+          "steps": [
+            "Dans dsa.msc, crée la sous-OU Promo2026 dans l'OU Etudiants",
+            "Crée 5 comptes étudiants fictifs dans Promo2026 (ex: alice.moreau, tom.petit...)",
+            "Pour chacun : login cohérent, mot de passe temporaire, changement obligatoire à la première connexion",
+            "Ouvre le groupe G_Etudiants_Actifs → onglet Membres → Ajouter les 5 nouveaux étudiants",
+            "Vérifie qu'un des nouveaux étudiants peut se connecter sur un PC client et accéder au partage Rendus"
+          ],
+          "help": {
+            "text": "Dois-je aussi retirer les étudiants Promo2023 de G_Etudiants_Actifs ?",
+            "where": "Oui, bonne réflexion. Les comptes désactivés ne peuvent plus se connecter, mais ils sont toujours techniquement dans le groupe. La bonne pratique est de les retirer du groupe en même temps qu'on les désactive. Ouvre G_Etudiants_Actifs → onglet Membres → sélectionne les anciens étudiants → Supprimer."
+          },
+          "expected_result": [
+            "L'OU Promo2026 existe dans Etudiants",
+            "5 comptes étudiants existent dans Promo2026",
+            "Ces comptes sont membres de G_Etudiants_Actifs",
+            "Un étudiant Promo2026 peut accéder au partage Rendus"
+          ]
+        }
+      ]
+    }
+  ]
+}

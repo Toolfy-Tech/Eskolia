@@ -1,0 +1,1018 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../core/theme/eskolia_layout.dart';
+import '../../../core/theme/eskolia_visual.dart';
+import '../../../core/time/xp_week_key.dart';
+import '../../../core/widgets/bottom_nav.dart';
+import '../../../data/repositories/leaderboard_repository.dart';
+import '../data/models/daily_leaderboard_entry.dart';
+import '../data/models/leaderboard_entry_model.dart';
+import '../../../shared/widgets/eskolia_ambient_background.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
+import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/gradient_border_card.dart';
+
+const Color _slate = Color(0xFF94A3B8);
+
+enum _BoardTab {
+  weekXp,
+  allXp,
+  dailyQuiz,
+  arenaWins,
+  quizWins,
+}
+
+class _TabVisual {
+  const _TabVisual({
+    required this.tab,
+    required this.emoji,
+    required this.title,
+    required this.pickerSubtitle,
+    required this.headline,
+    required this.accent,
+    required this.borderColors,
+  });
+
+  final _BoardTab tab;
+  final String emoji;
+  final String title;
+  final String pickerSubtitle;
+  final String headline;
+  final Color accent;
+  final List<Color> borderColors;
+}
+
+const List<_TabVisual> _kTabVisuals = [
+  _TabVisual(
+    tab: _BoardTab.weekXp,
+    emoji: '\u{1F4C5}',
+    title: 'XP semaine',
+    pickerSubtitle: 'Depuis lundi minuit',
+    headline: 'XP de la semaine',
+    accent: EskoliaVisual.neonGold,
+    borderColors: [Color(0xFFFFE066), Color(0xFFB8860B)],
+  ),
+  _TabVisual(
+    tab: _BoardTab.allXp,
+    emoji: '\u{1F31F}',
+    title: 'XP totale',
+    pickerSubtitle: 'Tous les temps',
+    headline: 'XP totale',
+    accent: EskoliaVisual.neonViolet,
+    borderColors: [Color(0xFF8B7CFF), Color(0xFFFF6584)],
+  ),
+  _TabVisual(
+    tab: _BoardTab.dailyQuiz,
+    emoji: '\u{1F319}',
+    title: 'Quiz du jour',
+    pickerSubtitle: 'Meilleur score du jour',
+    headline: 'Quiz du jour',
+    accent: EskoliaVisual.neonGreen,
+    borderColors: EskoliaVisual.borderLive,
+  ),
+  _TabVisual(
+    tab: _BoardTab.arenaWins,
+    emoji: '\u{2694}\u{FE0F}',
+    title: 'Duels',
+    pickerSubtitle: 'Victoires multijoueur',
+    headline: 'Duels remportés',
+    accent: EskoliaVisual.neonCyan,
+    borderColors: [Color(0xFF22D3EE), Color(0xFF06B6D4)],
+  ),
+  _TabVisual(
+    tab: _BoardTab.quizWins,
+    emoji: '\u{2705}',
+    title: 'Quiz réussis',
+    pickerSubtitle: 'Parcours & solo',
+    headline: 'Quiz réussis',
+    accent: Color(0xFFA78BFA),
+    borderColors: [Color(0xFFC4B5FD), Color(0xFF7C3AED)],
+  ),
+];
+
+_TabVisual _visualFor(_BoardTab t) =>
+    _kTabVisuals.firstWhere((v) => v.tab == t);
+
+class LeaderboardScreen extends StatefulWidget {
+  const LeaderboardScreen({super.key});
+
+  @override
+  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
+}
+
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  final _repo = LeaderboardRepository();
+  _BoardTab _tab = _BoardTab.weekXp;
+
+  String? get _uid => FirebaseAuth.instance.currentUser?.uid;
+
+  String get _todayDayKey => calendarDayKeyYyyyMmDd(DateTime.now());
+
+  String _dayKeyLabel(String key) {
+    if (key.length != 8) return key;
+    return '${key.substring(6, 8)}/${key.substring(4, 6)}/${key.substring(0, 4)}';
+  }
+
+  String _descriptionForTab() {
+    switch (_tab) {
+      case _BoardTab.weekXp:
+        return 'Classement des joueurs les plus actifs cette semaine. Les compteurs '
+            'reprennent chaque lundi — idéal pour une compétition fraîche.';
+      case _BoardTab.allXp:
+        return 'Le gratin de l’expérience cumulée : tous les modes confondus, depuis la création du compte.';
+      case _BoardTab.dailyQuiz:
+        return 'Qui a le meilleur score sur le défi du ${ _dayKeyLabel(_todayDayKey) } ? '
+            'Refais le quiz pour grappiller des places.';
+      case _BoardTab.arenaWins:
+        return 'Nombre de parties multijoueur gagnées (quiz ou Arena). '
+            'Montre qui domine en duel.';
+      case _BoardTab.quizWins:
+        return 'Quiz terminés avec au moins 60 % de bonnes réponses — parcours, révision, lacunes… '
+            '(hors simples duels).';
+    }
+  }
+
+  int _metric(LeaderboardEntryModel e) {
+    switch (_tab) {
+      case _BoardTab.weekXp:
+        return e.xpThisWeek;
+      case _BoardTab.allXp:
+        return e.xp;
+      case _BoardTab.arenaWins:
+        return e.battleWins;
+      case _BoardTab.quizWins:
+        return e.totalWins;
+      case _BoardTab.dailyQuiz:
+        return e.xp;
+    }
+  }
+
+  String _metricUnit() {
+    switch (_tab) {
+      case _BoardTab.weekXp:
+      case _BoardTab.allXp:
+        return 'XP';
+      case _BoardTab.arenaWins:
+        return 'vic.';
+      case _BoardTab.quizWins:
+        return 'réussites';
+      case _BoardTab.dailyQuiz:
+        return 'XP';
+    }
+  }
+
+  String _userListSubtitle(LeaderboardEntryModel e) {
+    switch (_tab) {
+      case _BoardTab.weekXp:
+      case _BoardTab.allXp:
+        return 'Niv. ${e.level} · ${e.streak}j de suite';
+      case _BoardTab.arenaWins:
+        return 'Niv. ${e.level} · ${e.xp} XP cumulés · ${e.streak}j';
+      case _BoardTab.quizWins:
+        return 'Niv. ${e.level} · ${e.xp} XP · ${e.streak}j';
+      case _BoardTab.dailyQuiz:
+        return '';
+    }
+  }
+
+  String _trailingValue(LeaderboardEntryModel e) {
+    final m = _metric(e);
+    final u = _metricUnit();
+    return '$m $u';
+  }
+
+  List<LeaderboardEntryModel?> _podiumTriplet(List<LeaderboardEntryModel> list) {
+    if (list.isEmpty) return [null, null, null];
+    if (list.length == 1) return [null, list[0], null];
+    if (list.length == 2) return [list[1], list[0], null];
+    return [list[1], list[0], list[2]];
+  }
+
+  List<DailyLeaderboardEntry?> _podiumTripletDaily(List<DailyLeaderboardEntry> list) {
+    if (list.isEmpty) return [null, null, null];
+    if (list.length == 1) return [null, list[0], null];
+    if (list.length == 2) return [list[1], list[0], null];
+    return [list[1], list[0], list[2]];
+  }
+
+  Stream<List<LeaderboardEntryModel>>? _userStream() {
+    switch (_tab) {
+      case _BoardTab.weekXp:
+        return _repo.watchWeeklyTop(limit: 100);
+      case _BoardTab.allXp:
+        return _repo.watchTopUsers(limit: 100);
+      case _BoardTab.arenaWins:
+        return _repo.watchTopByUserField('battleWins', limit: 100);
+      case _BoardTab.quizWins:
+        return _repo.watchTopByUserField('totalWins', limit: 100);
+      case _BoardTab.dailyQuiz:
+        return null;
+    }
+  }
+
+  Widget _buildError(Object err) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Impossible de charger le classement.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.red.shade200),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$err',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _slate.withValues(alpha: 0.85),
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () => setState(() {}),
+              child: const Text('Réessayer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHubHeader() {
+    final v = _visualFor(_tab);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        EskoliaLayout.screenPaddingH,
+        4,
+        EskoliaLayout.screenPaddingH,
+        12,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [v.accent, Colors.white],
+            ).createShader(bounds),
+            child: const Text(
+              'Arène des champions',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Cinq classements distincts — XP, défi du jour, duels et régularité au quiz.',
+            style: TextStyle(
+              color: _slate.withValues(alpha: 0.92),
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModePickerGrid() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: EskoliaLayout.screenPaddingH),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: _ModePickerTile(visual: _kTabVisuals[0], selected: _tab == _kTabVisuals[0].tab, onTap: () => setState(() => _tab = _kTabVisuals[0].tab))),
+              const SizedBox(width: 10),
+              Expanded(child: _ModePickerTile(visual: _kTabVisuals[1], selected: _tab == _kTabVisuals[1].tab, onTap: () => setState(() => _tab = _kTabVisuals[1].tab))),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(child: _ModePickerTile(visual: _kTabVisuals[2], selected: _tab == _kTabVisuals[2].tab, onTap: () => setState(() => _tab = _kTabVisuals[2].tab))),
+              const SizedBox(width: 10),
+              Expanded(child: _ModePickerTile(visual: _kTabVisuals[3], selected: _tab == _kTabVisuals[3].tab, onTap: () => setState(() => _tab = _kTabVisuals[3].tab))),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _ModePickerTile(
+            visual: _kTabVisuals[4],
+            selected: _tab == _kTabVisuals[4].tab,
+            onTap: () => setState(() => _tab = _kTabVisuals[4].tab),
+            fullWidth: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActiveBanner() {
+    final v = _visualFor(_tab);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        EskoliaLayout.screenPaddingH,
+        16,
+        EskoliaLayout.screenPaddingH,
+        8,
+      ),
+      child: GradientBorderCard(
+        gradientColors: v.borderColors,
+        glowColor: v.accent.withValues(alpha: 0.45),
+        borderRadius: 20,
+        innerBlurSigma: 14,
+        innerColor: const Color(0xFF0C1018),
+        padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(v.emoji, style: const TextStyle(fontSize: 36)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    v.headline,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _descriptionForTab(),
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.95),
+                      fontSize: 12,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: EskoliaVisual.bgDeep,
+      appBar: EskoliaAppBar.standard(
+        context,
+        title: '\u{1F3C6} Classement',
+        onBack: () => context.canPop() ? context.pop() : context.go('/home'),
+      ),
+      body: Stack(
+        children: [
+          const EskoliaAmbientBackground(),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: _tab == _BoardTab.dailyQuiz ? _buildDailyBody() : _buildUserBody(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDailyBody() {
+    return StreamBuilder<List<DailyLeaderboardEntry>>(
+      stream: _repo.watchDailyQuizScores(dayKey: _todayDayKey, limit: 100),
+      builder: (context, snap) {
+        if (snap.hasError) return _buildError(snap.error!);
+        if (!snap.hasData) {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHubHeader()),
+              SliverToBoxAdapter(child: _buildModePickerGrid()),
+              SliverToBoxAdapter(child: _buildActiveBanner()),
+              const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator(color: Color(0xFF00BCD4))),
+              ),
+            ],
+          );
+        }
+        final entries = snap.data!;
+        if (entries.isEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHubHeader()),
+              SliverToBoxAdapter(child: _buildModePickerGrid()),
+              SliverToBoxAdapter(child: _buildActiveBanner()),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      'Sois le premier à jouer le quiz du jour.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        final podium = _podiumTripletDaily(entries);
+        final rest = entries.length > 3 ? entries.sublist(3) : <DailyLeaderboardEntry>[];
+
+        return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _buildHubHeader()),
+            SliverToBoxAdapter(child: _buildModePickerGrid()),
+            SliverToBoxAdapter(child: _buildActiveBanner()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: EskoliaLayout.screenPaddingH),
+                child: SizedBox(
+                  height: 220,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: _DailyPodiumSlot(
+                          entry: podium[0],
+                          heightFrac: 0.72,
+                          medal: '\u{1F948}',
+                          borderColors: const [Color(0xFFC0C0C0), Color(0xFF94A3B8)],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _DailyPodiumSlot(
+                          entry: podium[1],
+                          heightFrac: 1,
+                          medal: '\u{1F451}',
+                          borderColors: EskoliaVisual.borderGold,
+                          glow: EskoliaVisual.neonGold,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _DailyPodiumSlot(
+                          entry: podium[2],
+                          heightFrac: 0.65,
+                          medal: '\u{1F949}',
+                          borderColors: const [Color(0xFFCD7F32), Color(0xFF8B4513)],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                EskoliaLayout.screenPaddingH,
+                20,
+                EskoliaLayout.screenPaddingH,
+                kEskoliaBottomNavReserve,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) {
+                    final e = rest[i];
+                    final isSelf = _uid != null && e.uid == _uid;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _DailyListRow(entry: e, isSelf: isSelf),
+                    );
+                  },
+                  childCount: rest.length,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildUserBody() {
+    final stream = _userStream();
+    return StreamBuilder<List<LeaderboardEntryModel>>(
+      stream: stream,
+      builder: (context, snap) {
+        if (snap.hasError) return _buildError(snap.error!);
+        if (!snap.hasData) {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHubHeader()),
+              SliverToBoxAdapter(child: _buildModePickerGrid()),
+              SliverToBoxAdapter(child: _buildActiveBanner()),
+              const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator(color: Color(0xFF00BCD4))),
+              ),
+            ],
+          );
+        }
+        final entries = snap.data!;
+        if (entries.isEmpty) {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: _buildHubHeader()),
+              SliverToBoxAdapter(child: _buildModePickerGrid()),
+              SliverToBoxAdapter(child: _buildActiveBanner()),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(
+                    'Aucun joueur pour l’instant.',
+                    style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+        final podium = _podiumTriplet(entries);
+        final rest = entries.length > 3 ? entries.sublist(3) : <LeaderboardEntryModel>[];
+
+        return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _buildHubHeader()),
+            SliverToBoxAdapter(child: _buildModePickerGrid()),
+            SliverToBoxAdapter(child: _buildActiveBanner()),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: EskoliaLayout.screenPaddingH),
+                child: SizedBox(
+                  height: 220,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: _PodiumSlot(
+                          entry: podium[0],
+                          metric: _metric,
+                          metricUnit: _metricUnit(),
+                          heightFrac: 0.72,
+                          medal: '\u{1F948}',
+                          borderColors: const [Color(0xFFC0C0C0), Color(0xFF94A3B8)],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _PodiumSlot(
+                          entry: podium[1],
+                          metric: _metric,
+                          metricUnit: _metricUnit(),
+                          heightFrac: 1,
+                          medal: '\u{1F451}',
+                          borderColors: EskoliaVisual.borderGold,
+                          glow: EskoliaVisual.neonGold,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _PodiumSlot(
+                          entry: podium[2],
+                          metric: _metric,
+                          metricUnit: _metricUnit(),
+                          heightFrac: 0.65,
+                          medal: '\u{1F949}',
+                          borderColors: const [Color(0xFFCD7F32), Color(0xFF8B4513)],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                EskoliaLayout.screenPaddingH,
+                20,
+                EskoliaLayout.screenPaddingH,
+                kEskoliaBottomNavReserve,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, i) {
+                    final e = rest[i];
+                    final isSelf = _uid != null && e.uid == _uid;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: _ListRow(
+                        entry: e,
+                        subtitleLine: _userListSubtitle(e),
+                        trailingValue: _trailingValue(e),
+                        isSelf: isSelf,
+                      ),
+                    );
+                  },
+                  childCount: rest.length,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _ModePickerTile extends StatelessWidget {
+  const _ModePickerTile({
+    required this.visual,
+    required this.selected,
+    required this.onTap,
+    this.fullWidth = false,
+  });
+
+  final _TabVisual visual;
+  final bool selected;
+  final VoidCallback onTap;
+  final bool fullWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: selected
+                  ? [
+                      visual.accent.withValues(alpha: 0.22),
+                      visual.accent.withValues(alpha: 0.06),
+                    ]
+                  : [
+                      Colors.white.withValues(alpha: 0.07),
+                      Colors.white.withValues(alpha: 0.02),
+                    ],
+            ),
+            border: Border.all(
+              width: selected ? 1.8 : 1,
+              color: selected
+                  ? visual.accent.withValues(alpha: 0.85)
+                  : Colors.white.withValues(alpha: 0.1),
+            ),
+            boxShadow: selected
+                ? EskoliaVisual.glow(visual.accent, blur: 18, alpha: 0.28)
+                : null,
+          ),
+          child: Row(
+            children: [
+              Text(visual.emoji, style: const TextStyle(fontSize: 26)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      visual.title,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: selected ? 1 : 0.88),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      visual.pickerSubtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: _slate.withValues(alpha: selected ? 0.95 : 0.65),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (selected)
+                Icon(Icons.check_circle_rounded, color: visual.accent, size: 22),
+            ],
+          ),
+        ),
+      ),
+    );
+    return child;
+  }
+}
+
+class _PodiumSlot extends StatelessWidget {
+  const _PodiumSlot({
+    required this.entry,
+    required this.metric,
+    required this.metricUnit,
+    required this.heightFrac,
+    required this.medal,
+    required this.borderColors,
+    this.glow,
+  });
+
+  final LeaderboardEntryModel? entry;
+  final int Function(LeaderboardEntryModel) metric;
+  final String metricUnit;
+  final double heightFrac;
+  final String medal;
+  final List<Color> borderColors;
+  final Color? glow;
+
+  @override
+  Widget build(BuildContext context) {
+    final e = entry;
+    return FractionallySizedBox(
+      heightFactor: heightFrac,
+      alignment: Alignment.bottomCenter,
+      child: GradientBorderCard(
+        gradientColors: borderColors,
+        glowColor: glow,
+        borderRadius: 18,
+        innerBlurSigma: 12,
+        innerColor: const Color(0xFF101820),
+        padding: const EdgeInsets.all(10),
+        child: e == null
+            ? Center(
+                child: Text('—', style: TextStyle(color: _slate.withValues(alpha: 0.5))),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(medal, style: const TextStyle(fontSize: 26)),
+                  const SizedBox(height: 4),
+                  Text(
+                    e.username.isNotEmpty ? e.username : 'Joueur',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    '${metric(e)} $metricUnit',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.95),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class _DailyPodiumSlot extends StatelessWidget {
+  const _DailyPodiumSlot({
+    required this.entry,
+    required this.heightFrac,
+    required this.medal,
+    required this.borderColors,
+    this.glow,
+  });
+
+  final DailyLeaderboardEntry? entry;
+  final double heightFrac;
+  final String medal;
+  final List<Color> borderColors;
+  final Color? glow;
+
+  @override
+  Widget build(BuildContext context) {
+    final e = entry;
+    return FractionallySizedBox(
+      heightFactor: heightFrac,
+      alignment: Alignment.bottomCenter,
+      child: GradientBorderCard(
+        gradientColors: borderColors,
+        glowColor: glow,
+        borderRadius: 18,
+        innerBlurSigma: 12,
+        innerColor: const Color(0xFF101820),
+        padding: const EdgeInsets.all(10),
+        child: e == null
+            ? Center(
+                child: Text('—', style: TextStyle(color: _slate.withValues(alpha: 0.5))),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(medal, style: const TextStyle(fontSize: 26)),
+                  const SizedBox(height: 4),
+                  Text(
+                    e.username.isNotEmpty ? e.username : 'Joueur',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    '${e.score}/${e.total}',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.95),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class _ListRow extends StatelessWidget {
+  const _ListRow({
+    required this.entry,
+    required this.subtitleLine,
+    required this.trailingValue,
+    required this.isSelf,
+  });
+
+  final LeaderboardEntryModel entry;
+  final String subtitleLine;
+  final String trailingValue;
+  final bool isSelf;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
+    return GradientBorderCard(
+      gradientColors: isSelf
+          ? const [Color(0xFF3B82F6), Color(0xFF6366F1)]
+          : [
+              Colors.white.withValues(alpha: 0.14),
+              Colors.white.withValues(alpha: 0.06),
+            ],
+      glowColor: isSelf ? const Color(0xFF3B82F6) : null,
+      borderRadius: 16,
+      innerBlurSigma: 10,
+      innerColor: const Color(0xFF121A28),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 28,
+            child: Text(
+              '${entry.rank}',
+              style: TextStyle(
+                color: isSelf ? Colors.white : _slate,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: isSelf
+                ? const Color(0xFF3B82F6).withValues(alpha: 0.4)
+                : Colors.white12,
+            child: Text(
+              name.isNotEmpty ? name[0].toUpperCase() : '?',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isSelf ? '$name (Toi)' : name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                if (subtitleLine.isNotEmpty)
+                  Text(
+                    subtitleLine,
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.9),
+                      fontSize: 11,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Text(
+            trailingValue,
+            style: TextStyle(
+              color: isSelf ? Colors.white : _slate,
+              fontWeight: FontWeight.w800,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DailyListRow extends StatelessWidget {
+  const _DailyListRow({
+    required this.entry,
+    required this.isSelf,
+  });
+
+  final DailyLeaderboardEntry entry;
+  final bool isSelf;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
+    return GradientBorderCard(
+      gradientColors: isSelf
+          ? const [Color(0xFF3B82F6), Color(0xFF6366F1)]
+          : [
+              Colors.white.withValues(alpha: 0.14),
+              Colors.white.withValues(alpha: 0.06),
+            ],
+      glowColor: isSelf ? const Color(0xFF3B82F6) : null,
+      borderRadius: 16,
+      innerBlurSigma: 10,
+      innerColor: const Color(0xFF121A28),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 28,
+            child: Text(
+              '${entry.rank}',
+              style: TextStyle(
+                color: isSelf ? Colors.white : _slate,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: isSelf
+                ? const Color(0xFF3B82F6).withValues(alpha: 0.4)
+                : Colors.white12,
+            child: Text(
+              name.isNotEmpty ? name[0].toUpperCase() : '?',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              isSelf ? '$name (Toi)' : name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Text(
+            '${entry.score}/${entry.total}',
+            style: TextStyle(
+              color: isSelf ? Colors.white : _slate,
+              fontWeight: FontWeight.w800,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

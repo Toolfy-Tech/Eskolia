@@ -1,0 +1,497 @@
+{
+  "id": "scenario_a",
+  "title": "AeroTech Solutions",
+  "subtitle": "Construire un Active Directory from scratch",
+  "emoji": "✈️",
+  "color": "#3B82F6",
+  "difficulty": "debutant",
+  "difficulty_label": "Débutant",
+  "description": "Tu es technicien IT junior dans une PME de 80 employés. Aucun Active Directory n'existe. Tu dois tout construire depuis zéro : domaine, utilisateurs, groupes, partages et stratégies de groupe.",
+  "domain": "aerotech.local",
+  "dc_name": "DC-AEROTECH",
+  "server_ip": "192.168.1.10",
+  "os": "Windows Server 2022",
+  "total_missions": 18,
+  "estimated_hours": "8–12h",
+  "prerequisite": null,
+  "context_intro": "Tu viens d'être recruté comme technicien IT junior chez AeroTech Solutions, une PME de 80 employés spécialisée dans la fabrication de pièces aéronautiques. L'entreprise fonctionne encore sans réseau centralisé : chaque PC est indépendant, les partages de fichiers sont anarchiques et les mots de passe s'échangent par post-it. Le DSI t'a confié une mission : déployer Active Directory avant la fin du mois.",
+  "badges": [
+    {
+      "id": "aerotech_fondateur",
+      "title": "Architecte du domaine",
+      "description": "A terminé la mise en place du domaine aerotech.local",
+      "icon": "🏗️",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "aerotech_admin",
+      "title": "Administrateur AeroTech",
+      "description": "A configuré utilisateurs, groupes et partages",
+      "icon": "🛡️",
+      "unlocked_after_level": 3
+    },
+    {
+      "id": "aerotech_expert",
+      "title": "Expert AD AeroTech",
+      "description": "A terminé le scénario AeroTech en intégralité",
+      "icon": "✈️",
+      "unlocked_after_level": 5
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Préparation du serveur",
+      "description": "Avant d'installer quoi que ce soit, ton serveur doit avoir une identité réseau fixe et un nom clair.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "A-0-1",
+          "order": 1,
+          "title": "Adresse IP fixe et nom du serveur",
+          "unlocked_by": null,
+          "estimated_minutes": 15,
+          "objective": "Donner une adresse IP statique au serveur et le renommer DC-AEROTECH.",
+          "context": "Un contrôleur de domaine doit avoir une adresse IP qui ne change jamais. Tous les ordinateurs de l'entreprise vont utiliser cette adresse pour s'identifier et se connecter au domaine. Si l'IP change un jour, plus rien ne fonctionne. Le serveur DNS préféré doit pointer vers 127.0.0.1 — c'est l'adresse de lui-même, ce qui est normal : après l'installation de l'AD, c'est lui qui gérera les noms du réseau.",
+          "steps": [
+            "Clique droit sur l'icône réseau en bas à droite → Ouvrir les paramètres réseau et Internet",
+            "Clique sur Modifier les options d'adaptateur",
+            "Clic droit sur ta carte réseau → Propriétés",
+            "Double-clique sur Protocole Internet version 4 (TCP/IPv4)",
+            "Coche Utiliser l'adresse IP suivante et entre : IP = 192.168.1.10 | Masque = 255.255.255.0 | Passerelle = 192.168.1.1",
+            "Dans Serveur DNS préféré, entre : 127.0.0.1 — puis OK",
+            "Ouvre le menu Démarrer → clic droit sur Ce PC → Propriétés",
+            "Clique sur Renommer ce PC",
+            "Entre le nom DC-AEROTECH et confirme le redémarrage"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas les paramètres réseau ?",
+            "where": "Appuie sur la touche Windows + R → tape ncpa.cpl → Entrée. Ça ouvre directement la liste des cartes réseau."
+          },
+          "expected_result": [
+            "L'adresse IP du serveur est bien 192.168.1.10",
+            "Le serveur DNS préféré est 127.0.0.1",
+            "Le nom du serveur affiché est DC-AEROTECH"
+          ]
+        },
+        {
+          "id": "A-0-2",
+          "order": 2,
+          "title": "Installation du rôle Active Directory",
+          "unlocked_by": "A-0-1",
+          "estimated_minutes": 10,
+          "objective": "Installer le rôle AD DS sur le serveur via le Gestionnaire de serveur.",
+          "context": "L'Active Directory n'est pas activé par défaut sur Windows Server. Il faut d'abord installer le rôle AD DS (Active Directory Domain Services), qui prépare le serveur à devenir un contrôleur de domaine. Cette étape installe les outils et les fichiers nécessaires. Le domaine lui-même sera créé à l'étape suivante.",
+          "steps": [
+            "Ouvre le Gestionnaire de serveur (icône dans la barre des tâches en bas)",
+            "Clique sur Gérer en haut à droite → Ajouter des rôles et fonctionnalités",
+            "Clique sur Suivant jusqu'à l'écran Rôles de serveurs",
+            "Coche Services de domaine Active Directory dans la liste",
+            "Une fenêtre pop-up apparaît — clique sur Ajouter des fonctionnalités",
+            "Clique sur Suivant jusqu'à l'écran Confirmation, puis sur Installer",
+            "Attends la fin de l'installation — ne redémarre pas encore"
+          ],
+          "help": {
+            "text": "Tu ne vois pas le Gestionnaire de serveur ?",
+            "where": "Clique sur le menu Démarrer → cherche Gestionnaire de serveur dans la liste. Il peut aussi être représenté par une icône de tableau de bord dans la barre des tâches."
+          },
+          "expected_result": [
+            "Dans le Gestionnaire de serveur, AD DS apparaît dans le menu de gauche",
+            "Un petit drapeau jaune avec une notification est visible en haut à droite du Gestionnaire de serveur",
+            "Aucun redémarrage n'a été effectué"
+          ]
+        },
+        {
+          "id": "A-0-3",
+          "order": 3,
+          "title": "Création du domaine aerotech.local",
+          "unlocked_by": "A-0-2",
+          "estimated_minutes": 20,
+          "objective": "Promouvoir le serveur en contrôleur de domaine et créer la forêt aerotech.local.",
+          "context": "La promotion est le moment où le serveur devient réellement un contrôleur de domaine. C'est lui qui va gérer tous les comptes, toutes les connexions et toutes les règles de sécurité de l'entreprise. Le terme forêt désigne le niveau le plus haut de l'organisation Active Directory — dans notre cas, elle contient un seul domaine : aerotech.local. Tu devras aussi définir un mot de passe DSRM : c'est un mot de passe de secours qui permet d'accéder au serveur en cas de panne grave. Note-le bien quelque part.",
+          "steps": [
+            "Dans le Gestionnaire de serveur, clique sur le drapeau jaune en haut à droite",
+            "Clique sur Promouvoir ce serveur en contrôleur de domaine",
+            "Choisis Ajouter une nouvelle forêt",
+            "Dans Nom de domaine racine, tape : aerotech.local — puis Suivant",
+            "Laisse les options par défaut, définis un mot de passe DSRM solide et note-le",
+            "Clique sur Suivant à chaque écran sans rien changer",
+            "Clique sur Installer — le serveur va redémarrer automatiquement"
+          ],
+          "help": {
+            "text": "L'assistant te demande un mot de passe DSRM, c'est quoi ?",
+            "where": "Le DSRM (Directory Services Restore Mode) est un mot de passe de secours. Il sert uniquement si l'AD tombe complètement en panne et qu'il faut le réparer. Choisis quelque chose de solide et note-le dans un endroit sûr — tu n'en auras probablement jamais besoin, mais c'est obligatoire."
+          },
+          "expected_result": [
+            "Le serveur a redémarré automatiquement après la promotion",
+            "L'écran de connexion affiche maintenant AEROTECH\\Administrateur",
+            "La console Utilisateurs et ordinateurs Active Directory (dsa.msc) est accessible depuis les Outils dans le Gestionnaire de serveur"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Organisation du domaine (OUs)",
+      "description": "Créer les dossiers organisationnels qui structureront tous les objets du domaine.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "A-1-1",
+          "order": 1,
+          "title": "Créer l'arborescence des services",
+          "unlocked_by": "A-0-3",
+          "estimated_minutes": 20,
+          "objective": "Créer les Unités Organisationnelles (OUs) qui représentent les services d'AeroTech.",
+          "context": "Les Unités Organisationnelles (OU) sont comme des dossiers dans l'Active Directory. Elles permettent de ranger les utilisateurs, ordinateurs et groupes de manière logique, et surtout d'appliquer des règles différentes selon les services. Par exemple, les règles de sécurité de l'atelier seront différentes de celles de la direction. Règle importante : ne jamais laisser les comptes dans le dossier Users par défaut — on ne peut pas y appliquer de stratégies.",
+          "steps": [
+            "Ouvre le Gestionnaire de serveur → Outils → Utilisateurs et ordinateurs Active Directory (ou Démarrer → tape dsa.msc)",
+            "Dans l'arborescence à gauche, développe aerotech.local",
+            "Clic droit sur aerotech.local → Nouveau → Unité d'organisation",
+            "Nomme-la AEROTECH et coche Protéger le conteneur contre une suppression accidentelle — OK",
+            "Clic droit sur l'OU AEROTECH → Nouveau → Unité d'organisation : crée Direction",
+            "Répète pour créer dans AEROTECH : RH, Atelier, Bureau_Etudes, Groupes, Ordinateurs"
+          ],
+          "help": {
+            "text": "Tu ne vois pas l'option Nouveau → Unité d'organisation ?",
+            "where": "Vérifie que tu fais bien un clic droit sur l'OU AEROTECH (ou sur aerotech.local pour la racine) et non sur un objet dedans. L'option Nouveau n'apparaît que sur les conteneurs, pas sur les utilisateurs ou groupes."
+          },
+          "expected_result": [
+            "L'OU AEROTECH est visible à la racine du domaine aerotech.local",
+            "À l'intérieur d'AEROTECH, les 6 sous-OUs existent : Direction, RH, Atelier, Bureau_Etudes, Groupes, Ordinateurs",
+            "Toutes les OUs ont la protection contre la suppression accidentelle activée"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Gestion des utilisateurs",
+      "description": "Créer les comptes utilisateurs dans les bonnes OUs et connecter les postes clients au domaine.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "A-2-1",
+          "order": 1,
+          "title": "Créer les premiers comptes utilisateurs",
+          "unlocked_by": "A-1-1",
+          "estimated_minutes": 20,
+          "objective": "Créer les comptes de Jean Dupont (Direction) et Alice Martin (Bureau d'études).",
+          "context": "Chaque employé d'AeroTech doit avoir un compte personnel unique dans l'Active Directory. Ce compte lui permet de se connecter depuis n'importe quel PC du domaine et d'accéder aux ressources auxquelles il a droit. La bonne pratique est d'obliger l'utilisateur à changer son mot de passe dès sa première connexion — ainsi, seul lui connaît son propre mot de passe.",
+          "steps": [
+            "Dans dsa.msc, navigue vers l'OU AEROTECH → Direction",
+            "Clic droit sur Direction → Nouveau → Utilisateur",
+            "Prénom : Jean | Nom : Dupont | Nom de connexion : j.dupont — Suivant",
+            "Définis un mot de passe temporaire | Coche L'utilisateur doit changer le mot de passe à la prochaine ouverture de session — Suivant → Terminer",
+            "Dans l'OU Bureau_Etudes, crée de la même façon : Alice Martin | Login : a.martin",
+            "Crée 3 ou 4 autres utilisateurs fictifs dans les OUs RH et Atelier pour la suite des exercices"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas l'OU Direction dans dsa.msc ?",
+            "where": "Dans l'arborescence de gauche, développe aerotech.local → puis développe l'OU AEROTECH. Les sous-OUs Direction, RH, etc. doivent apparaître en dessous. Si tu ne les vois pas, vérifie que tu as bien fait la mission précédente."
+          },
+          "expected_result": [
+            "j.dupont apparaît dans l'OU Direction",
+            "a.martin apparaît dans l'OU Bureau_Etudes",
+            "Les comptes obligent le changement de mot de passe à la première connexion",
+            "Plusieurs utilisateurs de test existent dans RH et Atelier"
+          ]
+        },
+        {
+          "id": "A-2-2",
+          "order": 2,
+          "title": "Connecter un PC au domaine",
+          "unlocked_by": "A-2-1",
+          "estimated_minutes": 25,
+          "objective": "Joindre une machine Windows 10 ou 11 au domaine aerotech.local.",
+          "context": "Rejoindre le domaine, c'est intégrer un PC au réseau centralisé d'AeroTech. Une fois membre du domaine, n'importe quel utilisateur créé dans l'AD peut se connecter sur ce PC avec son compte. Pour que ça fonctionne, le PC doit d'abord pouvoir communiquer avec le contrôleur de domaine — son DNS préféré doit donc pointer vers l'adresse du DC (192.168.1.10).",
+          "steps": [
+            "Sur le PC client Windows, configure le DNS préféré à 192.168.1.10 (l'adresse du DC)",
+            "Vérifie que tu peux pinguer le DC : ouvre une invite de commandes → tape ping 192.168.1.10",
+            "Clic droit sur le menu Démarrer → Système",
+            "Clique sur Renommer ce PC (avancé) ou Paramètres de nom de domaine avancés",
+            "Dans l'onglet Nom de l'ordinateur, clique sur Modifier",
+            "Coche Domaine et tape : aerotech.local — OK",
+            "Entre les identifiants Administrateur du domaine quand c'est demandé",
+            "Redémarre le PC client"
+          ],
+          "help": {
+            "text": "Le message d'erreur dit que le domaine est introuvable ?",
+            "where": "Le problème vient presque toujours du DNS. Vérifie que le DNS préféré du PC client est bien 192.168.1.10 (et non celui du routeur ou de ton FAI). Sans ça, le PC ne sait pas où trouver aerotech.local."
+          },
+          "expected_result": [
+            "Le PC affiche Bienvenue dans le domaine aerotech.local après la jointure",
+            "Dans dsa.msc, un objet ordinateur est apparu dans le conteneur Computers",
+            "Déplace cet objet dans l'OU Ordinateurs (clic droit → Déplacer)",
+            "Un compte utilisateur du domaine peut se connecter sur ce PC"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Groupes et partages",
+      "description": "Créer les groupes de sécurité et les dossiers partagés pour organiser les accès aux ressources.",
+      "emoji": "🟠",
+      "color": "#F97316",
+      "missions": [
+        {
+          "id": "A-3-1",
+          "order": 1,
+          "title": "Créer les groupes de sécurité",
+          "unlocked_by": "A-2-2",
+          "estimated_minutes": 20,
+          "objective": "Créer le groupe G_RH_Utilisateurs et y ajouter les membres de la RH.",
+          "context": "Les groupes de sécurité sont la clé d'une gestion propre des accès. Plutôt que de donner des droits à chaque utilisateur un par un, on crée un groupe (par exemple G_RH) et on lui donne les droits une seule fois. Ensuite, ajouter quelqu'un dans ce groupe lui donne automatiquement tous les accès associés. Quand il quitte l'entreprise, retirer son compte du groupe suffit à supprimer tous ses accès.",
+          "steps": [
+            "Dans dsa.msc, navigue vers l'OU AEROTECH → Groupes",
+            "Clic droit → Nouveau → Groupe",
+            "Nom : G_RH_Utilisateurs | Étendue du groupe : Global | Type de groupe : Sécurité — OK",
+            "Double-clique sur le groupe pour ouvrir ses propriétés",
+            "Va dans l'onglet Membres → Ajouter",
+            "Cherche et ajoute les utilisateurs de l'OU RH",
+            "Crée aussi G_Bureau_Etudes et G_Atelier_Ouvriers sur le même modèle"
+          ],
+          "help": {
+            "text": "Tu ne sais pas quelle étendue choisir pour le groupe ?",
+            "where": "Pour la plupart des cas en PME, choisis Global — c'est le type standard pour les groupes d'utilisateurs d'un même domaine. L'étendue Universel est utile uniquement si tu as plusieurs domaines dans la forêt, ce qui n'est pas notre cas."
+          },
+          "expected_result": [
+            "G_RH_Utilisateurs existe dans l'OU Groupes avec le type Sécurité - Global",
+            "Le groupe contient les utilisateurs de la RH dans son onglet Membres",
+            "G_Bureau_Etudes et G_Atelier_Ouvriers sont aussi créés"
+          ]
+        },
+        {
+          "id": "A-3-2",
+          "order": 2,
+          "title": "Créer un dossier partagé sécurisé",
+          "unlocked_by": "A-3-1",
+          "estimated_minutes": 30,
+          "objective": "Créer le dossier partagé RH$ accessible uniquement aux membres de G_RH_Utilisateurs.",
+          "context": "AeroTech a besoin d'un espace partagé sur le serveur pour que l'équipe RH puisse stocker ses documents. Ce dossier doit être invisible depuis le réseau (d'où le $ en fin de nom) et accessible uniquement aux personnes autorisées. Il y a deux niveaux de sécurité à configurer : les permissions de partage (pour l'accès via le réseau) et les permissions NTFS (pour les droits sur les fichiers eux-mêmes).",
+          "steps": [
+            "Sur le serveur, ouvre l'Explorateur de fichiers et crée le dossier C:\\Partages\\RH",
+            "Clic droit sur le dossier RH → Propriétés → onglet Partage",
+            "Clique sur Partage avancé → coche Partager ce dossier",
+            "Nom du partage : RH$ (le $ le rend invisible sur le réseau) → Autorisations",
+            "Dans les autorisations de partage : ajoute Tout le monde avec Contrôle total → OK",
+            "De retour dans les Propriétés, va dans l'onglet Sécurité → Modifier",
+            "Supprime le groupe Tout le monde s'il est présent",
+            "Ajoute G_RH_Utilisateurs avec le droit Modification → OK"
+          ],
+          "help": {
+            "text": "Pourquoi Tout le monde en partage ET G_RH en NTFS ?",
+            "where": "Les deux niveaux de sécurité fonctionnent en même temps. Windows applique le plus restrictif des deux. En mettant Tout le monde sur le partage, on laisse Windows Server gérer toute la sécurité via NTFS, qui est beaucoup plus précis. C'est la méthode recommandée."
+          },
+          "expected_result": [
+            "Le dossier C:\\Partages\\RH existe sur le serveur",
+            "Le partage RH$ n'est pas visible en parcourant \\\\DC-AEROTECH dans l'explorateur",
+            "Un membre de G_RH_Utilisateurs peut accéder au dossier via \\\\DC-AEROTECH\\RH$",
+            "Un utilisateur hors du groupe RH ne peut pas accéder au dossier"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Stratégies de groupe (GPO)",
+      "description": "Appliquer des règles centralisées pour uniformiser et sécuriser les postes de l'entreprise.",
+      "emoji": "🔴",
+      "color": "#EF4444",
+      "missions": [
+        {
+          "id": "A-4-1",
+          "order": 1,
+          "title": "Imposer un fond d'écran à tous les employés",
+          "unlocked_by": "A-3-2",
+          "estimated_minutes": 25,
+          "objective": "Créer une GPO qui impose le fond d'écran AeroTech à tous les utilisateurs du domaine.",
+          "context": "Les GPO (Group Policy Objects — Stratégies de groupe) sont des règles qu'on applique à des groupes d'utilisateurs ou d'ordinateurs depuis le serveur. Elles se mettent à jour automatiquement sur tous les postes, sans intervention manuelle. C'est l'outil central de l'administrateur AD pour gérer des centaines de PC depuis un seul endroit. On commence par quelque chose de simple et visible : le fond d'écran.",
+          "steps": [
+            "Ouvre le Gestionnaire de serveur → Outils → Gestion des stratégies de groupe (ou tape gpmc.msc)",
+            "Dans l'arborescence, développe Forêt → Domaines → aerotech.local",
+            "Clic droit sur l'OU AEROTECH → Créer un objet GPO dans ce domaine et le lier ici",
+            "Nomme la GPO : GPO_Wallpaper_AeroTech — OK",
+            "Clic droit sur la GPO → Modifier — l'éditeur de stratégie de groupe s'ouvre",
+            "Navigue vers Configuration utilisateur → Modèles d'administration → Bureau → Bureau",
+            "Double-clique sur Papier peint du Bureau → Active → entre le chemin de ton image (ex: C:\\Windows\\Web\\Wallpaper\\Windows\\img0.jpg) → OK"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas le paramètre Papier peint du Bureau ?",
+            "where": "Dans l'éditeur GPO, le chemin exact est : Configuration utilisateur → Modèles d'administration → Bureau → Bureau → Papier peint du Bureau. Attention, il y a deux niveaux Bureau imbriqués. Le premier est le dossier principal, le second contient les paramètres."
+          },
+          "expected_result": [
+            "La GPO GPO_Wallpaper_AeroTech est visible dans gpmc.msc, liée à l'OU AEROTECH",
+            "Sur un PC client, tape gpupdate /force dans une invite de commande puis reconnecte-toi",
+            "Le fond d'écran imposé apparaît sur le bureau de l'utilisateur"
+          ]
+        },
+        {
+          "id": "A-4-2",
+          "order": 2,
+          "title": "Mapper automatiquement un lecteur réseau",
+          "unlocked_by": "A-4-1",
+          "estimated_minutes": 25,
+          "objective": "Créer une GPO qui connecte automatiquement le lecteur R: vers le partage RH$ pour les membres de la RH.",
+          "context": "Plutôt que de demander à chaque employé RH de mémoriser le chemin \\\\DC-AEROTECH\\RH$ et de le connecter manuellement, on peut automatiser ça via une GPO. Le lecteur R: apparaîtra automatiquement à chaque connexion pour les membres du groupe RH, et pas pour les autres.",
+          "steps": [
+            "Dans gpmc.msc, crée une nouvelle GPO liée à AEROTECH : GPO_Lecteur_RH",
+            "Modifie la GPO → Configuration utilisateur → Préférences → Paramètres Windows → Mappages de lecteurs",
+            "Clic droit dans la zone de droite → Nouveau → Lecteur mappé",
+            "Action : Créer | Emplacement : \\\\DC-AEROTECH\\RH$ | Reconnecter : coché | Lettre : R",
+            "Clique sur l'onglet Commun → coche Ciblage au niveau de l'élément → Ciblage",
+            "Clique sur Nouvel élément → Groupe de sécurité → parcours et sélectionne G_RH_Utilisateurs → OK",
+            "Valide tout et ferme l'éditeur"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas Mappages de lecteurs dans les Préférences ?",
+            "where": "Le chemin dans l'éditeur GPO est : Configuration utilisateur → Préférences (pas Stratégies) → Paramètres Windows → Mappages de lecteurs. Attention à ne pas confondre Préférences et Stratégies, ce sont deux sections différentes dans l'éditeur."
+          },
+          "expected_result": [
+            "Connecté avec un compte de l'OU RH membre de G_RH_Utilisateurs : le lecteur R: apparaît dans l'Explorateur",
+            "Connecté avec a.martin (Bureau d'études, hors du groupe RH) : le lecteur R: n'apparaît pas"
+          ]
+        },
+        {
+          "id": "A-4-3",
+          "order": 3,
+          "title": "Bloquer l'invite de commandes pour l'Atelier",
+          "unlocked_by": "A-4-2",
+          "estimated_minutes": 20,
+          "objective": "Créer une GPO qui empêche les utilisateurs de l'Atelier d'ouvrir l'invite de commandes.",
+          "context": "Les ouvriers de l'atelier n'ont aucune raison d'utiliser l'invite de commandes (cmd.exe). La laisser accessible représente un risque : un utilisateur malveillant ou maladroit pourrait l'utiliser pour contourner des restrictions ou modifier des paramètres système. Une GPO ciblée sur l'OU Atelier résout ce problème sans toucher aux autres services.",
+          "steps": [
+            "Dans gpmc.msc, crée une GPO liée uniquement à l'OU Atelier : GPO_Restrictions_Atelier",
+            "Modifie la GPO → Configuration utilisateur → Modèles d'administration → Système",
+            "Double-clique sur Empêcher l'accès à l'invite de commandes",
+            "Sélectionne Activé | Pour Désactiver également le traitement des scripts, laisse sur Non → OK"
+          ],
+          "help": {
+            "text": "Comment vérifier que la GPO s'applique bien uniquement à l'Atelier ?",
+            "where": "Dans gpmc.msc, clique sur la GPO GPO_Restrictions_Atelier et regarde l'onglet Étendue. Le lien doit pointer vers l'OU Atelier (pas vers AEROTECH). Si tu vois AEROTECH, la GPO s'appliquera à tout le monde — délie-la et relie-la au bon niveau."
+          },
+          "expected_result": [
+            "La GPO est liée à l'OU Atelier uniquement, pas à AEROTECH",
+            "Connecté avec un compte de l'OU Atelier : cmd.exe affiche un message d'erreur et se ferme",
+            "Connecté avec j.dupont (Direction) : cmd.exe fonctionne normalement"
+          ]
+        },
+        {
+          "id": "A-4-4",
+          "order": 4,
+          "title": "Débloquer un compte utilisateur verrouillé",
+          "unlocked_by": "A-4-3",
+          "estimated_minutes": 15,
+          "objective": "Simuler un verrouillage de compte et le déverrouiller depuis le serveur.",
+          "context": "C'est l'une des situations les plus fréquentes en helpdesk : un utilisateur a tapé 3 fois le mauvais mot de passe et son compte est maintenant verrouillé. Il te contacte en panique car il ne peut plus travailler. En quelques clics depuis le DC, tu règles le problème en moins d'une minute.",
+          "steps": [
+            "Sur un PC client, tente de te connecter avec n'importe quel compte du domaine en entrant intentionnellement un mauvais mot de passe 3 fois de suite",
+            "De retour sur le DC, ouvre dsa.msc",
+            "Retrouve le compte utilisateur verrouillé et double-clique dessus pour ouvrir ses propriétés",
+            "Dans l'onglet Compte, cherche la case Déverrouiller le compte et coche-la → OK",
+            "Si l'utilisateur a aussi oublié son mot de passe : clic droit sur le compte → Réinitialiser le mot de passe"
+          ],
+          "help": {
+            "text": "Tu ne vois pas la case Déverrouiller le compte dans l'onglet Compte ?",
+            "where": "La case n'apparaît que si le compte est effectivement verrouillé. Si tu ne la vois pas, c'est que le compte n'est pas encore verrouillé — tente encore quelques mauvais mots de passe depuis le PC client, puis reviens vérifier."
+          },
+          "expected_result": [
+            "Le compte était bien verrouillé (message d'erreur à la connexion sur le PC client)",
+            "Après déverrouillage dans dsa.msc, l'utilisateur peut se reconnecter normalement avec son mot de passe correct"
+          ]
+        },
+        {
+          "id": "A-4-5",
+          "order": 5,
+          "title": "Déléguer la réinitialisation des mots de passe",
+          "unlocked_by": "A-4-4",
+          "estimated_minutes": 25,
+          "objective": "Permettre à un responsable RH de réinitialiser les mots de passe des employés de l'Atelier sans être administrateur.",
+          "context": "En entreprise, les appels pour les mots de passe oubliés sont très fréquents. Plutôt que de tout gérer toi-même ou de mettre le responsable RH dans le groupe Admins du domaine (ce qui lui donnerait des droits beaucoup trop larges), tu peux lui déléguer uniquement le droit de réinitialiser les mots de passe, et uniquement pour l'OU Atelier. C'est le principe du moindre privilège.",
+          "steps": [
+            "Dans dsa.msc, clic droit sur l'OU Atelier → Délégation de contrôle",
+            "L'assistant de délégation s'ouvre → Suivant",
+            "Clique sur Ajouter et cherche l'utilisateur responsable RH (ou le groupe G_RH_Utilisateurs) → Suivant",
+            "Dans les tâches à déléguer, coche Réinitialiser les mots de passe utilisateur et forcer le changement au prochain login → Suivant",
+            "Clique sur Terminer",
+            "Teste : connecte-toi avec le compte du responsable RH et tente de réinitialiser le mot de passe d'un compte de l'Atelier"
+          ],
+          "help": {
+            "text": "Où se trouve l'option Délégation de contrôle ?",
+            "where": "Clic droit directement sur l'OU Atelier dans l'arborescence de gauche dans dsa.msc. Si tu ne la vois pas, vérifie que tu as bien activé le mode Affichage avancé dans le menu Affichage de dsa.msc."
+          },
+          "expected_result": [
+            "L'assistant de délégation a été complété pour l'OU Atelier",
+            "Connecté avec le responsable RH : il peut réinitialiser le mot de passe d'un compte de l'Atelier",
+            "Le responsable RH ne peut pas modifier de comptes dans l'OU Direction (hors de sa délégation)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Politique de mots de passe et audit",
+      "description": "Configurer des règles de sécurité adaptées à chaque population et surveiller les connexions.",
+      "emoji": "🛡️",
+      "color": "#8B5CF6",
+      "missions": [
+        {
+          "id": "A-5-1",
+          "order": 1,
+          "title": "Configurer la politique de mots de passe",
+          "unlocked_by": "A-4-5",
+          "estimated_minutes": 20,
+          "objective": "Modifier la politique de mots de passe par défaut du domaine : longueur minimale de 10 caractères, expiration tous les 90 jours.",
+          "context": "Par défaut, Windows Server applique une politique de mots de passe assez permissive. La politique du domaine s'applique à tous les utilisateurs de l'entreprise. Tu vas la renforcer pour qu'elle corresponde aux besoins d'AeroTech : mots de passe plus longs et changement régulier obligatoire.",
+          "steps": [
+            "Dans gpmc.msc, navigue vers Objets de stratégie de groupe → Default Domain Policy",
+            "Clic droit → Modifier",
+            "Configuration ordinateur → Stratégies → Paramètres Windows → Paramètres de sécurité → Stratégies de compte → Stratégie de mot de passe",
+            "Double-clique sur Longueur minimale du mot de passe → Active → mets 10 → OK",
+            "Double-clique sur Durée de vie maximale du mot de passe → Active → mets 90 jours → OK",
+            "Vérifie que Le mot de passe doit respecter des exigences de complexité est activé"
+          ],
+          "help": {
+            "text": "Tu modifies la Default Domain Policy, est-ce risqué ?",
+            "where": "La Default Domain Policy s'applique à tous les utilisateurs du domaine. Toute modification a un impact immédiat à la prochaine mise à jour des GPO. Fais attention à ne modifier que les paramètres indiqués dans cette mission et rien d'autre."
+          },
+          "expected_result": [
+            "La longueur minimale du mot de passe est 10 caractères dans la Default Domain Policy",
+            "La durée de vie maximale est 90 jours",
+            "La complexité est activée (majuscules, minuscules, chiffres ou symboles)"
+          ]
+        },
+        {
+          "id": "A-5-2",
+          "order": 2,
+          "title": "Activer l'audit des connexions",
+          "unlocked_by": "A-5-1",
+          "estimated_minutes": 25,
+          "objective": "Configurer l'audit pour enregistrer toutes les tentatives de connexion échouées sur le domaine.",
+          "context": "L'audit de sécurité permet de garder une trace de tout ce qui se passe sur ton domaine : qui se connecte, qui échoue, qui accède à quoi. Si quelqu'un tente de deviner les mots de passe de tes utilisateurs, tu verras des dizaines d'échecs de connexion dans les journaux d'événements. C'est ta première ligne de détection des tentatives d'intrusion.",
+          "steps": [
+            "Dans gpmc.msc, navigue vers Default Domain Controllers Policy → clic droit → Modifier",
+            "Configuration ordinateur → Stratégies → Paramètres Windows → Paramètres de sécurité → Stratégies locales → Stratégie d'audit",
+            "Double-clique sur Auditer les événements de connexion aux comptes",
+            "Coche Échec (et Succès si tu veux tout tracer) → OK",
+            "Sur le DC, ouvre l'Observateur d'événements : menu Démarrer → Outils d'administration → Observateur d'événements",
+            "Navigue vers Journaux Windows → Sécurité",
+            "Tente une connexion échouée depuis un PC client et retrouve l'événement dans ce journal"
+          ],
+          "help": {
+            "text": "Comment retrouver l'événement de connexion échouée dans l'Observateur ?",
+            "where": "Dans l'Observateur d'événements → Journaux Windows → Sécurité, clique sur Filtrer le journal actuel dans le menu de droite. Entre 4625 dans le champ ID d'événement. Cet ID correspond aux échecs de connexion. Tu verras apparaître tes tentatives échouées."
+          },
+          "expected_result": [
+            "L'audit des connexions est configuré dans la Default Domain Controllers Policy",
+            "Des événements avec l'ID 4625 (échec de connexion) apparaissent dans l'Observateur d'événements après une tentative ratée"
+          ]
+        }
+      ]
+    }
+  ]
+}

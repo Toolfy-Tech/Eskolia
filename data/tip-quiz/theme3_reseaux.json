@@ -1,0 +1,322 @@
+[
+  {
+    "id": 81,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Combien de couches comporte le modèle théorique OSI ?",
+    "answer": "7 couches.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 82,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Quelle est la couche 1 (la plus basse) du modèle OSI ?",
+    "answer": "La couche Physique (câbles, signaux électriques, ondes).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 83,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Que signifient les lettres de l'acronyme TCP/IP ?",
+    "answer": "Transmission Control Protocol / Internet Protocol.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 84,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Dans quelle couche du modèle OSI se situent les adresses IP et le routage ?",
+    "answer": "La couche 3 (Réseau).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 85,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Quelle est la différence de fonctionnement principale entre les protocoles TCP et UDP ?",
+    "answer": "TCP est orienté connexion et vérifie la bonne réception des paquets. UDP est sans connexion, plus rapide mais sans garantie de livraison.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 86,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Dans quelle couche du modèle OSI se trouvent les adresses MAC et les commutateurs (switches) ?",
+    "answer": "La couche 2 (Liaison de données).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 87,
+    "theme": "Réseaux",
+    "sous_theme": "Modèle OSI & TCP/IP",
+    "question": "Qu'est-ce que l'encapsulation de données dans les réseaux ?",
+    "answer": "C'est le processus consistant à ajouter des en-têtes (headers) successifs aux données à mesure qu'elles descendent les couches du modèle avant transmission.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 88,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Quelle est la taille, en bits, d'une adresse IPv4 classique ?",
+    "answer": "32 bits (séparés en 4 octets).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 89,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Quelle est la taille, en bits, d'une adresse de la nouvelle norme IPv6 ?",
+    "answer": "128 bits (notation hexadécimale).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 90,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "À quoi sert un masque de sous-réseau ?",
+    "answer": "Il permet de déterminer quelle partie de l'adresse IP identifie le réseau global, et quelle partie identifie la machine (l'hôte) sur ce réseau.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 91,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Quel est le rôle de la passerelle par défaut (Default Gateway) dans une configuration réseau ?",
+    "answer": "C'est l'adresse IP du routeur (ou box) par lequel l'ordinateur doit passer pour communiquer avec des réseaux externes, comme Internet.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 92,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Quelle adresse IP est universellement utilisée pour désigner la boucle locale (localhost) d'une machine en IPv4 ?",
+    "answer": "127.0.0.1",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 93,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Qu'indique une adresse IP commençant par 169.254.x.x (APIPA) sur une machine Windows ?",
+    "answer": "Elle indique que l'ordinateur est configuré en DHCP mais qu'il n'a trouvé aucun serveur pour lui attribuer une adresse IP valide.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 94,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Que signifie la notation CIDR '/24' à la fin d'une adresse IP (ex: 192.168.1.10/24) ?",
+    "answer": "Cela indique que les 24 premiers bits constituent l'adresse du réseau, ce qui équivaut au masque de sous-réseau 255.255.255.0.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 95,
+    "theme": "Réseaux",
+    "sous_theme": "Adressage IP",
+    "question": "Quelle est la différence de nature entre une adresse MAC et une adresse IP ?",
+    "answer": "L'adresse MAC est une adresse physique gravée en usine sur la carte réseau (couche 2), tandis que l'adresse IP est une adresse logique attribuée pour le routage (couche 3).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 96,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "À quoi sert le protocole DNS (Domain Name System) ?",
+    "answer": "Il traduit les noms de domaine lisibles (ex: google.fr) en adresses IP compréhensibles par les machines.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 97,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Quel protocole a pour mission de distribuer automatiquement des adresses IP et des paramètres réseau aux appareils ?",
+    "answer": "Le protocole DHCP (Dynamic Host Configuration Protocol).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 98,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Sur quel port par défaut fonctionne le protocole de navigation sécurisée HTTPS ?",
+    "answer": "Le port 443.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 99,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Sur quel port par défaut fonctionne le protocole web non sécurisé HTTP ?",
+    "answer": "Le port 80.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 100,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Quel protocole est historiquement utilisé pour uploader et télécharger des fichiers vers un serveur dédié ?",
+    "answer": "Le protocole FTP (File Transfer Protocol).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 101,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Quel protocole est principalement utilisé dans un environnement Windows pour le partage de dossiers et d'imprimantes ?",
+    "answer": "Le protocole SMB (Server Message Block).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 102,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "À quoi sert le protocole ARP (Address Resolution Protocol) sur un réseau local ?",
+    "answer": "Il permet de trouver l'adresse MAC (physique) d'une machine dont on connaît l'adresse IP.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 103,
+    "theme": "Réseaux",
+    "sous_theme": "Protocoles essentiels",
+    "question": "Sur quel port standard fonctionne le protocole SSH, et quelle est sa fonction ?",
+    "answer": "Port 22. Il permet une prise de contrôle à distance sécurisée et chiffrée en ligne de commande.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 104,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Quelle est la principale différence entre un switch (commutateur) et un hub (concentrateur) ?",
+    "answer": "Le switch envoie intelligemment les données uniquement au destinataire, tandis que le hub diffuse les données à tous les ports indistinctement.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 105,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Quel équipement est indispensable pour relier votre réseau local à Internet ?",
+    "answer": "Un routeur.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 106,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Qu'est-ce qu'un point d'accès Wi-Fi (AP ou WAP) ?",
+    "answer": "Un équipement qui agit comme une passerelle permettant à des appareils sans fil de se connecter à un réseau filaire.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 107,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Quel est le rôle d'un pare-feu (Firewall) matériel ou logiciel ?",
+    "answer": "Il surveille, filtre et bloque le trafic réseau entrant et sortant selon des règles de sécurité définies pour protéger le réseau.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 108,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Quel est le rôle d'un serveur Proxy dans une entreprise ?",
+    "answer": "Il sert d'intermédiaire entre les utilisateurs et Internet, permettant de filtrer les sites visités, de mettre en cache les pages web et de cacher l'IP interne.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 109,
+    "theme": "Réseaux",
+    "sous_theme": "Équipements réseau",
+    "question": "Qu'est-ce qu'un VLAN et sur quel équipement le configure-t-on généralement ?",
+    "answer": "C'est un réseau local virtuel qui fragmente logiquement un réseau physique. On le configure sur un switch administrable (couche 2 ou 3).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 110,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "Quelle commande réseau de base permet de vérifier si une machine distante est joignable et de mesurer le temps de réponse ?",
+    "answer": "ping",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 111,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "Sous Windows, quelle commande permet d'afficher les informations détaillées de la carte réseau (IP, Masque, Passerelle, MAC, DNS) ?",
+    "answer": "ipconfig /all",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 112,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "Quelle commande (sous Windows) permet d'afficher tous les routeurs traversés par un paquet pour atteindre sa destination ?",
+    "answer": "tracert (ou traceroute sous Linux/macOS).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 113,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "À quoi sert la commande nslookup ?",
+    "answer": "Elle permet d'interroger les serveurs DNS pour trouver l'adresse IP correspondant à un nom de domaine (ou inversement).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 114,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "Quelles commandes successives permettent de forcer un ordinateur Windows à demander une nouvelle adresse IP au serveur DHCP ?",
+    "answer": "ipconfig /release suivi de ipconfig /renew.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 115,
+    "theme": "Réseaux",
+    "sous_theme": "Commandes réseau",
+    "question": "Que permet de visualiser la commande netstat ?",
+    "answer": "Elle affiche les connexions réseau actives du système (TCP/UDP), les ports en écoute et des statistiques de routage.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 116,
+    "theme": "Réseaux",
+    "sous_theme": "Câblage & connexion",
+    "question": "Comment s'appelle le connecteur standard en plastique transparent utilisé au bout des câbles réseau Ethernet ?",
+    "answer": "Le connecteur RJ45.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 117,
+    "theme": "Réseaux",
+    "sous_theme": "Câblage & connexion",
+    "question": "Quel est le principal avantage de la fibre optique sur les câbles en cuivre ?",
+    "answer": "Elle utilise la lumière, offrant des débits beaucoup plus élevés sur de très grandes distances, sans être sensible aux interférences électriques.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 118,
+    "theme": "Réseaux",
+    "sous_theme": "Câblage & connexion",
+    "question": "Que permet la technologie PoE (Power over Ethernet) ?",
+    "answer": "Elle permet de faire transiter l'alimentation électrique d'un périphérique (comme un téléphone IP ou une borne Wi-Fi) dans le même câble réseau RJ45 que les données.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 119,
+    "theme": "Réseaux",
+    "sous_theme": "Câblage & connexion",
+    "question": "En Wi-Fi, quelle est la principale différence entre la bande 2.4 GHz et la bande 5 GHz ?",
+    "answer": "Le 2.4 GHz a une meilleure portée et traverse mieux les obstacles mais est plus lent. Le 5 GHz est plus rapide mais avec une portée plus courte.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 120,
+    "theme": "Réseaux",
+    "sous_theme": "Câblage & connexion",
+    "question": "Quelle est la limite de débit théorique classique d'un câble de Catégorie 5e comparée à un câble de Catégorie 6a ?",
+    "answer": "Le Cat 5e est conçu pour 1 Gigabit/seconde (1 Gbps), tandis que le Cat 6a peut supporter jusqu'à 10 Gigabits/seconde (10 Gbps).",
+    "difficulte": "avance"
+  }
+]

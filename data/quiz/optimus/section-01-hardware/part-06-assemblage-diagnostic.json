@@ -1,0 +1,252 @@
+[
+  {
+    "id": "O01-C06-001",
+    "category": "Hardware",
+    "chapter": "Assemblage",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 5 premières étapes logiques du montage d'un PC :",
+    "options": [
+      "Installer le ventirad/watercooling",
+      "Appliquer la pâte thermique",
+      "Installer le CPU sur la carte mère",
+      "Installer la RAM dans les bons slots",
+      "Installer la plaque I/O et visser la CM dans le boîtier"
+    ],
+    "answer": [
+      "Installer le CPU sur la carte mère",
+      "Appliquer la pâte thermique",
+      "Installer le ventirad/watercooling",
+      "Installer la RAM dans les bons slots",
+      "Installer la plaque I/O et visser la CM dans le boîtier"
+    ],
+    "comment": "On prépare toujours le 'cœur' (CPU/RAM/Cooler) sur la boîte de la carte mère avant de l'insérer dans le boîtier."
+  },
+  {
+    "id": "O01-C06-002",
+    "category": "Hardware",
+    "chapter": "Sécurité",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Que signifie l'acronyme ESD et pourquoi est-ce la bête noire du technicien hardware ?",
+    "answer": "ElectroStatic Discharge (Décharge Électrostatique).",
+    "comment": "Astuce de pro : Une décharge invisible peut détruire un composant instantanément. Toujours toucher une partie métallique reliée à la terre ou utiliser un bracelet antistatique avant de manipuler des composants."
+  },
+  {
+    "id": "O01-C06-003",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #701 : 'Mon PC s'allume, les ventilos tournent, mais l'écran reste noir. Il n'y a aucun bip au démarrage.'",
+    "checklist": [
+      "Vérifier si le buzzer est bien branché sur la carte mère.",
+      "Vérifier les branchements 24 pins (CM) et 4/8 pins (CPU).",
+      "Tester avec une seule barrette de RAM sur différents slots.",
+      "Vérifier si le moniteur est sur la bonne source."
+    ],
+    "answer": "Composant mal inséré (RAM/GPU) ou alimentation CPU oubliée.",
+    "comment": "Réflexe TIP : L'absence de bip avec un buzzer branché indique souvent que le BIOS n'a même pas pu commencer ses tests (POST)."
+  },
+  {
+    "id": "O01-C06-004",
+    "category": "Hardware",
+    "chapter": "Outils",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel logiciel bootable (hors Windows) est la référence pour tester la fiabilité des barrettes de RAM ?",
+    "answer": "Memtest86",
+    "comment": "On le lance via une clé USB pour tester la RAM sans que Windows n'interfère. Il faut généralement laisser tourner 2 passes complètes."
+  },
+  {
+    "id": "O01-C06-005",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Le PC d'un client rencontre des écrans bleus (BSOD) aléatoires, même quand il ne fait que de la bureautique.",
+    "indices": [
+      "Indice 1 : Les températures sont excellentes (35°C au repos).",
+      "Indice 2 : CrystalDiskInfo indique 'Correct 100%' pour le SSD.",
+      "Indice 3 : Memtest86 affiche des lignes rouges dès les premières minutes de test."
+    ],
+    "answer": "Barrette de RAM défectueuse.",
+    "comment": "Technique de pro : Si Memtest affiche du rouge, la barrette est physiquement endommagée. Il faut la remplacer immédiatement."
+  },
+  {
+    "id": "O01-C06-006",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Vous entendez un petit bruit de 'clic-clic' métallique régulier venant de l'intérieur d'une unité centrale. Quel est votre premier réflexe ?",
+    "answer": "Sauvegarder immédiatement les données sur un support externe et prévoir le remplacement du disque dur (HDD).",
+    "comment": "Astuce de pro : Ce bruit (Head Crash) signifie que la tête de lecture du HDD touche les plateaux. Le disque peut mourir définitivement dans les 5 prochaines minutes."
+  },
+  {
+    "id": "O01-C06-007",
+    "category": "Hardware",
+    "chapter": "Outils",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Le logiciel CrystalDiskInfo permet de connaître le nombre d'heures de fonctionnement d'un SSD ou d'un HDD.",
+    "answer": "Vrai",
+    "comment": "Grâce aux données S.M.A.R.T, on peut voir l'historique complet du disque (allumages, erreurs de lecture, usure)."
+  },
+  {
+    "id": "O01-C06-008",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #705 : 'Depuis que j'ai changé ma carte graphique pour une plus puissante, mon PC s'éteint net dès que je lance un jeu.'",
+    "checklist": [
+      "Vérifier la puissance totale de l'alimentation (Watts).",
+      "Vérifier si les câbles d'alim GPU sont bien clipsés.",
+      "Surveiller les températures avec HWMonitor.",
+      "Vérifier si l'alimentation est de marque fiable (80 Plus)."
+    ],
+    "answer": "Alimentation (PSU) sous-dimensionnée ou défaillante.",
+    "comment": "Réflexe TIP : Une coupure nette 'comme si on débranchait la prise' sans écran bleu est presque toujours liée à l'alimentation ou à une surchauffe extrême."
+  },
+  {
+    "id": "O01-C06-009",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez à un client pourquoi vous devez tester son PC avec 'une seule barrette de mémoire à la fois' pour trouver la panne.",
+    "answer": "C'est comme tester des piles dans une télécommande : si l'une est morte, elle empêche tout le système de fonctionner. En les testant une par une, on identifie la coupable.",
+    "comment": "Critère de réussite : Utiliser une image simple (piles, ampoules) pour expliquer le diagnostic par élimination."
+  },
+  {
+    "id": "O01-C06-010",
+    "category": "Hardware",
+    "chapter": "Outils",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel outil de diagnostic permet de 'stresser' la carte graphique pour vérifier sa stabilité et son refroidissement ?",
+    "answer": "FurMark (parfois appelé 'le donut poilu').",
+    "comment": "Attention : À utiliser avec prudence car il pousse le GPU dans ses derniers retranchements thermiques."
+  },
+  {
+    "id": "O01-C06-011",
+    "category": "Hardware",
+    "chapter": "Assemblage",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "À quoi servent les 'entretoises' (standoffs) que l'on visse dans le boîtier avant de poser la carte mère ?",
+    "answer": "À créer un espace vide entre le métal du boîtier et le circuit imprimé de la carte mère.",
+    "comment": "Astuce de pro : Oublier les entretoises provoque un court-circuit immédiat qui peut griller la carte mère dès l'allumage."
+  },
+  {
+    "id": "O01-C06-012",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un processeur (CPU) peut fonctionner sans aucun système de refroidissement pendant quelques minutes sans risque.",
+    "answer": "Faux",
+    "comment": "Un CPU moderne atteint sa température critique (>100°C) en moins de 10 secondes sans dissipateur. Le PC s'éteindra par sécurité presque instantanément."
+  },
+  {
+    "id": "O01-C06-013",
+    "category": "Hardware",
+    "chapter": "Assemblage",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 3 actions pour appliquer correctement la pâte thermique :",
+    "options": [
+      "Poser le ventirad et le verrouiller",
+      "Nettoyer le CPU avec de l'alcool isopropylique",
+      "Déposer un grain de riz de pâte au centre du CPU"
+    ],
+    "answer": [
+      "Nettoyer le CPU avec de l'alcool isopropylique",
+      "Déposer un grain de riz de pâte au centre du CPU",
+      "Poser le ventirad et le verrouiller"
+    ],
+    "comment": "La propreté de la surface est cruciale pour la conduction thermique."
+  },
+  {
+    "id": "O01-C06-014",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Le PC démarre, mais Windows est extrêmement lent. Le curseur de la souris saccade et le disque est à 100% dans le gestionnaire des tâches.",
+    "indices": [
+      "Indice 1 : Le PC est équipé d'un HDD de 1 To.",
+      "Indice 2 : CrystalDiskInfo indique 'Prudence' avec des secteurs réalloués.",
+      "Indice 3 : Le bruit du disque est plus sourd que d'habitude."
+    ],
+    "answer": "Panne matérielle imminente du disque dur (Secteurs défectueux).",
+    "comment": "Technique de pro : Dans ce cas, n'essayez pas de 'réparer' Windows. Clonez le disque ou sauvegardez les fichiers vitaux tant qu'il répond encore."
+  },
+  {
+    "id": "O01-C06-015",
+    "category": "Hardware",
+    "chapter": "Sécurité",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle est la meilleure surface pour poser une carte mère pendant qu'on installe le CPU et la RAM hors du boîtier ?",
+    "answer": "Le dessus de son propre carton d'emballage.",
+    "comment": "Astuce de pro : C'est une surface isolante parfaite. Contrairement aux idées reçues, le 'sac antistatique' est souvent conducteur à l'extérieur, il vaut mieux l'éviter."
+  },
+  {
+    "id": "O01-C06-016",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie le 'POST' au démarrage d'un ordinateur ?",
+    "answer": "Power-On Self-Test",
+    "comment": "C'est la série de tests rapides que le BIOS effectue sur le matériel (RAM, CPU, GPU) avant de lancer l'OS."
+  },
+  {
+    "id": "O01-C06-017",
+    "category": "Hardware",
+    "chapter": "Outils",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quel logiciel de monitoring permet de voir en temps réel les tensions (Volts) et la vitesse des ventilateurs (RPM) ?",
+    "answer": "HWMonitor (ou HWiNFO64)",
+    "comment": "Indispensable pour vérifier si une alimentation faiblit ou si un ventilateur est mort."
+  },
+  {
+    "id": "O01-C06-018",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #710 : 'J'ai branché mon casque sur les ports devant mon PC, mais je n'ai aucun son, alors que derrière ça marche.'",
+    "checklist": [
+      "Vérifier si le câble 'HD Audio' de la façade est branché sur la carte mère.",
+      "Vérifier les réglages de sortie son dans Windows.",
+      "Vérifier si le port en façade n'est pas physiquement cassé.",
+      "Vérifier si les pilotes audio sont à jour."
+    ],
+    "answer": "Connecteur 'Front Panel Header' (HD Audio) non branché ou mal inséré.",
+    "comment": "Réflexe TIP : C'est un oubli de montage très fréquent lors de l'assemblage."
+  },
+  {
+    "id": "O01-C06-019",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Inverser les pôles (+ et -) sur le connecteur du bouton 'Power' empêche le PC de s'allumer.",
+    "answer": "Faux",
+    "comment": "Le bouton Power est un simple interrupteur (contact sec). Le sens n'a pas d'importance. En revanche, pour les LEDs (Power LED, HDD LED), le sens est crucial."
+  },
+  {
+    "id": "O01-C06-020",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle manipulation permet de s'assurer que le problème vient bien de la carte graphique et non de l'écran ou du câble ?",
+    "answer": "Brancher l'écran sur le port vidéo de la carte mère (si le CPU a un processeur graphique intégré).",
+    "comment": "Astuce de pro : Si l'affichage revient, votre carte graphique dédiée est probablement HS ou mal alimentée."
+  }
+]

@@ -1,0 +1,220 @@
+[
+  {
+    "id": "O03-C01-001",
+    "category": "Réseaux",
+    "chapter": "Composants",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Quelle est la différence majeure entre un Hub et un Switch ?",
+    "answer": "Le Hub renvoie les données à tout le monde (broadcast). Le Switch les envoie uniquement au bon destinataire grâce à son adresse MAC.",
+    "comment": "Le Hub est aujourd'hui obsolète car il sature le réseau inutilement."
+  },
+  {
+    "id": "O03-C01-002",
+    "category": "Réseaux",
+    "chapter": "Matériel",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Une 'Box' internet à la maison est en réalité un appareil 3-en-1. Lesquels ?",
+    "answer": "Un Routeur, un Switch et un Point d'accès Wi-Fi.",
+    "comment": "Astuce de pro : En entreprise, on sépare généralement ces fonctions sur des appareils dédiés pour plus de performance et de sécurité."
+  },
+  {
+    "id": "O03-C01-003",
+    "category": "Réseaux",
+    "chapter": "Adresse MAC",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : L'adresse MAC est une adresse logique que l'on peut modifier facilement dans les réglages de Windows.",
+    "answer": "Faux",
+    "comment": "L'adresse MAC est une adresse physique 'brûlée' dans la carte réseau (NIC) par le fabricant. Même si on peut la 'masquer' (spoofing), elle reste unique au matériel."
+  },
+  {
+    "id": "O03-C01-004",
+    "category": "Réseaux",
+    "chapter": "Binaire",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Convertissez le nombre décimal 192 en binaire. Quelle est la bonne suite ?",
+    "options": ["10101010", "11000000", "11110000", "10000000"],
+    "answer": ["11000000"],
+    "comment": "Calcul : 128 (2^7) + 64 (2^6) = 192. C'est le premier octet de la plupart des adresses IP privées !"
+  },
+  {
+    "id": "O03-C01-005",
+    "category": "Réseaux",
+    "chapter": "Supports",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Qu'est-ce que le 'PoE' (Power over Ethernet) et quel est son avantage principal pour un technicien ?",
+    "answer": "C'est la capacité d'alimenter électriquement un appareil (caméra, borne Wi-Fi) via le câble réseau RJ45.",
+    "comment": "Astuce de pro : Cela évite de devoir tirer une ligne électrique 220V jusqu'au plafond pour installer une borne Wi-Fi."
+  },
+  {
+    "id": "O03-C01-006",
+    "category": "Réseaux",
+    "chapter": "Câblage",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez à un client pourquoi il est préférable de câbler son PC de bureau en Ethernet plutôt que d'utiliser le Wi-Fi.",
+    "answer": "Le câble offre une vitesse stable et garantie, alors que le Wi-Fi est partagé entre tous les appareils et peut être perturbé par les murs ou les voisins.",
+    "comment": "Critère de réussite : Mentionner la stabilité et le partage de la bande passante du Wi-Fi."
+  },
+  {
+    "id": "O03-C01-007",
+    "category": "Réseaux",
+    "chapter": "Diagnostic",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #1101 : 'L'imprimante réseau dans le hangar à 150 mètres du switch ne fonctionne pas, alors que le câble est neuf.'",
+    "checklist": [
+      "Vérifier la longueur maximale autorisée pour un câble Ethernet (100m).",
+      "Proposer l'installation d'un switch intermédiaire pour répéter le signal.",
+      "Proposer l'utilisation de la fibre optique pour les longues distances.",
+      "Vérifier si les voyants Link sont allumés sur la carte réseau."
+    ],
+    "answer": "Dépassement de la limite physique des 100 mètres de l'Ethernet cuivre.",
+    "comment": "Réflexe TIP : Au-delà de 100 mètres, le signal électrique s'atténue trop et les données sont perdues."
+  },
+  {
+    "id": "O03-C01-008",
+    "category": "Réseaux",
+    "chapter": "Wi-Fi",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Quels sont les 3 seuls canaux Wi-Fi non-chevauchants sur la bande 2,4 GHz ?",
+    "answer": "Canaux 1, 6 et 11.",
+    "comment": "Utiliser d'autres canaux provoque des interférences avec les réseaux voisins."
+  },
+  {
+    "id": "O03-C01-009",
+    "category": "Réseaux",
+    "chapter": "Sécurité",
+    "tier": "S",
+    "type": "diagnostic_indices",
+    "question": "Le Wi-Fi de l'entreprise est soudainement très lent et certains employés n'arrivent plus à se connecter, alors que les bornes sont neuves.",
+    "indices": [
+      "Indice 1 : Un restaurant vient de s'installer à côté et utilise le même canal Wi-Fi que vous.",
+      "Indice 2 : L'outil Wi-Fi Analyzer montre une saturation énorme sur le canal 6.",
+      "Indice 3 : Passer les bornes sur la fréquence 5 GHz résout immédiatement le problème."
+    ],
+    "answer": "Interférences radio sur la bande 2,4 GHz dues au voisinage.",
+    "comment": "Technique de pro : La bande 2,4 GHz est très encombrée (micro-ondes, Bluetooth, autres Wi-Fi). Le 5 GHz est la solution standard en entreprise."
+  },
+  {
+    "id": "O03-C01-010",
+    "category": "Réseaux",
+    "chapter": "Composants",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Un routeur permet de faire communiquer deux réseaux différents (ex: mon réseau local et internet).",
+    "answer": "Vrai",
+    "comment": "C'est le rôle du routeur d'aiguiller les paquets entre des réseaux ayant des adresses différentes."
+  },
+  {
+    "id": "O03-C01-011",
+    "category": "Réseaux",
+    "chapter": "Binaire",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Quelle est la valeur décimale de l'octet binaire 11111111 ?",
+    "answer": "255",
+    "comment": "C'est la valeur maximale d'un octet, utilisée dans les masques de sous-réseau (ex: 255.255.255.0)."
+  },
+  {
+    "id": "O03-C01-012",
+    "category": "Réseaux",
+    "chapter": "Câblage",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quelle catégorie de câble Ethernet est recommandée aujourd'hui pour une installation d'entreprise supportant le 10 Gb/s ?",
+    "answer": "Catégorie 6a (Cat 6 Augmented).",
+    "comment": "Astuce de pro : Le Cat 6a supporte le 10 Gb/s sur 100 mètres, contrairement au Cat 6 limité à 55 mètres pour ce débit."
+  },
+  {
+    "id": "O03-C01-013",
+    "category": "Réseaux",
+    "chapter": "Wi-Fi",
+    "tier": "B",
+    "type": "reformulation",
+    "question": "Expliquez à un client la différence entre le Wi-Fi 2,4 GHz et le 5 GHz en utilisant l'image d'une route.",
+    "answer": "Le 2,4 GHz est une petite route de campagne (va loin mais lente et encombrée). Le 5 GHz est une autoroute (très rapide mais s'arrête dès qu'il y a un mur).",
+    "comment": "Critère de réussite : Mentionner que le 2,4 GHz traverse mieux les obstacles mais est moins rapide."
+  },
+  {
+    "id": "O03-C01-014",
+    "category": "Réseaux",
+    "chapter": "Sécurité",
+    "tier": "S",
+    "type": "ticket",
+    "question": "TICKET #1105 : 'Un ancien employé licencié hier a été vu sur le parking avec son ordinateur. On a peur qu'il utilise encore le Wi-Fi de l'entreprise.'",
+    "checklist": [
+      "Vérifier si l'entreprise utilise un mot de passe partagé (WPA Personal).",
+      "Si oui, changer immédiatement le mot de passe Wi-Fi sur tous les appareils (Lien Section 02).",
+      "Vérifier si le Wi-Fi utilise l'authentification 802.1X (WPA Enterprise).",
+      "Désactiver le compte de l'utilisateur dans l'Active Directory (Lien Section 02)."
+    ],
+    "answer": "Besoin de révoquer l'accès Wi-Fi (Idéalement via WPA Enterprise).",
+    "comment": "Réflexe TIP : Avec le WPA Enterprise, il suffit de couper le compte AD pour que le Wi-Fi soit coupé instantanément pour cette personne, sans toucher aux autres."
+  },
+  {
+    "id": "O03-C01-015",
+    "category": "Réseaux",
+    "chapter": "Composants",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'acronyme SSID ?",
+    "answer": "Service Set Identifier (C'est tout simplement le nom de votre réseau Wi-Fi).",
+    "comment": "C'est l'identifiant que vous voyez s'afficher sur votre téléphone quand vous cherchez un réseau."
+  },
+  {
+    "id": "O03-C01-016",
+    "category": "Réseaux",
+    "chapter": "Binaire",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Comment savoir instantanément si un nombre binaire est PAIR ou IMPAIR ?",
+    "answer": "On regarde le dernier bit (à droite). S'il vaut 0, c'est pair. S'il vaut 1, c'est impair.",
+    "comment": "Astuce de pro : C'est parce que le dernier bit représente 2^0, soit la valeur 1. C'est la seule valeur impaire possible."
+  },
+  {
+    "id": "O03-C01-017",
+    "category": "Réseaux",
+    "chapter": "Supports",
+    "tier": "B",
+    "type": "vrai_faux",
+    "question": "Vrai ou Faux : Le connecteur RJ45 est le même pour un câble de Catégorie 5e et un câble de Catégorie 7.",
+    "answer": "Vrai",
+    "comment": "Le format physique RJ45 est standardisé. Cependant, le câble de Cat 7 est plus épais et nécessite parfois des connecteurs blindés spécifiques pour garder ses performances."
+  },
+  {
+    "id": "O03-C01-018",
+    "category": "Réseaux",
+    "chapter": "Diagnostic",
+    "tier": "A",
+    "type": "visual_id",
+    "question": "Vous branchez un PC au réseau et les voyants de la carte réseau (NIC) restent éteints. Quel est le premier composant à tester ?",
+    "answer": "Le câble réseau (RJ45).",
+    "comment": "Astuce de pro : 80% des pannes réseau au poste de travail viennent d'un câble défectueux ou mal clipsé."
+  },
+  {
+    "id": "O03-C01-019",
+    "category": "Réseaux",
+    "chapter": "Réseau Local",
+    "tier": "C",
+    "type": "acronyme",
+    "question": "Que signifie l'acronyme LAN ?",
+    "answer": "Local Area Network (Réseau Local).",
+    "comment": "C'est le réseau d'un bureau, d'un bâtiment ou d'une maison."
+  },
+  {
+    "id": "O03-C01-020",
+    "category": "Réseaux",
+    "chapter": "Passerelle",
+    "tier": "A",
+    "type": "astuce_pro",
+    "question": "Quel est le rôle de la 'Passerelle par défaut' (Default Gateway) dans la configuration réseau d'un PC ?",
+    "answer": "C'est l'adresse IP du routeur. C'est la porte de sortie pour aller sur un autre réseau ou sur Internet.",
+    "comment": "Astuce de pro : Si la passerelle est absente ou fausse, vous pouvez parler à vos voisins de bureau, mais vous n'aurez jamais accès à Google."
+  }
+]

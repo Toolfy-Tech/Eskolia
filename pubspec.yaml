@@ -1,0 +1,84 @@
+name: eskolia
+description: Eskolia — formation gamifiée (mobile & web).
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.4.0
+  cloud_firestore: ^6.3.0
+  firebase_storage: ^13.3.0
+  flutter_riverpod: ^3.3.1
+  go_router: ^17.2.3
+  google_fonts: ^8.1.0
+  lottie: ^3.3.3
+  flutter_animate: ^4.5.2
+  shared_preferences: ^2.3.5
+  dio: ^5.8.0+1
+  http_parser: ^4.1.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  glassmorphism: ^3.0.0
+  rive: ^0.14.6
+  cached_network_image: ^3.4.1
+  flutter_markdown: ^0.7.7+1
+  url_launcher: ^6.3.2
+  file_picker: ^8.1.7
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  firebase_auth_mocks: ^0.15.1
+  fake_cloud_firestore: ^4.1.0+1
+
+flutter:
+  uses-material-design: true
+  assets:
+    # - data/solo/practical/index.json # Fichier manquant
+    # - data/games/true_false.json # Fichier manquant
+    # - data/lore/tip_dialogues.json # Fichier manquant
+    # Flux RSS accueil (actualités tech) — voir TechNewsRepository.
+    - data/home/tech_feeds.json
+    # Mini-formations Docs métier (RGPD / CNIL / ANSSI).
+    - data/docs/mini_formation_rgpd.md
+    - data/docs/mini_formation_cnil.md
+    - data/docs/mini_formation_anssi.md
+    - data/curriculum/optimus/index.json
+    - data/curriculum/optimus/images/
+    - data/curriculum/optimus/section-01-hardware-architecture/
+    - data/curriculum/optimus/section-02-systeme-exploitation/
+    - data/curriculum/optimus/section-03-reseaux-infrastructure/
+    - data/curriculum/optimus/section-04-maintenance-sauvegarde/
+    - data/curriculum/optimus/section-05-cybersecurite/
+    - data/curriculum/optimus/section-06-utiliser-ia/
+    # QCM par chapitre Optimus (alignés sur data/quiz/optimus/).
+    - data/quiz/optimus/section-01-hardware/
+    - data/quiz/optimus/section-02-systemes/
+    - data/quiz/optimus/section-03-reseaux/
+    - data/quiz/optimus/section-04-maintenance/
+    - data/quiz/optimus/section-05-securite/
+    - data/quiz/optimus/section-06-ia/
+    # Thèmes libres (transversaux).
+    - data/quiz/themes/
+    # Thèmes Terrain — banques hors-parcours ajoutées par le prof.
+    - data/tip-quiz/
+    # Scénarios TP Active Directory.
+    - assets/tp/AD/
+    # Template téléchargeable pour l'import de quiz personnalisé.
+    - assets/templates/
+    # Visuels DALL-E — logos, fonds, badges, icônes nav.
+    - assets/images/logo/
+    - assets/images/backgrounds/
+    - assets/images/badges/
+    - assets/icons/

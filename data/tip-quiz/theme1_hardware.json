@@ -1,0 +1,322 @@
+[
+  {
+    "id": 1,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Quel est le rôle principal du CPU (Processeur) ?",
+    "answer": "C'est le cerveau de l'ordinateur, il exécute les instructions des programmes et effectue les calculs.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 2,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "À quoi sert la mémoire RAM ?",
+    "answer": "Elle stocke temporairement les données en cours d'utilisation par le système pour un accès extrêmement rapide.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 3,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Quel est le rôle de la carte graphique (GPU) ?",
+    "answer": "Elle est chargée de gérer l'affichage, de traiter et de calculer le rendu des images envoyées à l'écran.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 4,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Quelle est la fonction d'une alimentation (PSU) dans un PC ?",
+    "answer": "Elle convertit le courant alternatif (AC) de la prise murale en courant continu (DC) pour alimenter les composants.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 5,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "À quoi sert la pâte thermique ?",
+    "answer": "Elle comble les micro-imperfections entre le CPU et le radiateur pour assurer une dissipation thermique optimale.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 6,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Quelle est la fonction du chipset sur une carte mère ?",
+    "answer": "Il coordonne et gère les flux de données entre le processeur, la mémoire RAM et les périphériques.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 7,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Quelle est la différence principale entre la RAM DDR4 et DDR5 ?",
+    "answer": "La DDR5 offre une bande passante plus élevée, des fréquences supérieures et une consommation électrique de base plus faible.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 8,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Qu'est-ce que le socket CPU ?",
+    "answer": "C'est l'emplacement physique (réceptacle) sur la carte mère permettant d'installer et de connecter le processeur.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 9,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Que signifie VRM sur une carte mère et quel est son rôle ?",
+    "answer": "Voltage Regulator Module. Il régule et abaisse la tension électrique provenant de l'alimentation avant de l'envoyer au CPU.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 10,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Composants internes",
+    "question": "Qu'est-ce qu'un bus système dans l'architecture d'un ordinateur ?",
+    "answer": "C'est un canal de communication partagé permettant le transfert de données entre les différents composants internes de l'ordinateur.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 11,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Quelle est la différence fondamentale entre un HDD et un SSD ?",
+    "answer": "Le HDD utilise des disques magnétiques mécaniques rotatifs, tandis que le SSD utilise des puces de mémoire flash (plus rapide, sans pièces mobiles).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 12,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Qu'est-ce qu'une partition de disque ?",
+    "answer": "C'est une division logique d'un disque physique, permettant de le séparer en plusieurs volumes indépendants (ex: C: et D:).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 13,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "À quoi correspondent les formats 2.5 pouces et 3.5 pouces pour les disques ?",
+    "answer": "Le 2.5\" est typique des SSD SATA et des disques de PC portables. Le 3.5\" est le format standard plus grand des disques durs de bureau.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 14,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Qu'est-ce que la technologie NVMe ?",
+    "answer": "Un protocole de stockage très rapide conçu pour les SSD, qui passe par le bus PCIe au lieu de l'interface SATA.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 15,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Quelle est la différence de vitesse approximative entre le SATA III et un SSD PCIe ?",
+    "answer": "Le SATA III plafonne à environ 600 Mo/s, tandis qu'un SSD PCIe (ex: Gen 4) peut dépasser les 7000 Mo/s.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 16,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Qu'est-ce que le RAID 1 ?",
+    "answer": "C'est le 'Mirroring'. Il copie exactement les mêmes données sur au moins deux disques pour assurer une redondance en cas de panne.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 17,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Comment fonctionne le RAID 5 ?",
+    "answer": "Il nécessite au moins 3 disques et répartit les données ainsi que des bits de parité sur tous les disques, tolérant la perte d'un seul disque.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 18,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Stockage",
+    "question": "Quelle est la différence principale entre les tables de partitionnement MBR et GPT ?",
+    "answer": "Le GPT (moderne/UEFI) supporte des disques de plus de 2 To et un nombre illimité de partitions. Le MBR (ancien/BIOS) est limité à 2 To et 4 partitions primaires.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 19,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Quelle est la particularité physique du port USB-C par rapport à l'USB-A ?",
+    "answer": "L'USB-C est compact et réversible (peut être branché dans les deux sens), contrairement à l'USB-A qui est rectangulaire et unidirectionnel.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 20,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "À quoi sert principalement un port RJ45 ?",
+    "answer": "À brancher un câble réseau Ethernet pour relier l'ordinateur à un réseau local filaire (switch, box internet).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 21,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Que connecte-t-on généralement sur un port SATA interne ?",
+    "answer": "Des périphériques de stockage internes comme des disques durs (HDD), des SSD 2.5 pouces ou des lecteurs optiques.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 22,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Quelle est une différence notable entre les standards HDMI et DisplayPort pour un usage PC ?",
+    "answer": "Le DisplayPort est généralement privilégié sur PC (notamment pour le gaming) car il supporte plus facilement de très hauts taux de rafraîchissement à haute résolution.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 23,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Qu'est-ce que la connectique Thunderbolt ?",
+    "answer": "Une interface ultra-rapide (souvent au format USB-C) permettant de faire passer des données, de la vidéo (DisplayPort) et de l'alimentation électrique sur un seul câble.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 24,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Comment identifiait-on visuellement les premiers ports USB 3.0 par rapport à l'USB 2.0 ?",
+    "answer": "La languette en plastique à l'intérieur du port USB 3.0 était colorée en bleu.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 25,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Connectique & ports",
+    "question": "Que signifient les mentions x4, x8 ou x16 pour un port PCIe ?",
+    "answer": "Elles indiquent le nombre de lignes (lanes) de données disponibles pour ce port, déterminant ainsi sa bande passante maximale.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 26,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "Qu'est-ce que l'ordre de démarrage (Boot sequence) ?",
+    "answer": "C'est la liste prioritaire des périphériques (Disque dur, Clé USB, Réseau) sur lesquels l'ordinateur va chercher un système d'exploitation à lancer.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 27,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "Quelle est la différence majeure entre le BIOS et l'UEFI ?",
+    "answer": "L'UEFI est le standard moderne : il supporte les grands disques (>2 To), possède souvent une interface graphique navigable à la souris et démarre plus vite.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 28,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "À quoi sert la fonctionnalité Secure Boot dans l'UEFI ?",
+    "answer": "Elle vérifie la signature numérique du système d'exploitation au démarrage pour bloquer l'exécution de logiciels malveillants (rootkits) avant le lancement de l'OS.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 29,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "Qu'est-ce qu'une puce TPM (Trusted Platform Module) ?",
+    "answer": "Un composant matériel (ou intégré au firmware) qui stocke de manière sécurisée des clés de chiffrement et d'authentification (requis pour Windows 11).",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 30,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "Que fait l'opération appelée 'Clear CMOS' ?",
+    "answer": "Elle efface la mémoire volatile contenant les réglages personnalisés de la carte mère, la réinitialisant ainsi à ses paramètres d'usine par défaut.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 31,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "BIOS / UEFI",
+    "question": "Quel est le risque principal lors de la mise à jour (flashage) d'un BIOS/UEFI ?",
+    "answer": "Une coupure de courant pendant la procédure peut corrompre le micrologiciel et rendre la carte mère inutilisable de façon permanente (brick).",
+    "difficulte": "avance"
+  },
+  {
+    "id": 32,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Périphériques",
+    "question": "Quelle est la différence de technologie entre une imprimante laser et une imprimante à jet d'encre ?",
+    "answer": "L'imprimante laser utilise de la poudre (toner) fixée par la chaleur, tandis que la jet d'encre projette des micro-gouttelettes d'encre liquide sur le papier.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 33,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Périphériques",
+    "question": "Qu'est-ce que la résolution d'un écran (ex: 1920x1080) ?",
+    "answer": "C'est le nombre de pixels affichés par l'écran, exprimé par la multiplication du nombre de pixels en largeur par le nombre en hauteur.",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 34,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Périphériques",
+    "question": "Que représente le taux de rafraîchissement d'un écran, mesuré en Hertz (Hz) ?",
+    "answer": "C'est le nombre de fois par seconde que l'écran est capable d'actualiser et d'afficher une nouvelle image.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 35,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Périphériques",
+    "question": "Quelle est la principale différence de rendu entre une dalle de type TN et une dalle IPS ?",
+    "answer": "L'IPS offre des couleurs bien plus fidèles et de larges angles de vision, tandis que le TN offre des temps de réponse plus rapides mais des couleurs plus fades.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 36,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Périphériques",
+    "question": "Qu'est-ce que le 'N-Key Rollover' sur un clavier mécanique ?",
+    "answer": "C'est la capacité du clavier à détecter et enregistrer correctement la pression de toutes les touches simultanément, empêchant l'effet de 'ghosting'.",
+    "difficulte": "avance"
+  },
+  {
+    "id": 37,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Maintenance matérielle",
+    "question": "Quel est le risque principal lié à l'accumulation de poussière dans un ordinateur ?",
+    "answer": "La poussière obstrue les radiateurs et ventilateurs, provoquant une surchauffe sévère qui va brider les performances des composants (Thermal Throttling).",
+    "difficulte": "debutant"
+  },
+  {
+    "id": 38,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Maintenance matérielle",
+    "question": "Qu'est-ce qu'une décharge électrostatique (ESD) et comment s'en prémunir en maintenance ?",
+    "answer": "C'est un choc statique invisible qui peut griller des puces sensibles. On s'en prémunit en portant un bracelet antistatique relié à la masse ou à la terre.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 39,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Maintenance matérielle",
+    "question": "Un PC ne s'allume pas du tout (aucun ventilateur, aucune LED). Quels éléments matériels vérifiez-vous en premier ?",
+    "answer": "On vérifie la prise murale, le câble d'alimentation secteur, l'interrupteur I/O à l'arrière de l'alimentation (PSU), puis on teste la PSU elle-même.",
+    "difficulte": "intermediaire"
+  },
+  {
+    "id": 40,
+    "theme": "Hardware & Architecture",
+    "sous_theme": "Maintenance matérielle",
+    "question": "À quoi servent les 'beep codes' émis par la carte mère à l'allumage du PC ?",
+    "answer": "Ce sont des signaux sonores (du POST) servant à diagnostiquer un problème matériel (ex: RAM absente ou défectueuse) lorsque l'écran ne peut pas encore s'allumer.",
+    "difficulte": "intermediaire"
+  }
+]

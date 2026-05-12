@@ -1,0 +1,224 @@
+{
+  "version": "1.1",
+  "updated_at": "2026-05-01",
+  "track": "optimus",
+  "title": "Parcours Optimus",
+  "sections": [
+    {
+      "id": "O01",
+      "titre": "HARDWARE & ARCHITECTURE",
+      "slug": "section-01-hardware-architecture"
+    },
+    {
+      "id": "O02",
+      "titre": "SYSTÈME D'EXPLOITATION",
+      "slug": "section-02-systeme-exploitation"
+    },
+    {
+      "id": "O03",
+      "titre": "RÉSEAUX & INFRASTRUCTURE",
+      "slug": "section-03-reseaux-infrastructure"
+    },
+    {
+      "id": "O04",
+      "titre": "MAINTENANCE ET SAUVEGARDE",
+      "slug": "section-04-maintenance-sauvegarde"
+    },
+    {
+      "id": "O05",
+      "titre": "CYBERSÉCURITÉ",
+      "slug": "section-05-cybersecurite"
+    },
+    {
+      "id": "O06",
+      "titre": "UTILISER L'IA",
+      "slug": "section-06-utiliser-ia"
+    }
+  ],
+  "chapitres": [
+    {
+      "id": "C01",
+      "section": "O01",
+      "titre": "Fondations hardware : boitier, carte mere, CPU",
+      "slug": "chapter-01-fondations-carte-mere-cpu",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-01-fondations-carte-mere-cpu.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-01-fondations.json"
+    },
+    {
+      "id": "C02",
+      "section": "O01",
+      "titre": "Memoire et stockage : RAM, HDD, SSD, NVMe",
+      "slug": "chapter-02-memoire-stockage",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-02-memoire-stockage.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-02-memoire-stockage.json"
+    },
+    {
+      "id": "C03",
+      "section": "O01",
+      "titre": "GPU, connectique et extensions",
+      "slug": "chapter-03-graphisme-connectique-extensions",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-03-graphisme-connectique-extensions.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-03-gpu-connectique.json"
+    },
+    {
+      "id": "C04",
+      "section": "O01",
+      "titre": "Alimentation et refroidissement",
+      "slug": "chapter-04-energie-refroidissement",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-04-energie-refroidissement.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-04-alim-refroidissement.json"
+    },
+    {
+      "id": "C05",
+      "section": "O01",
+      "titre": "Firmware, BIOS et UEFI",
+      "slug": "chapter-05-firmware-bios-uefi",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-05-firmware-bios-uefi.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-05-firmware.json"
+    },
+    {
+      "id": "C06",
+      "section": "O01",
+      "titre": "Assemblage et diagnostic hardware",
+      "slug": "chapter-06-assemblage-diagnostic",
+      "path": "curriculum/optimus/section-01-hardware-architecture/chapter-06-assemblage-diagnostic.md",
+      "mastery_quiz_path": "quiz/optimus/section-01-hardware/part-06-assemblage-diagnostic.json"
+    },
+    {
+      "id": "C01",
+      "section": "O02",
+      "titre": "Systèmes d'exploitation",
+      "slug": "chapter-01-systemes-exploitation",
+      "path": "curriculum/optimus/section-02-systeme-exploitation/chapter-01-systemes-exploitation.md",
+      "mastery_quiz_path": "quiz/optimus/section-02-systemes/part-01-concepts-os.json"
+    },
+    {
+      "id": "C02",
+      "section": "O02",
+      "titre": "Installer Windows",
+      "slug": "chapter-02-installer-windows",
+      "path": "curriculum/optimus/section-02-systeme-exploitation/chapter-02-installer-windows.md",
+      "mastery_quiz_path": "quiz/optimus/section-02-systemes/part-02-installation-windows.json"
+    },
+    {
+      "id": "C03",
+      "section": "O02",
+      "titre": "Virtualisation",
+      "slug": "chapter-03-virtualisation",
+      "path": "curriculum/optimus/section-02-systeme-exploitation/chapter-03-virtualisation.md",
+      "mastery_quiz_path": "quiz/optimus/section-02-systemes/part-03-virtualisation.json"
+    },
+    {
+      "id": "C01",
+      "section": "O03",
+      "titre": "Composants du réseau et binaire",
+      "slug": "chapter-01-composants-reseau-binaire",
+      "path": "curriculum/optimus/section-03-reseaux-infrastructure/chapter-01-composants-reseau-binaire.md",
+      "mastery_quiz_path": "quiz/optimus/section-03-reseaux/part-01-composants-binaire.json"
+    },
+    {
+      "id": "C02",
+      "section": "O03",
+      "titre": "Adressage et segmentation",
+      "slug": "chapter-02-adressage-segmentation",
+      "path": "curriculum/optimus/section-03-reseaux-infrastructure/chapter-02-adressage-segmentation.md",
+      "mastery_quiz_path": "quiz/optimus/section-03-reseaux/part-02-adressage-segmentation.json"
+    },
+    {
+      "id": "C03",
+      "section": "O03",
+      "titre": "OSI, encapsulation et TCP/IP",
+      "slug": "chapter-03-osi-encapsulation-tcp-ip",
+      "path": "curriculum/optimus/section-03-reseaux-infrastructure/chapter-03-osi-encapsulation-tcp-ip.md",
+      "mastery_quiz_path": "quiz/optimus/section-03-reseaux/part-03-osi-tcp-ports.json"
+    },
+    {
+      "id": "C04",
+      "section": "O03",
+      "titre": "VLANs et organisation avancée",
+      "slug": "chapter-04-vlans-organisation",
+      "path": "curriculum/optimus/section-03-reseaux-infrastructure/chapter-04-vlans-organisation.md",
+      "mastery_quiz_path": "quiz/optimus/section-03-reseaux/part-04-vlans-securite.json"
+    },
+    {
+      "id": "C05",
+      "section": "O03",
+      "titre": "Services et protocoles critiques",
+      "slug": "chapter-05-services-protocoles-critiques",
+      "path": "curriculum/optimus/section-03-reseaux-infrastructure/chapter-05-services-protocoles-critiques.md",
+      "mastery_quiz_path": "quiz/optimus/section-03-reseaux/part-05-services-critiques.json"
+    },
+    {
+      "id": "C01",
+      "section": "O04",
+      "titre": "Sauvegarde : règle 3-2-1-1-0",
+      "slug": "chapter-01-sauvegarde-definition",
+      "path": "curriculum/optimus/section-04-maintenance-sauvegarde/chapter-01-sauvegarde-definition.md",
+      "mastery_quiz_path": "quiz/optimus/section-04-maintenance/part-01-regle-32110.json"
+    },
+    {
+      "id": "C02",
+      "section": "O04",
+      "titre": "Stratégies et Plans (RPO/RTO)",
+      "slug": "chapter-04-plan-rpo-rto-snapshots",
+      "path": "curriculum/optimus/section-04-maintenance-sauvegarde/chapter-04-plan-rpo-rto-snapshots.md",
+      "mastery_quiz_path": "quiz/optimus/section-04-maintenance/part-02-strategies-plans.json"
+    },
+    {
+      "id": "C03",
+      "section": "O04",
+      "titre": "Solutions et Diagnostic",
+      "slug": "chapter-05-solutions-sauvegarde",
+      "path": "curriculum/optimus/section-04-maintenance-sauvegarde/chapter-05-solutions-sauvegarde.md",
+      "mastery_quiz_path": "quiz/optimus/section-04-maintenance/part-03-solutions-diagnostic.json"
+    },
+    {
+      "id": "C01",
+      "section": "O05",
+      "titre": "Malwares et menaces",
+      "slug": "chapter-01-malwares",
+      "path": "curriculum/optimus/section-05-cybersecurite/chapter-01-malwares.md",
+      "mastery_quiz_path": "quiz/optimus/section-05-securite/part-01-malwares.json"
+    },
+    {
+      "id": "C02",
+      "section": "O05",
+      "titre": "Détection et analyse",
+      "slug": "chapter-02-detection-analyse",
+      "path": "curriculum/optimus/section-05-cybersecurite/chapter-02-detection-analyse.md",
+      "mastery_quiz_path": "quiz/optimus/section-05-securite/part-02-detection.json"
+    },
+    {
+      "id": "C03",
+      "section": "O05",
+      "titre": "Défense et maintenance",
+      "slug": "chapter-03-defense-outils",
+      "path": "curriculum/optimus/section-05-cybersecurite/chapter-03-defense-outils.md",
+      "mastery_quiz_path": "quiz/optimus/section-05-securite/part-03-defense.json"
+    },
+    {
+      "id": "C01",
+      "section": "O06",
+      "titre": "Méthode R.O.C.T.",
+      "slug": "chapter-01-roct-contexte",
+      "path": "curriculum/optimus/section-06-utiliser-ia/chapter-01-roct-contexte.md",
+      "mastery_quiz_path": "quiz/optimus/section-06-ia/part-01-roct.json"
+    },
+    {
+      "id": "C02",
+      "section": "O06",
+      "titre": "Cas d'usage en informatique",
+      "slug": "chapter-02-cas-usage-informatique",
+      "path": "curriculum/optimus/section-06-utiliser-ia/chapter-02-cas-usage-informatique.md",
+      "mastery_quiz_path": "quiz/optimus/section-06-ia/part-02-cas-usage.json"
+    },
+    {
+      "id": "C03",
+      "section": "O06",
+      "titre": "Pièges et sécurité de l'IA",
+      "slug": "chapter-03-pieges-securite-ia",
+      "path": "curriculum/optimus/section-06-utiliser-ia/chapter-03-pieges-securite-ia.md",
+      "mastery_quiz_path": "quiz/optimus/section-06-ia/part-03-pieges-securite.json"
+    }
+  ]
+}
