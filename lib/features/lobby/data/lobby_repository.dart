@@ -243,6 +243,15 @@ class LobbyRepository {
 
   LobbyModel _lobbyFromDoc(DocumentSnapshot<Map<String, dynamic>> d) {
     final data = d.data() ?? {};
+    final rawMeta = data['playerMeta'] as List? ?? [];
+    final playerMeta = rawMeta.map((p) {
+      final map = Map<String, dynamic>.from(p as Map);
+      return PlayerMeta(
+        userId: map['userId'] as String? ?? '',
+        displayName: map['displayName'] as String? ?? '',
+        avatar: map['avatar'] as String? ?? '\u{1F464}',
+      );
+    }).toList();
     return LobbyModel(
       id: d.id,
       title: data['title'] ?? '',
@@ -263,6 +272,7 @@ class LobbyRepository {
       questionAssetPaths: List<String>.from(data['questionAssetPaths'] ?? []),
       difficultyFilters: List<String>.from(data['difficultyFilters'] ?? []),
       customQuestionsJson: data['customQuestionsJson'] as String? ?? '',
+      playerMeta: playerMeta,
     );
   }
 
