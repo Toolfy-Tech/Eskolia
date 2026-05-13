@@ -79,7 +79,7 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
                   builder: (context, battleSnap) {
                     final battle = battleSnap.data;
                     const activeBattlePhases = {
-                      'countdown', 'question', 'judgment', 'result',
+                      'countdown', 'question', 'judgment', 'result', 'final_judgment',
                     };
                     if (battle != null &&
                         activeBattlePhases.contains(battle.phase) &&
