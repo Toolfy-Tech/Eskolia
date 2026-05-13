@@ -167,9 +167,15 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/tp/:trackId/missions',
       parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(
-        child: PracticalMissionsScreen(trackId: state.pathParameters['trackId']!),
-      ),
+      pageBuilder: (context, state) {
+        final trackId = state.pathParameters['trackId']!;
+        if (trackId.startsWith('tp_ad_')) {
+          return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
+        }
+        return eskoliaTransitionPage(
+          child: PracticalMissionsScreen(trackId: trackId),
+        );
+      },
     ),
     GoRoute(
       path: '/admin/drafts',

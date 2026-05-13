@@ -169,17 +169,19 @@ class BattleState {
     required this.phase,
     this.questions = const [],
     this.lastRoundPoints = const {},
-    this.timed = true,
+    this.timed = false,
     this.gameMode = kLobbyGameModeQuiz,
     this.secondsPerQuestion = 20,
     this.revealedIndices = 0,
+    this.allAnswers = const [],
+    this.allJudgments = const [],
   });
 
   final String lobbyId;
   final List<PlayerState> players;
   final int currentQuestion;
   final int totalQuestions;
-  /// Phases : countdown, question, judgment (le Host corrige), result, finished.
+  /// Phases : countdown, question, final_judgment, finished.
   final String phase;
   final List<BattleQuestion> questions;
   final Map<String, double> lastRoundPoints;
@@ -187,6 +189,10 @@ class BattleState {
   final String gameMode;
   final int secondsPerQuestion;
   final int revealedIndices;
+  /// Réponses de tous les joueurs par question : allAnswers[questionIdx][userId] = texte.
+  final List<Map<String, String>> allAnswers;
+  /// Jugements finaux par question : allJudgments[questionIdx][userId] = true/false/null.
+  final List<Map<String, bool?>> allJudgments;
 
   bool get isSurvival => gameMode == kLobbyGameModeSurvival;
 }
@@ -389,9 +395,11 @@ class LobbyRepository {
         'totalQuestions': questions.length,
         'questions': questions.map((q) => q.toMap()).toList(),
         'players': players.map((p) => _playerToMap(p)).toList(),
-        'timed': lobby.timed,
+        'timed': false,
         'gameMode': lobby.gameMode,
         'revealedIndices': 0,
+        'allAnswers': [],
+        'allJudgments': [],
       },
     });
 
@@ -494,7 +502,6 @@ class LobbyRepository {
       final st = _battleFromDoc(s.data() ?? {}, lobbyId);
       if (st == null || st.phase != 'question') return;
 
-      bool allAnswered = true;
       final players = st.players.map((p) {
         if (p.userId == userId) {
           return PlayerState(
@@ -510,18 +517,22 @@ class LobbyRepository {
             lastScore: 0.0,
           );
         }
-        if (!p.hasAnswered) allAnswered = false;
         return p;
       }).toList();
 
+      // Sauvegarder la réponse dans allAnswers[currentQuestion][userId]
+      final rawAnswers = List<Map<String, dynamic>>.from(
+        st.allAnswers.map((m) => Map<String, dynamic>.from(m)),
+      );
+      while (rawAnswers.length <= st.currentQuestion) {
+        rawAnswers.add(<String, dynamic>{});
+      }
+      rawAnswers[st.currentQuestion][userId] = answerText;
+
       tx.update(ref, {
         'battle.players': players.map((p) => _playerToMap(p)).toList(),
+        'battle.allAnswers': rawAnswers,
       });
-
-      // Si tout le monde a répondu, on passe directement au jugement (correction)
-      if (allAnswered) {
-        tx.update(ref, {'battle.phase': 'judgment'});
-      }
     });
   }
 
@@ -655,10 +666,8 @@ class LobbyRepository {
     if (st == null) return;
 
     if (st.currentQuestion >= st.totalQuestions - 1) {
-      await ref.update({
-        'status': 'finished',
-        'battle.phase': 'finished',
-      });
+      // Dernière question → correction finale
+      await ref.update({'battle.phase': 'final_judgment'});
       return;
     }
 
@@ -678,6 +687,67 @@ class LobbyRepository {
       'battle.phase': 'question',
       'battle.players': players.map((p) => _playerToMap(p)).toList(),
       'battle.revealedIndices': 0,
+    });
+  }
+
+  /// Marque la réponse d'un joueur pour une question donnée (correction finale).
+  /// Met à jour le score ET enregistre le jugement pour éviter les doublons.
+  Future<void> judgeAnswerAtEnd(
+    String lobbyId,
+    int questionIdx,
+    String userId,
+    bool isCorrect,
+  ) async {
+    final ref = _db.collection('lobbies').doc(lobbyId);
+    await _db.runTransaction((tx) async {
+      final s = await tx.get(ref);
+      if (!s.exists) return;
+      final st = _battleFromDoc(s.data() ?? {}, lobbyId);
+      if (st == null) return;
+
+      // Vérifier que ce jugement n'a pas déjà été rendu
+      if (questionIdx < st.allJudgments.length) {
+        final judged = st.allJudgments[questionIdx][userId];
+        if (judged != null) return; // Déjà jugé
+      }
+
+      // Mettre à jour le score du joueur
+      final players = st.players.map((p) {
+        if (p.userId != userId) return p;
+        return PlayerState(
+          userId: p.userId,
+          displayName: p.displayName,
+          avatar: p.avatar,
+          score: p.score + (isCorrect ? 1.0 : 0.0),
+          hasAnswered: p.hasAnswered,
+          isConnected: p.isConnected,
+          lastAnswerText: p.lastAnswerText,
+          lives: p.lives,
+          eliminated: p.eliminated,
+        );
+      }).toList();
+
+      // Enregistrer le jugement
+      final rawJudgments = List<Map<String, dynamic>>.from(
+        st.allJudgments.map((m) => Map<String, dynamic>.from(m)),
+      );
+      while (rawJudgments.length <= questionIdx) {
+        rawJudgments.add(<String, dynamic>{});
+      }
+      rawJudgments[questionIdx][userId] = isCorrect;
+
+      tx.update(ref, {
+        'battle.players': players.map((p) => _playerToMap(p)).toList(),
+        'battle.allJudgments': rawJudgments,
+      });
+    });
+  }
+
+  /// Termine la correction finale et affiche les scores.
+  Future<void> finalizeBattle(String lobbyId) async {
+    await _db.collection('lobbies').doc(lobbyId).update({
+      'status': 'finished',
+      'battle.phase': 'finished',
     });
   }
 
@@ -722,6 +792,18 @@ class LobbyRepository {
       );
     }).toList();
 
+    final rawAnswers = (m['allAnswers'] as List? ?? []);
+    final allAnswers = rawAnswers.map((e) {
+      final map = Map<String, dynamic>.from(e as Map? ?? {});
+      return map.map((k, v) => MapEntry(k, v?.toString() ?? ''));
+    }).toList();
+
+    final rawJudgments = (m['allJudgments'] as List? ?? []);
+    final allJudgments = rawJudgments.map((e) {
+      final map = Map<String, dynamic>.from(e as Map? ?? {});
+      return map.map((k, v) => MapEntry(k, v as bool?));
+    }).toList();
+
     return BattleState(
       lobbyId: lobbyId,
       players: players,
@@ -729,9 +811,11 @@ class LobbyRepository {
       totalQuestions: m['totalQuestions'] ?? 5,
       phase: m['phase'] ?? 'question',
       questions: questions,
-      timed: m['timed'] ?? true,
+      timed: m['timed'] as bool? ?? false,
       gameMode: m['gameMode'] ?? kLobbyGameModeQuiz,
       revealedIndices: m['revealedIndices'] ?? 0,
+      allAnswers: allAnswers,
+      allJudgments: allJudgments,
     );
   }
 
@@ -778,7 +862,7 @@ class LobbyRepository {
     totalQuestions: 5,
     phase: 'finished',
     questions: const [],
-    timed: true,
+    timed: false,
     gameMode: kLobbyGameModeQuiz,
   );
 }

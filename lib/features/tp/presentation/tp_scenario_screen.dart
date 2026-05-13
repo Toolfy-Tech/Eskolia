@@ -165,9 +165,12 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
         ],
 
         // ── CTA continuer ────────────────────────────────────────
-        if (isLoggedIn)
+        if (isLoggedIn && flatMissions.isNotEmpty)
           FilledButton.icon(
-            onPressed: () => context.push('/tp/${widget.trackId}/missions'),
+            onPressed: () {
+              final idx = completedCount.clamp(0, flatMissions.length - 1);
+              _showMissionDetail(flatMissions[idx], idx);
+            },
             style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFF6C63FF),
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -176,7 +179,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
             label: Text(completedCount == 0
                 ? 'Commencer le parcours'
                 : completedCount >= totalMissions
-                    ? 'Revoir le parcours'
+                    ? 'Revoir — Mission 1'
                     : 'Continuer — Mission ${completedCount + 1} / $totalMissions'),
           ),
         const SizedBox(height: 24),
@@ -353,50 +356,76 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     final isCurrent = flatIndex == nextMissionIndex;
     final isLocked = flatIndex > nextMissionIndex;
     final minutes = mission['estimated_minutes'] as int? ?? 0;
+    final tappable = !isLocked;
 
     return Opacity(
       opacity: isLocked ? 0.45 : 1.0,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // État icône
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: isCompleted
-                  ? const Icon(Icons.check_circle_rounded, color: Color(0xFF43E97B), size: 18)
-                  : isCurrent
-                      ? Icon(Icons.radio_button_checked_rounded, color: accentColor, size: 18)
-                      : const Icon(Icons.lock_rounded, color: _slate, size: 16),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mission['title'] as String? ?? '',
-                    style: TextStyle(
-                      color: isCompleted
-                          ? Colors.white.withValues(alpha: 0.55)
-                          : Colors.white.withValues(alpha: 0.92),
-                      fontSize: 13,
-                      fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-                      decoration: isCompleted ? TextDecoration.lineThrough : null,
-                      decorationColor: Colors.white.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  if (minutes > 0)
-                    Text(
-                      '$minutes min',
-                      style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 11),
-                    ),
-                ],
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: tappable ? () => _showMissionDetail(mission, flatIndex) : null,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: isCompleted
+                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF43E97B), size: 18)
+                    : isCurrent
+                        ? Icon(Icons.radio_button_checked_rounded, color: accentColor, size: 18)
+                        : const Icon(Icons.lock_rounded, color: _slate, size: 16),
               ),
-            ),
-          ],
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      mission['title'] as String? ?? '',
+                      style: TextStyle(
+                        color: isCompleted
+                            ? Colors.white.withValues(alpha: 0.55)
+                            : Colors.white.withValues(alpha: 0.92),
+                        fontSize: 13,
+                        fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                        decoration: isCompleted ? TextDecoration.lineThrough : null,
+                        decorationColor: Colors.white.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    if (minutes > 0)
+                      Text(
+                        '$minutes min',
+                        style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 11),
+                      ),
+                  ],
+                ),
+              ),
+              if (tappable)
+                Icon(Icons.chevron_right_rounded, color: _slate.withValues(alpha: 0.5), size: 16),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  void _showMissionDetail(Map<String, dynamic> mission, int flatIndex) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => _MissionDetailSheet(
+        mission: mission,
+        flatIndex: flatIndex,
+        trackId: widget.trackId,
+        onComplete: () async {
+          await _progressRepo.setNextMissionIndex(widget.trackId, flatIndex + 1);
+          if (mounted) {
+            setState(() => _nextMissionIndex = flatIndex + 1);
+          }
+          if (ctx.mounted) Navigator.pop(ctx);
+        },
       ),
     );
   }
@@ -429,4 +458,202 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
       return const Color(0xFF6C63FF);
     }
   }
+}
+
+class _MissionDetailSheet extends StatelessWidget {
+  const _MissionDetailSheet({
+    required this.mission,
+    required this.flatIndex,
+    required this.trackId,
+    required this.onComplete,
+  });
+
+  final Map<String, dynamic> mission;
+  final int flatIndex;
+  final String trackId;
+  final VoidCallback onComplete;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = mission['title'] as String? ?? '';
+    final objective = mission['objective'] as String? ?? '';
+    final missionContext = mission['context'] as String? ?? '';
+    final steps = (mission['steps'] as List<dynamic>?)?.cast<String>() ?? [];
+    final expected = (mission['expected_result'] as List<dynamic>?)?.cast<String>() ?? [];
+    final helpMap = mission['help'] as Map<String, dynamic>?;
+    final minutes = mission['estimated_minutes'] as int? ?? 0;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.9,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (ctx, scrollController) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF151B2E),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            children: [
+              // Poignée
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mission ${flatIndex + 1}',
+                            style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(title, style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+                          if (minutes > 0)
+                            Text('⏱ $minutes min', style: const TextStyle(color: _slate, fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: _slate),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(color: Colors.white12, height: 24),
+              // Contenu scrollable
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                  children: [
+                    if (objective.isNotEmpty) ...[
+                      _sectionTitle('🎯 Objectif'),
+                      const SizedBox(height: 8),
+                      _card(Text(objective, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.5))),
+                      const SizedBox(height: 16),
+                    ],
+                    if (missionContext.isNotEmpty) ...[
+                      _sectionTitle('📖 Contexte'),
+                      const SizedBox(height: 8),
+                      _card(Text(missionContext, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.5))),
+                      const SizedBox(height: 16),
+                    ],
+                    if (steps.isNotEmpty) ...[
+                      _sectionTitle('📋 Étapes à réaliser'),
+                      const SizedBox(height: 8),
+                      _card(Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: steps.asMap().entries.map((e) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 22,
+                                height: 22,
+                                margin: const EdgeInsets.only(top: 1, right: 10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text('${e.key + 1}', style: const TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.bold)),
+                              ),
+                              Expanded(child: Text(e.value, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
+                            ],
+                          ),
+                        )).toList(),
+                      )),
+                      const SizedBox(height: 16),
+                    ],
+                    if (expected.isNotEmpty) ...[
+                      _sectionTitle('✅ Résultat attendu'),
+                      const SizedBox(height: 8),
+                      _card(Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: expected.map((e) => Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('• ', style: TextStyle(color: Color(0xFF43E97B), fontWeight: FontWeight.bold)),
+                              Expanded(child: Text(e, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
+                            ],
+                          ),
+                        )).toList(),
+                      )),
+                      const SizedBox(height: 16),
+                    ],
+                    if (helpMap != null) ...[
+                      _sectionTitle('💡 Aide'),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF9800).withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.3)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.w600)),
+                            if ((helpMap['where'] as String?)?.isNotEmpty == true) ...[
+                              const SizedBox(height: 6),
+                              Text(helpMap['where'] as String, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.4)),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                    FilledButton.icon(
+                      onPressed: onComplete,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF43E97B),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      icon: const Icon(Icons.check_rounded),
+                      label: const Text('Mission terminée', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _sectionTitle(String text) => Text(
+    text,
+    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+  );
+
+  Widget _card(Widget child) => Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.05),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+    ),
+    child: child,
+  );
 }
