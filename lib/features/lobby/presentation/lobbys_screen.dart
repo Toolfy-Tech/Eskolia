@@ -211,6 +211,47 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     );
   }
 
+  Widget _buildCorrectionModeSegment({
+    required bool correctionAtEnd,
+    required void Function(bool value) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Correction', style: TextStyle(color: _slateLight, fontSize: 12)),
+        const SizedBox(height: 8),
+        SegmentedButton<bool>(
+          showSelectedIcon: false,
+          style: const ButtonStyle(visualDensity: VisualDensity.compact),
+          segments: const [
+            ButtonSegment<bool>(
+              value: true,
+              label: Text('À la fin'),
+              icon: Icon(Icons.playlist_add_check_rounded, size: 18),
+            ),
+            ButtonSegment<bool>(
+              value: false,
+              label: Text('Après chaque question'),
+              icon: Icon(Icons.manage_search_rounded, size: 18),
+            ),
+          ],
+          selected: {correctionAtEnd},
+          onSelectionChanged: (s) {
+            if (s.isEmpty) return;
+            onChanged(s.first);
+          },
+        ),
+        const SizedBox(height: 8),
+        Text(
+          correctionAtEnd
+              ? 'Les réponses sont corrigées toutes ensemble à la fin du quiz.'
+              : 'Le créateur corrige les réponses après chaque question avant de passer à la suivante.',
+          style: TextStyle(color: _slateLight.withValues(alpha: 0.85), fontSize: 11, height: 1.35),
+        ),
+      ],
+    );
+  }
+
   Future<void> _openCreateDialog() async {
     var selectedPaths = <String>{};
     var catalogTrack = QuizCatalogTrack.optimusOnly;
@@ -224,6 +265,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
       'difficile',
     };
     var isPrivateLobby = false;
+    var correctionAtEnd = true;
     final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
     // Priorité : username Firestore > displayName Firebase Auth > préfixe email
     String name = FirebaseAuth.instance.currentUser?.displayName ??
@@ -284,6 +326,11 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                       _buildLobbyVisibilitySegment(
                         isPrivate: isPrivateLobby,
                         onChanged: (v) => setD(() => isPrivateLobby = v),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildCorrectionModeSegment(
+                        correctionAtEnd: correctionAtEnd,
+                        onChanged: (v) => setD(() => correctionAtEnd = v),
                       ),
                       const SizedBox(height: 14),
                       const SizedBox(height: 8),
@@ -525,6 +572,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                         questionAssetPaths: const [],
                         customQuestionsJson: jsonEncode(qs),
                         isPrivate: isPrivateLobby,
+                        correctionMode: correctionAtEnd ? 'at_end' : 'after_each',
                         gameMode: kLobbyGameModeQuiz,
                         timed: false,
                         questionCount: data.questions.length.clamp(kLobbyMinQuestionCount, kLobbyMaxQuestionCount),
@@ -549,6 +597,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                         hostId: uid,
                         questionAssetPaths: selectedPaths.toList(),
                         isPrivate: isPrivateLobby,
+                        correctionMode: correctionAtEnd ? 'at_end' : 'after_each',
                         gameMode: kLobbyGameModeQuiz,
                         timed: false,
                         questionCount: questionCount,

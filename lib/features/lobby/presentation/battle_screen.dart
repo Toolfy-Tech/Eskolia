@@ -184,6 +184,10 @@ class _BattleScreenState extends State<BattleScreen> {
     switch (s.phase) {
       case 'countdown': return _buildCountdown();
       case 'question': return _buildQuestion(context, s);
+      case 'judgment':
+        return _isHost
+            ? _buildPerQuestionJudgment(context, s)
+            : _buildWaitingFinalJudgment();
       case 'final_judgment':
         return _isHost ? _buildFinalJudgment(context, s) : _buildWaitingFinalJudgment();
       case 'finished': return _buildFinished(context, s);
@@ -400,6 +404,129 @@ class _BattleScreenState extends State<BattleScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPerQuestionJudgment(BuildContext context, BattleState s) {
+    if (s.currentQuestion < 0 || s.currentQuestion >= s.questions.length) {
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
+    }
+    final qi = s.currentQuestion;
+    final q = s.questions[qi];
+    final answers = qi < s.allAnswers.length ? s.allAnswers[qi] : <String, String>{};
+    final judgments = qi < s.allJudgments.length ? s.allJudgments[qi] : <String, bool?>{};
+    final allJudged = s.players.every((p) => judgments[p.userId] != null);
+    final isLast = qi >= s.totalQuestions - 1;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Container(
+            decoration: const BoxDecoration(border: Border(left: BorderSide(color: _cyan, width: 3))),
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(
+              'CORRECTION — Q${qi + 1}/${s.totalQuestions}',
+              style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.88),
+            ),
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(q.question, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600, height: 1.3)),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: _green.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: _green.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(children: [
+                            const Icon(Icons.check_rounded, color: _green, size: 14),
+                            const SizedBox(width: 6),
+                            Expanded(child: Text(q.answer, style: const TextStyle(color: _green, fontSize: 13, fontWeight: FontWeight.w600))),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.white12, height: 1),
+                  ...s.players.map((p) {
+                    final playerAnswer = answers[p.userId] ?? '—';
+                    final judgment = judgments[p.userId];
+                    final alreadyJudged = judgment != null;
+                    final bg = alreadyJudged
+                        ? (judgment! ? _green.withValues(alpha: 0.07) : _red.withValues(alpha: 0.07))
+                        : Colors.transparent;
+                    final border = alreadyJudged
+                        ? (judgment! ? _green.withValues(alpha: 0.3) : _red.withValues(alpha: 0.3))
+                        : Colors.white10;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(10), border: Border.all(color: border)),
+                      child: Row(children: [
+                        Text(p.avatar, style: const TextStyle(fontSize: 20)),
+                        const SizedBox(width: 10),
+                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(p.displayName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12)),
+                          const SizedBox(height: 2),
+                          Text(playerAnswer, style: TextStyle(color: alreadyJudged ? (judgment! ? _green : _red) : Colors.white70, fontSize: 13)),
+                        ])),
+                        if (alreadyJudged)
+                          Icon(judgment! ? Icons.check_circle_rounded : Icons.cancel_rounded, color: judgment ? _green : _red, size: 22)
+                        else
+                          Row(mainAxisSize: MainAxisSize.min, children: [
+                            IconButton(
+                              icon: const Icon(Icons.close_rounded, color: _red, size: 24),
+                              onPressed: () => _repo.judgeAnswerAtEnd(widget.lobbyId, qi, p.userId, false),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.check_rounded, color: _green, size: 24),
+                              onPressed: () => _repo.judgeAnswerAtEnd(widget.lobbyId, qi, p.userId, true),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+                            ),
+                          ]),
+                      ]),
+                    );
+                  }),
+                  const SizedBox(height: 6),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: EskoliaButton(
+            label: isLast ? 'Voir le récap final' : 'Question suivante →',
+            icon: isLast ? Icons.emoji_events_rounded : Icons.arrow_forward_rounded,
+            variant: allJudged ? EskoliaButtonVariant.primary : EskoliaButtonVariant.secondary,
+            expand: true,
+            onPressed: () => _repo.advanceFromJudgment(widget.lobbyId),
+          ),
+        ),
+      ],
     );
   }
 
@@ -635,7 +762,11 @@ class _BattleScreenState extends State<BattleScreen> {
         return Column(children: [
           Container(width: 40, height: 40, decoration: BoxDecoration(shape: BoxShape.circle, color: p.hasAnswered ? _violet.withValues(alpha:0.2) : Colors.white10, border: Border.all(color: p.hasAnswered ? _violet : Colors.white10)), alignment: Alignment.center, child: Text(p.avatar, style: const TextStyle(fontSize: 20))),
           const SizedBox(height: 4),
-          Text(p.score.toStringAsFixed(1), style: const TextStyle(color: _cyan, fontWeight: FontWeight.bold, fontSize: 10)),
+          Text(
+            p.displayName.length > 3 ? p.displayName.substring(0, 3).toUpperCase() : p.displayName.toUpperCase(),
+            style: const TextStyle(color: _cyan, fontWeight: FontWeight.bold, fontSize: 9),
+            overflow: TextOverflow.ellipsis,
+          ),
         ]);
       }));
   }

@@ -47,6 +47,7 @@ class LobbyModel {
     this.questionCount = 10,
     this.difficultyFilters = const ['facile', 'moyen', 'difficile'],
     this.customQuestionsJson = '',
+    this.correctionMode = 'at_end',
   });
 
   final String id;
@@ -71,6 +72,8 @@ class LobbyModel {
   final List<String> difficultyFilters;
   /// Questions personnalisées sérialisées en JSON (non vide quand quizId == 'custom').
   final String customQuestionsJson;
+  /// 'at_end' : correction groupée en fin de quiz. 'after_each' : correction après chaque question.
+  final String correctionMode;
 
   bool get isFull => currentPlayers >= maxPlayers;
   bool get isSurvival => gameMode == kLobbyGameModeSurvival;
@@ -177,14 +180,17 @@ class BattleState {
     this.revealedIndices = 0,
     this.allAnswers = const [],
     this.allJudgments = const [],
+    this.correctionMode = 'at_end',
   });
 
   final String lobbyId;
   final List<PlayerState> players;
   final int currentQuestion;
   final int totalQuestions;
-  /// Phases : countdown, question, final_judgment, finished.
+  /// Phases : countdown, question, judgment, final_judgment, finished.
   final String phase;
+  /// 'at_end' ou 'after_each' — hérité du lobby.
+  final String correctionMode;
   final List<BattleQuestion> questions;
   final Map<String, double> lastRoundPoints;
   final bool timed;
@@ -280,6 +286,7 @@ class LobbyRepository {
       questionAssetPaths: List<String>.from(data['questionAssetPaths'] ?? []),
       difficultyFilters: List<String>.from(data['difficultyFilters'] ?? []),
       customQuestionsJson: data['customQuestionsJson'] as String? ?? '',
+      correctionMode: data['correctionMode'] as String? ?? 'at_end',
       playerMeta: playerMeta,
     );
   }
@@ -308,6 +315,7 @@ class LobbyRepository {
       'timed': l.timed,
       'questionCount': l.questionCount,
       'difficultyFilters': l.difficultyFilters,
+      'correctionMode': l.correctionMode,
     });
     return doc.id;
   }
@@ -315,7 +323,17 @@ class LobbyRepository {
   Future<void> joinLobby(String lobbyId, String userId) async {
     final u = FirebaseAuth.instance.currentUser;
     if (u == null) return;
-    final name = u.displayName ?? u.email?.split('@').first ?? 'Joueur';
+
+    String name;
+    try {
+      final doc = await _db.collection('users').doc(u.uid).get();
+      final username = doc.data()?['username'] as String?;
+      name = (username != null && username.isNotEmpty)
+          ? username
+          : (u.displayName ?? u.email?.split('@').first ?? 'Joueur');
+    } catch (_) {
+      name = u.displayName ?? u.email?.split('@').first ?? 'Joueur';
+    }
     final avatar = '\u{1F464}';
 
     final ref = _db.collection('lobbies').doc(lobbyId);
@@ -399,6 +417,7 @@ class LobbyRepository {
         'players': players.map((p) => _playerToMap(p)).toList(),
         'timed': false,
         'gameMode': lobby.gameMode,
+        'correctionMode': lobby.correctionMode,
         'revealedIndices': 0,
         'allAnswers': [],
         'allJudgments': [],
@@ -669,8 +688,46 @@ class LobbyRepository {
     final st = _battleFromDoc(d.data() ?? {}, lobbyId);
     if (st == null) return;
 
+    if (st.correctionMode == 'after_each') {
+      // Correction après chaque question : passer en phase jugement
+      await ref.update({'battle.phase': 'judgment'});
+      return;
+    }
+
     if (st.currentQuestion >= st.totalQuestions - 1) {
-      // Dernière question → correction finale
+      // Dernière question (mode at_end) → correction finale groupée
+      await ref.update({'battle.phase': 'final_judgment'});
+      return;
+    }
+
+    final players = st.players.map((p) => PlayerState(
+      userId: p.userId,
+      displayName: p.displayName,
+      avatar: p.avatar,
+      score: p.score,
+      hasAnswered: false,
+      isConnected: p.isConnected,
+      lives: p.lives,
+      eliminated: p.eliminated,
+    )).toList();
+
+    await ref.update({
+      'battle.currentQuestion': st.currentQuestion + 1,
+      'battle.phase': 'question',
+      'battle.players': players.map((p) => _playerToMap(p)).toList(),
+      'battle.revealedIndices': 0,
+    });
+  }
+
+  /// Appelé par le créateur après correction d'une question (mode after_each).
+  Future<void> advanceFromJudgment(String lobbyId) async {
+    final ref = _db.collection('lobbies').doc(lobbyId);
+    final d = await ref.get();
+    final st = _battleFromDoc(d.data() ?? {}, lobbyId);
+    if (st == null) return;
+
+    if (st.currentQuestion >= st.totalQuestions - 1) {
+      // Dernière question corrigée → récap final des scores
       await ref.update({'battle.phase': 'final_judgment'});
       return;
     }
@@ -817,6 +874,7 @@ class LobbyRepository {
       questions: questions,
       timed: m['timed'] as bool? ?? false,
       gameMode: m['gameMode'] ?? kLobbyGameModeQuiz,
+      correctionMode: m['correctionMode'] as String? ?? 'at_end',
       revealedIndices: m['revealedIndices'] ?? 0,
       allAnswers: allAnswers,
       allJudgments: allJudgments,
