@@ -242,9 +242,15 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 20),
+                                _buildScoreBar(),
                                 const SizedBox(height: 32),
                                 _detailSummary(),
-                                const SizedBox(height: 24),
+                                const SizedBox(height: 16),
+                                if (_findNextModule() != null) ...[
+                                  _buildNextChapterCard(_findNextModule()!),
+                                  const SizedBox(height: 16),
+                                ],
                                 const Text('Détail de la maîtrise', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16)),
                                 const SizedBox(height: 12),
                               ]),
@@ -379,6 +385,92 @@ class _QuizResultScreenState extends State<QuizResultScreen>
         const SizedBox(height: 4),
         Text(label, style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.bold)),
       ],
+    );
+  }
+
+  Widget _buildScoreBar() {
+    final scores = widget.userScores;
+    if (scores.isEmpty) return const SizedBox.shrink();
+    return Row(
+      children: List.generate(scores.length, (i) {
+        final s = scores[i] ?? 0.0;
+        final Color c = s >= 1.0 ? _green : (s > 0 ? _orange : _red);
+        final isLast = i == scores.length - 1;
+        return Expanded(
+          child: Container(
+            height: 8,
+            margin: EdgeInsets.only(right: isLast ? 0 : 3),
+            decoration: BoxDecoration(
+              color: c.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  ModuleModel? _findNextModule() {
+    final loc = ParcoursRepository.moduleLocation[widget.sessionId];
+    if (loc == null) return null;
+    final section = ParcoursRepository.sectionByCompoundKey['${loc.formationId}::${loc.sectionId}'];
+    if (section == null) return null;
+    final modules = section.modules;
+    final idx = modules.indexWhere((m) => m.id == widget.sessionId);
+    if (idx < 0 || idx >= modules.length - 1) return null;
+    return modules[idx + 1];
+  }
+
+  Widget _buildNextChapterCard(ModuleModel next) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        context.go('/parcours');
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _violet.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _violet.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: _violet.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: const Text('\u{1F4D6}', style: TextStyle(fontSize: 18)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Chapitre suivant',
+                    style: TextStyle(color: _violet, fontSize: 11, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    next.title,
+                    style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.arrow_forward_ios_rounded, color: _violet, size: 14),
+          ],
+        ),
+      ),
     );
   }
 

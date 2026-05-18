@@ -55,4 +55,10 @@ class QuestionFeedbackRepository {
     final snap = await _db.collection('question_feedback').get();
     return snap.docs.map((d) => QuestionFeedback.fromDoc(d)).toList();
   }
+
+  Stream<List<QuestionFeedback>> watchAllFeedback() {
+    return _db.collection('question_feedback').snapshots().map(
+      (snap) => snap.docs.map((d) => QuestionFeedback.fromDoc(d)).toList(),
+    );
+  }
 }
