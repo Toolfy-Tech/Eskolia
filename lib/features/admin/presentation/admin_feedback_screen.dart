@@ -27,14 +27,12 @@ class AdminFeedbackScreen extends StatefulWidget {
 class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabs;
-  bool _loading = true;
-  List<QuestionFeedback> _all = [];
+  final _repo = QuestionFeedbackRepository();
 
   @override
   void initState() {
     super.initState();
     _tabs = TabController(length: 3, vsync: this);
-    _load();
   }
 
   @override
@@ -43,35 +41,22 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
     super.dispose();
   }
 
-  Future<void> _load() async {
-    setState(() => _loading = true);
-    try {
-      final data = await QuestionFeedbackRepository().getAllFeedback();
-      if (mounted) setState(() { _all = data; _loading = false; });
-    } catch (_) {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  // — Agrégation par thème —
-  List<_ThemeStat> _byTheme() {
+  List<_ThemeStat> _byTheme(List<QuestionFeedback> all) {
     final map = <String, _ThemeStat>{};
-    for (final f in _all) {
+    for (final f in all) {
       if (f.vote == 0) continue;
-      final key = f.theme ?? f.quizTitle ?? 'Sans thème';
+      final key = f.theme ?? f.quizTitle ?? 'Sans theme';
       map[key] ??= _ThemeStat(label: key);
       if (f.vote > 0) map[key]!.pos++;
       else map[key]!.neg++;
     }
-    final list = map.values.toList()
+    return map.values.toList()
       ..sort((a, b) => (b.pos + b.neg).compareTo(a.pos + a.neg));
-    return list;
   }
 
-  // — Agrégation par question (classement) —
-  List<_QuestionStat> _byQuestion({required bool liked}) {
+  List<_QuestionStat> _byQuestion(List<QuestionFeedback> all, {required bool liked}) {
     final map = <String, _QuestionStat>{};
-    for (final f in _all) {
+    for (final f in all) {
       if (f.vote == 0) continue;
       map[f.questionId] ??= _QuestionStat(
         questionId: f.questionId,
@@ -83,13 +68,10 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
       if (f.vote > 0) map[f.questionId]!.pos++;
       else map[f.questionId]!.neg++;
     }
-    final list = map.values.where((q) {
-      return liked ? q.pos > 0 : q.neg > 0;
-    }).toList()
-      ..sort((a, b) => liked
-          ? b.pos.compareTo(a.pos)
-          : b.neg.compareTo(a.neg));
-    return list.take(50).toList();
+    return (map.values.where((q) => liked ? q.pos > 0 : q.neg > 0).toList()
+      ..sort((a, b) => liked ? b.pos.compareTo(a.pos) : b.neg.compareTo(a.neg)))
+        .take(50)
+        .toList();
   }
 
   @override
@@ -118,9 +100,9 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
             unselectedLabelColor: _slate,
             indicatorColor: _violet,
             tabs: const [
-              Tab(text: 'Par thème'),
-              Tab(text: '👍 Appréciées'),
-              Tab(text: '👎 Rejetées'),
+              Tab(text: 'Par theme'),
+              Tab(text: '👍 Appreciees'),
+              Tab(text: '👎 Rejetees'),
             ],
           ),
         ),
@@ -129,31 +111,41 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
             const EskoliaAmbientBackground(),
             EskoliaShellBody(
               safeAreaTop: false,
-              child: _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : TabBarView(
-                      controller: _tabs,
-                      children: [
-                        _buildThemeTab(),
-                        _buildRankingTab(liked: true),
-                        _buildRankingTab(liked: false),
-                      ],
-                    ),
+              child: StreamBuilder<List<QuestionFeedback>>(
+                stream: _repo.watchAllFeedback(),
+                builder: (context, snap) {
+                  if (snap.hasError) {
+                    return Center(
+                      child: Text(
+                        'Erreur de chargement.',
+                        style: TextStyle(color: _slate),
+                      ),
+                    );
+                  }
+                  if (!snap.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final all = snap.data!;
+                  return TabBarView(
+                    controller: _tabs,
+                    children: [
+                      _buildThemeTab(all),
+                      _buildRankingTab(all, liked: true),
+                      _buildRankingTab(all, liked: false),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
-        ),
-        floatingActionButton: FloatingActionButton.small(
-          onPressed: _load,
-          backgroundColor: _violet,
-          child: const Icon(Icons.refresh_rounded, color: Colors.white),
         ),
       ),
     );
   }
 
-  Widget _buildThemeTab() {
-    final stats = _byTheme();
-    if (stats.isEmpty) return _empty('Aucun vote enregistré pour l\'instant.');
+  Widget _buildThemeTab(List<QuestionFeedback> all) {
+    final stats = _byTheme(all);
+    if (stats.isEmpty) return _empty('Aucun vote enregistre pour l\'instant.');
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(
         EskoliaLayout.screenPaddingH,
@@ -169,8 +161,8 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
     );
   }
 
-  Widget _buildRankingTab({required bool liked}) {
-    final stats = _byQuestion(liked: liked);
+  Widget _buildRankingTab(List<QuestionFeedback> all, {required bool liked}) {
+    final stats = _byQuestion(all, liked: liked);
     if (stats.isEmpty) {
       return _empty(liked
           ? 'Aucune question avec des 👍 pour l\'instant.'
@@ -209,8 +201,6 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
         ),
       );
 }
-
-// — Widgets de stat —
 
 class _ThemeStat {
   _ThemeStat({required this.label});
@@ -262,7 +252,7 @@ class _ThemeCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '${stat.total} vote${stat.total > 1 ? 's' : ''}',
+                '${stat.total} vote${stat.total > 1 ? "s" : ""}',
                 style: TextStyle(color: _slate, fontSize: 12),
               ),
             ],

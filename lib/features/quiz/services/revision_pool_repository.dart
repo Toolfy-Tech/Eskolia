@@ -10,16 +10,31 @@ class RevisionPoolEntry {
     required this.assetPath,
     required this.questionIndex,
     this.questionId,
+    this.lastReviewedAt,
   });
 
   final String assetPath;
   final int questionIndex;
   final String? questionId;
+  final DateTime? lastReviewedAt;
+
+  bool get isDue {
+    if (lastReviewedAt == null) return true;
+    return DateTime.now().difference(lastReviewedAt!) >= const Duration(hours: 24);
+  }
+
+  RevisionPoolEntry copyWith({DateTime? lastReviewedAt}) => RevisionPoolEntry(
+        assetPath: assetPath,
+        questionIndex: questionIndex,
+        questionId: questionId,
+        lastReviewedAt: lastReviewedAt ?? this.lastReviewedAt,
+      );
 
   Map<String, dynamic> toJson() => {
         'a': assetPath,
         'i': questionIndex,
         if (questionId != null && questionId!.isNotEmpty) 'id': questionId,
+        if (lastReviewedAt != null) 'r': lastReviewedAt!.millisecondsSinceEpoch,
       };
 
   static RevisionPoolEntry? fromJson(Map<String, dynamic> m) {
@@ -27,7 +42,13 @@ class RevisionPoolEntry {
     if (a == null || a.isEmpty) return null;
     final i = (m['i'] as num?)?.toInt() ?? 0;
     final id = m['id'] as String?;
-    return RevisionPoolEntry(assetPath: a, questionIndex: i, questionId: id);
+    final r = (m['r'] as num?)?.toInt();
+    return RevisionPoolEntry(
+      assetPath: a,
+      questionIndex: i,
+      questionId: id,
+      lastReviewedAt: r != null ? DateTime.fromMillisecondsSinceEpoch(r) : null,
+    );
   }
 
   String get storageKey {
@@ -56,6 +77,7 @@ class RevisionPoolRepository {
     return '$a||idx|$questionIndex';
   }
 
+  /// Returns entries sorted: never-reviewed first, then oldest review date first.
   Future<List<RevisionPoolEntry>> readEntries() async {
     final p = await SharedPreferences.getInstance();
     final s = p.getString(_key);
@@ -69,6 +91,12 @@ class RevisionPoolRepository {
           if (en != null) out.add(en);
         }
       }
+      out.sort((a, b) {
+        if (a.lastReviewedAt == null && b.lastReviewedAt == null) return 0;
+        if (a.lastReviewedAt == null) return -1;
+        if (b.lastReviewedAt == null) return 1;
+        return a.lastReviewedAt!.compareTo(b.lastReviewedAt!);
+      });
       return out;
     } catch (_) {
       return [];
@@ -86,7 +114,7 @@ class RevisionPoolRepository {
   Future<void> add(QuizQuestion q) async {
     final a = q.sourceAssetPath;
     if (a == null || a.isEmpty) return;
-    
+
     final k = q.id.isNotEmpty ? '$a|||${q.id}' : '$a||idx|0';
     final cur = await readEntries();
     final next = <RevisionPoolEntry>[
@@ -104,6 +132,15 @@ class RevisionPoolRepository {
     final cur = await readEntries();
     cur.removeWhere((x) => x.storageKey == e.storageKey);
     await _save(cur);
+  }
+
+  Future<void> markReviewed(List<String> storageKeys) async {
+    if (storageKeys.isEmpty) return;
+    final keySet = storageKeys.toSet();
+    final now = DateTime.now();
+    final cur = await readEntries();
+    final updated = cur.map((e) => keySet.contains(e.storageKey) ? e.copyWith(lastReviewedAt: now) : e).toList();
+    await _save(updated);
   }
 
   Future<void> _save(List<RevisionPoolEntry> list) async {
