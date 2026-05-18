@@ -12,6 +12,7 @@ import '../../../shared/widgets/eskolia_flip_card.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/question_thumbs_widget.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_question_context_row.dart';
 import '../viewmodels/quiz_notifier.dart';
@@ -345,11 +346,27 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        QuizQuestionContextRow(
-          contextLine: q.contextLine,
-          difficultyBucket: q.difficultyBucket,
-          categoryGroup: q.categoryGroup,
-          authorName: q.authorName,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: QuizQuestionContextRow(
+                contextLine: q.contextLine,
+                difficultyBucket: q.difficultyBucket,
+                categoryGroup: q.categoryGroup,
+                authorName: q.authorName,
+              ),
+            ),
+            const SizedBox(width: 8),
+            QuestionThumbsWidget(
+              questionId: q.id,
+              quizTitle: state.session?.title,
+              theme: q.theme,
+              difficulty: q.difficultyBucket,
+              questionType: q.type,
+              source: 'solo',
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         if (q.type == 'ticket') ...[

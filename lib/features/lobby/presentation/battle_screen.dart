@@ -10,6 +10,7 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
+import '../../../shared/widgets/question_thumbs_widget.dart';
 import '../../economy/data/achievement_triggers.dart';
 import '../../quiz/presentation/quiz_question_context_row.dart';
 import '../../quiz/services/revision_pool_repository.dart';
@@ -224,7 +225,24 @@ class _BattleScreenState extends State<BattleScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      QuizQuestionContextRow(contextLine: q.contextLine, difficultyBucket: q.difficultyBucket),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: QuizQuestionContextRow(
+                              contextLine: q.contextLine,
+                              difficultyBucket: q.difficultyBucket,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          QuestionThumbsWidget(
+                            questionId: q.id,
+                            difficulty: q.difficultyBucket,
+                            questionType: q.type,
+                            source: 'battle',
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 12),
                       if (q.type == 'ticket') ...[
                         Container(
