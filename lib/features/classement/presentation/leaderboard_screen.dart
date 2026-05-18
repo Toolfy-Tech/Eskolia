@@ -122,7 +122,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         return 'Classement des joueurs les plus actifs cette semaine. Les compteurs '
             'reprennent chaque lundi — idéal pour une compétition fraîche.';
       case _BoardTab.allXp:
-        return 'Le gratin de l’expérience cumulée : tous les modes confondus, depuis la création du compte.';
+        return 'Le gratin de l'expérience cumulée : tous les modes confondus, depuis la création du compte.';
       case _BoardTab.dailyQuiz:
         return 'Qui a le meilleur score sur le défi du ${ _dayKeyLabel(_todayDayKey) } ? '
             'Refais le quiz pour grappiller des places.';
@@ -563,10 +563,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(‘\u{1F3C6}’, style: TextStyle(fontSize: 52)),
+                        const Text('\u{1F3C6}', style: TextStyle(fontSize: 52)),
                         const SizedBox(height: 16),
                         const Text(
-                          ‘Le classement est vide’,
+                          'Le classement est vide',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -576,7 +576,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          ‘Sois le premier à gagner de l\’XP\net à apparaître ici !’,
+                          'Sois le premier à gagner de l\'XP\net à apparaître ici !',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: _slate.withValues(alpha: 0.85),
