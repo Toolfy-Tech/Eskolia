@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -32,13 +33,66 @@ class AchievementsScreen extends StatelessWidget {
             child: FutureBuilder<List<(AchievementDef, bool, String?)>>(
               future: repo.listWithStateAndProgress(uid),
               builder: (context, snap) {
+                if (snap.hasError) {
+                  return Center(
+                    child: Text(
+                      'Impossible de charger les hauts faits.',
+                      style: TextStyle(color: Colors.red.shade200),
+                    ),
+                  );
+                }
                 if (!snap.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: _violet),
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      EskoliaLayout.screenPaddingH,
+                      8,
+                      EskoliaLayout.screenPaddingH,
+                      EskoliaLayout.screenPaddingBottom,
+                    ),
+                    children: List.generate(
+                      5,
+                      (i) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Container(
+                          height: 88,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        )
+                            .animate(onPlay: (c) => c.repeat(reverse: true))
+                            .shimmer(duration: 900.ms, color: Colors.white10),
+                      ),
+                    ),
                   );
                 }
                 final rows = snap.data!;
                 final n = rows.where((e) => e.$2).length;
+                if (rows.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('\u{1F3C6}', style: TextStyle(fontSize: 52)),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Aucun haut fait disponible',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Complète des quiz et des duels pour en débloquer.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return ListView(
                   padding: const EdgeInsets.fromLTRB(
                     EskoliaLayout.screenPaddingH,
@@ -47,17 +101,37 @@ class AchievementsScreen extends StatelessWidget {
                     EskoliaLayout.screenPaddingBottom,
                   ),
                   children: [
-                    Text(
-                      uid.isEmpty
-                          ? 'Connecte-toi pour suivre tes succès sur cet appareil.'
-                          : '$n / ${rows.length} débloqués',
-                      style: TextStyle(
-                        color: _slate.withValues(alpha: 0.95),
-                        fontSize: 13,
-                      ),
-                    ),
+                    uid.isEmpty
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: _violet.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: _violet.withValues(alpha: 0.3)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.info_outline_rounded, color: _violet, size: 18),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Connecte-toi pour sauvegarder ta progression.',
+                                    style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Text(
+                            '$n / ${rows.length} débloqués',
+                            style: TextStyle(
+                              color: _slate.withValues(alpha: 0.95),
+                              fontSize: 13,
+                            ),
+                          ),
                     const SizedBox(height: 16),
-                    ...rows.map((row) {
+                    ...List.generate(rows.length, (index) {
+                      final row = rows[index];
                       final d = row.$1;
                       final ok = row.$2;
                       final progressLabel = row.$3;
@@ -210,7 +284,10 @@ class AchievementsScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                      );
+                      )
+                          .animate()
+                          .fadeIn(duration: 280.ms, delay: (index * 45).ms)
+                          .slideY(begin: 0.05, duration: 280.ms, delay: (index * 45).ms);
                     }),
                   ],
                 );

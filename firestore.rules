@@ -1,7 +1,8 @@
 // Eskolia — règles Firestore (déployer : `firebase deploy --only firestore`)
 // Collections utilisées par l’app : login_aliases, users (+ quizResults, settings,
 // notifications), formations, sessions, battles, lobbies, leaderboard_daily,
-// community_tips, labo_question_drafts, signalements.
+// community_tips, labo_question_drafts, signalements,
+// question_feedback, teacher_quizzes.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -151,6 +152,28 @@ service cloud.firestore {
           && request.resource.data.total >= 1
           && request.resource.data.score <= request.resource.data.total;
       allow delete: if false;
+    }
+
+    // Votes 👍/👎 sur les questions — un doc par user par question.
+    match /question_feedback/{docId} {
+      allow list: if isStaff();
+      allow get: if isStaff()
+          || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if signedIn()
+          && request.resource.data.userId == request.auth.uid;
+      allow update: if signedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Quiz créés par les profs/admins.
+    match /teacher_quizzes/{quizId} {
+      allow read: if signedIn()
+          && (isStaff() || resource.data.isPublished == true);
+      allow list: if signedIn();
+      allow create, update: if isStaff();
+      allow delete: if isStaff();
     }
 
     match /{document=**} {

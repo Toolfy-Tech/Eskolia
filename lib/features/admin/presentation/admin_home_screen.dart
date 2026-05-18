@@ -127,6 +127,62 @@ class AdminHomeScreen extends StatelessWidget {
                       onTap: () => context.push('/admin/tips'),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  EskoliaCardContent(
+                    padding: const EdgeInsets.all(16),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Text(
+                        '\u{1F44D}',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      title: const Text(
+                        'Feedback questions',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Votes 👍/👎 des joueurs par thème et question',
+                        style: TextStyle(
+                          color: _slate.withValues(alpha: 0.9),
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.white54),
+                      onTap: () => context.push('/admin/feedback'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  EskoliaCardContent(
+                    padding: const EdgeInsets.all(16),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Text(
+                        '\u{1F4DA}',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      title: const Text(
+                        'Quiz du prof',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Quiz importés et gérés par les admins',
+                        style: TextStyle(
+                          color: _slate.withValues(alpha: 0.9),
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.white54),
+                      onTap: () => context.push('/admin/teacher-quizzes'),
+                    ),
+                  ),
                 ],
               ),
             ),

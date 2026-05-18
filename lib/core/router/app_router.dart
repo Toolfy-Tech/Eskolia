@@ -42,8 +42,11 @@ import '../../features/flashcards/presentation/flashcards_hub_screen.dart';
 
 import '../../features/economy/presentation/achievements_screen.dart';
 import '../../features/admin/presentation/admin_drafts_screen.dart';
+import '../../features/admin/presentation/admin_feedback_screen.dart';
 import '../../features/admin/presentation/admin_home_screen.dart';
 import '../../features/admin/presentation/admin_signalements_screen.dart';
+import '../../features/admin/presentation/admin_teacher_quiz_detail_screen.dart';
+import '../../features/admin/presentation/admin_teacher_quizzes_screen.dart';
 import '../../features/admin/presentation/admin_tips_screen.dart';
 import '../../features/labo/presentation/labo_create_question_screen.dart';
 import '../../features/labo/presentation/labo_create_tip_screen.dart';
@@ -191,6 +194,25 @@ final GoRouter appRouter = GoRouter(
       path: '/admin/signalements',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminSignalementsScreen()),
+    ),
+    GoRoute(
+      path: '/admin/feedback',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminFeedbackScreen()),
+    ),
+    GoRoute(
+      path: '/admin/teacher-quizzes',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTeacherQuizzesScreen()),
+    ),
+    GoRoute(
+      path: '/admin/teacher-quizzes/:quizId',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(
+        child: AdminTeacherQuizDetailScreen(
+          quizId: state.pathParameters['quizId']!,
+        ),
+      ),
     ),
     GoRoute(
       path: '/labo/create-question',

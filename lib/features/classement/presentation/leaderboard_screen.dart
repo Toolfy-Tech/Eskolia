@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
@@ -418,11 +419,32 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 hasScrollBody: false,
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(
-                      'Sois le premier à jouer le quiz du jour.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('\u{1F319}', style: TextStyle(fontSize: 52)),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Personne n\'a encore joué aujourd\'hui',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Lance le quiz du jour et décroche la première place !',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: _slate.withValues(alpha: 0.85),
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -493,7 +515,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: _DailyListRow(entry: e, isSelf: isSelf),
-                    );
+                    )
+                        .animate()
+                        .fadeIn(duration: 240.ms, delay: (i * 40).ms)
+                        .slideY(begin: 0.04, duration: 240.ms, delay: (i * 40).ms);
                   },
                   childCount: rest.length,
                 ),
@@ -533,9 +558,34 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
-                  child: Text(
-                    'Aucun joueur pour l’instant.',
-                    style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(‘\u{1F3C6}’, style: TextStyle(fontSize: 52)),
+                        const SizedBox(height: 16),
+                        const Text(
+                          ‘Le classement est vide’,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          ‘Sois le premier à gagner de l\’XP\net à apparaître ici !’,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: _slate.withValues(alpha: 0.85),
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -616,7 +666,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         trailingValue: _trailingValue(e),
                         isSelf: isSelf,
                       ),
-                    );
+                    )
+                        .animate()
+                        .fadeIn(duration: 240.ms, delay: (i * 40).ms)
+                        .slideY(begin: 0.04, duration: 240.ms, delay: (i * 40).ms);
                   },
                   childCount: rest.length,
                 ),

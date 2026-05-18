@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../core/services/asset_cache_service.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../labo/data/labo_approved_question_repository.dart';
@@ -137,7 +139,7 @@ class QuizRepository {
   // --- LOGIQUE INTERNE ---
 
   /// Construit une session à partir d'une liste de chemins.
-  /// Gère les assets JSON standard et le sentinel Labo (Firestore).
+  /// Gère les assets JSON standard, le sentinel Labo (Firestore) et les quiz du prof (teacher://).
   Future<QuizSession> _buildFromPaths({
     required List<String> paths,
     int maxQuestions = 15,
@@ -145,6 +147,16 @@ class QuizRepository {
     String sessionIdPrefix = 'quiz',
   }) async {
     if (paths.isEmpty) return _buildDailyRandomSession();
+
+    // Quiz du prof — chemin sentinel 'teacher://{quizId}'
+    final teacherPath = paths.where((p) => p.startsWith(TipQuizCatalog.teacherSentinelPrefix)).firstOrNull;
+    if (teacherPath != null) {
+      return _buildTeacherQuizSession(
+        quizId: teacherPath.substring(TipQuizCatalog.teacherSentinelPrefix.length),
+        maxQuestions: maxQuestions,
+        sessionIdPrefix: sessionIdPrefix,
+      );
+    }
 
     final questions = <QuizQuestion>[];
     final assetPaths = paths.where((p) => p != TipQuizCatalog.laboSentinelPath).toList();
@@ -190,6 +202,61 @@ class QuizRepository {
       TipQuizCatalog.subjectLabelForPaths(paths),
       limited,
     );
+  }
+
+  Future<QuizSession> _buildTeacherQuizSession({
+    required String quizId,
+    int maxQuestions = 15,
+    String sessionIdPrefix = 'quiz',
+  }) async {
+    try {
+      final snap = await FirebaseFirestore.instance
+          .collection('teacher_quizzes')
+          .doc(quizId)
+          .get();
+      if (!snap.exists) return _buildDailyRandomSession();
+      final d = snap.data()!;
+      final title = d['title'] as String? ?? 'Quiz du prof';
+      final rawQ = d['questions'] as List<dynamic>? ?? [];
+      final authorName = d['authorName'] as String? ?? 'Prof';
+      final questions = <QuizQuestion>[];
+      for (int i = 0; i < rawQ.length; i++) {
+        final q = rawQ[i] as Map<String, dynamic>;
+        final type = q['type'] as String? ?? 'classic';
+        final items = q['items'] is List
+            ? List<String>.from(q['items'] as List)
+            : <String>[];
+        final indices = q['indices'] is List
+            ? List<String>.from(q['indices'] as List)
+            : <String>[];
+        final ctxLine = (q['contextLine'] as String?)?.isNotEmpty == true
+            ? q['contextLine'] as String
+            : 'Quiz du prof · $title';
+        questions.add(QuizQuestion(
+          id: 'teacher_${quizId}_$i',
+          type: type,
+          question: q['question'] as String? ?? '',
+          answer: q['answer'] as String? ?? '',
+          difficultyBucket: q['difficulty'] as String? ?? 'moyen',
+          contextLine: ctxLine,
+          explanation: (q['hint'] as String?)?.isNotEmpty == true ? q['hint'] as String : null,
+          categoryGroup: QuestionCategoryGroup.themes,
+          authorName: authorName,
+          indices: indices.isEmpty ? null : indices,
+          answerSequence: items.isEmpty ? null : items,
+          options: items.isEmpty ? null : items,
+        ));
+      }
+      if (questions.isEmpty) return _buildDailyRandomSession();
+      questions.shuffle();
+      return _sessionFromQuestions(
+        '${sessionIdPrefix}_${DateTime.now().millisecondsSinceEpoch}',
+        title,
+        questions.take(maxQuestions).toList(),
+      );
+    } catch (_) {
+      return _buildDailyRandomSession();
+    }
   }
 
   QuizQuestion _laboToQuizQuestion(LaboQuestionDraft d) {

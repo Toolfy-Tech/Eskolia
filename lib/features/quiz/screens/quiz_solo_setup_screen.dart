@@ -7,6 +7,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
+import '../../../shared/widgets/teacher_quiz_picker_widget.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
@@ -273,19 +274,33 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
           onChanged: (t) {
             setState(() {
               _catalogTrack = t;
-              final allowed = TipQuizCatalog.filterByTrack(all, t)
-                  .map((e) => e.quizAssetPath)
-                  .toSet();
-              _selectedPaths.removeWhere((p) => !allowed.contains(p));
+              if (t == QuizCatalogTrack.teacher) {
+                _selectedPaths.removeWhere((p) => !p.startsWith(TipQuizCatalog.teacherSentinelPrefix));
+              } else {
+                final allowed = TipQuizCatalog.filterByTrack(all, t)
+                    .map((e) => e.quizAssetPath)
+                    .toSet();
+                _selectedPaths.removeWhere((p) => !allowed.contains(p));
+              }
             });
           },
         ),
         const SizedBox(height: 12),
-        QuizScopePicker(
-          entries: filtered,
-          selectedPaths: _selectedPaths,
-          onSelectionChanged: (s) => setState(() => _selectedPaths = {...s}),
-        ),
+        if (_catalogTrack == QuizCatalogTrack.teacher) ...[
+          SizedBox(
+            height: 260,
+            child: TeacherQuizPickerWidget(
+              selectedPath: _selectedPaths.firstOrNull,
+              onSelected: (path) => setState(() => _selectedPaths = {path}),
+            ),
+          ),
+        ] else ...[
+          QuizScopePicker(
+            entries: filtered,
+            selectedPaths: _selectedPaths,
+            onSelectionChanged: (s) => setState(() => _selectedPaths = {...s}),
+          ),
+        ],
         const SizedBox(height: 24),
 
         EskoliaButton(
