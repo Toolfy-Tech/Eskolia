@@ -5,12 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/preferences/onboarding_prefs.dart';
-import '../../core/theme/eskolia_visual.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
 import '../../shared/widgets/eskolia_shell_body.dart';
-
-const Color _violet = Color(0xFF6C63FF);
-const Color _accent = Color(0xFF43E97B);
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -55,22 +51,9 @@ class _SplashScreenState extends State<SplashScreen> {
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
             child: Center(
-              child: ShaderMask(
-                blendMode: BlendMode.srcIn,
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [_violet, _accent],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ).createShader(bounds),
-                child: const Text(
-                  'ESKOLIA',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 4,
-                    color: Colors.white,
-                  ),
-                ),
+              child: Image.asset(
+                'assets/images/logo/eskolia_splash_logo.png',
+                width: 220,
               ),
             ),
           ),
