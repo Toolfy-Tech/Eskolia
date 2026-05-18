@@ -13,6 +13,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/teacher_quiz_picker_widget.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../../quiz/presentation/widgets/quiz_catalog_track_selector.dart';
 import '../../quiz/presentation/widgets/quiz_scope_picker.dart';
@@ -467,39 +468,46 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                         const SizedBox(height: 8),
                         SizedBox(
                           height: 260,
-                          child: FutureBuilder<List<TipQuizChapterRef>>(
-                            future: catalogFuture,
-                            builder: (context, snap) {
-                              if (snap.connectionState != ConnectionState.done) {
-                                return const Center(
-                                  child: SizedBox(
-                                    width: 28,
-                                    height: 28,
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 2, color: _cyan),
-                                  ),
-                                );
-                              }
-                              if (snap.hasError) {
-                                return Center(
-                                  child: Text(
-                                    'Erreur catalogue.\n${snap.error}',
-                                    style: TextStyle(
-                                        color: Colors.red.shade200, fontSize: 12),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                );
-                              }
-                              final all = snap.data ?? [];
-                              final entries = TipQuizCatalog.filterByTrack(all, catalogTrack);
-                              return QuizScopePicker(
-                                entries: entries,
-                                selectedPaths: selectedPaths,
-                                onSelectionChanged: (s) =>
-                                    setD(() => selectedPaths = Set<String>.from(s)),
-                              );
-                            },
-                          ),
+                          child: catalogTrack == QuizCatalogTrack.teacher
+                              ? TeacherQuizPickerWidget(
+                                  selectedPath: selectedPaths.firstOrNull,
+                                  onSelected: (path) =>
+                                      setD(() => selectedPaths = {path}),
+                                )
+                              : FutureBuilder<List<TipQuizChapterRef>>(
+                                  future: catalogFuture,
+                                  builder: (context, snap) {
+                                    if (snap.connectionState != ConnectionState.done) {
+                                      return const Center(
+                                        child: SizedBox(
+                                          width: 28,
+                                          height: 28,
+                                          child: CircularProgressIndicator(
+                                              strokeWidth: 2, color: _cyan),
+                                        ),
+                                      );
+                                    }
+                                    if (snap.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          'Erreur catalogue.\n${snap.error}',
+                                          style: TextStyle(
+                                              color: Colors.red.shade200,
+                                              fontSize: 12),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      );
+                                    }
+                                    final all = snap.data ?? [];
+                                    final entries = TipQuizCatalog.filterByTrack(all, catalogTrack);
+                                    return QuizScopePicker(
+                                      entries: entries,
+                                      selectedPaths: selectedPaths,
+                                      onSelectionChanged: (s) =>
+                                          setD(() => selectedPaths = Set<String>.from(s)),
+                                    );
+                                  },
+                                ),
                         ),
                       ],
                     ],

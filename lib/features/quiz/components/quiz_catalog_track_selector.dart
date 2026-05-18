@@ -37,6 +37,11 @@ class QuizCatalogTrackSelector extends StatelessWidget {
           label: Text('Labo'),
           icon: Icon(Icons.science_rounded, size: 18),
         ),
+        ButtonSegment(
+          value: QuizCatalogTrack.teacher,
+          label: Text('Prof'),
+          icon: Icon(Icons.auto_stories_rounded, size: 18),
+        ),
       ],
       selected: {value},
       onSelectionChanged: (s) {

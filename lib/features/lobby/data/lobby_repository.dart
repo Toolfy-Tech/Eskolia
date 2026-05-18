@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 
+import '../../parcours/data/tip_quiz_catalog.dart';
 import '../../quiz/services/quiz_repository.dart';
 
 /// Capacité max des lobbies (MVP).
@@ -432,6 +433,54 @@ class LobbyRepository {
 
   Future<List<BattleQuestion>> _pickBattleQuestions(LobbyModel l) async {
     final all = <BattleQuestion>[];
+
+    // Quiz du prof — chemin sentinel 'teacher://{quizId}'
+    final teacherPath = l.questionAssetPaths
+        .where((p) => p.startsWith(TipQuizCatalog.teacherSentinelPrefix))
+        .firstOrNull;
+    if (teacherPath != null) {
+      final quizId = teacherPath.substring(TipQuizCatalog.teacherSentinelPrefix.length);
+      try {
+        final snap = await _db.collection('teacher_quizzes').doc(quizId).get();
+        if (snap.exists) {
+          final d = snap.data()!;
+          final title = d['title'] as String? ?? 'Quiz du prof';
+          final authorName = d['authorName'] as String? ?? 'Prof';
+          final rawQ = d['questions'] as List<dynamic>? ?? [];
+          for (int i = 0; i < rawQ.length; i++) {
+            final q = rawQ[i] as Map<String, dynamic>;
+            final type = q['type'] as String? ?? 'classic';
+            final items = q['items'] is List
+                ? List<String>.from(q['items'] as List)
+                : <String>[];
+            final indices = q['indices'] is List
+                ? List<String>.from(q['indices'] as List)
+                : <String>[];
+            final ctxLine = (q['contextLine'] as String?)?.isNotEmpty == true
+                ? q['contextLine'] as String
+                : 'Quiz du prof · $title';
+            all.add(BattleQuestion(
+              id: 'teacher_${quizId}_$i',
+              question: q['question'] as String? ?? '',
+              answer: q['answer'] as String? ?? '',
+              type: type,
+              contextLine: ctxLine,
+              difficultyBucket: q['difficulty'] as String? ?? 'moyen',
+              sourceAssetPath: teacherPath,
+              indices: indices.isEmpty ? null : indices,
+              options: items.isEmpty ? null : items,
+              answerSequence: items.isEmpty ? null : items,
+              categoryGroup: QuestionCategoryGroup.officialParcours,
+              authorName: authorName,
+            ));
+          }
+        }
+      } catch (e) {
+        debugPrint('[LobbyRepo] Erreur chargement quiz prof : $e');
+      }
+      all.shuffle();
+      return all.take(l.questionCount).toList();
+    }
 
     // Quiz personnalisé importé (JSON stocké dans Firestore)
     if (l.quizId == 'custom' && l.customQuestionsJson.isNotEmpty) {

@@ -9,6 +9,7 @@ enum QuizCatalogTrack {
   terrain,     // Thèmes Terrain — banques hors-parcours ajoutées par le prof
   labo,        // Créations de la communauté (Firestore)
   both,        // Optimus + Terrain (toutes les banques hors-labo)
+  teacher,     // Quiz créés par les admins/profs (Firestore — teacher_quizzes)
 }
 
 /// Référence d'un bloc de questions (Chapitre ou Thème)
@@ -35,6 +36,9 @@ class TipQuizCatalog {
 
   /// Chemin sentinel pour les questions Labo (Firestore) — pas un vrai asset.
   static const String laboSentinelPath = 'labo://approved';
+
+  /// Préfixe sentinel pour les quiz du prof (Firestore) — ex: 'teacher://abc123'.
+  static const String teacherSentinelPrefix = 'teacher://';
 
   static List<TipQuizChapterRef>? _cache;
 
@@ -150,6 +154,8 @@ class TipQuizCatalog {
     if (track == QuizCatalogTrack.both) {
       return list.where((e) => e.track != QuizCatalogTrack.labo).toList();
     }
+    // Les quiz du prof sont chargés depuis Firestore — pas dans le catalogue d'assets.
+    if (track == QuizCatalogTrack.teacher) return [];
     return list.where((e) => e.track == track).toList();
   }
 
@@ -163,6 +169,8 @@ class TipQuizCatalog {
         return 'Labo · Questions approuvées';
       case QuizCatalogTrack.both:
         return '${ref.sectionTitle} — ${ref.chapterTitle}';
+      case QuizCatalogTrack.teacher:
+        return 'Quiz du prof · ${ref.chapterTitle}';
     }
   }
 
@@ -185,6 +193,7 @@ class TipQuizCatalog {
       return path.contains('tip-quiz') || path.contains('quiz/themes');
     }
     if (track == QuizCatalogTrack.labo) return path == laboSentinelPath || path.contains('labo');
+    if (track == QuizCatalogTrack.teacher) return path.startsWith(teacherSentinelPrefix);
     if (track == QuizCatalogTrack.both) {
       return path.contains('quiz/optimus') || path.contains('tip-quiz') || path.contains('quiz/themes');
     }
