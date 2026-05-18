@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../quiz/services/quiz_repository.dart';
 
 /// Capacité max des lobbies (MVP).
@@ -449,7 +451,7 @@ class LobbyRepository {
     final all2 = <BattleQuestion>[];
     for (final p in paths) {
       try {
-        final raw = await rootBundle.loadString(p);
+        final raw = await AssetCacheService.loadString(p);
         final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: p);
         for (final q in qs) {
           if (l.difficultyFilters.contains(q.difficultyBucket) ||
@@ -559,6 +561,7 @@ class LobbyRepository {
       if (!s.exists) return;
       final st = _battleFromDoc(s.data() ?? {}, lobbyId);
       if (st == null || st.phase != 'judgment') return;
+      if (st.currentQuestion < 0 || st.currentQuestion >= st.questions.length) return;
 
       final q = st.questions[st.currentQuestion];
       double points = isCorrect ? 1.0 : 0.0;
@@ -605,6 +608,7 @@ class LobbyRepository {
       if (!s.exists) return;
       final st = _battleFromDoc(s.data() ?? {}, lobbyId);
       if (st == null || st.phase != 'judgment') return;
+      if (st.currentQuestion < 0 || st.currentQuestion >= st.questions.length) return;
 
       final q = st.questions[st.currentQuestion];
       final correct = q.answerSequence ?? [];

@@ -266,6 +266,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
 
   Widget _buildQuiz(BuildContext context, QuizState state) {
     final s = state.session!;
+    if (s.currentIndex < 0 || s.currentIndex >= s.questions.length) {
+      return const Center(child: CircularProgressIndicator());
+    }
     final q = s.questions[s.currentIndex];
     final total = s.questions.length;
     final progress = total > 0 ? s.currentIndex / total : 0.0;

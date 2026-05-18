@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
@@ -50,7 +51,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
       return;
     }
     try {
-      final raw = await rootBundle.loadString(assetPath);
+      final raw = await AssetCacheService.loadString(assetPath);
       final data = jsonDecode(raw) as Map<String, dynamic>;
       final next = await _progressRepo.readNextMissionIndex(widget.trackId);
       if (!mounted) return;

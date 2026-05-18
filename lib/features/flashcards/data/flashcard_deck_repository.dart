@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../../quiz/services/quiz_repository.dart';
 import '../../quiz/services/revision_pool_repository.dart';
@@ -185,7 +187,7 @@ class FlashcardDeckRepository {
     var idxInFile = 0;
     if (q.id.isEmpty) {
       try {
-        final raw = await rootBundle.loadString(a);
+        final raw = await AssetCacheService.loadString(a);
         final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: a);
         final found = qs.indexWhere((x) => x.question == q.question);
         idxInFile = found >= 0 ? found : 0;
@@ -297,7 +299,7 @@ class FlashcardDeckRepository {
     String assetPath, {
     int count = 10,
   }) async {
-    final raw = await rootBundle.loadString(assetPath);
+    final raw = await AssetCacheService.loadString(assetPath);
     final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: assetPath);
     if (qs.isEmpty) {
       throw StateError('Aucune question dans ce module.');

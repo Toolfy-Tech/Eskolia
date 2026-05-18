@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
 import '../../parcours/data/parcours_repository.dart';
 
@@ -57,7 +59,7 @@ Future<void> showQuizLessonPreviewDialog(
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420, maxHeight: 420),
           child: FutureBuilder<String>(
-            future: rootBundle.loadString(path),
+            future: AssetCacheService.loadString(path),
             builder: (context, snap) {
               if (snap.connectionState != ConnectionState.done) {
                 return const Padding(

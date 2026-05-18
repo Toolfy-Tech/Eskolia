@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -36,7 +38,7 @@ class _PracticalMarkdownScreenState extends State<PracticalMarkdownScreen> {
 
   Future<void> _load() async {
     try {
-      final t = await rootBundle.loadString(widget.assetPath);
+      final t = await AssetCacheService.loadString(widget.assetPath);
       if (!mounted) return;
       setState(() {
         _text = t;

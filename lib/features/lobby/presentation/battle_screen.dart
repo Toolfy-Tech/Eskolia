@@ -196,6 +196,9 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   Widget _buildQuestion(BuildContext context, BattleState s) {
+    if (s.currentQuestion < 0 || s.currentQuestion >= s.questions.length) {
+      return const Center(child: CircularProgressIndicator(color: Colors.white));
+    }
     final q = s.questions[s.currentQuestion];
     final me = _me(s);
     final answered = me?.hasAnswered ?? false;
