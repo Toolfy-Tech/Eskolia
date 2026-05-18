@@ -255,11 +255,25 @@ class _NotificationsScreenState extends State<NotificationsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('\u{1F515}', style: TextStyle(fontSize: 48)),
-          const SizedBox(height: 12),
+          const Text('\u{1F515}', style: TextStyle(fontSize: 52)),
+          const SizedBox(height: 16),
+          const Text(
+            'Tout est calme ici',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
           Text(
-            'Aucune notification',
-            style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+            'Tu recevras des alertes pour les défis,\nles badges et les invitations multijoueur.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _slate.withValues(alpha: 0.85),
+              fontSize: 13,
+              height: 1.4,
+            ),
           ),
         ],
       ),
