@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/preferences/onboarding_prefs.dart';
+import '../../core/theme/eskolia_visual.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
 import '../../shared/widgets/eskolia_shell_body.dart';
 
