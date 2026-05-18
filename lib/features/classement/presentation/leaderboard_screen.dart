@@ -122,7 +122,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         return 'Classement des joueurs les plus actifs cette semaine. Les compteurs '
             'reprennent chaque lundi — idéal pour une compétition fraîche.';
       case _BoardTab.allXp:
-        return 'Le gratin de l'expérience cumulée : tous les modes confondus, depuis la création du compte.';
+        return "Le gratin de l'expérience cumulée : tous les modes confondus, depuis la création du compte.";
       case _BoardTab.dailyQuiz:
         return 'Qui a le meilleur score sur le défi du ${ _dayKeyLabel(_todayDayKey) } ? '
             'Refais le quiz pour grappiller des places.';
