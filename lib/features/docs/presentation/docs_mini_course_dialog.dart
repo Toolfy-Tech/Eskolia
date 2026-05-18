@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
 
 const Color _dlgSurface = Color(0xFF1E293B);
@@ -44,7 +46,7 @@ Future<void> showDocsMiniCourseDialog(
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420, maxHeight: 460),
           child: FutureBuilder<String>(
-            future: rootBundle.loadString(assetPath),
+            future: AssetCacheService.loadString(assetPath),
             builder: (context, snap) {
               if (snap.connectionState != ConnectionState.done) {
                 return const Padding(

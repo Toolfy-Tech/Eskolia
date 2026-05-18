@@ -35,6 +35,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeRepository _repo = HomeRepository();
   final DailyQuestsRepository _questsRepo = DailyQuestsRepository();
+  final ParcoursRepository _parcoursRepo = ParcoursRepository();
 
   UserModel? _user;
   DailyQuestsSnapshot? _quests;
@@ -258,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final user = _user!;
 
     return StreamBuilder<List<FormationModel>>(
-      stream: ParcoursRepository().watchFormations(user.uid),
+      stream: _parcoursRepo.watchFormations(user.uid),
       builder: (context, snap) {
         FormationModel? tip;
         final list = snap.data;

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/services/asset_cache_service.dart';
 import '../../../../core/utils/eskolia_snackbar.dart';
 import '../../data/models/custom_quiz_data.dart';
 
@@ -43,7 +44,7 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
     if (_downloading) return;
     setState(() => _downloading = true);
     try {
-      final raw = await rootBundle.loadString(
+      final raw = await AssetCacheService.loadString(
           'assets/templates/eskolia_quiz_template.json');
       if (kIsWeb) {
         _downloadWeb(raw);

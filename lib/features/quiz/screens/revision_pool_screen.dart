@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/asset_cache_service.dart';
+
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
@@ -69,7 +71,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
     final lines = <String>[];
     for (final e in entries) {
       try {
-        final raw = await rootBundle.loadString(e.assetPath);
+        final raw = await AssetCacheService.loadString(e.assetPath);
         final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: e.assetPath);
         final q = e.questionId != null ? qs.firstWhere((x) => x.id == e.questionId) : null;
         final preview = q?.question ?? e.assetPath.split('/').last;

@@ -100,6 +100,7 @@ class QuizNotifier extends Notifier<QuizState> {
   void _initQuestionSpecifics() {
     final s = state.session;
     if (s == null) return;
+    if (s.currentIndex < 0 || s.currentIndex >= s.questions.length) return;
     final q = s.questions[s.currentIndex];
     
     state = state.copyWith(
