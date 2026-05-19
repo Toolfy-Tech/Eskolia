@@ -48,6 +48,7 @@ class NoteAiGenerator {
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 4096,
+      temperature: 0.5,
     );
   }
 
@@ -110,6 +111,8 @@ class NoteAiGenerator {
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 4096,
+      temperature: 0.3,
+      jsonMode: true,
     );
   }
 

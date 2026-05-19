@@ -24,20 +24,24 @@ class AiChatService {
   final Dio _dio;
 
   /// Stream les tokens de réponse au fur et à mesure.
+  /// [temperature] : 0.0 (déterministe) → 1.0 (créatif). Défaut 0.7.
+  /// [jsonMode]    : force une sortie JSON valide (OpenAI, Groq, Gemini).
   Stream<String> streamChat({
     required String apiKey,
     required AiProvider provider,
     required List<AiMessage> messages,
     String? systemPrompt,
     int maxTokens = 4096,
+    double temperature = 0.7,
+    bool jsonMode = false,
   }) {
     return switch (provider) {
       AiProvider.anthropic => _streamAnthropic(
-          apiKey, messages, systemPrompt, maxTokens),
+          apiKey, messages, systemPrompt, maxTokens, temperature),
       AiProvider.gemini => _streamGemini(
-          apiKey, messages, systemPrompt),
+          apiKey, messages, systemPrompt, temperature, jsonMode),
       _ => _streamOpenAICompat(
-          apiKey, provider, messages, systemPrompt, maxTokens),
+          apiKey, provider, messages, systemPrompt, maxTokens, temperature, jsonMode),
     };
   }
 
@@ -49,6 +53,8 @@ class AiChatService {
     List<AiMessage> messages,
     String? systemPrompt,
     int maxTokens,
+    double temperature,
+    bool jsonMode,
   ) async* {
     final msgs = [
       if (systemPrompt != null) {'role': 'system', 'content': systemPrompt},
@@ -71,6 +77,8 @@ class AiChatService {
           'messages': msgs,
           'stream': true,
           'max_tokens': maxTokens,
+          'temperature': temperature,
+          if (jsonMode) 'response_format': {'type': 'json_object'},
         }),
       );
     } on DioException catch (e) {
@@ -108,6 +116,7 @@ class AiChatService {
     List<AiMessage> messages,
     String? systemPrompt,
     int maxTokens,
+    double temperature,
   ) async* {
     Response<ResponseBody> response;
     try {
@@ -124,6 +133,7 @@ class AiChatService {
         data: jsonEncode({
           'model': AiProvider.anthropic.defaultModel,
           'max_tokens': maxTokens,
+          'temperature': temperature,
           if (systemPrompt != null) 'system': systemPrompt,
           'messages': messages.map((m) => m.toJson()).toList(),
           'stream': true,
@@ -159,6 +169,8 @@ class AiChatService {
     String key,
     List<AiMessage> messages,
     String? systemPrompt,
+    double temperature,
+    bool jsonMode,
   ) async* {
     final contents = messages
         .where((m) => m.role != 'system')
@@ -184,10 +196,12 @@ class AiChatService {
           'contents': contents,
           if (systemPrompt != null)
             'systemInstruction': {
-              'parts': [
-                {'text': systemPrompt}
-              ]
+              'parts': [{'text': systemPrompt}]
             },
+          'generationConfig': {
+            'temperature': temperature,
+            if (jsonMode) 'responseMimeType': 'application/json',
+          },
         }),
       );
     } on DioException catch (e) {
