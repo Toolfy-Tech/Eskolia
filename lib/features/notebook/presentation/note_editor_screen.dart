@@ -1,6 +1,7 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
 import 'dart:html' as html show Blob, Url, AnchorElement;
+import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -232,6 +233,13 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   Future<void> _saveQuiz() async {
     if (_generatedQuiz.isEmpty) return;
+    try {
+      // Validation avant sauvegarde
+      await QuizRepository().buildFromNotebookQuizJson(_generatedQuiz, 'check');
+    } on FormatException catch (e) {
+      if (mounted) showEskoliaSnackBar(context, e.message);
+      return;
+    }
     final title = _titleCtrl.text.trim().isEmpty ? 'Quiz IA' : _titleCtrl.text.trim();
     final quiz = SavedNotebookQuiz.create(
       title: title,
@@ -252,11 +260,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         _generatedQuiz,
         title,
       );
-      if (mounted) {
-        context.push('/quiz/run', extra: session);
-      }
+      if (mounted) context.push('/quiz/run', extra: session);
+    } on FormatException catch (e) {
+      if (mounted) showEskoliaSnackBar(context, e.message);
     } catch (e) {
-      if (mounted) showEskoliaSnackBar(context, 'JSON invalide — regenere le quiz.');
+      if (mounted) showEskoliaSnackBar(context, 'Erreur inattendue — regenere le quiz.');
     }
   }
 
@@ -701,25 +709,143 @@ class _QuizPreview extends StatelessWidget {
 
   final String content;
 
+  static const _typeLabels = {
+    'classic':           ('Q&R', Color(0xFF6C63FF)),
+    'ticket':            ('Ticket', Color(0xFF00BCD4)),
+    'diagnostic_indices':('Diagnostic', Color(0xFFFFC107)),
+    'sequence':          ('Sequence', Color(0xFF4CAF50)),
+  };
+
   @override
   Widget build(BuildContext context) {
-    final preview = content.length > 200 ? '${content.substring(0, 200)}...' : content;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      child: SelectableText(
-        preview,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          height: 1.55,
-          fontFamily: 'monospace',
+    // Tente de parser pour afficher une preview structuree.
+    try {
+      final data = jsonDecode(content) as Map<String, dynamic>;
+      final quizMeta  = data['quiz']      as Map<String, dynamic>? ?? {};
+      final questions = data['questions'] as List<dynamic>?         ?? [];
+      final title     = (quizMeta['title'] as String?)?.trim() ?? 'Quiz';
+      final desc      = (quizMeta['description'] as String?)?.trim() ?? '';
+
+      // Compte les types
+      final typeCounts = <String, int>{};
+      for (final q in questions) {
+        if (q is! Map) continue;
+        final t = (q['type'] as String?)?.trim() ?? 'classic';
+        typeCounts[t] = (typeCounts[t] ?? 0) + 1;
+      }
+
+      // Premiere question
+      final firstQ = questions.isNotEmpty && questions.first is Map
+          ? (questions.first as Map)['question'] as String? ?? ''
+          : '';
+
+      return Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: _green.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _green.withValues(alpha: 0.2)),
         ),
-      ),
-    );
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Titre + badge nb questions
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: _green.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    '${questions.length} question${questions.length > 1 ? 's' : ''}',
+                    style: const TextStyle(
+                      color: _green,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (desc.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(desc, style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12)),
+            ],
+            if (typeCounts.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: typeCounts.entries.map((e) {
+                  final info = _typeLabels[e.key] ?? ('Autre', _slate);
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: info.$2.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      '${e.value}x ${info.$1}',
+                      style: TextStyle(
+                        color: info.$2,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+            if (firstQ.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              const Divider(color: Colors.white10, height: 1),
+              const SizedBox(height: 8),
+              Text(
+                'Ex : ${firstQ.substring(0, min(firstQ.length, 120))}${firstQ.length > 120 ? '...' : ''}',
+                style: TextStyle(
+                  color: _slate.withValues(alpha: 0.8),
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    } catch (_) {
+      // JSON encore en cours de stream — affiche le debut brut
+      final preview = content.length > 200
+          ? '${content.substring(0, 200)}...'
+          : content;
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        ),
+        child: SelectableText(
+          preview,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            height: 1.55,
+            fontFamily: 'monospace',
+          ),
+        ),
+      );
+    }
   }
 }
