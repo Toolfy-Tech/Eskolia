@@ -60,6 +60,9 @@ import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
+import '../../features/notebook/presentation/notebook_screen.dart';
+import '../../features/notebook/presentation/note_editor_screen.dart';
+import '../../features/notebook/data/note_model.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -271,6 +274,13 @@ final GoRouter appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
     ),
+    GoRoute(
+      path: '/notebook/edit',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(
+        child: NoteEditorScreen(note: state.extra as NoteModel?),
+      ),
+    ),
 
     // --- SHELL ROUTE (AVEC BOTTOM NAV) ---
     ShellRoute(
@@ -359,6 +369,10 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/docs',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const DocsScreen()),
+        ),
+        GoRoute(
+          path: '/notebook',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const NotebookScreen()),
         ),
         GoRoute(
           path: '/profil',
