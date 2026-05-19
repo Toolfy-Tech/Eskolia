@@ -41,6 +41,7 @@ import '../../features/flashcards/presentation/flashcard_solo_setup_screen.dart'
 import '../../features/flashcards/presentation/flashcards_hub_screen.dart';
 
 import '../../features/economy/presentation/achievements_screen.dart';
+import '../../features/admin/presentation/admin_class_dashboard_screen.dart';
 import '../../features/admin/presentation/admin_drafts_screen.dart';
 import '../../features/admin/presentation/admin_feedback_screen.dart';
 import '../../features/admin/presentation/admin_home_screen.dart';
@@ -204,6 +205,11 @@ final GoRouter appRouter = GoRouter(
       path: '/admin/teacher-quizzes',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTeacherQuizzesScreen()),
+    ),
+    GoRoute(
+      path: '/admin/classe',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminClassDashboardScreen()),
     ),
     GoRoute(
       path: '/admin/teacher-quizzes/:quizId',

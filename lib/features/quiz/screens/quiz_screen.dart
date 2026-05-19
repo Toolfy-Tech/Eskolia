@@ -540,24 +540,47 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   }
 
   Widget _buildBack(QuizState state, QuizQuestion q) {
+    final currentScore = state.isValidated && state.session != null
+        ? (state.session!.userScores[state.session!.currentIndex] ?? 0.0)
+        : null;
+    final isCorrect = (currentScore ?? 1.0) >= 0.5;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'RÉPONSE ATTENDUE',
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.2,
-          ),
+        Row(
+          children: [
+            const Text(
+              'RÉPONSE ATTENDUE',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+            if (state.isValidated) ...[
+              const SizedBox(width: 8),
+              Icon(
+                isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                color: isCorrect ? _green : _red,
+                size: 16,
+              ),
+            ],
+          ],
         ),
         const SizedBox(height: 12),
-        Container(
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
+            color: state.isValidated
+                ? (isCorrect ? _green.withValues(alpha: 0.12) : _red.withValues(alpha: 0.10))
+                : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
+            border: state.isValidated
+                ? Border.all(color: isCorrect ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.35))
+                : null,
           ),
           child: Text(
             q.answer,
@@ -614,15 +637,47 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           _buildSequenceComparison(q.answerSequence!),
         ] else if (q.explanation != null) ...[
           const SizedBox(height: 20),
-          const Text(
-            'EXPLICATION / ASTUCE',
-            style: TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            q.explanation!,
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14, height: 1.5),
-          ),
+          if (state.isValidated && !isCorrect)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: _orange.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _orange.withValues(alpha: 0.4)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.lightbulb_rounded, color: _orange, size: 14),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'RETIENS BIEN ÇA',
+                        style: TextStyle(color: _orange, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    q.explanation!,
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14, height: 1.5),
+                  ),
+                ],
+              ),
+            )
+          else ...[
+            const Text(
+              'EXPLICATION / ASTUCE',
+              style: TextStyle(color: Colors.white60, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              q.explanation!,
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14, height: 1.5),
+            ),
+          ],
         ],
         const SizedBox(height: 16),
         if (!state.isValidated && q.type != 'sequence') ...[

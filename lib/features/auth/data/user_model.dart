@@ -21,6 +21,7 @@ class UserModel {
     this.lastLogin,
     required this.createdAt,
     this.role = 'user',
+    this.activeDays = const [],
   });
 
   final String uid;
@@ -45,6 +46,8 @@ class UserModel {
   final DateTime createdAt;
   /// `user` | `moderator` | `admin` — défini dans Firestore (ou bootstrap email).
   final String role;
+  /// Jours d'activité sous forme YYYYMMDD (ex. 20260518), pour le calendrier de série.
+  final List<int> activeDays;
 
   bool get isStaff => role == 'admin' || role == 'moderator';
 
@@ -90,6 +93,7 @@ class UserModel {
       role: (data['role'] as String?)?.trim().isNotEmpty == true
           ? (data['role'] as String).trim()
           : 'user',
+      activeDays: _intList(data['activeDays']),
     );
   }
 
@@ -164,6 +168,11 @@ class UserModel {
   static List<String> _stringList(dynamic raw) {
     if (raw is! List) return [];
     return raw.map((e) => e.toString()).toList();
+  }
+
+  static List<int> _intList(dynamic raw) {
+    if (raw is! List) return [];
+    return raw.whereType<num>().map((e) => e.toInt()).toList();
   }
 
   static DateTime? _tsToDate(dynamic v) {

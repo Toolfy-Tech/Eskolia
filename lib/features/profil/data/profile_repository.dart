@@ -15,6 +15,7 @@ class ProfileSnapshot {
     this.quizzesThisWeek = 0,
     this.tpMissionsThisWeek = 0,
     this.badges = const [],
+    this.activeDays = const [],
   });
 
   final String uid;
@@ -30,6 +31,8 @@ class ProfileSnapshot {
   final int tpMissionsThisWeek;
   /// Badges profil (Firestore `badges`).
   final List<String> badges;
+  /// Jours d'activité YYYYMMDD pour le calendrier de série.
+  final List<int> activeDays;
 
   factory ProfileSnapshot.fromUser(UserModel u) {
     return ProfileSnapshot(
@@ -45,6 +48,7 @@ class ProfileSnapshot {
       quizzesThisWeek: u.quizzesThisWeek,
       tpMissionsThisWeek: u.tpMissionsThisWeek,
       badges: List<String>.from(u.badges),
+      activeDays: List<int>.from(u.activeDays),
     );
   }
 

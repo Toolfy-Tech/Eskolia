@@ -75,9 +75,12 @@ class UserRepository {
   }
 
   Future<void> updateStreak(String uid, int streak) async {
+    final now = DateTime.now();
+    final todayInt = now.year * 10000 + now.month * 100 + now.day;
     await _db.collection('users').doc(uid).update({
       'streak': streak,
       'lastLogin': FieldValue.serverTimestamp(),
+      'activeDays': FieldValue.arrayUnion([todayInt]),
     });
   }
 
