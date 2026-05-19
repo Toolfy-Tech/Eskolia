@@ -165,7 +165,14 @@ class _ParcoursScreenState extends State<ParcoursScreen>
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       child: Row(
         children: [
-          const SizedBox(width: 48),
+          IconButton(
+            icon: Icon(
+              Icons.menu_book_rounded,
+              color: Colors.white.withValues(alpha: 0.85),
+            ),
+            tooltip: 'Docs métier',
+            onPressed: () => context.push('/docs'),
+          ),
           const Expanded(
             child: Text(
               'Mes Parcours',

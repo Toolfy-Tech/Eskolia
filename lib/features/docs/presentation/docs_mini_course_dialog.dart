@@ -15,8 +15,8 @@ Future<void> showDocsMiniCourseDialog(
   BuildContext context, {
   required String title,
   required String assetPath,
-  required String officialUrl,
-  required String officialLinkLabel,
+  String? officialUrl,
+  String? officialLinkLabel,
 }) async {
   await showDialog<void>(
     context: context,
@@ -83,27 +83,28 @@ Future<void> showDocsMiniCourseDialog(
               style: TextStyle(color: _dlgSlate.withValues(alpha: 0.9)),
             ),
           ),
-          FilledButton.icon(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              final uri = Uri.parse(officialUrl);
-              final ok =
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-              if (context.mounted && !ok) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Impossible d’ouvrir le lien.'),
-                  ),
-                );
-              }
-            },
-            icon: const Icon(Icons.open_in_new_rounded, size: 18),
-            label: Text(officialLinkLabel),
-            style: FilledButton.styleFrom(
-              backgroundColor: _dlgAccent,
-              foregroundColor: Colors.white,
+          if (officialUrl != null && officialLinkLabel != null)
+            FilledButton.icon(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                final uri = Uri.parse(officialUrl);
+                final ok =
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                if (context.mounted && !ok) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Impossible d’ouvrir le lien."),
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.open_in_new_rounded, size: 18),
+              label: Text(officialLinkLabel),
+              style: FilledButton.styleFrom(
+                backgroundColor: _dlgAccent,
+                foregroundColor: Colors.white,
+              ),
             ),
-          ),
         ],
       );
     },

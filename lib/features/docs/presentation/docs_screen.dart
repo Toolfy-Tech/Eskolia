@@ -16,8 +16,10 @@ const Color _slate = Color(0xFF94A3B8);
 const String _assetMiniRgpd = 'data/docs/mini_formation_rgpd.md';
 const String _assetMiniCnil = 'data/docs/mini_formation_cnil.md';
 const String _assetMiniAnssi = 'data/docs/mini_formation_anssi.md';
+const String _assetMiniItil = 'data/docs/mini_formation_itil.md';
+const String _assetMiniOsi = 'data/docs/mini_formation_osi.md';
 
-/// Ressources métiers (repères RGPD / CNIL / ANSSI) et accès rapide aux cours des parcours.
+/// Ressources métiers : conformité, cybersécurité, réseaux, gestion des services IT.
 class DocsScreen extends StatelessWidget {
   const DocsScreen({super.key});
 
@@ -25,13 +27,14 @@ class DocsScreen extends StatelessWidget {
       'https://www.cnil.fr/fr/reglement-europeen-protection-donnees';
   static const String _cnilHome = 'https://www.cnil.fr/';
   static const String _anssiHome = 'https://www.ssi.gouv.fr/';
+  static const String _itilHome = 'https://www.axelos.com/best-practice-solutions/itil';
 
   Future<void> _openUrl(BuildContext context, String url) async {
     final uri = Uri.parse(url);
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible d’ouvrir le lien.')),
+        const SnackBar(content: Text('Impossible d\'ouvrir le lien.')),
       );
     }
   }
@@ -58,9 +61,9 @@ class DocsScreen extends StatelessWidget {
               ),
               children: [
                 Text(
-                  'Repères pour techniciens : conformité, protection des données et '
-                  'cybersécurité. Rappel pédagogique — ne remplace ni un avis juridique '
-                  'ni la politique de ton organisation.',
+                  'Repères pour techniciens : conformité, protection des données, '
+                  'cybersécurité et gestion des services IT. '
+                  'Rappel pédagogique — ne remplace pas un avis juridique.',
                   style: TextStyle(
                     color: _slate.withValues(alpha: 0.95),
                     fontSize: 13,
@@ -81,6 +84,7 @@ class DocsScreen extends StatelessWidget {
                     officialUrl: _cnilRgpd,
                     officialLinkLabel: 'Fiche CNIL sur le règlement européen',
                   ),
+                  onQuiz: () => context.go('/quiz/quick'),
                 ),
                 const SizedBox(height: 12),
                 _DocSectionCard(
@@ -96,70 +100,63 @@ class DocsScreen extends StatelessWidget {
                     officialUrl: _cnilHome,
                     officialLinkLabel: 'Site de la CNIL',
                   ),
+                  onQuiz: () => context.go('/quiz/quick'),
                 ),
                 const SizedBox(height: 12),
                 _DocSectionCard(
                   title: 'ANSSI & bonnes pratiques ops',
                   accent: EskoliaVisual.neonGreen,
                   body: _anssiBody,
-                  linkLabel: 'Site de l’ANSSI',
+                  linkLabel: 'Site de l\'ANSSI',
                   onLink: () => _openUrl(context, _anssiHome),
                   onCardTap: () => showDocsMiniCourseDialog(
                     context,
                     title: 'Mini-formation — ANSSI',
                     assetPath: _assetMiniAnssi,
                     officialUrl: _anssiHome,
-                    officialLinkLabel: 'Site de l’ANSSI',
+                    officialLinkLabel: 'Site de l\'ANSSI',
                   ),
+                  onQuiz: () => context.go('/quiz/quick'),
                 ),
                 const SizedBox(height: 12),
                 _DocSectionCard(
-                  title: 'Ce qu’un bon technicien garde en tête',
+                  title: 'ITIL 4 — Gestion des services IT',
+                  accent: const Color(0xFF60A5FA),
+                  body: _itilBody,
+                  linkLabel: 'Site officiel ITIL (Axelos)',
+                  onLink: () => _openUrl(context, _itilHome),
+                  onCardTap: () => showDocsMiniCourseDialog(
+                    context,
+                    title: 'Mini-formation — ITIL 4',
+                    assetPath: _assetMiniItil,
+                    officialUrl: _itilHome,
+                    officialLinkLabel: 'Site officiel ITIL',
+                  ),
+                  onQuiz: () => context.go('/quiz/quick'),
+                ),
+                const SizedBox(height: 12),
+                _DocSectionCard(
+                  title: 'Modèle OSI & réseaux',
+                  accent: const Color(0xFF34D399),
+                  body: _osiBody,
+                  linkLabel: null,
+                  onLink: null,
+                  onCardTap: () => showDocsMiniCourseDialog(
+                    context,
+                    title: 'Mini-formation — Modèle OSI',
+                    assetPath: _assetMiniOsi,
+                    officialUrl: null,
+                    officialLinkLabel: null,
+                  ),
+                  onQuiz: () => context.go('/quiz/quick'),
+                ),
+                const SizedBox(height: 12),
+                _DocSectionCard(
+                  title: 'Ce qu\'un bon technicien garde en tête',
                   accent: const Color(0xFFFFB74D),
                   body: _technicianBody,
                   linkLabel: null,
                   onLink: null,
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  'Relire les cours',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.95),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Ouvre le parcours avec les chapitres dépliés pour parcourir les leçons '
-                  '(sans obligation de refaire les quiz).',
-                  style: TextStyle(
-                    color: _slate.withValues(alpha: 0.9),
-                    fontSize: 12,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _ParcoursShortcutCard(
-                  emoji: '\u{1F393}',
-                  title: 'Technicien informatique (TIP)',
-                  subtitle: 'Parcours TIP — cours et modules',
-                  onTap: () => context.go('/parcours?focus=tip'),
-                ),
-                const SizedBox(height: 10),
-                _ParcoursShortcutCard(
-                  emoji: '\u{2699}\u{FE0F}',
-                  title: 'Parcours Optimus',
-                  subtitle: 'Cours Optimus — relecture',
-                  onTap: () => context.go('/parcours?focus=optimus'),
-                ),
-                const SizedBox(height: 10),
-                _ParcoursShortcutCard(
-                  emoji: '\u{1F4DA}',
-                  title: 'Tous les parcours',
-                  subtitle: 'Vue complète « Mes Parcours »',
-                  onTap: () => context.go('/parcours'),
-                  borderMuted: true,
                 ),
               ],
             ),
@@ -172,29 +169,45 @@ class DocsScreen extends StatelessWidget {
 
 const String _rgpdBody = '• Finalité et base légale avant de traiter des données perso.\n'
     '• Minimisation : ne collecter que le nécessaire.\n'
-    '• Droits des personnes : information, accès, rectification, effacement, limitation, opposition, portabilité selon les cas.\n'
+    '• Droits des personnes : information, accès, rectification, effacement, '
+    'limitation, opposition, portabilité selon les cas.\n'
     '• Sécurité : mesures techniques et organisationnelles adaptées au risque.\n'
-    '• Sous-traitance : encadrement contractuel (ex. clauses types, DPA).\n'
-    '• Violation de données : analyse et notification dans les délais prévus (souvent 72 h vers l’autorité, parfois aux personnes).\n'
-    '• Registre des traitements et analyses d’impact (AIPD) lorsque requis.';
+    '• Violation de données : analyse et notification dans les délais (souvent 72 h).\n'
+    '• Registre des traitements et AIPD lorsque requis.';
 
-const String _cnilBody = 'La CNIL est l’autorité française de protection des données. '
-    'Elle publie guides, modèles et recommandations (sécurité, cookies, RH, vidéo, etc.) '
-    'et peut être saisie en cas de difficulté. En entreprise, identifier un interlocuteur '
-    'référent données / DPO si la taille ou le type d’activité l’impose.';
+const String _cnilBody = 'La CNIL est l\'autorité française de protection des données. '
+    'Elle publie guides, modèles et recommandations (sécurité, cookies, RH, etc.) '
+    'et peut être saisie en cas de difficulté. Identifier un DPO si la taille '
+    'ou le type d\'activité l\'impose.';
 
-const String _anssiBody = 'L’ANSSI oriente la cybersécurité en France : bonnes pratiques, '
-    'guides d’hygiène numérique, référentiels, sensibilisation et réponse à incident. '
+const String _anssiBody = 'L\'ANSSI oriente la cybersécurité en France : bonnes pratiques, '
+    'guides d\'hygiène numérique, référentiels et réponse à incident. '
     'Pour un technicien : durcissement, segmentation, journaux, sauvegardes testées, '
     'gestion des mises à jour et culture du signalement.';
+
+const String _itilBody = '• SVS (Service Value System) : gouvernance, pratiques, '
+    'chaîne de valeur et amélioration continue.\n'
+    '• 4 dimensions : Organisations, Information/Tech, Partenaires, Flux de valeur.\n'
+    '• Pratiques clés : gestion des incidents, des problèmes, des changements, '
+    'centre de services, SLA/OLA.\n'
+    '• Incident = interruption non planifiée. Problème = cause racine. '
+    'CMDB = inventaire des CI.\n'
+    '• 7 principes directeurs dont : focaliser sur la valeur, itérer avec feedback, simplifier.';
+
+const String _osiBody = '• 7 couches (bas → haut) : Physique, Liaison, Réseau, '
+    'Transport, Session, Présentation, Application.\n'
+    '• Couche 3 (Réseau) : IP, routeurs. Couche 2 (Liaison) : MAC, switches.\n'
+    '• TCP (couche 4) : fiable et ordonné. UDP : rapide mais sans garantie.\n'
+    '• Encapsulation : données → segment → paquet → trame → bits.\n'
+    '• TCP/IP regroupe en 4 couches : Application, Transport, Internet, Accès réseau.';
 
 const String _technicianBody = '• Moindre privilège et comptes nominatifs (éviter les comptes partagés).\n'
     '• Traçabilité : qui a accédé à quoi, et pourquoi.\n'
     '• Sauvegardes 3-2-1 et tests de restauration réguliers.\n'
     '• Patchs et inventaire : savoir ce qui est exposé.\n'
-    '• Pas de copie de bases de prod sur poste non sécurisé ; anonymiser si besoin de tests.\n'
+    '• Pas de copie de bases de prod sur poste non sécurisé.\n'
     '• Chiffrement des supports nomades et des canaux sensibles.\n'
-    '• En cas d’incident : préserver les preuves, escalader, ne pas improviser seul.';
+    '• En cas d\'incident : préserver les preuves, escalader, ne pas improviser seul.';
 
 class _DocSectionCard extends StatelessWidget {
   const _DocSectionCard({
@@ -204,6 +217,7 @@ class _DocSectionCard extends StatelessWidget {
     required this.linkLabel,
     required this.onLink,
     this.onCardTap,
+    this.onQuiz,
   });
 
   final String title;
@@ -211,8 +225,8 @@ class _DocSectionCard extends StatelessWidget {
   final String body;
   final String? linkLabel;
   final VoidCallback? onLink;
-  /// Mini-formation en popup (carte entière cliquable).
   final VoidCallback? onCardTap;
+  final VoidCallback? onQuiz;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +268,7 @@ class _DocSectionCard extends StatelessWidget {
             ],
           ),
           if (onCardTap != null) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
               'Touchez la carte pour une mini-formation',
               style: TextStyle(
@@ -274,16 +288,52 @@ class _DocSectionCard extends StatelessWidget {
             ),
           ),
           if (linkLabel != null && onLink != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             TextButton.icon(
               onPressed: onLink,
-              icon: Icon(Icons.open_in_new_rounded, size: 18, color: accent),
+              icon: Icon(Icons.open_in_new_rounded, size: 16, color: accent),
               label: Text(
                 linkLabel!,
                 style: TextStyle(
                   color: accent,
                   fontWeight: FontWeight.w700,
-                  fontSize: 13,
+                  fontSize: 12,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+          ],
+          if (onQuiz != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: onQuiz,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: accent.withValues(alpha: 0.15),
+                    border: Border.all(color: accent.withValues(alpha: 0.4)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.quiz_rounded, size: 14, color: accent),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Quiz rapide',
+                        style: TextStyle(
+                          color: accent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -302,80 +352,6 @@ class _DocSectionCard extends StatelessWidget {
         splashColor: accent.withValues(alpha: 0.12),
         highlightColor: accent.withValues(alpha: 0.06),
         child: content,
-      ),
-    );
-  }
-}
-
-class _ParcoursShortcutCard extends StatelessWidget {
-  const _ParcoursShortcutCard({
-    required this.emoji,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-    this.borderMuted = false,
-  });
-
-  final String emoji;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final bool borderMuted;
-
-  @override
-  Widget build(BuildContext context) {
-    final border = borderMuted
-        ? [
-            Colors.white.withValues(alpha: 0.14),
-            Colors.white.withValues(alpha: 0.06),
-          ]
-        : EskoliaVisual.borderPrimary;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: GradientBorderCard(
-          gradientColors: border,
-          borderRadius: 16,
-          innerBlurSigma: 10,
-          innerColor: const Color(0xFF121A28),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          child: Row(
-            children: [
-              Text(emoji, style: const TextStyle(fontSize: 32)),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        color: _slate.withValues(alpha: 0.92),
-                        fontSize: 12,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.5),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

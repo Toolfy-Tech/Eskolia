@@ -396,7 +396,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: _amber),
         _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: _violet),
         _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: _green),
-        _ExplorerTile(icon: Icons.menu_book_rounded, label: 'Docs métier', route: '/docs', color: _cyan),
         _ExplorerTile(icon: Icons.settings_rounded, label: 'Réglages', route: '/settings', color: _slate),
       ],
     );
