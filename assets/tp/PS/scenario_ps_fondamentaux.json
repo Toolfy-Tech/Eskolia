@@ -1,0 +1,541 @@
+{
+  "id": "scenario_ps_fondamentaux",
+  "title": "Fondamentaux PowerShell",
+  "subtitle": "Maitriser les bases du terminal Windows",
+  "emoji": "💙",
+  "color": "#3B82F6",
+  "difficulty": "debutant",
+  "difficulty_label": "Debutant",
+  "description": "Tu es technicien IT junior dans une entreprise qui utilise des environnements Windows. PowerShell est l'outil indispensable du quotidien : automatisation, gestion des fichiers, des services et des utilisateurs. Ce scenario te guide de l'ouverture du terminal jusqu'a la maitrise du pipeline, etape par etape.",
+  "domain": null,
+  "dc_name": null,
+  "server_ip": null,
+  "os": "Windows 10 / Windows Server 2022",
+  "total_missions": 16,
+  "estimated_hours": "4-6h",
+  "prerequisite": null,
+  "context_intro": "Tu viens d'etre recrute comme technicien IT junior. Ton responsable te confie immediatement une mission : apprendre PowerShell, car toute l'administration des postes et serveurs de l'entreprise passe par la ligne de commande. Tu n'as jamais utilise PowerShell serieusement. Ce scenario te permettra d'en maitriser les bases absolues, de la navigation dans les fichiers jusqu'a la manipulation des donnees via le pipeline.",
+  "badges": [
+    {
+      "id": "ps1_explorateur",
+      "title": "Explorateur PowerShell",
+      "description": "A decouvert l'environnement PowerShell et son systeme d'aide",
+      "icon": "🔍",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "ps1_navigateur",
+      "title": "Navigateur de fichiers",
+      "description": "A maitrise la navigation et la manipulation de fichiers en PowerShell",
+      "icon": "📁",
+      "unlocked_after_level": 2
+    },
+    {
+      "id": "ps1_pipeliner",
+      "title": "Maitre du Pipeline",
+      "description": "A termine le scenario Fondamentaux PowerShell en intégralité",
+      "icon": "💙",
+      "unlocked_after_level": 3
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Decouverte de PowerShell",
+      "description": "Comprendre ce qu'est PowerShell, comment l'ouvrir et comment obtenir de l'aide sans chercher sur Internet.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "PS1-0-1",
+          "order": 1,
+          "title": "Ouvrir PowerShell en administrateur",
+          "unlocked_by": null,
+          "estimated_minutes": 15,
+          "objective": "Lancer PowerShell avec les droits administrateur et comprendre l'interface : le prompt, le PSdrive et la signification de l'invite.",
+          "context": "PowerShell est bien plus qu'un simple terminal : c'est un environnement de scripting complet integre a Windows. Contrairement a l'invite de commandes (cmd.exe), PowerShell manipule des objets .NET, ce qui lui donne une puissance bien superieure. Pour administrer un systeme (creer des utilisateurs, modifier des services, changer des parametres reseau), il faut imperativement l'ouvrir en tant qu'administrateur. Le prompt PS C:\\> indique que tu es dans le PSdrive C:, c'est-a-dire le systeme de fichiers du disque C. Le prefixe PS rappelle que tu es dans PowerShell et non dans cmd.",
+          "steps": [
+            "Clique sur le bouton Demarrer (logo Windows en bas a gauche)",
+            "Tape PowerShell dans la barre de recherche",
+            "Fais un clic droit sur Windows PowerShell dans les resultats",
+            "Clique sur Executer en tant qu'administrateur",
+            "Une fenetre UAC (controle de compte) apparait — clique sur Oui",
+            "Observe le prompt : il doit afficher PS C:\\Windows\\system32> — le chemin indique que tu es administrateur",
+            "Note la difference : un PowerShell normal affiche PS C:\\Users\\TonNom>, un PowerShell admin affiche C:\\Windows\\system32>",
+            "Tape : $PSversionTable et appuie sur Entree pour verifier que PowerShell fonctionne"
+          ],
+          "help": {
+            "text": "Tu ne trouves pas comment ouvrir PowerShell en admin ?",
+            "where": "Appuie sur la touche Windows + X pour ouvrir le menu contextuel rapide. Tu verras directement l'option Windows PowerShell (admin) ou Terminal Windows (admin) selon ta version. C'est le raccourci le plus rapide pour les techniciens."
+          },
+          "expected_result": [
+            "La fenetre PowerShell est ouverte et le titre de la barre indique Administrateur : Windows PowerShell",
+            "Le prompt affiche PS C:\\Windows\\system32>",
+            "La commande $PSVersionTable affiche un tableau avec les informations de version"
+          ]
+        },
+        {
+          "id": "PS1-0-2",
+          "order": 2,
+          "title": "Get-Help : le systeme d'aide integre",
+          "unlocked_by": "PS1-0-1",
+          "estimated_minutes": 20,
+          "objective": "Utiliser Get-Help pour obtenir de la documentation sur n'importe quelle cmdlet directement depuis PowerShell.",
+          "context": "Get-Help est l'une des commandes les plus importantes a connaitre. Elle te permet d'obtenir la documentation complete de toute cmdlet sans quitter le terminal et sans acces Internet. Apprendre a lire une aide PowerShell t'economisera des heures de recherche. Le parametre -Full donne la documentation complete avec tous les exemples, -Examples ne donne que les exemples d'utilisation, et les rubriques about_ (comme about_Variables) expliquent des concepts generaux du langage. Il est recommande de lancer Update-Help une premiere fois pour telecharger les fichiers d'aide les plus recents.",
+          "steps": [
+            "Tape : Update-Help -Force et appuie sur Entree (cela peut prendre 1 a 2 minutes)",
+            "Une fois termine, tape : Get-Help Get-Process",
+            "Lis la section SYNOPSIS et SYNTAXE qui s'affichent",
+            "Maintenant tape : Get-Help Get-Process -Examples",
+            "Observe les exemples concrets d'utilisation de Get-Process",
+            "Tape : Get-Help Get-Process -Full pour voir toute la documentation",
+            "Tape : Get-Help about_Variables pour lire la rubrique sur les variables",
+            "Tape : Get-Help about_Pipeline pour lire la rubrique sur le pipeline"
+          ],
+          "help": {
+            "text": "Update-Help affiche des erreurs pour certains modules ?",
+            "where": "C'est normal : certains modules n'ont pas de fichiers d'aide en ligne ou necesitent une connexion a des serveurs Microsoft specifiques. Les erreurs ne sont pas bloquantes. L'aide de base est quand meme disponible. Si tu n'as pas d'acces Internet, tu peux quand meme taper Get-Help Get-Process sans le -Full pour avoir l'aide locale minimale."
+          },
+          "expected_result": [
+            "Update-Help s'est execute (avec peut-etre quelques avertissements, c'est normal)",
+            "Get-Help Get-Process affiche le synopsis et la syntaxe de la commande",
+            "Get-Help Get-Process -Examples affiche au moins 3 exemples d'utilisation",
+            "Get-Help about_Variables affiche une rubrique explicative sur les variables PowerShell"
+          ]
+        },
+        {
+          "id": "PS1-0-3",
+          "order": 3,
+          "title": "Get-Command : trouver des cmdlets",
+          "unlocked_by": "PS1-0-2",
+          "estimated_minutes": 15,
+          "objective": "Utiliser Get-Command pour decouvrir toutes les cmdlets disponibles et filtrer par verbe ou nom.",
+          "context": "PowerShell contient des centaines de cmdlets. Get-Command est ton moteur de recherche interne. Il suit la convention Verbe-Nom : Get-Process, Set-Service, New-Item, Remove-Item, etc. Cette convention est fondamentale — une fois que tu connais les verbes courants (Get, Set, New, Remove, Start, Stop, Test, Invoke), tu peux deviner beaucoup de commandes. Le parametre -Verb te liste toutes les commandes d'un verbe donne, et le joker * permet de chercher par mot-cle dans le nom. Cela te rend autonome meme face a des commandes que tu n'as jamais utilisees.",
+          "steps": [
+            "Tape : Get-Command *service* et appuie sur Entree",
+            "Observe la liste de toutes les commandes qui contiennent le mot 'service'",
+            "Tape : Get-Command -Verb Get pour voir toutes les cmdlets qui commencent par Get",
+            "Tape : Get-Command -Verb Set pour voir toutes celles qui commencent par Set",
+            "Tape : Get-Command -Noun Process pour voir toutes les cmdlets qui concernent les processus",
+            "Tape : Get-Command *network* pour trouver des commandes reseau",
+            "Tape : (Get-Command -Verb Get).Count pour compter combien de commandes Get existent"
+          ],
+          "help": {
+            "text": "Le resultat de Get-Command est trop long a lire ?",
+            "where": "Ajoute | more a la fin de ta commande pour paginer l'affichage : Get-Command -Verb Get | more. Appuie sur Entree pour avancer ligne par ligne, ou sur Espace pour avancer page par page. Appuie sur Q pour quitter l'affichage page."
+          },
+          "expected_result": [
+            "Get-Command *service* affiche au moins Get-Service, Start-Service, Stop-Service, Set-Service",
+            "Get-Command -Verb Get affiche plusieurs dizaines de cmdlets",
+            "Get-Command -Noun Process affiche Get-Process, Stop-Process, Start-Process, Wait-Process",
+            "La commande de comptage affiche un nombre superieur a 100"
+          ]
+        },
+        {
+          "id": "PS1-0-4",
+          "order": 4,
+          "title": "$PSVersionTable et Get-Host : connaitre son environnement",
+          "unlocked_by": "PS1-0-3",
+          "estimated_minutes": 15,
+          "objective": "Afficher les informations sur la version de PowerShell et sur l'environnement d'execution.",
+          "context": "Avant de commencer a travailler sur un systeme inconnu, un bon technicien verifie toujours son environnement. $PSVersionTable est une variable automatique qui contient toutes les informations de version de PowerShell : la version du moteur, la version du CLR .NET, le systeme d'exploitation, etc. Get-Host quant a lui donne des informations sur le 'host' qui heberge PowerShell — c'est-a-dire la console ou l'application qui l'execute. Ces informations sont cruciales lors de debogages ou pour savoir si certaines fonctionnalites avancees sont disponibles selon la version installee.",
+          "steps": [
+            "Tape : $PSVersionTable et appuie sur Entree",
+            "Identifie le numero de version dans PSVersion (ex : 5.1.xxxxx ou 7.x.x)",
+            "Note la valeur de PSEdition : Desktop signifie PS 5.x sur Windows, Core signifie PS 7+",
+            "Note la valeur de OS qui decrit le systeme d'exploitation",
+            "Tape : Get-Host",
+            "Observe les proprietes : Name, Version, UI, CurrentCulture",
+            "Tape : $PSVersionTable.PSVersion.Major pour n'afficher que le numero de version majeur",
+            "Tape : $Host.Version pour acceder aux infos de version via la variable automatique $Host"
+          ],
+          "help": {
+            "text": "Quelle est la difference entre PS 5.1 et PS 7 ?",
+            "where": "PowerShell 5.1 (edition Desktop) est installe par defaut sur Windows 10/11 et Server 2022. PowerShell 7 (edition Core) est une version multiplateforme plus recente qu'on installe separement. Pour l'apprentissage et la gestion Windows, PS 5.1 est suffisant. Certaines cmdlets avancees ou modules sont uniquement disponibles dans PS 7."
+          },
+          "expected_result": [
+            "$PSVersionTable affiche un tableau avec PSVersion, PSEdition, BuildVersion, CLRVersion et OS",
+            "Get-Host affiche le nom du host (ConsoleHost), la version et les parametres culturels",
+            "$PSVersionTable.PSVersion.Major affiche uniquement le chiffre 5 ou 7",
+            "Tu sais maintenant distinguer PS 5.1 Desktop de PS 7 Core"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Navigation dans le systeme de fichiers",
+      "description": "Apprendre a se deplacer, lister et inspecter des fichiers et dossiers en PowerShell.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "PS1-1-1",
+          "order": 1,
+          "title": "Get-Location et Set-Location : naviguer entre dossiers",
+          "unlocked_by": "PS1-0-4",
+          "estimated_minutes": 15,
+          "objective": "Utiliser Get-Location et Set-Location (et leurs alias cd, pwd) pour connaitre et changer le repertoire courant.",
+          "context": "PowerShell maintient en permanence un 'repertoire courant' — le dossier dans lequel tu te trouves. Toutes les operations relatives (sans chemin absolu) partent de ce repertoire. Get-Location (alias : pwd, comme sur Linux) te dit ou tu es. Set-Location (alias : cd) te deplace ailleurs. PowerShell supporte le caractere .. pour remonter d'un niveau et ~ pour aller directement dans le profil de l'utilisateur. Contrairement a cmd.exe, PowerShell peut naviguer non seulement dans le systeme de fichiers mais aussi dans d'autres 'PSDrives' comme le registre Windows (HKLM:, HKCU:) ou le magasin de certificats (Cert:).",
+          "steps": [
+            "Tape : Get-Location — note le repertoire courant affiche",
+            "Tape : pwd — c'est l'alias de Get-Location, tu obtiens le meme resultat",
+            "Tape : Set-Location C:\\ pour aller a la racine du disque C",
+            "Tape : cd C:\\Windows pour aller dans le dossier Windows (cd est l'alias de Set-Location)",
+            "Tape : cd .. pour remonter d'un niveau (retour dans C:\\)",
+            "Tape : cd ~ pour aller dans ton profil utilisateur (C:\\Users\\TonNom)",
+            "Tape : Set-Location HKLM: pour naviguer dans le registre Windows (un autre PSDrive !)",
+            "Tape : cd C: pour revenir dans le systeme de fichiers"
+          ],
+          "help": {
+            "text": "Tu as du mal a revenir dans le systeme de fichiers apres HKLM: ?",
+            "where": "Depuis n'importe quel PSDrive, tu peux revenir dans le systeme de fichiers en tapant Set-Location C:\\ ou cd C:\\. Si tu es perdu, tape (Get-Location).Drive.Name pour voir dans quel PSDrive tu te trouves actuellement."
+          },
+          "expected_result": [
+            "Get-Location et pwd affichent bien le meme chemin courant",
+            "Set-Location C:\\ change le prompt en PS C:\\>",
+            "cd .. depuis C:\\Windows retourne bien en PS C:\\>",
+            "Set-Location HKLM: change le prompt en PS HKLM:\\> et cd C: ramene en PS C:\\>"
+          ]
+        },
+        {
+          "id": "PS1-1-2",
+          "order": 2,
+          "title": "Get-ChildItem : lister et filtrer le contenu d'un dossier",
+          "unlocked_by": "PS1-1-1",
+          "estimated_minutes": 20,
+          "objective": "Utiliser Get-ChildItem avec ses parametres -Filter, -Recurse et -Hidden pour lister et filtrer les fichiers.",
+          "context": "Get-ChildItem (alias : ls, dir, gci) est l'equivalent PowerShell de la commande dir de cmd. Mais elle va bien plus loin : elle peut filtrer par extension, chercher recursivement dans tous les sous-dossiers, et afficher les fichiers normalement caches par Windows. Le parametre -Filter utilise des jokers (* et ?) et est tres performant car le filtrage est fait par le systeme de fichiers lui-meme. Le parametre -Recurse explore tous les sous-dossiers automatiquement, ce qui est extremement utile pour retrouver un fichier perdu ou faire un inventaire. Le resultat de Get-ChildItem n'est pas du texte mais une collection d'objets FileInfo et DirectoryInfo, chacun avec des proprietes comme Name, Length, LastWriteTime.",
+          "steps": [
+            "Tape : Set-Location C:\\Windows\\System32",
+            "Tape : Get-ChildItem pour lister le contenu (beaucoup de fichiers !)",
+            "Tape : Get-ChildItem -Filter *.exe pour n'afficher que les executables",
+            "Tape : Get-ChildItem -Filter *.dll | Measure-Object pour compter les DLL",
+            "Tape : Set-Location C:\\Users",
+            "Tape : Get-ChildItem -Recurse -Filter *.txt pour chercher tous les fichiers .txt recursivement",
+            "Tape : Get-ChildItem C:\\Windows -Hidden pour voir les fichiers et dossiers caches",
+            "Tape : dir C:\\ pour utiliser l'alias dir et constater que c'est identique"
+          ],
+          "help": {
+            "text": "Get-ChildItem -Recurse prend trop de temps ou affiche des erreurs d'acces ?",
+            "where": "C'est normal sur des dossiers systeme : certains sous-dossiers sont proteges et refusent l'acces. Ajoute -ErrorAction SilentlyContinue pour ignorer ces erreurs : Get-ChildItem C:\\ -Recurse -Filter *.txt -ErrorAction SilentlyContinue. Cette option est tres utilisee en pratique."
+          },
+          "expected_result": [
+            "Get-ChildItem -Filter *.exe dans System32 affiche uniquement les fichiers .exe",
+            "Get-ChildItem -Filter *.dll | Measure-Object affiche le nombre total de DLL",
+            "Get-ChildItem -Hidden affiche des elements invisibles dans l'explorateur graphique",
+            "Les alias ls, dir et gci donnent exactement le meme resultat que Get-ChildItem"
+          ]
+        },
+        {
+          "id": "PS1-1-3",
+          "order": 3,
+          "title": "New-Item : creer des dossiers et des fichiers",
+          "unlocked_by": "PS1-1-2",
+          "estimated_minutes": 15,
+          "objective": "Creer des dossiers et des fichiers avec New-Item en utilisant le parametre -ItemType.",
+          "context": "New-Item est la cmdlet universelle de creation dans PowerShell. Elle peut creer des fichiers, des dossiers, des cles de registre et meme des liens symboliques selon le parametre -ItemType que tu lui donnes. En administration systeme, on cree frequemment des structures de dossiers pour organiser des logs, des sauvegardes ou des scripts. Le parametre -Path definit ou creer l'element, -Name son nom, et -Value le contenu initial d'un fichier. Tu peux aussi creer plusieurs niveaux de dossiers en une seule commande avec -Force, qui cree les parents manquants.",
+          "steps": [
+            "Tape : New-Item -Path C:\\ -Name TP_PowerShell -ItemType Directory",
+            "Tape : New-Item -Path C:\\TP_PowerShell -Name logs -ItemType Directory",
+            "Tape : New-Item -Path C:\\TP_PowerShell -Name scripts -ItemType Directory",
+            "Tape : New-Item -Path C:\\TP_PowerShell -Name readme.txt -ItemType File",
+            "Tape : New-Item -Path C:\\TP_PowerShell -Name notes.txt -ItemType File -Value 'Mon premier fichier PowerShell'",
+            "Tape : New-Item -Path C:\\TP_PowerShell\\logs\\archive\\2024 -ItemType Directory -Force",
+            "Verifie le resultat avec : Get-ChildItem C:\\TP_PowerShell -Recurse"
+          ],
+          "help": {
+            "text": "New-Item affiche une erreur 'item already exists' ?",
+            "where": "Ajoute -Force a ta commande pour ecraser ou ignorer l'element existant : New-Item -Path C:\\ -Name TP_PowerShell -ItemType Directory -Force. -Force est aussi le parametre qui permet de creer tous les dossiers parents manquants dans un chemin profond."
+          },
+          "expected_result": [
+            "Le dossier C:\\TP_PowerShell existe et contient les sous-dossiers logs et scripts",
+            "Le fichier readme.txt existe dans C:\\TP_PowerShell (vide)",
+            "Le fichier notes.txt contient le texte 'Mon premier fichier PowerShell'",
+            "La structure C:\\TP_PowerShell\\logs\\archive\\2024 a ete creee avec -Force"
+          ]
+        },
+        {
+          "id": "PS1-1-4",
+          "order": 4,
+          "title": "Test-Path, Get-Item et Get-ItemProperty : inspecter les elements",
+          "unlocked_by": "PS1-1-3",
+          "estimated_minutes": 20,
+          "objective": "Verifier l'existence d'un fichier ou dossier avec Test-Path, et obtenir ses proprietes avec Get-Item et Get-ItemProperty.",
+          "context": "Dans un script, avant d'effectuer une operation sur un fichier, il est indispensable de verifier qu'il existe. Test-Path retourne un simple $true ou $false, ce qui en fait l'outil parfait pour les conditions dans les scripts. Get-Item retourne l'objet complet representant un fichier ou un dossier, avec toutes ses proprietes (taille, dates, attributs). Get-ItemProperty est particulierement puissant dans le registre Windows, ou il retourne les valeurs d'une cle. Ces trois cmdlets fonctionnent de la meme facon sur le systeme de fichiers ET dans le registre — c'est la force de l'abstraction PSDrive de PowerShell.",
+          "steps": [
+            "Tape : Test-Path C:\\TP_PowerShell — doit retourner True",
+            "Tape : Test-Path C:\\DossierQuiNExistePas — doit retourner False",
+            "Tape : Get-Item C:\\TP_PowerShell pour voir les proprietes du dossier",
+            "Tape : Get-Item C:\\TP_PowerShell\\notes.txt pour voir les proprietes du fichier",
+            "Tape : (Get-Item C:\\TP_PowerShell\\notes.txt).Length pour obtenir la taille en octets",
+            "Tape : (Get-Item C:\\TP_PowerShell\\notes.txt).LastWriteTime pour obtenir la date de modification",
+            "Tape : Get-ItemProperty C:\\TP_PowerShell\\notes.txt pour voir toutes les proprietes",
+            "Tape : Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion -Name ProgramFilesDir"
+          ],
+          "help": {
+            "text": "Test-Path retourne False pour un chemin que tu viens de creer ?",
+            "where": "Verifie la syntaxe exacte du chemin. PowerShell est sensible aux antislash et aux espaces. Tu peux utiliser la touche Tab pour l'autocompletion des chemins : tape C:\\TP et appuie sur Tab, PowerShell completera automatiquement le chemin. C'est le moyen le plus sur d'eviter les fautes de frappe."
+          },
+          "expected_result": [
+            "Test-Path retourne True pour C:\\TP_PowerShell et False pour un chemin inexistant",
+            "Get-Item affiche les proprietes Mode, LastWriteTime, Length (pour les fichiers) et Name",
+            "(Get-Item notes.txt).Length affiche le nombre d'octets du fichier",
+            "Get-ItemProperty sur la cle de registre affiche la valeur de ProgramFilesDir (ex: C:\\Program Files)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Manipulation de fichiers",
+      "description": "Copier, deplacer, lire, ecrire, supprimer et gerer les permissions sur les fichiers et dossiers.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "PS1-2-1",
+          "order": 1,
+          "title": "Copy-Item et Move-Item : copier et deplacer",
+          "unlocked_by": "PS1-1-4",
+          "estimated_minutes": 15,
+          "objective": "Copier et deplacer des fichiers et dossiers avec Copy-Item et Move-Item, y compris recursivement.",
+          "context": "Copy-Item et Move-Item sont les equivalents PowerShell de xcopy/robocopy pour les cas simples. Copy-Item conserve le fichier d'origine et cree une copie a la destination. Move-Item deplace le fichier (supprime la source). Le parametre -Recurse est indispensable pour copier un dossier avec tout son contenu, car sans lui PowerShell copie uniquement le dossier vide. Ces cmdlets acceptent des jokers dans le chemin source, ce qui permet de copier tous les fichiers d'une extension donnee en une seule commande. En production, on les utilise pour des sauvegardes, des deployements de scripts ou des migrations de donnees.",
+          "steps": [
+            "Tape : Copy-Item C:\\TP_PowerShell\\notes.txt C:\\TP_PowerShell\\notes_backup.txt",
+            "Verifie : Get-ChildItem C:\\TP_PowerShell",
+            "Tape : Copy-Item C:\\TP_PowerShell\\logs C:\\TP_PowerShell\\logs_backup -Recurse",
+            "Tape : New-Item C:\\TP_PowerShell\\temp -ItemType Directory",
+            "Tape : Move-Item C:\\TP_PowerShell\\notes_backup.txt C:\\TP_PowerShell\\temp\\",
+            "Verifie que notes_backup.txt n'est plus dans C:\\TP_PowerShell mais dans temp",
+            "Tape : Copy-Item C:\\Windows\\System32\\*.ini C:\\TP_PowerShell\\ -ErrorAction SilentlyContinue",
+            "Liste le contenu de C:\\TP_PowerShell pour voir les fichiers .ini copies"
+          ],
+          "help": {
+            "text": "Copy-Item affiche une erreur 'acces refuse' sur les fichiers systeme ?",
+            "where": "Certains fichiers systeme sont verrouilles par Windows et ne peuvent pas etre copies meme en admin. Ajoute -ErrorAction SilentlyContinue pour continuer malgre ces erreurs. En pratique, cette option est quasi systematique dans les scripts pour eviter qu'une erreur sur un seul fichier n'arrete tout le traitement."
+          },
+          "expected_result": [
+            "notes_backup.txt existe dans C:\\TP_PowerShell apres Copy-Item",
+            "Le dossier logs_backup est une copie complete de logs avec -Recurse",
+            "Apres Move-Item, notes_backup.txt n'est plus dans TP_PowerShell mais dans temp",
+            "Des fichiers .ini sont copies depuis System32 (si droits suffisants)"
+          ]
+        },
+        {
+          "id": "PS1-2-2",
+          "order": 2,
+          "title": "Get-Content, Set-Content et Add-Content : lire et ecrire dans des fichiers",
+          "unlocked_by": "PS1-2-1",
+          "estimated_minutes": 20,
+          "objective": "Lire le contenu d'un fichier texte avec Get-Content, ecraser son contenu avec Set-Content et y ajouter des lignes avec Add-Content.",
+          "context": "Get-Content lit un fichier texte ligne par ligne et retourne une collection de chaines de caracteres. C'est indispensable pour traiter des logs, des fichiers de configuration ou des listes. Set-Content ecrase completement le fichier avec le nouveau contenu — attention, il n'y a pas de confirmation. Add-Content ajoute du contenu a la fin sans toucher au reste, parfait pour journaliser des evenements dans un fichier de log. En combinaison avec le pipeline, Get-Content devient extremement puissant : tu peux filtrer les lignes d'un fichier, les trier, les compter ou les transformer.",
+          "steps": [
+            "Tape : Get-Content C:\\TP_PowerShell\\notes.txt pour lire le fichier",
+            "Tape : Set-Content C:\\TP_PowerShell\\notes.txt -Value 'Ligne 1 : PowerShell'",
+            "Tape : Add-Content C:\\TP_PowerShell\\notes.txt -Value 'Ligne 2 : est puissant'",
+            "Tape : Add-Content C:\\TP_PowerShell\\notes.txt -Value 'Ligne 3 : et utile'",
+            "Tape : Get-Content C:\\TP_PowerShell\\notes.txt pour verifier les 3 lignes",
+            "Tape : (Get-Content C:\\TP_PowerShell\\notes.txt).Count pour compter le nombre de lignes",
+            "Tape : Get-Content C:\\Windows\\System32\\drivers\\etc\\hosts pour lire le fichier hosts",
+            "Tape : Get-Content C:\\TP_PowerShell\\notes.txt | Select-Object -First 1 pour lire seulement la premiere ligne"
+          ],
+          "help": {
+            "text": "Set-Content ou Add-Content retourne une erreur 'acces refuse' ?",
+            "where": "Verifie que tu travailles bien dans C:\\TP_PowerShell et non dans un dossier protege comme System32. Pour les dossiers systeme, meme en admin, certains fichiers sont en lecture seule. Travaille toujours dans ton propre dossier TP_PowerShell pour les exercices d'ecriture."
+          },
+          "expected_result": [
+            "Get-Content affiche le contenu du fichier ligne par ligne",
+            "Apres Set-Content, le fichier ne contient que 'Ligne 1 : PowerShell'",
+            "Apres deux Add-Content, le fichier contient bien 3 lignes",
+            "(Get-Content notes.txt).Count retourne 3",
+            "Get-Content hosts affiche le contenu du fichier hosts systeme"
+          ]
+        },
+        {
+          "id": "PS1-2-3",
+          "order": 3,
+          "title": "Remove-Item et Clear-Content : supprimer et vider",
+          "unlocked_by": "PS1-2-2",
+          "estimated_minutes": 15,
+          "objective": "Supprimer des fichiers et dossiers avec Remove-Item et vider un fichier sans le supprimer avec Clear-Content.",
+          "context": "Remove-Item supprime definitivement des fichiers et dossiers — il ne passe pas par la corbeille, contrairement a une suppression depuis l'explorateur. C'est sa force et son danger. Le parametre -Recurse est obligatoire pour supprimer un dossier non vide. Le parametre -Force permet de supprimer des fichiers caches ou en lecture seule. Clear-Content est une alternative utile quand tu veux conserver le fichier (pour ses permissions ou parce qu'un processus l'a ouvert) mais en effacer le contenu. En pratique, on utilise souvent Remove-Item pour nettoyer des logs anciens, des fichiers temporaires ou des dossiers de deploiement.",
+          "steps": [
+            "Tape : Remove-Item C:\\TP_PowerShell\\temp\\notes_backup.txt",
+            "Verifie : Get-ChildItem C:\\TP_PowerShell\\temp",
+            "Tape : Remove-Item C:\\TP_PowerShell\\temp -Recurse",
+            "Verifie que le dossier temp n'existe plus",
+            "Tape : Clear-Content C:\\TP_PowerShell\\notes.txt",
+            "Verifie : Get-Content C:\\TP_PowerShell\\notes.txt — doit etre vide (rien affiche)",
+            "Tape : (Get-Content C:\\TP_PowerShell\\notes.txt).Count — doit retourner 0",
+            "Tape : Remove-Item C:\\TP_PowerShell\\*.ini -ErrorAction SilentlyContinue pour supprimer tous les .ini"
+          ],
+          "help": {
+            "text": "Remove-Item refuse de supprimer un dossier avec du contenu ?",
+            "where": "Sans -Recurse, Remove-Item echoue sur les dossiers non vides. Toujours ajouter -Recurse pour les dossiers. Si le fichier ou dossier est en lecture seule ou cache, ajoute aussi -Force : Remove-Item C:\\MonDossier -Recurse -Force."
+          },
+          "expected_result": [
+            "notes_backup.txt est supprime du dossier temp",
+            "Le dossier temp est supprime avec -Recurse",
+            "Apres Clear-Content, le fichier notes.txt existe toujours mais est vide",
+            "(Get-Content notes.txt).Count retourne 0 ou n'affiche rien"
+          ]
+        },
+        {
+          "id": "PS1-2-4",
+          "order": 4,
+          "title": "Rename-Item et Get-Acl / Set-Acl : renommer et gerer les permissions",
+          "unlocked_by": "PS1-2-3",
+          "estimated_minutes": 25,
+          "objective": "Renommer des fichiers avec Rename-Item et lire les permissions NTFS d'un fichier avec Get-Acl.",
+          "context": "Rename-Item renomme un fichier ou un dossier sans le deplacer. C'est different de Move-Item qui peut aussi renommer en deplacant. Get-Acl (Access Control List) lit les permissions NTFS d'un fichier ou dossier — c'est l'equivalent graphique de l'onglet Securite dans les proprietes d'un fichier. Set-Acl permet de modifier ces permissions par script, ce qui est extremement utile pour mettre a jour les droits sur des centaines de fichiers en une seule operation. Comprendre les ACL (Access Control Lists) est fondamental en administration Windows : chaque fichier et dossier a une ACL qui liste exactement qui peut faire quoi.",
+          "steps": [
+            "Tape : Rename-Item C:\\TP_PowerShell\\notes.txt -NewName notes_v2.txt",
+            "Verifie : Get-ChildItem C:\\TP_PowerShell",
+            "Tape : Rename-Item C:\\TP_PowerShell\\logs_backup -NewName logs_archive",
+            "Tape : Get-Acl C:\\TP_PowerShell pour voir les permissions du dossier",
+            "Tape : (Get-Acl C:\\TP_PowerShell).Access pour voir la liste detaillee des ACE (Access Control Entries)",
+            "Tape : Get-Acl C:\\TP_PowerShell | Format-List pour un affichage plus lisible",
+            "Tape : (Get-Acl C:\\TP_PowerShell).Owner pour voir le proprietaire du dossier",
+            "Tape : Get-Acl C:\\Windows | Select-Object -ExpandProperty Access | Format-Table IdentityReference, FileSystemRights"
+          ],
+          "help": {
+            "text": "La sortie de Get-Acl est difficile a lire ?",
+            "where": "Utilise Format-List ou Format-Table pour formatter la sortie : Get-Acl C:\\TP_PowerShell | Format-List. Pour voir uniquement les lignes d'acces, utilise : (Get-Acl C:\\TP_PowerShell).Access | Format-Table -AutoSize. Le parametre -AutoSize ajuste automatiquement la largeur des colonnes."
+          },
+          "expected_result": [
+            "notes.txt a ete renomme en notes_v2.txt et est visible dans Get-ChildItem",
+            "logs_backup a ete renomme en logs_archive",
+            "Get-Acl affiche le groupe Owner et les Access pour C:\\TP_PowerShell",
+            "(Get-Acl C:\\TP_PowerShell).Access affiche les identites et leurs droits FileSystemRights"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Variables et pipeline",
+      "description": "Stocker des donnees dans des variables et enchainer des commandes avec le pipeline pour traiter l'information.",
+      "emoji": "🟠",
+      "color": "#F97316",
+      "missions": [
+        {
+          "id": "PS1-3-1",
+          "order": 1,
+          "title": "Variables : stocker et manipuler des donnees",
+          "unlocked_by": "PS1-2-4",
+          "estimated_minutes": 20,
+          "objective": "Declarer des variables de differents types, utiliser $null et le casting, et inspecter leur type avec Get-Member.",
+          "context": "En PowerShell, toute variable commence par le signe $. Les variables sont non typees par defaut — PowerShell infere automatiquement le type selon la valeur assignee. Une chaine de caracteres entre guillemets doubles permet l'interpolation de variables (la valeur est substituee), tandis que les guillemets simples sont litteraux (le texte est pris tel quel). $null est la valeur 'vide' ou 'rien' — la tester est indispensable dans les scripts pour eviter des erreurs. Get-Member est un outil essentiel : il affiche toutes les proprietes et methodes disponibles sur un objet, ce qui te permet de decouvrir ce que tu peux faire avec une valeur sans chercher dans la documentation.",
+          "steps": [
+            "Tape : $nom = 'PowerShell' et appuie sur Entree",
+            "Tape : $version = 5 pour stocker un entier",
+            "Tape : $actif = $true pour stocker un booleen",
+            "Tape : $nom pour afficher la valeur de la variable",
+            "Tape : \"Bienvenue dans $nom version $version\" pour voir l'interpolation",
+            "Tape : 'Ceci est $nom' pour voir que les guillemets simples n'interpolent pas",
+            "Tape : $nom.GetType() pour voir le type de la variable",
+            "Tape : $nom | Get-Member pour voir toutes les methodes disponibles sur une chaine",
+            "Tape : $vide = $null puis : if ($vide -eq $null) { 'La variable est vide' }",
+            "Tape : [int]$texte = '42' pour caster une chaine en entier, puis $texte + 8 pour verifier"
+          ],
+          "help": {
+            "text": "Quelle est la difference entre guillemets simples et doubles ?",
+            "where": "Les guillemets doubles $\"...\" permettent l'interpolation : $nom sera remplace par sa valeur. Les guillemets simples '...' sont litteraux : $nom sera affiche tel quel, avec le signe dollar. Regle pratique : utilise les doubles quand tu veux inserer des variables dans du texte, et les simples quand tu veux du texte brut sans substitution."
+          },
+          "expected_result": [
+            "$nom affiche PowerShell, $version affiche 5, $actif affiche True",
+            "Les guillemets doubles interpolent la variable, les simples non",
+            "$nom.GetType() retourne System.String",
+            "$nom | Get-Member liste des methodes comme ToUpper, Replace, Split",
+            "Le cast [int]'42' + 8 retourne 50"
+          ]
+        },
+        {
+          "id": "PS1-3-2",
+          "order": 2,
+          "title": "Le pipeline | : enchainer des commandes",
+          "unlocked_by": "PS1-3-1",
+          "estimated_minutes": 20,
+          "objective": "Comprendre le concept du pipeline et enchainer des commandes pour traiter des objets.",
+          "context": "Le pipeline (|) est le concept le plus puissant de PowerShell. Il transmet les objets produits par une commande directement a la suivante, sans passer par un fichier temporaire. Contrairement au pipe de Linux qui transmet du texte, le pipe PowerShell transmet des objets avec toutes leurs proprietes. Cela signifie que la commande suivante dans la chaine peut acceder a n'importe quelle propriete de l'objet transmis. Par exemple, Get-Process envoie des objets Process avec les proprietes Name, Id, CPU, WorkingSet... et la commande suivante peut filtrer sur n'importe laquelle. C'est ce qui rend PowerShell si efficace pour l'administration systeme.",
+          "steps": [
+            "Tape : Get-Process | Sort-Object CPU -Descending pour trier les processus par CPU",
+            "Tape : Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 5 pour les 5 plus gros consommateurs de RAM",
+            "Tape : Get-Service | Where-Object Status -eq Running pour lister les services en cours",
+            "Tape : Get-ChildItem C:\\Windows -Filter *.exe | Sort-Object Length -Descending | Select-Object -First 10",
+            "Tape : Get-Process | Measure-Object pour compter le nombre de processus",
+            "Tape : Get-Process | Measure-Object CPU -Sum -Maximum -Minimum pour des stats CPU",
+            "Tape : Get-ChildItem C:\\TP_PowerShell -Recurse | Measure-Object Length -Sum"
+          ],
+          "help": {
+            "text": "Comment savoir quelles proprietes sont disponibles pour filtrer ou trier ?",
+            "where": "Pippe vers Get-Member : Get-Process | Get-Member -MemberType Property. Cela liste toutes les proprietes de l'objet retourne par Get-Process. Tu peux ensuite utiliser n'importe laquelle dans Sort-Object, Where-Object ou Select-Object. C'est la facon systematique d'explorer un objet inconnu."
+          },
+          "expected_result": [
+            "Get-Process | Sort-Object CPU -Descending affiche les processus du plus gourmand au moins gourmand",
+            "La chaine avec Select-Object -First 5 affiche les 5 processus utilisant le plus de RAM",
+            "Get-Service | Where-Object Status -eq Running ne montre que les services actifs",
+            "Measure-Object sans parametres affiche le Count (nombre d'elements)"
+          ]
+        },
+        {
+          "id": "PS1-3-3",
+          "order": 3,
+          "title": "Select-Object : choisir les proprietes a afficher",
+          "unlocked_by": "PS1-3-2",
+          "estimated_minutes": 15,
+          "objective": "Utiliser Select-Object pour ne garder que les proprietes utiles d'un objet et limiter le nombre de resultats.",
+          "context": "Select-Object remplit deux roles importants. Premierement, il filtre les proprietes : au lieu d'afficher toutes les colonnes d'un objet (qui peuvent etre tres nombreuses), il selectionne uniquement celles qui t'interessent. Cela rend la sortie plus lisible et plus adaptee a un rapport. Deuxiemement, il limite le nombre de resultats avec -First et -Last, ce qui evite de parcourir des listes enormes. Select-Object cree aussi des proprietes calculees avec @{Name='...';Expression={...}}, une technique avancee qui permet de transformer ou combiner des proprietes existantes. Utilise Select-Object systematiquement quand tu prepares des donnees a exporter ou a afficher dans un rapport.",
+          "steps": [
+            "Tape : Get-Process | Select-Object Name, Id, CPU pour afficher seulement 3 colonnes",
+            "Tape : Get-Process | Select-Object -First 10 pour ne voir que les 10 premiers processus",
+            "Tape : Get-Process | Select-Object -Last 5 pour voir les 5 derniers",
+            "Tape : Get-Service | Select-Object Name, Status, StartType",
+            "Tape : Get-ChildItem C:\\Windows\\System32 -Filter *.exe | Select-Object Name, Length, LastWriteTime | Sort-Object Length -Descending | Select-Object -First 10",
+            "Tape : Get-Process | Select-Object Name, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet / 1MB, 2)}} | Sort-Object RAM_MB -Descending | Select-Object -First 10"
+          ],
+          "help": {
+            "text": "La propriete calculee avec @{Name=...;Expression=...} est difficile a ecrire ?",
+            "where": "La syntaxe est : @{Name='NomColonne'; Expression={formule utilisant $_ }}. Le $_ represente l'objet courant dans le pipeline. Par exemple pour convertir des octets en Mo : @{Name='Mo'; Expression={[math]::Round($_.Length / 1MB, 2)}}. C'est une technique tres utilisee dans les rapports. Commence par des exemples simples avant de la maitriser."
+          },
+          "expected_result": [
+            "Get-Process | Select-Object Name, Id, CPU affiche uniquement ces 3 colonnes",
+            "Select-Object -First 10 limite bien l'affichage a 10 lignes",
+            "Get-Service | Select-Object Name, Status, StartType montre les 3 colonnes choisies",
+            "La propriete calculee RAM_MB affiche la RAM en megaoctets arrondis au centieme"
+          ]
+        },
+        {
+          "id": "PS1-3-4",
+          "order": 4,
+          "title": "Where-Object : filtrer les resultats",
+          "unlocked_by": "PS1-3-3",
+          "estimated_minutes": 20,
+          "objective": "Utiliser Where-Object pour filtrer une collection d'objets selon des conditions avec les operateurs -eq, -ne, -gt, -like.",
+          "context": "Where-Object est le filtre du pipeline. Il evalue une condition pour chaque objet recu et ne laisse passer que ceux pour lesquels la condition est vraie. La variable speciale $_ represente l'objet courant en cours d'evaluation. Les operateurs de comparaison PowerShell sont tres lisibles : -eq (egal), -ne (different), -gt (superieur), -lt (inferieur), -ge (superieur ou egal), -le (inferieur ou egal), -like (correspondance avec jokers * et ?), -match (expression reguliere). PowerShell ne distingue pas majuscules et minuscules par defaut : -eq 'abc' correspond aussi a 'ABC'. Pour etre sensible a la casse, ajouter le prefixe 'c' : -ceq, -clike, etc.",
+          "steps": [
+            "Tape : Get-Service | Where-Object {$_.Status -eq 'Running'}",
+            "Tape : Get-Service | Where-Object {$_.Status -eq 'Stopped'} | Select-Object Name",
+            "Tape : Get-Process | Where-Object {$_.CPU -gt 1} | Select-Object Name, CPU | Sort-Object CPU -Descending",
+            "Tape : Get-Process | Where-Object {$_.Name -like 'power*'}",
+            "Tape : Get-ChildItem C:\\Windows\\System32 -Filter *.exe | Where-Object {$_.Length -gt 1MB} | Select-Object Name, Length | Sort-Object Length -Descending",
+            "Tape : Get-Process | Where-Object {$_.Name -ne 'Idle' -and $_.CPU -gt 0} | Select-Object Name, CPU",
+            "Tape : Get-Service | Where-Object {$_.StartType -eq 'Automatic' -and $_.Status -eq 'Stopped'}"
+          ],
+          "help": {
+            "text": "Where-Object n'affiche rien meme si tu sais que des elements correspondent ?",
+            "where": "Verifie la valeur exacte de la propriete en affichant d'abord un element sans filtre : Get-Service | Select-Object -First 1 | Format-List. Tu verras la valeur exacte de Status (ex: 'Running' avec une majuscule). Les valeurs de comparaison doivent correspondre exactement, meme si PowerShell n'est pas sensible a la casse. Verifie aussi que tu utilises bien les guillemets autour des valeurs texte."
+          },
+          "expected_result": [
+            "Where-Object {$_.Status -eq 'Running'} n'affiche que les services en cours d'execution",
+            "Where-Object {$_.Status -eq 'Stopped'} n'affiche que les services arretes",
+            "Where-Object avec -like 'power*' trouve powershell.exe et d'autres processus dont le nom commence par power",
+            "Le filtre avec -gt 1MB ne retient que les executables de plus de 1 megaoctet",
+            "La condition combinee avec -and filtre avec deux criteres simultanement"
+          ]
+        }
+      ]
+    }
+  ]
+}

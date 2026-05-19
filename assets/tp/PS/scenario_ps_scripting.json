@@ -1,0 +1,673 @@
+{
+  "id": "scenario_ps_scripting",
+  "title": "Scripting PowerShell",
+  "subtitle": "Automatiser les taches d'administration",
+  "emoji": "🚀",
+  "color": "#10B981",
+  "difficulty": "avance",
+  "difficulty_label": "Avance",
+  "description": "Tu es administrateur systeme confirme. Les taches repetitives te font perdre des heures chaque semaine : creer des comptes un par un, exporter des rapports manuellement, surveiller les services a la main. Ce scenario t'apprend a ecrire de vrais scripts PowerShell qui automatisent tout ca, de la structure de controle jusqu'au script d'audit complet avec export HTML.",
+  "domain": null,
+  "dc_name": null,
+  "server_ip": null,
+  "os": "Windows 10 / Windows Server 2022",
+  "total_missions": 16,
+  "estimated_hours": "6-10h",
+  "prerequisite": "Gestion du systeme Windows",
+  "context_intro": "Tu travailles comme administrateur systeme senior dans une DSI. Ton equipe gere une centaine de postes et une dizaine de serveurs. Les taches repetitives s'accumulent : creer des dizaines de comptes utilisateurs a chaque rentree, exporter l'etat des services chaque semaine, auditer les machines du parc chaque mois. Ton objectif est d'automatiser tout ca avec des scripts PowerShell robustes, documentes et reutilisables. Ce scenario te guide de l'ecriture de tes premieres conditions jusqu'a la production d'un rapport HTML complet.",
+  "badges": [
+    {
+      "id": "ps3_controleur",
+      "title": "Maitre des structures",
+      "description": "A maitrise les structures de controle et les boucles en PowerShell",
+      "icon": "🔁",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "ps3_developpeur",
+      "title": "Developpeur PowerShell",
+      "description": "A ecrit des fonctions robustes avec gestion des erreurs",
+      "icon": "🛠️",
+      "unlocked_after_level": 2
+    },
+    {
+      "id": "ps3_automatiseur",
+      "title": "Automatiseur de la DSI",
+      "description": "A termine le scenario Scripting PowerShell en integralite",
+      "icon": "🚀",
+      "unlocked_after_level": 3
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Structures de controle",
+      "description": "Ecrire des scripts avec des conditions, des boucles et des alternatives pour prendre des decisions automatiques.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "PS3-0-1",
+          "order": 1,
+          "title": "if / elseif / else : conditions et operateurs logiques",
+          "unlocked_by": null,
+          "estimated_minutes": 20,
+          "objective": "Ecrire des blocs conditionnels avec if, elseif et else, et combiner des conditions avec -and, -or, -not.",
+          "context": "Le bloc if est le fondement de tout script : il permet au programme de prendre des decisions selon les circonstances. Sans conditions, un script ne peut que toujours faire la meme chose. Avec if, il peut s'adapter : verifier qu'un fichier existe avant de le lire, tester si un service est demarre avant de tenter de l'arreter, adapter son comportement selon l'OS ou la version PowerShell. Les operateurs logiques -and (les deux conditions doivent etre vraies), -or (au moins une doit etre vraie) et -not (inverse la condition) permettent de construire des conditions complexes. En PowerShell, les blocs de code sont toujours entre accolades {}.",
+          "steps": [
+            "Ouvre le Bloc-notes ou VS Code et cree un fichier C:\\TP_PowerShell\\scripts\\test_if.ps1",
+            "Tape le script suivant :",
+            "$service = Get-Service -Name Spooler",
+            "if ($service.Status -eq 'Running') {",
+            "    Write-Host 'Le service Spooler est demarre' -ForegroundColor Green",
+            "} elseif ($service.Status -eq 'Stopped') {",
+            "    Write-Host 'Le service Spooler est arrete' -ForegroundColor Yellow",
+            "} else {",
+            "    Write-Host 'Etat inconnu : ' + $service.Status -ForegroundColor Red",
+            "}",
+            "Execute avec : .\\test_if.ps1 (depuis C:\\TP_PowerShell\\scripts)",
+            "Ajoute un test avec -and : if ($service.Status -eq 'Running' -and $service.StartType -eq 'Automatic') { Write-Host 'Service OK et auto' }",
+            "Teste -not : if (-not (Test-Path C:\\TP_PowerShell)) { Write-Host 'Dossier manquant !' } else { Write-Host 'Dossier OK' }"
+          ],
+          "help": {
+            "text": "PowerShell refuse d'executer ton script avec une erreur 'Execution Policy' ?",
+            "where": "Par defaut, PowerShell bloque l'execution des scripts. Tape Set-ExecutionPolicy RemoteSigned -Scope CurrentUser pour autoriser les scripts locaux. Tu peux aussi executer un script specifique en contournant la politique : powershell.exe -ExecutionPolicy Bypass -File .\\monscript.ps1. En entreprise, la politique est generalement definie par GPO."
+          },
+          "expected_result": [
+            "Le script affiche 'Le service Spooler est demarre' en vert si le service tourne",
+            "Arreter le service manuellement puis relancer le script affiche le message en jaune",
+            "La condition avec -and s'evalue correctement (les deux criteres doivent etre vrais)",
+            "-not (Test-Path ...) s'evalue correctement selon l'existence du dossier"
+          ]
+        },
+        {
+          "id": "PS3-0-2",
+          "order": 2,
+          "title": "foreach et ForEach-Object : boucles sur collections",
+          "unlocked_by": "PS3-0-1",
+          "estimated_minutes": 20,
+          "objective": "Parcourir une collection d'objets avec une boucle foreach et avec ForEach-Object dans le pipeline.",
+          "context": "La boucle foreach permet d'effectuer une operation sur chaque element d'une collection. C'est la base du traitement en masse : creer 50 utilisateurs depuis une liste, redemarrer tous les services en erreur, renommer des centaines de fichiers. Il existe deux formes en PowerShell : la boucle foreach ($item in $collection) {...} qui est plus lisible dans les scripts, et le cmdlet ForEach-Object qui s'utilise dans le pipeline avec la syntaxe $collection | ForEach-Object { ... }. Dans ForEach-Object, $_ represente l'element courant. Les deux approches sont equivalentes en termes de resultat mais la forme pipeline est plus concise pour les operations simples, et la boucle foreach est plus claire pour les traitements complexes.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_foreach.ps1",
+            "Ecris : $services = @('Spooler','Winmgmt','wuauserv')",
+            "Ajoute : foreach ($svc in $services) {",
+            "    $s = Get-Service -Name $svc",
+            "    Write-Host \"$($s.Name) : $($s.Status)\" -ForegroundColor Cyan",
+            "}",
+            "Execute le script et observe les statuts",
+            "Ajoute ensuite la version pipeline : Get-Service | Where-Object {$_.StartType -eq 'Automatic'} | ForEach-Object { Write-Host \"$($_.Name) est en demarrage automatique\" }",
+            "Ecris une boucle foreach qui cree 5 fichiers de log : foreach ($i in 1..5) { New-Item \"C:\\TP_PowerShell\\logs\\log_$i.txt\" -ItemType File -Force }",
+            "Verifie : Get-ChildItem C:\\TP_PowerShell\\logs"
+          ],
+          "help": {
+            "text": "L'interpolation de variables dans Write-Host ne fonctionne pas comme prevu ?",
+            "where": "Dans les chaines avec guillemets doubles, les proprietes d'objets doivent etre entourees de $() pour etre evaluees : \"$($objet.Propriete)\". Sans les parentheses, PowerShell substitue juste $objet et tente d'y acceder sans evaluer .Propriete. Exemple correct : \"Nom : $($service.Name)\" — exemple incorrect : \"Nom : $service.Name\" (affiche juste l'objet)."
+          },
+          "expected_result": [
+            "La boucle foreach affiche l'etat de chacun des 3 services en cyan",
+            "ForEach-Object dans le pipeline affiche tous les services en demarrage automatique",
+            "Les 5 fichiers log_1.txt a log_5.txt sont bien crees dans C:\\TP_PowerShell\\logs",
+            "Get-ChildItem confirme la presence des 5 fichiers"
+          ]
+        },
+        {
+          "id": "PS3-0-3",
+          "order": 3,
+          "title": "while, do-while et for : boucles avec compteur",
+          "unlocked_by": "PS3-0-2",
+          "estimated_minutes": 20,
+          "objective": "Utiliser les boucles while, do-while et for pour repeter une action selon une condition ou un compteur.",
+          "context": "Contrairement a foreach qui itere sur une collection existante, while et for repetent un bloc tant qu'une condition est vraie ou selon un compteur. La boucle while verifie la condition AVANT chaque iteration : si la condition est fausse des le debut, le bloc n'est jamais execute. La boucle do-while verifie la condition APRES la premiere execution : le bloc s'execute au moins une fois. La boucle for est la plus structuree : elle combine initialisation, condition et incrementation en une seule ligne. Ces boucles sont utilisees quand on ne connait pas a l'avance le nombre d'iterations : attendre qu'un service demarre, retenter une operation qui peut echouer, traiter des donnees jusqu'a une condition de fin.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_boucles.ps1",
+            "Ecris un exemple while : $compteur = 0 | while ($compteur -lt 5) { Write-Host \"Compteur : $compteur\" | $compteur++ }",
+            "Attention : chaque instruction doit etre sur sa propre ligne dans un vrai script",
+            "Ecris l'exemple do-while :",
+            "$n = 0",
+            "do {",
+            "    Write-Host \"Iteration $n\"",
+            "    $n++",
+            "} while ($n -lt 3)",
+            "Ecris la boucle for :",
+            "for ($i = 1; $i -le 10; $i++) {",
+            "    Write-Host \"Ligne $i : $(Get-Date -Format 'HH:mm:ss')\"",
+            "}",
+            "Ecris un exemple pratique : attendre qu'un service soit demarre",
+            "Start-Service Spooler",
+            "while ((Get-Service Spooler).Status -ne 'Running') { Start-Sleep -Seconds 1 | Write-Host 'Attente...' }",
+            "Write-Host 'Spooler demarre !'"
+          ],
+          "help": {
+            "text": "Ta boucle while est infinie et PowerShell est bloque ?",
+            "where": "Appuie sur Ctrl+C pour interrompre n'importe quelle boucle infinie. Cela arrive quand la condition reste toujours vraie car tu oublies d'incrementer le compteur, ou que la variable n'est jamais modifiee dans la boucle. Avant d'ecrire une boucle while, pose-toi la question : qu'est-ce qui va rendre la condition fausse a un moment ? Si rien ne change dans la boucle, elle est infinie."
+          },
+          "expected_result": [
+            "La boucle while affiche Compteur 0 a 4 puis s'arrete",
+            "Le do-while s'execute bien 3 fois (iterations 0, 1, 2)",
+            "La boucle for affiche 10 lignes avec l'heure a chaque iteration",
+            "La boucle d'attente sur Spooler se termine des que le service est en Running"
+          ]
+        },
+        {
+          "id": "PS3-0-4",
+          "order": 4,
+          "title": "switch : alternative propre a if/elseif pour plusieurs valeurs",
+          "unlocked_by": "PS3-0-3",
+          "estimated_minutes": 15,
+          "objective": "Remplacer une longue chaine if/elseif par un bloc switch pour evaluer plusieurs valeurs possibles.",
+          "context": "Quand une variable peut prendre plusieurs valeurs differentes et qu'on doit agir differemment selon chaque valeur, une suite de if/elseif devient vite illisible. Le bloc switch est concu exactement pour ce cas : il compare une valeur a une liste de cas possibles de facon claire et concise. PowerShell etend le switch standard avec des comparaisons par joker (-Wildcard), par expression reguliere (-Regex) et meme par condition logique. Le cas Default est execute si aucun autre cas ne correspond — l'equivalent du else final. Le switch PowerShell est case-insensitive par defaut, comme tous les operateurs de comparaison.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_switch.ps1",
+            "Ecris un switch sur le jour de la semaine :",
+            "$jour = (Get-Date).DayOfWeek",
+            "switch ($jour) {",
+            "    'Monday'    { Write-Host 'Debut de semaine - Lance la sauvegarde' }",
+            "    'Wednesday' { Write-Host 'Milieu de semaine - Verifie les mises a jour' }",
+            "    'Friday'    { Write-Host 'Fin de semaine - Genere le rapport' }",
+            "    Default     { Write-Host \"Jour standard : $jour\" }",
+            "}",
+            "Ecris un switch sur l'etat d'un service :",
+            "$etat = (Get-Service Spooler).Status",
+            "switch ($etat) {",
+            "    'Running' { Write-Host 'OK' -ForegroundColor Green }",
+            "    'Stopped' { Write-Host 'Arrete - Redemarrage...' ; Start-Service Spooler }",
+            "    Default   { Write-Host \"Etat inattendu : $etat\" -ForegroundColor Red }",
+            "}",
+            "Teste le switch avec -Wildcard : switch -Wildcard ($env:COMPUTERNAME) { 'SRV*' { 'Serveur' } 'PC*' { 'Poste client' } Default { 'Machine inconnue' } }"
+          ],
+          "help": {
+            "text": "Le switch n'entre dans aucun case meme quand la valeur semble correspondre ?",
+            "where": "Verifie le type de la valeur : (Get-Service Spooler).Status retourne un type Enum (ServiceControllerStatus), pas une simple chaine. Dans le switch, compare avec la valeur enum exacte ou caste la valeur en chaine : switch ($etat.ToString()). Pour deboguer, affiche $etat.GetType() pour voir le type exact de ta variable."
+          },
+          "expected_result": [
+            "Le switch sur le jour affiche le message correspondant au jour courant",
+            "Le switch sur Spooler affiche 'OK' en vert si le service est Running",
+            "Si le service est arrete, le switch le redemarrage automatiquement",
+            "Le switch -Wildcard categorise correctement la machine selon le prefixe de son nom"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Fonctions et portee",
+      "description": "Ecrire des fonctions reutilisables avec des parametres types et comprendre la portee des variables.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "PS3-1-1",
+          "order": 1,
+          "title": "function : declarer et appeler une fonction",
+          "unlocked_by": "PS3-0-4",
+          "estimated_minutes": 20,
+          "objective": "Ecrire une fonction nommee avec des parametres et l'appeler depuis le script.",
+          "context": "Les fonctions sont les briques fondamentales d'un code bien structure. Plutot que de repeter les memes blocs de code a plusieurs endroits, on les encapsule dans une fonction qu'on appelle autant de fois que necessaire. Cela rend le code plus lisible, plus facile a corriger (une seule modification) et reutilisable d'un script a l'autre. En PowerShell, la convention de nommage des fonctions suit la meme regle Verbe-Nom que les cmdlets : Get-ServiceStatus, Test-PortAccess, New-UserFromCsv... Cela rend les fonctions immediatement comprehensibles. Une fonction bien concue fait une seule chose, mais la fait bien.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\fonctions.ps1",
+            "Ecris ta premiere fonction :",
+            "function Get-ServiceStatus {",
+            "    param($ServiceName)",
+            "    $s = Get-Service -Name $ServiceName",
+            "    Write-Host \"$($s.DisplayName) : $($s.Status)\"",
+            "}",
+            "Appelle-la : Get-ServiceStatus -ServiceName Spooler",
+            "Appelle-la encore : Get-ServiceStatus -ServiceName Winmgmt",
+            "Ecris une deuxieme fonction plus complete :",
+            "function Test-PortLocal {",
+            "    param($Port)",
+            "    $result = Test-NetConnection -ComputerName localhost -Port $Port",
+            "    if ($result.TcpTestSucceeded) {",
+            "        Write-Host \"Port $Port : OUVERT\" -ForegroundColor Green",
+            "    } else {",
+            "        Write-Host \"Port $Port : FERME\" -ForegroundColor Red",
+            "    }",
+            "}",
+            "Appelle : Test-PortLocal -Port 80 et Test-PortLocal -Port 3389"
+          ],
+          "help": {
+            "text": "PowerShell dit 'function not recognized' quand tu appelles ta fonction ?",
+            "where": "La definition de la fonction doit etre chargee AVANT de l'appeler. Dans un fichier .ps1, place toujours tes definitions de fonctions en haut du fichier, avant le code qui les appelle. Si tu travailles en mode interactif (terminal), la fonction n'est connue que pour la session courante — si tu ouvres un nouveau terminal, tu dois recharger le fichier avec . .\\fonctions.ps1 (dot-sourcing)."
+          },
+          "expected_result": [
+            "Get-ServiceStatus Spooler affiche le nom complet et le statut du service d'impression",
+            "La fonction peut etre appelee plusieurs fois avec des noms de services differents",
+            "Test-PortLocal 80 affiche FERME en rouge (IIS n'est probablement pas installe)",
+            "Test-PortLocal 3389 affiche OUVERT en vert si le Bureau a distance est actif"
+          ]
+        },
+        {
+          "id": "PS3-1-2",
+          "order": 2,
+          "title": "param() avance : types, valeurs par defaut et Mandatory",
+          "unlocked_by": "PS3-1-1",
+          "estimated_minutes": 25,
+          "objective": "Utiliser des parametres types, avec valeurs par defaut et obliger certains parametres avec [Parameter(Mandatory=$true)].",
+          "context": "Le bloc param() avance transforme tes fonctions simples en veritables cmdlets professionnelles. Typer les parametres ([string], [int], [bool], [datetime]...) permet a PowerShell de valider automatiquement que la valeur fournie est du bon type — si quelqu'un passe un texte la ou un nombre est attendu, PowerShell affiche une erreur claire avant meme d'executer le code. [Parameter(Mandatory=$true)] rend un parametre obligatoire : PowerShell interrompra l'execution et demandera la valeur si elle n'est pas fournie. Les valeurs par defaut s'appliquent si le parametre est omis. Ces mecanismes te permettent d'ecrire des fonctions robustes qui se comportent correctement meme quand elles sont mal appelees.",
+          "steps": [
+            "Ajoute dans fonctions.ps1 la fonction suivante :",
+            "function New-UserReport {",
+            "    [CmdletBinding()]",
+            "    param(",
+            "        [Parameter(Mandatory=$true)]",
+            "        [string]$NomUtilisateur,",
+            "        [int]$NbJoursExpiration = 90,",
+            "        [bool]$DesactiverCompte = $false",
+            "    )",
+            "    Write-Host \"Creation du rapport pour : $NomUtilisateur\"",
+            "    Write-Host \"Expiration dans $NbJoursExpiration jours\"",
+            "    if ($DesactiverCompte) { Write-Host 'Compte sera desactive' -ForegroundColor Yellow }",
+            "}",
+            "Appelle : New-UserReport -NomUtilisateur 'Alice'",
+            "Appelle avec options : New-UserReport -NomUtilisateur 'Bob' -NbJoursExpiration 30 -DesactiverCompte $true",
+            "Appelle SANS le parametre obligatoire : New-UserReport — PowerShell doit demander le NomUtilisateur",
+            "Essaie de passer un texte pour NbJoursExpiration : New-UserReport -NomUtilisateur 'Test' -NbJoursExpiration 'abc' — doit echouer avec une erreur de type"
+          ],
+          "help": {
+            "text": "PowerShell ne demande pas le parametre obligatoire et retourne une erreur a la place ?",
+            "where": "La demande interactive de parametres obligatoires ne fonctionne que si le script est execute dans une session interactive (terminal). Dans les cas non interactifs (planificateur de taches, scripts automatiques), PowerShell retourne une erreur a la place. Pour les scripts automatiques, tous les parametres obligatoires doivent toujours etre fournis lors de l'appel."
+          },
+          "expected_result": [
+            "Appel sans NomUtilisateur : PowerShell demande interactivement la valeur",
+            "Appel avec NbJoursExpiration 30 et DesactiverCompte $true affiche le message jaune",
+            "Appel sans NbJoursExpiration utilise bien la valeur par defaut de 90",
+            "Passer une chaine a NbJoursExpiration provoque une erreur de validation de type"
+          ]
+        },
+        {
+          "id": "PS3-1-3",
+          "order": 3,
+          "title": "return et sortie dans le pipeline",
+          "unlocked_by": "PS3-1-2",
+          "estimated_minutes": 20,
+          "objective": "Retourner des valeurs depuis une fonction avec return et comprendre comment les fonctions s'integrent dans le pipeline.",
+          "context": "En PowerShell, une fonction peut retourner des valeurs de deux facons. Le mot-cle return termine l'execution de la fonction et retourne une valeur specifique. Mais PowerShell a aussi une particularite unique : toute valeur non capturee dans une variable est automatiquement emise dans le pipeline de sortie. Cela signifie qu'une fonction peut emettre plusieurs objets successivement, exactement comme Get-Process ou Get-Service. Cette approche 'pipeline-native' est la plus puissante car elle permet a la fonction de s'integrer naturellement avec Where-Object, Select-Object, Export-Csv etc. Comprendre cette difference est fondamental pour ecrire des fonctions PowerShell professionnelles.",
+          "steps": [
+            "Ecris dans fonctions.ps1 une fonction qui retourne un objet :",
+            "function Get-DiskInfo {",
+            "    param([string]$Drive = 'C')",
+            "    $disk = Get-PSDrive -Name $Drive",
+            "    return [PSCustomObject]@{",
+            "        Lecteur = $Drive",
+            "        Libre_Go = [math]::Round($disk.Free / 1GB, 2)",
+            "        Utilise_Go = [math]::Round($disk.Used / 1GB, 2)",
+            "        Total_Go = [math]::Round(($disk.Free + $disk.Used) / 1GB, 2)",
+            "    }",
+            "}",
+            "Appelle : Get-DiskInfo — doit afficher un tableau propre",
+            "Appelle : Get-DiskInfo -Drive C | Select-Object Libre_Go",
+            "Stocke dans une variable : $info = Get-DiskInfo ; Write-Host \"Il reste $($info.Libre_Go) Go\"",
+            "Ecris une fonction qui emet plusieurs objets (pipeline natif) :",
+            "function Get-AllDisksInfo {",
+            "    foreach ($drive in Get-PSDrive -PSProvider FileSystem) {",
+            "        [PSCustomObject]@{ Lecteur = $drive.Name ; Libre_Go = [math]::Round($drive.Free/1GB, 2) }",
+            "    }",
+            "}",
+            "Appelle : Get-AllDisksInfo | Where-Object {$_.Libre_Go -lt 10}"
+          ],
+          "help": {
+            "text": "Ta fonction retourne des donnees supplementaires non voulues avant le resultat ?",
+            "where": "En PowerShell, tout ce qui n'est pas capture dans une variable est envoye dans le pipeline. Si tu utilises New-Item, Get-ChildItem ou d'autres cmdlets dans ta fonction sans capturer leur sortie, elle sera retournee avec tes donnees. Capture la sortie dans une variable ou redirige vers $null : $null = New-Item .... Utilise aussi Write-Host uniquement pour les messages a l'utilisateur — il n'envoie pas dans le pipeline."
+          },
+          "expected_result": [
+            "Get-DiskInfo retourne un objet PSCustomObject avec les 4 proprietes",
+            "Get-DiskInfo | Select-Object Libre_Go ne montre que la colonne libre",
+            "La variable $info contient l'objet et permet d'acceder aux proprietes",
+            "Get-AllDisksInfo emet un objet par lecteur et le filtre Where-Object fonctionne"
+          ]
+        },
+        {
+          "id": "PS3-1-4",
+          "order": 4,
+          "title": "Portee des variables : $script:, $global:, $local:",
+          "unlocked_by": "PS3-1-3",
+          "estimated_minutes": 20,
+          "objective": "Comprendre la portee des variables dans un script et forcer l'acces a des portees superieures avec $script: et $global:.",
+          "context": "La portee (scope) d'une variable definit ou elle est visible et accessible. En PowerShell, chaque fonction cree sa propre portee locale : les variables creees a l'interieur ne sont pas visibles a l'exterieur, et vice versa (par defaut, une fonction peut LIRE les variables du niveau superieur mais pas les MODIFIER). $local: est la portee par defaut dans une fonction. $script: permet d'acceder aux variables du script qui contient la fonction. $global: permet d'acceder aux variables de la session PowerShell entiere. Cette isolation est une bonne pratique : elle empeche les fonctions de se polluer mutuellement avec des variables aux noms identiques. Comprendre la portee evite des bugs subtils tres difficiles a tracer dans les scripts complexes.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_scope.ps1",
+            "Ecris ce script pour observer la portee :",
+            "$varGlobale = 'Je suis au niveau script'",
+            "function Test-Scope {",
+            "    $varLocale = 'Je suis dans la fonction'",
+            "    Write-Host \"Dans la fonction - varLocale : $varLocale\"",
+            "    Write-Host \"Dans la fonction - varGlobale : $varGlobale\" # peut lire mais pas modifier",
+            "    $varGlobale = 'Modifie dans la fonction' # cree une copie LOCALE",
+            "    Write-Host \"Dans la fonction apres modif : $varGlobale\"",
+            "}",
+            "Test-Scope",
+            "Write-Host \"Apres la fonction - varGlobale : $varGlobale\" # toujours l'originale !",
+            "Maintenant avec $script: :",
+            "function Set-VarScript { $script:varGlobale = 'Modifie via script:' }",
+            "Set-VarScript",
+            "Write-Host \"Apres Set-VarScript : $varGlobale\" # cette fois elle est modifiee"
+          ],
+          "help": {
+            "text": "La variable n'est pas modifiee apres l'appel de la fonction malgre le script: ?",
+            "where": "Verifie que tu utilises bien le prefixe $script: a l'AFFECTATION ($script:maVar = ...) et pas seulement a la lecture. Pour deboger, affiche la portee active avec Get-Variable -Scope Script ou Get-Variable -Scope Global. La modification directe sans prefixe cree toujours une variable locale qui disparait a la fin de la fonction."
+          },
+          "expected_result": [
+            "Sans prefixe : la modification dans la fonction ne change pas la variable du script",
+            "Write-Host apres la fonction affiche toujours la valeur originale",
+            "Avec $script: : la variable du script est bien modifiee apres l'appel de Set-VarScript",
+            "La variable $varLocale n'est pas accessible en dehors de la fonction (erreur si on tente de l'afficher)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Gestion des erreurs et robustesse",
+      "description": "Ecrire des scripts qui gèrent les erreurs proprement, journalisent leur execution et facilitent le debogage.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "PS3-2-1",
+          "order": 1,
+          "title": "try / catch / finally : capturer les erreurs",
+          "unlocked_by": "PS3-1-4",
+          "estimated_minutes": 20,
+          "objective": "Utiliser try/catch/finally pour intercepter les erreurs et y reagir sans que le script ne s'arrete brutalement.",
+          "context": "Un script professionnel ne doit jamais s'arreter brutalement en cas d'erreur. L'utilisateur doit recevoir un message clair, et le script doit si possible continuer avec les elements suivants. Le bloc try contient le code qui peut echouer. Si une erreur se produit, l'execution saute immediatement dans le bloc catch ou tu peux loguer l'erreur, afficher un message ou tenter une action corrective. Le bloc finally s'execute TOUJOURS, qu'il y ait eu une erreur ou non — c'est l'endroit ideal pour les operations de nettoyage (fermer un fichier, liberer une ressource). La variable $_ dans un bloc catch contient l'objet ErrorRecord avec tous les details de l'erreur.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_erreurs.ps1",
+            "Ecris :",
+            "try {",
+            "    $service = Get-Service -Name 'ServiceQuiNExistePas' -ErrorAction Stop",
+            "    Write-Host \"Service trouve : $($service.Name)\"",
+            "} catch {",
+            "    Write-Host \"ERREUR : $($_.Exception.Message)\" -ForegroundColor Red",
+            "    Write-Host \"Type d'erreur : $($_.Exception.GetType().Name)\" -ForegroundColor Yellow",
+            "} finally {",
+            "    Write-Host 'Bloc finally execute dans tous les cas'",
+            "}",
+            "Teste avec un nom valide : remplace 'ServiceQuiNExistePas' par 'Spooler'",
+            "Observe : le catch n'est pas execute mais le finally oui",
+            "Ecris un try/catch imbriques pour gerer plusieurs types d'erreurs :",
+            "try {",
+            "    Get-Content C:\\FichierInexistant.txt -ErrorAction Stop",
+            "} catch [System.IO.FileNotFoundException] {",
+            "    Write-Host 'Fichier introuvable specifiquement' -ForegroundColor Red",
+            "} catch {",
+            "    Write-Host \"Autre erreur : $_\" -ForegroundColor Magenta",
+            "}"
+          ],
+          "help": {
+            "text": "Le catch n'est jamais execute meme quand il y a une erreur ?",
+            "where": "Par defaut, PowerShell genere des erreurs 'non-terminantes' qui ne declenchent pas le catch. Tu dois ajouter -ErrorAction Stop a la cmdlet qui peut echouer pour convertir l'erreur en erreur terminante que try/catch peut capturer. Sans -ErrorAction Stop, l'erreur s'affiche en rouge mais le script continue et le catch est ignore."
+          },
+          "expected_result": [
+            "Avec 'ServiceQuiNExistePas' : le catch affiche le message d'erreur en rouge et le type d'exception",
+            "Le bloc finally s'execute dans les deux cas (erreur et succes)",
+            "Avec 'Spooler' : le catch n'est pas execute, le service est affiche normalement",
+            "Le catch specifique [System.IO.FileNotFoundException] est execute pour le fichier inexistant"
+          ]
+        },
+        {
+          "id": "PS3-2-2",
+          "order": 2,
+          "title": "$Error, $ErrorActionPreference et -ErrorAction Stop",
+          "unlocked_by": "PS3-2-1",
+          "estimated_minutes": 15,
+          "objective": "Utiliser $Error pour acceder aux erreurs passees, et $ErrorActionPreference pour changer le comportement global.",
+          "context": "PowerShell maintient automatiquement un tableau $Error qui contient les dernières erreurs survenues dans la session. C'est une precieuse boite noire pour le debogage : apres qu'un script a rencontre un probleme, tu peux inspecter $Error[0] pour voir la derniere erreur avec tous ses details. $ErrorActionPreference est une variable de preference qui definit le comportement par defaut de toutes les cmdlets face a une erreur : Continue (affiche l'erreur et continue), Stop (arrete sur toute erreur, comme -ErrorAction Stop), SilentlyContinue (ignore l'erreur silencieusement), Inquire (demande a l'utilisateur). Changer $ErrorActionPreference au debut d'un script evite de devoir ajouter -ErrorAction Stop sur chaque cmdlet.",
+          "steps": [
+            "Tape : $Error.Clear() pour vider le tableau d'erreurs",
+            "Provoque une erreur : Get-Service -Name 'FakeService' 2>$null",
+            "Tape : $Error.Count — doit afficher 1",
+            "Tape : $Error[0].Exception.Message pour voir le message de la derniere erreur",
+            "Tape : $Error[0] | Format-List * -Force pour voir tous les details",
+            "Maintenant teste $ErrorActionPreference :",
+            "$ErrorActionPreference = 'Stop'",
+            "Essaie : Get-Service -Name 'FakeService' — doit generer une exception terminante",
+            "$ErrorActionPreference = 'SilentlyContinue'",
+            "Essaie : Get-Service -Name 'FakeService' — ne doit rien afficher",
+            "$ErrorActionPreference = 'Continue' — remet la valeur par defaut",
+            "Tape : $Error | Select-Object -First 5 | Select-Object -ExpandProperty Exception | Select-Object Message"
+          ],
+          "help": {
+            "text": "Apres avoir mis $ErrorActionPreference = 'Stop', ton script se bloque sur des erreurs benignes ?",
+            "where": "Stop est tres agressif : la moindre erreur non-critique arrete tout. Si tu utilises Stop globalement, il faut wrapper les blocs sensibles dans try/catch. En pratique, la meilleure approche est de garder $ErrorActionPreference = 'Continue' par defaut et d'ajouter -ErrorAction Stop uniquement la ou c'est necessaire. N'oublie pas de remettre la valeur a Continue avant de terminer tes tests."
+          },
+          "expected_result": [
+            "$Error.Count est bien 1 apres la premiere erreur provoquee",
+            "$Error[0].Exception.Message affiche le texte d'erreur lisible",
+            "Avec ErrorActionPreference Stop, l'erreur declenche une exception visible",
+            "Avec SilentlyContinue, l'erreur passe completement silencieusement"
+          ]
+        },
+        {
+          "id": "PS3-2-3",
+          "order": 3,
+          "title": "Write-Verbose et Write-Debug : debogage propre",
+          "unlocked_by": "PS3-2-2",
+          "estimated_minutes": 20,
+          "objective": "Ajouter des messages de debogage avec Write-Verbose et Write-Debug, actives uniquement quand necessaire.",
+          "context": "Write-Verbose et Write-Debug permettent d'ajouter des messages de trace dans un script sans qu'ils s'affichent par defaut. C'est la bonne pratique pour les scripts professionnels : le code de production est propre et silencieux, mais l'administrateur peut activer les traces en ajoutant -Verbose ou -Debug a l'appel du script quand il a besoin de comprendre ce qui se passe. C'est fondamentalement mieux que d'ajouter des Write-Host partout et de les commenter quand le script est en production. Le switch [CmdletBinding()] (que tu as vu au niveau 1) est necessaire sur ta fonction pour que -Verbose soit supporte automatiquement. $VerbosePreference et $DebugPreference controlent l'affichage global.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\test_verbose.ps1",
+            "Ecris une fonction avec [CmdletBinding()] :",
+            "function Invoke-ServiceCheck {",
+            "    [CmdletBinding()]",
+            "    param([string]$ServiceName)",
+            "    Write-Verbose \"Debut verification de : $ServiceName\"",
+            "    $s = Get-Service -Name $ServiceName -ErrorAction Stop",
+            "    Write-Verbose \"Service trouve - Status : $($s.Status)\"",
+            "    if ($s.Status -eq 'Running') {",
+            "        Write-Debug \"[DEBUG] Le service $ServiceName a $($s.ServicesDependedOn.Count) dependances\"",
+            "        return $true",
+            "    }",
+            "    Write-Warning \"Le service $ServiceName n'est pas en Running\"",
+            "    return $false",
+            "}",
+            "Appelle sans verbose : Invoke-ServiceCheck -ServiceName Spooler — pas de messages",
+            "Appelle avec verbose : Invoke-ServiceCheck -ServiceName Spooler -Verbose — messages VERBOSE visibles",
+            "Appelle avec debug : Invoke-ServiceCheck -ServiceName Spooler -Debug — arrets a chaque Write-Debug"
+          ],
+          "help": {
+            "text": "Write-Verbose n'affiche rien meme avec -Verbose ?",
+            "where": "Pour que -Verbose fonctionne sur ta fonction, elle doit avoir [CmdletBinding()] juste avant le param(). Sans cette declaration, -Verbose n'est pas un parametre supporte. Verifie aussi que tu utilises bien Write-Verbose et non Write-Host — ce sont deux cmdlets differentes avec des comportements differents."
+          },
+          "expected_result": [
+            "Sans -Verbose : seul le resultat (True/False) s'affiche",
+            "Avec -Verbose : les messages VERBOSE s'affichent en jaune avant chaque etape",
+            "-Debug affiche les messages DEBUG et marque une pause pour confirmer",
+            "Write-Warning affiche un message orange automatiquement visible sans switch"
+          ]
+        },
+        {
+          "id": "PS3-2-4",
+          "order": 4,
+          "title": "Start-Transcript et Stop-Transcript : journaliser une session",
+          "unlocked_by": "PS3-2-3",
+          "estimated_minutes": 15,
+          "objective": "Enregistrer toute l'execution d'un script dans un fichier texte avec Start-Transcript.",
+          "context": "Start-Transcript enregistre une copie complete de tout ce qui s'affiche dans la console PowerShell (entrees et sorties) dans un fichier texte. C'est indispensable pour les scripts qui s'executent automatiquement (planificateur de taches, deploiement) : s'il y a un probleme, le fichier de transcript montre exactement ce qui s'est passe, quand, et quelle erreur s'est produite. Le transcript est aussi tres utile pour garder une trace des operations sensibles : creations de comptes, modifications de configuration, mise a jour de serveurs. En securite, c'est une exigence dans beaucoup d'entreprises de conserver ces journaux. Stop-Transcript termine l'enregistrement et ferme le fichier.",
+          "steps": [
+            "Tape : Start-Transcript -Path C:\\TP_PowerShell\\logs\\session_$(Get-Date -Format 'yyyyMMdd_HHmmss').txt",
+            "Tape quelques commandes : Get-Date, Get-ComputerInfo | Select-Object CsName, Get-Service | Where-Object {$_.Status -eq 'Running'} | Measure-Object",
+            "Tape une commande avec une erreur : Get-Service FakeService",
+            "Tape : Stop-Transcript",
+            "Tape : Get-ChildItem C:\\TP_PowerShell\\logs pour voir le fichier cree",
+            "Tape : Get-Content C:\\TP_PowerShell\\logs\\session_*.txt | Select-Object -Last 30 pour voir la fin du transcript",
+            "Ajoute Start-Transcript au debut d'un de tes scripts precedents :",
+            "Start-Transcript -Path \"C:\\TP_PowerShell\\logs\\script_$(Get-Date -Format 'yyyyMMdd').txt\" -Append",
+            "# ... ton code ...",
+            "Stop-Transcript",
+            "Le parametre -Append ajoute au fichier existant au lieu d'ecraser"
+          ],
+          "help": {
+            "text": "Start-Transcript retourne une erreur 'Transcript cannot be started' ?",
+            "where": "Un transcript est peut-etre deja actif. Tape Stop-Transcript d'abord pour arreter le precedent. Les transcripts imbriques ne sont pas supportes dans PowerShell 5.1 (supportes dans PS 7). Si le chemin du fichier n'existe pas, cree d'abord le dossier avec New-Item -ItemType Directory -Force."
+          },
+          "expected_result": [
+            "Start-Transcript affiche un message indiquant le fichier de transcript demarre",
+            "Stop-Transcript affiche le chemin du fichier et sa taille",
+            "Le fichier transcript contient l'en-tete avec la date, les commandes tapees et leurs sorties",
+            "L'erreur Get-Service FakeService est bien enregistree dans le transcript"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Scripts d'administration reels",
+      "description": "Ecrire des scripts d'administration concrets : import CSV, export de donnees, taches planifiees et rapport HTML.",
+      "emoji": "🟠",
+      "color": "#F97316",
+      "missions": [
+        {
+          "id": "PS3-3-1",
+          "order": 1,
+          "title": "Import-Csv : creer des utilisateurs en masse depuis un fichier CSV",
+          "unlocked_by": "PS3-2-4",
+          "estimated_minutes": 30,
+          "objective": "Lire un fichier CSV d'utilisateurs avec Import-Csv et creer automatiquement les comptes locaux correspondants.",
+          "context": "L'import depuis CSV est le cas d'usage le plus frequent en debut d'annee scolaire ou lors d'une integration massive de personnel : au lieu de creer 50 comptes un par un, le service RH fournit un fichier Excel (exporte en CSV) et le script PowerShell fait le reste en quelques secondes. Import-Csv lit un fichier CSV et retourne une collection d'objets ou chaque ligne devient un objet et chaque colonne une propriete. C'est l'integration naturelle avec le pipeline : le resultat peut etre pipe directement dans ForEach-Object. La combinaison Import-Csv + New-LocalUser (ou New-ADUser pour l'Active Directory) est l'un des scripts les plus utilises en administration systeme.",
+          "steps": [
+            "Cree le fichier C:\\TP_PowerShell\\utilisateurs.csv avec ce contenu :",
+            "Login,NomComplet,Description",
+            "u.martin,Utilisateur Martin,Comptabilite",
+            "u.bernard,Utilisateur Bernard,IT",
+            "u.leblanc,Utilisateur Leblanc,RH",
+            "Tape : Import-Csv C:\\TP_PowerShell\\utilisateurs.csv pour voir les objets crees",
+            "Tape : Import-Csv C:\\TP_PowerShell\\utilisateurs.csv | Select-Object Login, NomComplet",
+            "Cree C:\\TP_PowerShell\\scripts\\create_users.ps1 :",
+            "$mdpDefaut = ConvertTo-SecureString 'Azerty123!' -AsPlainText -Force",
+            "$users = Import-Csv C:\\TP_PowerShell\\utilisateurs.csv",
+            "foreach ($user in $users) {",
+            "    try {",
+            "        New-LocalUser -Name $user.Login -FullName $user.NomComplet -Description $user.Description -Password $mdpDefaut -ErrorAction Stop",
+            "        Write-Host \"Cree : $($user.Login)\" -ForegroundColor Green",
+            "    } catch {",
+            "        Write-Warning \"Echec pour $($user.Login) : $($_.Exception.Message)\"",
+            "    }",
+            "}",
+            "Execute le script et verifie avec Get-LocalUser"
+          ],
+          "help": {
+            "text": "Import-Csv n'affiche pas les colonnes attendues ?",
+            "where": "Verifie que la premiere ligne du CSV contient bien les en-tetes avec la bonne orthographe. Le separateur doit etre une virgule (,) par defaut. Si ton CSV utilise des points-virgules (courant en France a cause des parametres regionaux), ajoute -Delimiter ';' : Import-Csv fichier.csv -Delimiter ';'. Ouvre le fichier dans le Bloc-notes pour verifier le separateur utilise."
+          },
+          "expected_result": [
+            "Import-Csv retourne 3 objets avec les proprietes Login, NomComplet, Description",
+            "Le script cree les 3 comptes avec un message vert pour chacun",
+            "Get-LocalUser affiche les 3 nouveaux comptes u.martin, u.bernard, u.leblanc",
+            "Si un compte existe deja, le catch affiche un avertissement sans arreter le script"
+          ]
+        },
+        {
+          "id": "PS3-3-2",
+          "order": 2,
+          "title": "Export-Csv et ConvertTo-Json : exporter des donnees systeme",
+          "unlocked_by": "PS3-3-1",
+          "estimated_minutes": 25,
+          "objective": "Exporter des donnees sur les services et processus dans un fichier CSV et JSON pour archivage ou traitement.",
+          "context": "Export-Csv et ConvertTo-Json sont les outils d'export de PowerShell. Export-Csv cree un fichier directement exploitable dans Excel ou dans n'importe quel outil d'analyse de donnees. C'est parfait pour les rapports hebdomadaires ou les audits. ConvertTo-Json transforme un objet PowerShell en JSON, le format standard d'echange de donnees entre applications — utile si les donnees doivent etre traitees par un script Python, inserees dans une base de donnees ou envoyes via une API. Le parametre -NoTypeInformation sur Export-Csv supprime la premiere ligne technique que PowerShell ajoute par defaut (#TYPE System.ServiceProcess.ServiceController), qui gene les outils d'import.",
+          "steps": [
+            "Tape : Get-Service | Select-Object Name, DisplayName, Status, StartType | Export-Csv C:\\TP_PowerShell\\rapport_services.csv -NoTypeInformation -Encoding UTF8",
+            "Tape : Get-Content C:\\TP_PowerShell\\rapport_services.csv | Select-Object -First 5 pour voir les premieres lignes",
+            "Tape : Import-Csv C:\\TP_PowerShell\\rapport_services.csv | Where-Object {$_.Status -eq 'Running'} | Measure-Object pour compter les services en cours depuis le CSV",
+            "Tape : Get-Process | Select-Object -First 20 | Select-Object Name, Id, CPU, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet/1MB,1)}} | ConvertTo-Json | Out-File C:\\TP_PowerShell\\processus.json",
+            "Tape : Get-Content C:\\TP_PowerShell\\processus.json | ConvertFrom-Json | Select-Object Name, RAM_MB | Sort-Object RAM_MB -Descending",
+            "Ouvre le fichier rapport_services.csv dans Excel (double-clic) pour verifier le rendu"
+          ],
+          "help": {
+            "text": "Le fichier CSV s'ouvre dans Excel avec les colonnes mal separees ?",
+            "where": "Sur un Windows en francais, Excel attend des points-virgules comme separateur. Ajoute -Delimiter ';' a Export-Csv ou change les separateurs dans les parametres Excel. En PowerShell, tu peux aussi utiliser -UseCulture pour utiliser automatiquement le separateur de la culture locale : Export-Csv -UseCulture. Pour l'encodage des caracteres accentues, -Encoding UTF8 est recommande."
+          },
+          "expected_result": [
+            "rapport_services.csv est cree et lisible avec Get-Content",
+            "La premiere ligne contient les en-tetes Name, DisplayName, Status, StartType",
+            "Import-Csv recharge les donnees et Where-Object fonctionne dessus",
+            "processus.json est un JSON valide qu'on peut recharger avec ConvertFrom-Json",
+            "Le fichier CSV s'ouvre correctement dans Excel avec les colonnes bien separees"
+          ]
+        },
+        {
+          "id": "PS3-3-3",
+          "order": 3,
+          "title": "New-ScheduledTask : planifier un script PowerShell",
+          "unlocked_by": "PS3-3-2",
+          "estimated_minutes": 30,
+          "objective": "Planifier l'execution automatique d'un script PowerShell avec le planificateur de taches Windows via PowerShell.",
+          "context": "Le planificateur de taches Windows (Task Scheduler) permet d'executer des scripts automatiquement a des horaires precis, au demarrage du systeme, a la connexion d'un utilisateur ou sur evenement. Le configurer via PowerShell presente deux avantages majeurs : reproductibilite (la commande peut etre incluse dans un script de deploiement) et rapidite (pas besoin d'ouvrir l'interface graphique). New-ScheduledTaskAction definit ce qui sera execute. New-ScheduledTaskTrigger definit quand l'execution a lieu. New-ScheduledTask assemble les deux. Register-ScheduledTask enregistre la tache dans Windows. En production, on planifie ainsi des sauvegardes, des rapports automatiques, des mises a jour de configurations ou des verifications de sante du systeme.",
+          "steps": [
+            "D'abord, cree le script a planifier : C:\\TP_PowerShell\\scripts\\audit_journalier.ps1",
+            "Contenu du script : $date = Get-Date -Format 'yyyy-MM-dd HH:mm' | Add-Content C:\\TP_PowerShell\\logs\\audit.log \"$date - Script execute\"",
+            "Definit l'action :",
+            "$action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NonInteractive -NoProfile -File C:\\TP_PowerShell\\scripts\\audit_journalier.ps1'",
+            "Definit le declencheur (tous les jours a 8h00) :",
+            "$trigger = New-ScheduledTaskTrigger -Daily -At '08:00'",
+            "Definit les parametres d'execution (compte SYSTEM, droits eleves) :",
+            "$settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit (New-TimeSpan -Minutes 5) -RunOnlyIfNetworkAvailable $false",
+            "Enregistre la tache :",
+            "Register-ScheduledTask -TaskName 'PS_AuditJournalier' -Action $action -Trigger $trigger -Settings $settings -RunLevel Highest -Force",
+            "Verifie : Get-ScheduledTask -TaskName 'PS_AuditJournalier'",
+            "Execute manuellement pour tester : Start-ScheduledTask -TaskName 'PS_AuditJournalier'",
+            "Verifie : Get-Content C:\\TP_PowerShell\\logs\\audit.log"
+          ],
+          "help": {
+            "text": "Register-ScheduledTask retourne une erreur d'autorisation ?",
+            "where": "L'enregistrement de taches planifiees necessite les droits administrateur. Verifie que PowerShell est ouvert en tant qu'administrateur. Si tu veux que la tache s'execute avec le compte SYSTEM (recommande pour les scripts sans interface), ajoute -User 'SYSTEM' a Register-ScheduledTask et supprime le parametre -Password. SYSTEM a acces a tout sur la machine locale."
+          },
+          "expected_result": [
+            "Get-ScheduledTask 'PS_AuditJournalier' affiche la tache avec State Ready",
+            "Start-ScheduledTask execute le script immediatement",
+            "Get-Content audit.log affiche une ligne avec la date et l'heure d'execution",
+            "La tache est visible dans le planificateur graphique (taskschd.msc) sous la racine"
+          ]
+        },
+        {
+          "id": "PS3-3-4",
+          "order": 4,
+          "title": "Script final : audit systeme complet avec export HTML",
+          "unlocked_by": "PS3-3-3",
+          "estimated_minutes": 45,
+          "objective": "Ecrire un script d'audit complet qui collecte les informations systeme et genere un rapport HTML lisible.",
+          "context": "Ce script final combine toutes les competences acquises dans ce scenario. ConvertTo-Html transforme des objets PowerShell en tableau HTML, qui peut etre ouvert directement dans un navigateur web. C'est le moyen le plus rapide de produire un rapport lisible sans installer quoi que ce soit. Le parametre -Head permet d'injecter du CSS pour rendre le rapport plus professionnel. En ajoutant -PreContent et -PostContent on peut inclure du texte avant et apres les tableaux. Ce type de rapport est parfait pour les techniciens qui doivent rendre compte de l'etat d'un parc a leur responsable : un fichier HTML par machine, tous regroupes dans un dossier, generes automatiquement chaque semaine.",
+          "steps": [
+            "Cree C:\\TP_PowerShell\\scripts\\audit_complet.ps1 avec ce contenu complet :",
+            "Start-Transcript -Path \"C:\\TP_PowerShell\\logs\\audit_$(Get-Date -Format 'yyyyMMdd').txt\" -Append",
+            "$css = '<style>body{font-family:Arial;} table{border-collapse:collapse;width:100%} th{background:#3B82F6;color:white;padding:8px} td{padding:6px;border:1px solid #ddd} tr:nth-child(even){background:#f2f2f2}</style>'",
+            "$dateRapport = Get-Date -Format 'dd/MM/yyyy HH:mm'",
+            "# Section 1 : Informations systeme",
+            "$infoSys = Get-ComputerInfo | Select-Object CsName, OsName, OsVersion, @{Name='RAM_Go';Expression={[math]::Round($_.CsTotalPhysicalMemory/1GB,1)}}",
+            "$htmlSys = $infoSys | ConvertTo-Html -Fragment -PreContent '<h2>Informations systeme</h2>'",
+            "# Section 2 : Espace disque",
+            "$disques = Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{Name='Libre_Go';Expression={[math]::Round($_.Free/1GB,2)}}, @{Name='Utilise_Go';Expression={[math]::Round($_.Used/1GB,2)}}",
+            "$htmlDisk = $disques | ConvertTo-Html -Fragment -PreContent '<h2>Espace disque</h2>'",
+            "# Section 3 : Services automatiques arretes",
+            "$svcArretes = Get-Service | Where-Object {$_.StartType -eq 'Automatic' -and $_.Status -ne 'Running'} | Select-Object Name, DisplayName, Status",
+            "$htmlSvc = $svcArretes | ConvertTo-Html -Fragment -PreContent '<h2>Services automatiques arretes</h2>'",
+            "# Section 4 : Top 10 processus par RAM",
+            "$top10 = Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 | Select-Object Name, Id, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet/1MB,1)}}",
+            "$htmlProc = $top10 | ConvertTo-Html -Fragment -PreContent '<h2>Top 10 processus RAM</h2>'",
+            "# Assembler le rapport",
+            "$rapport = ConvertTo-Html -Head $css -Body ($htmlSys + $htmlDisk + $htmlSvc + $htmlProc) -Title \"Audit $($env:COMPUTERNAME) - $dateRapport\" -PostContent \"<p>Rapport genere le $dateRapport</p>\"",
+            "$cheminRapport = \"C:\\TP_PowerShell\\rapport_$($env:COMPUTERNAME)_$(Get-Date -Format 'yyyyMMdd').html\"",
+            "$rapport | Out-File $cheminRapport -Encoding UTF8",
+            "Write-Host \"Rapport genere : $cheminRapport\" -ForegroundColor Green",
+            "Start-Process $cheminRapport",
+            "Stop-Transcript",
+            "Execute le script et admire le resultat dans ton navigateur !"
+          ],
+          "help": {
+            "text": "Le rapport HTML s'ouvre mais les tableaux sont vides ou mal formates ?",
+            "where": "Verifie que chaque section produit bien des donnees : execute chaque bloc independamment dans le terminal pour voir si les variables $infoSys, $disques etc. contiennent des valeurs. Le probleme le plus frequent est que ConvertTo-Html -Fragment retourne une chaine vide si l'objet transmis est vide (ex: $svcArretes vide si tous les services auto sont demarres). C'est normal : ajoute un test if ($svcArretes) { ... } pour afficher un message 'Aucun service arrete' dans ce cas."
+          },
+          "expected_result": [
+            "Le script s'execute sans erreur et affiche le chemin du rapport en vert",
+            "Le navigateur s'ouvre automatiquement avec le rapport HTML",
+            "Le rapport contient 4 sections avec des tableaux formates en bleu et gris",
+            "Les donnees sont coherentes avec ce qu'on obtient en executant les cmdlets individuellement",
+            "Le fichier de transcript est cree dans C:\\TP_PowerShell\\logs",
+            "Le rapport HTML peut etre envoye par email ou archive comme preuve d'audit"
+          ]
+        }
+      ]
+    }
+  ]
+}

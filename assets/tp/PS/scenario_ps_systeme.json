@@ -1,0 +1,549 @@
+{
+  "id": "scenario_ps_systeme",
+  "title": "Gestion du systeme Windows",
+  "subtitle": "Administrer un poste Windows en ligne de commande",
+  "emoji": "⚙️",
+  "color": "#8B5CF6",
+  "difficulty": "intermediaire",
+  "difficulty_label": "Intermediaire",
+  "description": "Tu es technicien IT confirme. Ton entreprise attend de toi que tu puisses administrer des postes et serveurs Windows sans jamais ouvrir l'interface graphique : gerer les services, analyser les processus, creer des utilisateurs locaux, configurer le reseau et meme modifier le registre. Tout en PowerShell.",
+  "domain": null,
+  "dc_name": null,
+  "server_ip": null,
+  "os": "Windows 10 / Windows Server 2022",
+  "total_missions": 16,
+  "estimated_hours": "5-7h",
+  "prerequisite": "Fondamentaux PowerShell",
+  "context_intro": "Tu travailles comme technicien IT dans une entreprise de taille moyenne. Ton responsable te demande de prendre en charge l'administration de plusieurs postes Windows entierement depuis PowerShell : plus d'interface graphique, tout se fait en ligne de commande. Tu dois etre capable de gerer les processus qui surchargent les serveurs, creer et supprimer des comptes locaux, diagnostiquer des problemes reseau et lire des cles de registre. Ce scenario te prepare a ces situations reelles.",
+  "badges": [
+    {
+      "id": "ps2_gestionnaire_processus",
+      "title": "Gestionnaire de processus",
+      "description": "A maitrise la gestion des processus et services Windows en PowerShell",
+      "icon": "⚙️",
+      "unlocked_after_level": 1
+    },
+    {
+      "id": "ps2_admin_reseau",
+      "title": "Administrateur reseau",
+      "description": "A configure et diagnostique le reseau Windows en ligne de commande",
+      "icon": "🌐",
+      "unlocked_after_level": 2
+    },
+    {
+      "id": "ps2_expert_systeme",
+      "title": "Expert systeme Windows",
+      "description": "A termine le scenario Gestion du systeme Windows en integralite",
+      "icon": "🛡️",
+      "unlocked_after_level": 3
+    }
+  ],
+  "levels": [
+    {
+      "id": 0,
+      "title": "Processus et services",
+      "description": "Surveiller, demarrer, arreter et configurer les processus et services Windows depuis PowerShell.",
+      "emoji": "🔵",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "PS2-0-1",
+          "order": 1,
+          "title": "Get-Process et Stop-Process : gerer les processus",
+          "unlocked_by": null,
+          "estimated_minutes": 20,
+          "objective": "Lister les processus en cours d'execution, les filtrer par nom ou ID, et terminer un processus.",
+          "context": "Get-Process est l'equivalent PowerShell du Gestionnaire des taches, mais bien plus puissant. Il retourne des objets Process avec des dizaines de proprietes : consommation CPU, memoire virtuelle et physique, nombre de threads, chemin du fichier executable, etc. En production, c'est l'outil de premiere ligne pour diagnostiquer un serveur qui rame : on identifie immediatement le processus responsable. Stop-Process termine un processus — l'equivalent de 'Fin de tache' dans le Gestionnaire des taches. Il accepte le nom du processus (-Name) ou son identifiant numerique (-Id). Attention : arreter certains processus systeme peut provoquer un redemarrage immediat de Windows.",
+          "steps": [
+            "Tape : Get-Process pour lister tous les processus en cours",
+            "Tape : Get-Process | Sort-Object CPU -Descending | Select-Object -First 10 pour les 10 plus gourmands en CPU",
+            "Tape : Get-Process | Sort-Object WorkingSet -Descending | Select-Object Name, Id, @{Name='RAM_MB';Expression={[math]::Round($_.WorkingSet/1MB,1)}} | Select-Object -First 10",
+            "Tape : Get-Process -Name explorer pour filtrer par nom",
+            "Tape : Get-Process -Name *chrome* pour utiliser un joker",
+            "Ouvre le Bloc-notes : tape Start-Process notepad",
+            "Tape : Get-Process -Name notepad pour voir son PID",
+            "Tape : Stop-Process -Name notepad pour le fermer",
+            "Verifie : Get-Process -Name notepad — doit retourner une erreur 'cannot find'"
+          ],
+          "help": {
+            "text": "Stop-Process retourne une erreur 'access denied' ?",
+            "where": "Certains processus systeme (svchost, lsass, csrss) sont proteges et ne peuvent pas etre arretes meme en admin. C'est voulu : arreter lsass provoquerait un redemarrage immediat. Pour tes exercices, utilise toujours des processus que tu as toi-meme ouverts (notepad, mspaint, calc). Ne tente jamais Stop-Process sur des processus systeme en environnement de production."
+          },
+          "expected_result": [
+            "Get-Process affiche la liste complete des processus avec CPU, Handles, NPM, PM",
+            "Sort-Object CPU -Descending place les processus les plus gourmands en premier",
+            "Get-Process -Name notepad affiche le processus du Bloc-notes avec son PID",
+            "Apres Stop-Process, Get-Process -Name notepad retourne une erreur indiquant que le processus est introuvable"
+          ]
+        },
+        {
+          "id": "PS2-0-2",
+          "order": 2,
+          "title": "Get-Service, Start-Service, Stop-Service, Restart-Service",
+          "unlocked_by": "PS2-0-1",
+          "estimated_minutes": 20,
+          "objective": "Lister les services Windows, en demarrer, arreter et redemarrer depuis PowerShell.",
+          "context": "Les services Windows sont des programmes qui s'executent en arriere-plan sans interface graphique, generalement demarres au lancement de Windows. En administration systeme, on manipule constamment les services : redemarrer le service d'impression apres un bug, verifier que le service Windows Update est actif, ou arreter un service avant une mise a jour. Get-Service retourne des objets Service avec les proprietes Name, DisplayName, Status et StartType. Start-Service et Stop-Service sont simples mais puissants. Restart-Service est tres utilise en production car il arrete et redemarrage en une seule commande — sans perdre de temps a faire les deux operations separement.",
+          "steps": [
+            "Tape : Get-Service pour lister tous les services",
+            "Tape : Get-Service | Where-Object {$_.Status -eq 'Running'} | Select-Object Name, DisplayName | Sort-Object Name",
+            "Tape : Get-Service | Where-Object {$_.Status -eq 'Stopped' -and $_.StartType -eq 'Automatic'} pour trouver les services auto arretes (suspect !)",
+            "Tape : Get-Service -Name Spooler pour voir le service d'impression",
+            "Tape : Stop-Service -Name Spooler -Force",
+            "Tape : Get-Service -Name Spooler — Status doit etre Stopped",
+            "Tape : Start-Service -Name Spooler",
+            "Tape : Get-Service -Name Spooler — Status doit etre Running",
+            "Tape : Restart-Service -Name Spooler pour le redemarrer en une commande"
+          ],
+          "help": {
+            "text": "Stop-Service affiche un avertissement 'dependent services' ?",
+            "where": "Certains services ont des dependances : d'autres services dependent d'eux et s'arreteront aussi. PowerShell te previent de cela. Ajoute -Force pour confirmer que tu veux quand meme arreter le service et ses dependants : Stop-Service -Name NomService -Force. En production, toujours verifier les dependances avant d'arreter un service sur un serveur."
+          },
+          "expected_result": [
+            "Get-Service | Where-Object Status Running affiche uniquement les services en cours",
+            "Le filtre sur les services Automatic et Stopped identifie d'eventuelles anomalies",
+            "Apres Stop-Service, Get-Service -Name Spooler affiche Status : Stopped",
+            "Apres Start-Service, le statut repasse a Running",
+            "Restart-Service fait passer le service en Stopped puis Running en quelques secondes"
+          ]
+        },
+        {
+          "id": "PS2-0-3",
+          "order": 3,
+          "title": "Set-Service : configurer le type de demarrage",
+          "unlocked_by": "PS2-0-2",
+          "estimated_minutes": 15,
+          "objective": "Modifier le type de demarrage d'un service (Automatic, Manual, Disabled) avec Set-Service.",
+          "context": "Le type de demarrage d'un service definit comment et quand il sera lance. Automatic signifie que Windows le demarre automatiquement au boot. Manual signifie qu'il ne demarre que si un programme ou un utilisateur le demande explicitement. Disabled empeche totalement le demarrage du service. En securite informatique, desactiver les services inutiles est une bonne pratique : moins de services actifs = moins de surface d'attaque potentielle. Set-Service permet de faire cette modification en masse sur de nombreuses machines via un script, sans avoir a passer par l'interface graphique des services (services.msc) sur chaque poste.",
+          "steps": [
+            "Tape : Get-Service -Name Fax pour voir le service de telecopie (souvent inutile)",
+            "Tape : Get-Service -Name Fax | Select-Object Name, Status, StartType",
+            "Tape : Set-Service -Name Fax -StartupType Disabled pour le desactiver",
+            "Tape : Get-Service -Name Fax | Select-Object Name, StartType — StartType doit etre Disabled",
+            "Tape : Set-Service -Name Fax -StartupType Manual pour le repasser en Manuel",
+            "Tape : Get-Service -Name Spooler | Select-Object Name, StartType",
+            "Compare avec l'outil sc.exe : tape sc.exe query Spooler dans PowerShell",
+            "Compare aussi : sc.exe qc Spooler pour voir la configuration complete via sc.exe"
+          ],
+          "help": {
+            "text": "Set-Service retourne une erreur de permission ?",
+            "where": "Verifie que tu executes PowerShell en tant qu'administrateur. Pour modifier le type de demarrage d'un service, les droits admin sont indispensables. Si tu travailles sur un service systeme critique comme wuauserv (Windows Update), le systeme peut refuser la modification meme en admin sur certaines editions de Windows."
+          },
+          "expected_result": [
+            "Get-Service Fax affiche le StartType initial (probablement Manual ou Disabled)",
+            "Apres Set-Service -StartupType Disabled, StartType est bien Disabled",
+            "Apres Set-Service -StartupType Manual, StartType est bien Manual",
+            "sc.exe query Spooler affiche la meme information que Get-Service -Name Spooler"
+          ]
+        },
+        {
+          "id": "PS2-0-4",
+          "order": 4,
+          "title": "Get-WinEvent : consulter les journaux Windows",
+          "unlocked_by": "PS2-0-3",
+          "estimated_minutes": 25,
+          "objective": "Lire les journaux d'evenements Windows avec Get-WinEvent et filtrer les evenements pertinents.",
+          "context": "Les journaux d'evenements Windows (Event Logs) sont la memoire du systeme. Chaque demarrage de service, echec de connexion, erreur d'application ou evenement de securite y est consigne avec un horodatage, un niveau de gravite et un ID numerique unique. Get-WinEvent est la cmdlet moderne (Windows 7+) remplacant l'ancienne Get-EventLog. Elle est beaucoup plus performante sur les gros journaux car elle peut filtrer les evenements directement dans le journal sans les charger tous en memoire d'abord, grace au parametre -FilterHashtable. Connaitre les IDs d'evenements courants est une competence de technicien : 4625 = echec de connexion, 7036 = changement d'etat d'un service, 41 = arret anormal de Windows.",
+          "steps": [
+            "Tape : Get-WinEvent -LogName System -MaxEvents 20 pour lire les 20 derniers evenements systeme",
+            "Tape : Get-WinEvent -LogName Application -MaxEvents 10 | Select-Object TimeCreated, Id, LevelDisplayName, Message",
+            "Tape : Get-WinEvent -LogName Security -MaxEvents 10 (necessite les droits admin)",
+            "Tape : Get-WinEvent -FilterHashtable @{LogName='System'; Level=2} -MaxEvents 20 pour les erreurs uniquement (Level 2 = Error)",
+            "Tape : Get-WinEvent -FilterHashtable @{LogName='System'; Id=7036} -MaxEvents 10 pour les changements de service",
+            "Tape : Get-WinEvent -ListLog * | Where-Object {$_.RecordCount -gt 0} | Select-Object LogName, RecordCount | Sort-Object RecordCount -Descending | Select-Object -First 10",
+            "Tape : Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625; StartTime=(Get-Date).AddHours(-1)} pour les echecs de connexion de la derniere heure"
+          ],
+          "help": {
+            "text": "Get-WinEvent retourne une erreur 'No events found' ?",
+            "where": "Cela signifie qu'aucun evenement ne correspond a tes criteres de filtre dans la periode donnee. Essaie d'elargir la recherche en enlevant le filtre StartTime, ou en changeant le filtre Level. Pour le journal Security, verifie que l'audit est active (mission A-5-2 du scenario Active Directory). Sur un systeme recemment installe, certains journaux sont vides."
+          },
+          "expected_result": [
+            "Get-WinEvent -LogName System -MaxEvents 20 affiche 20 evenements avec TimeCreated, Id et Message",
+            "Le filtre Level=2 ne retourne que les evenements de niveau Error",
+            "Le filtre Id=7036 montre les demarrages et arrets de services",
+            "La liste des journaux triee par RecordCount montre les journaux les plus actifs en premier"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "title": "Utilisateurs et groupes locaux",
+      "description": "Creer, configurer et supprimer des comptes utilisateurs et groupes locaux en PowerShell.",
+      "emoji": "🟢",
+      "color": "#22C55E",
+      "missions": [
+        {
+          "id": "PS2-1-1",
+          "order": 1,
+          "title": "Get-LocalUser : lister les utilisateurs locaux",
+          "unlocked_by": "PS2-0-4",
+          "estimated_minutes": 15,
+          "objective": "Lister tous les comptes utilisateurs locaux du systeme et afficher leurs proprietes.",
+          "context": "Sur un poste Windows non joint a un domaine, la gestion des utilisateurs est purement locale. Meme sur une machine dans un domaine, des comptes locaux existent toujours : le compte Administrateur local, le compte Invite, et eventuellement des comptes de service locaux. Get-LocalUser est disponible depuis PowerShell 5.1 et remplace avantageusement la commande net user pour l'exploration. Il retourne des objets LocalUser avec des proprietes riches : Name, Enabled, LastLogon, PasswordLastSet, PasswordNeverExpires, etc. Ces informations sont precieuses pour un audit de securite : trouver des comptes inactifs depuis longtemps ou des comptes avec mot de passe sans expiration.",
+          "steps": [
+            "Tape : Get-LocalUser pour lister tous les comptes locaux",
+            "Tape : Get-LocalUser | Select-Object Name, Enabled, LastLogon, PasswordLastSet",
+            "Tape : Get-LocalUser | Where-Object {$_.Enabled -eq $true} pour voir les comptes actifs",
+            "Tape : Get-LocalUser | Where-Object {$_.PasswordNeverExpires -eq $true} | Select-Object Name, PasswordNeverExpires",
+            "Tape : Get-LocalUser -Name Administrateur pour voir les details du compte admin",
+            "Tape : Get-LocalUser | Format-Table -AutoSize pour un affichage en tableau bien aligne",
+            "Compare avec : net user — meme information mais en texte brut"
+          ],
+          "help": {
+            "text": "Get-LocalUser n'est pas reconnu dans ta version de PowerShell ?",
+            "where": "Get-LocalUser est disponible a partir de PowerShell 5.1 sur Windows 10/2016+. Si tu es sur une version plus ancienne, utilise la commande classique : net user. Pour verifier ta version : $PSVersionTable.PSVersion. Si c'est inferieur a 5.1, mets a jour PowerShell ou utilise net user en remplacement."
+          },
+          "expected_result": [
+            "Get-LocalUser affiche au moins les comptes Administrateur et DefaultAccount",
+            "Le filtre Enabled $true ne retourne que les comptes dont le statut est actif",
+            "Get-LocalUser -Name Administrateur affiche les details complets du compte administrateur local",
+            "net user affiche les memes comptes en format texte, confirmant la coherence"
+          ]
+        },
+        {
+          "id": "PS2-1-2",
+          "order": 2,
+          "title": "New-LocalUser et Set-LocalUser : creer et configurer un utilisateur",
+          "unlocked_by": "PS2-1-1",
+          "estimated_minutes": 20,
+          "objective": "Creer un compte utilisateur local et configurer ses proprietes avec New-LocalUser et Set-LocalUser.",
+          "context": "New-LocalUser cree un compte utilisateur local directement depuis PowerShell, sans ouvrir la console de gestion des utilisateurs (lusrmgr.msc). C'est indispensable quand on doit creer des comptes en masse ou depuis un script. Le mot de passe doit etre fourni sous forme d'une SecureString — un type special de PowerShell qui chiffre la valeur en memoire pour eviter qu'elle apparaisse en clair dans les logs. Set-LocalUser modifie les proprietes d'un compte existant : description, mot de passe, expiration, etc. En entreprise, on combine souvent New-LocalUser avec des listes importees depuis un fichier CSV pour creer des dizaines de comptes automatiquement.",
+          "steps": [
+            "Tape : $mdp = Read-Host -AsSecureString 'Entrez un mot de passe' (tape un mot de passe et appuie sur Entree)",
+            "Tape : New-LocalUser -Name 'stagiaire01' -Password $mdp -FullName 'Stagiaire Numero Un' -Description 'Compte de test BTS SIO'",
+            "Tape : Get-LocalUser -Name stagiaire01 pour verifier la creation",
+            "Tape : Set-LocalUser -Name stagiaire01 -Description 'Compte stagiaire IT mis a jour'",
+            "Tape : Set-LocalUser -Name stagiaire01 -AccountExpires (Get-Date).AddDays(30) pour fixer une expiration dans 30 jours",
+            "Tape : Get-LocalUser -Name stagiaire01 | Select-Object Name, Description, AccountExpires, Enabled",
+            "Tape : Disable-LocalUser -Name stagiaire01 pour desactiver le compte",
+            "Tape : Get-LocalUser -Name stagiaire01 | Select-Object Name, Enabled — doit afficher False"
+          ],
+          "help": {
+            "text": "New-LocalUser retourne une erreur sur le mot de passe ?",
+            "where": "Le parametre -Password attend une SecureString, pas une chaine de texte. Utilise toujours Read-Host -AsSecureString pour le saisir interactivement, ou $mdp = ConvertTo-SecureString 'MonMotDePasse' -AsPlainText -Force pour le mettre directement dans une variable (a eviter en production car le mot de passe apparait en clair dans le script)."
+          },
+          "expected_result": [
+            "New-LocalUser cree le compte stagiaire01 visible dans Get-LocalUser",
+            "Set-LocalUser met a jour la description du compte",
+            "AccountExpires affiche une date dans environ 30 jours",
+            "Apres Disable-LocalUser, la propriete Enabled est False"
+          ]
+        },
+        {
+          "id": "PS2-1-3",
+          "order": 3,
+          "title": "Get-LocalGroup, Add-LocalGroupMember, Remove-LocalGroupMember",
+          "unlocked_by": "PS2-1-2",
+          "estimated_minutes": 20,
+          "objective": "Lister les groupes locaux, ajouter un utilisateur dans un groupe et l'en retirer.",
+          "context": "Les groupes locaux permettent de gerer les droits sur une machine independante. Le groupe Administrateurs est le plus important : ses membres peuvent tout faire sur la machine. Le groupe Utilisateurs est le groupe standard pour les comptes normaux. Il existe aussi Remote Desktop Users (acces bureau a distance), IIS_IUSRS (pour les serveurs web) et bien d'autres. En helpdesk, l'une des demandes les plus frequentes est d'ajouter un utilisateur dans le groupe Administrateurs locaux pour lui donner des droits eleves temporaires. Get-LocalGroupMember liste les membres actuels d'un groupe. Add-LocalGroupMember et Remove-LocalGroupMember gerent l'appartenance.",
+          "steps": [
+            "Tape : Get-LocalGroup pour lister tous les groupes locaux",
+            "Tape : Get-LocalGroupMember -Group 'Administrateurs' pour voir les membres du groupe admin",
+            "Tape : Get-LocalGroupMember -Group 'Utilisateurs' pour voir les membres standard",
+            "Tape : Enable-LocalUser -Name stagiaire01 pour reactiver le compte d'abord",
+            "Tape : Add-LocalGroupMember -Group 'Utilisateurs' -Member stagiaire01",
+            "Tape : Get-LocalGroupMember -Group 'Utilisateurs' — stagiaire01 doit apparaitre",
+            "Tape : Add-LocalGroupMember -Group 'Administrateurs' -Member stagiaire01 pour lui donner les droits admin",
+            "Tape : Remove-LocalGroupMember -Group 'Administrateurs' -Member stagiaire01 pour retirer ces droits",
+            "Tape : Get-LocalGroupMember -Group 'Administrateurs' — stagiaire01 ne doit plus y etre"
+          ],
+          "help": {
+            "text": "Add-LocalGroupMember retourne une erreur 'member already exists' ?",
+            "where": "Le compte est deja membre du groupe. Ce n'est pas une erreur bloquante mais PowerShell le signale. Tu peux verifier l'appartenance avant d'ajouter : Get-LocalGroupMember -Group 'Administrateurs' | Where-Object {$_.Name -like '*stagiaire01*'}. Si le compte est deja present, inutile de l'ajouter a nouveau."
+          },
+          "expected_result": [
+            "Get-LocalGroup affiche au moins Administrateurs, Utilisateurs, Invites",
+            "Get-LocalGroupMember Administrateurs affiche le compte Administrateur et eventuellement d'autres comptes",
+            "Apres Add-LocalGroupMember, stagiaire01 apparait dans le groupe Utilisateurs",
+            "Apres Remove-LocalGroupMember, stagiaire01 n'est plus dans le groupe Administrateurs"
+          ]
+        },
+        {
+          "id": "PS2-1-4",
+          "order": 4,
+          "title": "Disable-LocalUser, Remove-LocalUser et comparaison avec net user",
+          "unlocked_by": "PS2-1-3",
+          "estimated_minutes": 15,
+          "objective": "Desactiver et supprimer un compte utilisateur local, et comparer les commandes PowerShell avec les commandes net user classiques.",
+          "context": "Quand un employe quitte l'entreprise, la bonne pratique est de desactiver son compte avant de le supprimer. Ainsi, si on se rend compte apres coup que des donnees lui appartenaient ou que son compte etait utilise par un service, on peut le reactivertemporairement. Disable-LocalUser desactive le compte (le user ne peut plus se connecter) mais le conserve dans le systeme. Remove-LocalUser le supprime definitivement. La commande classique net user est l'ancienne facon de faire la meme chose — encore tres presente dans les documentations et les scripts legacy. Savoir faire le lien entre les cmdlets modernes et les commandes net user te permettra de lire et adapter d'anciens scripts.",
+          "steps": [
+            "Tape : Disable-LocalUser -Name stagiaire01 pour desactiver (si pas deja fait)",
+            "Tape : Get-LocalUser -Name stagiaire01 | Select-Object Name, Enabled — doit etre False",
+            "Essaie de te connecter avec ce compte (via le menu demarrer) — doit etre refuse",
+            "Tape : Remove-LocalUser -Name stagiaire01 pour supprimer le compte",
+            "Tape : Get-LocalUser | Where-Object {$_.Name -eq 'stagiaire01'} — doit retourner vide",
+            "Compare avec la commande classique : net user pour lister les comptes",
+            "Tape : net user testuser MonMotDePasse123 /add pour creer un compte avec net user",
+            "Tape : Get-LocalUser — le compte testuser cree avec net user est bien visible",
+            "Tape : net user testuser /delete pour le supprimer"
+          ],
+          "help": {
+            "text": "Remove-LocalUser retourne une erreur 'Access denied' ?",
+            "where": "Verifie que tu executes bien PowerShell en tant qu'administrateur (titre de la fenetre doit afficher Administrateur). On ne peut pas supprimer un compte depuis un PowerShell non admin. Verifie aussi que tu ne tentes pas de supprimer le compte avec lequel tu es connecte actuellement — Windows interdit de supprimer sa propre session active."
+          },
+          "expected_result": [
+            "Apres Disable-LocalUser, Enabled est False et la connexion est refusee",
+            "Apres Remove-LocalUser, Get-LocalUser ne retourne aucun resultat pour stagiaire01",
+            "net user cree correctement testuser et Get-LocalUser le confirme",
+            "net user /delete supprime testuser et Get-LocalUser le confirme"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Reseau",
+      "description": "Diagnostiquer, tester et configurer les parametres reseau d'un poste Windows en PowerShell.",
+      "emoji": "🟡",
+      "color": "#EAB308",
+      "missions": [
+        {
+          "id": "PS2-2-1",
+          "order": 1,
+          "title": "Get-NetAdapter et Get-NetIPAddress : voir les cartes reseau et les IPs",
+          "unlocked_by": "PS2-1-4",
+          "estimated_minutes": 15,
+          "objective": "Lister les adaptateurs reseau et leurs adresses IP configurees avec Get-NetAdapter et Get-NetIPAddress.",
+          "context": "Get-NetAdapter retourne la liste de toutes les cartes reseau installees sur la machine : cartes physiques (Ethernet, Wi-Fi), cartes virtuelles (Hyper-V, VMware, VPN), et interfaces loopback. Chaque adaptateur a un nom, un statut (Up/Disconnected), une vitesse et une adresse MAC. Get-NetIPAddress liste toutes les adresses IP configurees, en IPv4 et IPv6, pour toutes les interfaces. Ces deux cmdlets remplacent avantageusement ipconfig dans les scripts : leurs resultats sont des objets manipulables, pas du texte a parser. En production, on les utilise au debut d'un script pour verifier quel adaptateur utiliser avant de modifier la configuration.",
+          "steps": [
+            "Tape : Get-NetAdapter pour lister toutes les cartes reseau",
+            "Tape : Get-NetAdapter | Select-Object Name, Status, LinkSpeed, MacAddress",
+            "Tape : Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} pour les cartes actives",
+            "Tape : Get-NetIPAddress pour voir toutes les adresses IP",
+            "Tape : Get-NetIPAddress -AddressFamily IPv4 pour filtrer sur IPv4 uniquement",
+            "Tape : Get-NetIPAddress | Select-Object InterfaceAlias, IPAddress, PrefixLength, AddressFamily",
+            "Compare avec : ipconfig — meme information en texte brut",
+            "Tape : ipconfig /all pour voir la configuration complete y compris DNS et DHCP"
+          ],
+          "help": {
+            "text": "Get-NetAdapter ou Get-NetIPAddress ne sont pas reconnues ?",
+            "where": "Ces cmdlets font partie du module NetTCPIP disponible sur Windows 8.1/Server 2012 R2 et superieur. Si elles ne fonctionnent pas, tape Get-Module -ListAvailable *net* pour voir les modules reseau disponibles. En dernier recours, utilise ipconfig /all qui fonctionne sur toutes les versions de Windows."
+          },
+          "expected_result": [
+            "Get-NetAdapter affiche les cartes reseau avec leur statut Up ou Disconnected",
+            "Get-NetIPAddress -AddressFamily IPv4 affiche uniquement les adresses IPv4",
+            "Les informations correspondent a celles visibles dans ipconfig",
+            "L'adresse MAC est visible dans MacAddress (meme format que dans ipconfig /all)"
+          ]
+        },
+        {
+          "id": "PS2-2-2",
+          "order": 2,
+          "title": "Test-NetConnection : tester la connectivite",
+          "unlocked_by": "PS2-2-1",
+          "estimated_minutes": 20,
+          "objective": "Utiliser Test-NetConnection pour tester la joignabilite d'un hote et la disponibilite d'un port specifique.",
+          "context": "Test-NetConnection est bien plus puissant que la commande ping classique. En plus de verifier si un hote repond, il peut tester si un port TCP specifique est ouvert, ce qui est indispensable pour diagnostiquer des problemes de connectivite applicative. Par exemple, pour verifier si un serveur web est accessible : Test-NetConnection monserveur.local -Port 80 ou si un serveur RDP repond : Test-NetConnection poste01 -Port 3389. Le resultat est un objet avec les proprietes TcpTestSucceeded, PingSucceeded, RemoteAddress, etc. C'est l'outil de diagnostic reseau numero un du technicien PowerShell. Il remplace avantageusement la combinaison ping + telnet + tracert dans la plupart des cas.",
+          "steps": [
+            "Tape : Test-NetConnection -ComputerName 8.8.8.8 pour tester la connexion vers Google DNS",
+            "Tape : Test-NetConnection -ComputerName google.fr pour tester avec un nom de domaine",
+            "Tape : Test-NetConnection -ComputerName 8.8.8.8 -Port 443 pour tester le port HTTPS",
+            "Tape : Test-NetConnection -ComputerName 8.8.8.8 -Port 80 pour tester HTTP",
+            "Tape : (Test-NetConnection -ComputerName 8.8.8.8 -Port 443).TcpTestSucceeded pour avoir juste le booleen",
+            "Tape : Test-NetConnection -ComputerName localhost -Port 3389 pour tester si RDP est actif localement",
+            "Tape : Test-NetConnection -ComputerName 8.8.8.8 -TraceRoute pour faire un traceroute"
+          ],
+          "help": {
+            "text": "Test-NetConnection prend trop de temps ou timeout ?",
+            "where": "Par defaut, Test-NetConnection attend un certain delai avant de declarer l'hote inaccessible. Si tu testes un host qui n'existe pas ou un port ferme, attends simplement — le resultat finira par afficher False. Pour des tests en serie, tu peux ajouter -InformationLevel Quiet pour n'obtenir qu'un True/False sans les details (plus rapide)."
+          },
+          "expected_result": [
+            "Test-NetConnection 8.8.8.8 affiche PingSucceeded : True si connexion Internet disponible",
+            "Test-NetConnection -Port 443 affiche TcpTestSucceeded : True pour les sites HTTPS actifs",
+            "Le port 3389 en local est True si le Bureau a distance est active, False sinon",
+            "Test-NetConnection avec -TraceRoute affiche les sauts intermediaires jusqu'a la destination"
+          ]
+        },
+        {
+          "id": "PS2-2-3",
+          "order": 3,
+          "title": "Resolve-DnsName : resolution DNS en PowerShell",
+          "unlocked_by": "PS2-2-2",
+          "estimated_minutes": 15,
+          "objective": "Resoudre des noms DNS avec Resolve-DnsName et comparer avec nslookup.",
+          "context": "La resolution DNS transforme un nom de domaine (google.com) en adresse IP (142.250.x.x). En administration systeme, les problemes DNS sont tres frequents : un serveur inaccessible par son nom alors qu'il repond par son IP est presque toujours un probleme DNS. Resolve-DnsName est la cmdlet PowerShell moderne pour effectuer des requetes DNS. Elle retourne des objets riches avec le type d'enregistrement (A, AAAA, MX, CNAME, NS...), la valeur et le serveur DNS consulte. Contrairement a nslookup qui retourne du texte, Resolve-DnsName retourne des objets filtrarbles et manipulables. On peut aussi preciser quel serveur DNS interroger avec -Server, tres utile pour comparer les reponses de plusieurs DNS.",
+          "steps": [
+            "Tape : Resolve-DnsName google.com pour resoudre un nom de domaine",
+            "Tape : Resolve-DnsName google.com -Type A pour ne chercher que les enregistrements IPv4",
+            "Tape : Resolve-DnsName google.com -Type MX pour voir les serveurs de messagerie",
+            "Tape : Resolve-DnsName google.com -Server 8.8.8.8 pour interroger le DNS de Google directement",
+            "Tape : Resolve-DnsName google.com -Server 1.1.1.1 pour interroger le DNS de Cloudflare",
+            "Compare avec : nslookup google.com qui donne une reponse textuelle similaire",
+            "Tape : nslookup -type=MX google.com pour voir les memes enregistrements MX avec nslookup",
+            "Tape : Resolve-DnsName 8.8.8.8 pour faire une resolution inverse (IP vers nom)"
+          ],
+          "help": {
+            "text": "Resolve-DnsName retourne une erreur 'DNS name does not exist' ?",
+            "where": "Cela signifie que le nom n'existe pas dans le DNS ou que ton serveur DNS ne peut pas le resoudre. Verifie d'abord ta connexion Internet avec Test-NetConnection 8.8.8.8. Si tu testes un nom interne (serveur.local), assure-toi d'interroger le bon serveur DNS interne avec -Server IP_du_DC."
+          },
+          "expected_result": [
+            "Resolve-DnsName google.com retourne au moins une adresse IPv4 dans le champ IPAddress",
+            "Le type MX montre les serveurs mail de Google (aspmx.l.google.com...)",
+            "Interroger 8.8.8.8 et 1.1.1.1 donne des reponses coherentes (meme domaine)",
+            "nslookup google.com affiche les memes adresses IP que Resolve-DnsName",
+            "Resolve-DnsName 8.8.8.8 retourne dns.google en resolution inverse"
+          ]
+        },
+        {
+          "id": "PS2-2-4",
+          "order": 4,
+          "title": "New-NetIPAddress et Set-DnsClientServerAddress : configurer une IP statique",
+          "unlocked_by": "PS2-2-3",
+          "estimated_minutes": 25,
+          "objective": "Attribuer une adresse IP statique et configurer les serveurs DNS d'un adaptateur reseau en PowerShell.",
+          "context": "Configurer une adresse IP statique depuis PowerShell est une operation courante en deploiement de serveurs. Contrairement a l'interface graphique qui necessite plusieurs clics, la commande PowerShell est reproductible et scriptable. New-NetIPAddress assigne une adresse IP a un adaptateur. Set-DnsClientServerAddress definit les serveurs DNS. Remove-NetIPAddress supprime une adresse existante. Il est important de noter que sur un adaptateur configure en DHCP, il faut d'abord passer en configuration manuelle avec Set-NetIPInterface avant d'assigner une IP statique. Ces commandes sont particulierement utilisees lors du deploiement automatise de machines virtuelles ou de serveurs.",
+          "steps": [
+            "Tape : Get-NetAdapter | Select-Object Name, InterfaceIndex, Status pour identifier ta carte reseau et son index",
+            "Note le nom de ta carte (ex: 'Ethernet0' ou 'Wi-Fi') et son InterfaceIndex (ex: 5)",
+            "Tape : Get-NetIPAddress -InterfaceIndex <ton_index> -AddressFamily IPv4 pour voir la config actuelle",
+            "ATTENTION : les etapes suivantes modifient ta config reseau — execute-les si tu es en VM ou si tu es sur",
+            "Tape : Set-NetIPInterface -InterfaceIndex <ton_index> -Dhcp Disabled pour desactiver le DHCP",
+            "Tape : New-NetIPAddress -InterfaceIndex <ton_index> -IPAddress 192.168.1.50 -PrefixLength 24 -DefaultGateway 192.168.1.1",
+            "Tape : Set-DnsClientServerAddress -InterfaceIndex <ton_index> -ServerAddresses ('192.168.1.1','8.8.8.8')",
+            "Tape : Get-NetIPAddress -InterfaceIndex <ton_index> -AddressFamily IPv4 pour verifier",
+            "Tape : ipconfig /all pour confirmer la nouvelle configuration"
+          ],
+          "help": {
+            "text": "New-NetIPAddress retourne une erreur sur la passerelle ?",
+            "where": "Si l'adresse IP que tu assignes n'est pas sur le meme sous-reseau que la passerelle, PowerShell refusera la configuration. Verifie que ton IP (ex: 192.168.1.50) et ta passerelle (ex: 192.168.1.1) partagent bien le meme sous-reseau avec le masque donne (PrefixLength 24 = 255.255.255.0 = plage 192.168.1.0 a 192.168.1.255). Si tu travailles dans une VM, adapte les valeurs a ton reseau virtuel."
+          },
+          "expected_result": [
+            "Get-NetIPAddress avant modification affiche l'IP DHCP actuelle",
+            "Apres New-NetIPAddress, Get-NetIPAddress affiche 192.168.1.50 avec PrefixLength 24",
+            "ipconfig /all confirme la nouvelle IP, masque et passerelle",
+            "Set-DnsClientServerAddress configure bien les deux serveurs DNS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Registre et informations systeme",
+      "description": "Lire et modifier le registre Windows et obtenir des informations systeme detaillees en PowerShell.",
+      "emoji": "🟠",
+      "color": "#F97316",
+      "missions": [
+        {
+          "id": "PS2-3-1",
+          "order": 1,
+          "title": "Get-ComputerInfo : informations completes sur le systeme",
+          "unlocked_by": "PS2-2-4",
+          "estimated_minutes": 15,
+          "objective": "Utiliser Get-ComputerInfo pour obtenir un rapport complet sur le materiel et le logiciel d'un systeme Windows.",
+          "context": "Get-ComputerInfo est la cmdlet la plus complete pour obtenir des informations systeme. Elle retourne un seul objet avec plus de 200 proprietes : version exacte du systeme, fabricant et modele du materiel, configuration memoire, informations BIOS, parametres reseau, fuseau horaire, date d'installation... C'est l'equivalent de systeminfo mais avec des donnees structurees et exploitables par script. C'est extremement utile pour les audits de parc informatique : en combinant Get-ComputerInfo avec Invoke-Command, on peut collecter ces informations sur des dizaines de machines en parallele et les exporter dans un fichier CSV.",
+          "steps": [
+            "Tape : Get-ComputerInfo (peut prendre quelques secondes)",
+            "Tape : Get-ComputerInfo | Select-Object CsName, OsName, OsVersion, CsProcessors, CsTotalPhysicalMemory",
+            "Tape : (Get-ComputerInfo).CsTotalPhysicalMemory / 1GB pour afficher la RAM en Go",
+            "Tape : Get-ComputerInfo | Select-Object BiosManufacturer, BiosCaption, BiosVersion",
+            "Tape : Get-ComputerInfo | Select-Object OsInstallDate, OsLastBootUpTime",
+            "Tape : Get-ComputerInfo | Select-Object *Memory* pour toutes les proprietes memoire",
+            "Compare avec la commande classique : systeminfo — meme information en texte non structure",
+            "Tape : Get-ComputerInfo | Select-Object CsName, WindowsVersion, OsBuildNumber | Format-List"
+          ],
+          "help": {
+            "text": "Get-ComputerInfo est tres lent ou retourne une erreur WMI ?",
+            "where": "Get-ComputerInfo utilise WMI/CIM en arriere-plan et peut etre lent sur les machines avec peu de ressources. Si tu as une erreur WMI, tu peux utiliser l'alternative Get-CimInstance Win32_ComputerSystem et Get-CimInstance Win32_OperatingSystem qui donnent les memes informations de facon plus segmentee."
+          },
+          "expected_result": [
+            "Get-ComputerInfo affiche un tres long objet avec de nombreuses proprietes",
+            "Select-Object avec les proprietes choisies n'affiche que les colonnes selectionnees",
+            "La RAM en Go correspond a ce qui est affiche dans les proprietes systeme Windows",
+            "systeminfo confirme les memes informations mais en texte non structure"
+          ]
+        },
+        {
+          "id": "PS2-3-2",
+          "order": 2,
+          "title": "Get-ItemProperty dans le registre Windows",
+          "unlocked_by": "PS2-3-1",
+          "estimated_minutes": 20,
+          "objective": "Naviguer dans le registre Windows depuis PowerShell et lire des valeurs de cles avec Get-ItemProperty.",
+          "context": "Le registre Windows est la base de donnees centrale de configuration du systeme. Il contient les parametres de Windows, des applications installees, des services, des politiques de securite et bien plus. PowerShell traite le registre comme un systeme de fichiers via les PSDrives HKLM: (HKEY_LOCAL_MACHINE) et HKCU: (HKEY_CURRENT_USER). Tu peux donc naviguer avec cd, lister avec dir/ls et lire les valeurs avec Get-ItemProperty. C'est bien plus pratique que d'utiliser regedit graphiquement, surtout pour les scripts d'audit ou de configuration de masse. La cle HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion est l'une des plus importantes : elle contient les chemins d'installation, les applications, la version de Windows...",
+          "steps": [
+            "Tape : Set-Location HKLM:\\ pour entrer dans le registre",
+            "Tape : Get-ChildItem HKLM:\\ pour voir les cles racine",
+            "Tape : Set-Location HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion",
+            "Tape : Get-ItemProperty . pour voir toutes les valeurs de la cle courante",
+            "Tape : Get-ItemProperty . -Name ProgramFilesDir pour lire une valeur specifique",
+            "Tape : Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion -Name ProductId",
+            "Tape : Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion' | Select-Object ProductName, ReleaseId, CurrentBuild",
+            "Tape : Set-Location C:\\ pour revenir dans le systeme de fichiers"
+          ],
+          "help": {
+            "text": "Get-ItemProperty retourne une erreur 'property does not exist' ?",
+            "where": "Le nom de la propriete (valeur de registre) est sensible a la casse. Utilise d'abord Get-ItemProperty . sans le -Name pour voir toutes les valeurs de la cle et leurs noms exacts. Copie ensuite le nom exact dans ta commande avec -Name. Si la cle elle-meme n'existe pas, Get-ChildItem te dira 'item does not exist'."
+          },
+          "expected_result": [
+            "Set-Location HKLM: change le prompt en PS HKLM:\\>",
+            "Get-ChildItem HKLM:\\ affiche les grandes branches SOFTWARE, SYSTEM, SAM...",
+            "Get-ItemProperty . dans CurrentVersion affiche des dizaines de valeurs",
+            "Get-ItemProperty ...\\CurrentVersion | Select-Object ProductName affiche le nom de Windows installe"
+          ]
+        },
+        {
+          "id": "PS2-3-3",
+          "order": 3,
+          "title": "Set-ItemProperty et New-ItemProperty : modifier le registre",
+          "unlocked_by": "PS2-3-2",
+          "estimated_minutes": 20,
+          "objective": "Creer et modifier des valeurs dans le registre Windows pour changer des comportements systeme.",
+          "context": "Modifier le registre via PowerShell permet d'automatiser des configurations systeme qui seraient fastidieuses a faire manuellement sur des dizaines de machines. Set-ItemProperty modifie la valeur d'une entree existante. New-ItemProperty cree une nouvelle entree. Ces operations sont tres utilisees en deploiement : desactiver des fonctionnalites Windows (Cortana, recherche, notifications), configurer des politiques de securite ou personnaliser l'environnement utilisateur. Attention : le registre est sensible. Une mauvaise valeur peut rendre Windows instable ou indemmarrable. Toujours tester sur une VM ou faire une sauvegarde de la cle avant de modifier (clic droit dans regedit > Exporter).",
+          "steps": [
+            "Tape : Get-ItemProperty HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced -Name Hidden pour voir le param d'affichage des fichiers caches",
+            "Tape : Set-ItemProperty HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced -Name Hidden -Value 1 pour afficher les fichiers caches",
+            "Tape : Set-ItemProperty HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced -Name ShowSuperHidden -Value 1 pour afficher aussi les fichiers systeme",
+            "Ouvre l'explorateur de fichiers et active Afficher > Elements masques pour constater le changement",
+            "Tape : $cleCortana = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search'",
+            "Tape : New-Item -Path $cleCortana -Force",
+            "Tape : New-ItemProperty -Path $cleCortana -Name AllowCortana -Value 0 -PropertyType DWord -Force",
+            "Tape : Get-ItemProperty -Path $cleCortana -Name AllowCortana pour verifier"
+          ],
+          "help": {
+            "text": "Set-ItemProperty retourne une erreur 'cannot find path' ?",
+            "where": "La cle de registre n'existe pas encore. Utilise New-Item d'abord pour creer la cle, puis New-ItemProperty pour ajouter la valeur. Le parametre -Force sur New-Item cree tous les niveaux de la cle manquants. Pour les valeurs DWORD (nombres), utilise -PropertyType DWord. Pour les chaines, utilise -PropertyType String."
+          },
+          "expected_result": [
+            "Apres Set-ItemProperty Hidden=1, les fichiers caches apparaissent dans l'explorateur",
+            "La cle Windows Search est creee dans HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows",
+            "AllowCortana=0 est bien enregistre comme DWORD dans la cle",
+            "Get-ItemProperty confirme la valeur 0 pour AllowCortana"
+          ]
+        },
+        {
+          "id": "PS2-3-4",
+          "order": 4,
+          "title": "Variables d'environnement et Invoke-Command",
+          "unlocked_by": "PS2-3-3",
+          "estimated_minutes": 25,
+          "objective": "Lire et modifier les variables d'environnement Windows avec $env: et executer des commandes a distance avec Invoke-Command.",
+          "context": "Les variables d'environnement sont des valeurs systeme accessibles par tous les programmes : le chemin vers Windows ($env:SystemRoot), le nom de l'utilisateur ($env:USERNAME), la liste des dossiers d'execution ($env:PATH)... PowerShell les expose via le PSDrive Env: et le prefixe $env:. Les modifier dans PowerShell modifie uniquement la session courante. Pour les rendre permanentes, il faut utiliser [System.Environment]::SetEnvironmentVariable(). Invoke-Command est la cmdlet qui permet d'executer des commandes PowerShell sur une ou plusieurs machines distantes via WinRM. C'est la base de l'administration a distance en PowerShell : une seule commande peut s'executer simultanement sur 100 serveurs.",
+          "steps": [
+            "Tape : $env:USERNAME pour afficher le nom de l'utilisateur courant",
+            "Tape : $env:COMPUTERNAME pour afficher le nom de la machine",
+            "Tape : $env:PATH pour voir la liste des dossiers dans le PATH",
+            "Tape : $env:SystemRoot pour voir le dossier Windows",
+            "Tape : Get-ChildItem Env: pour lister toutes les variables d'environnement",
+            "Tape : $env:MAVAR = 'TestPS2' pour creer une variable pour la session",
+            "Tape : $env:MAVAR pour verifier qu'elle existe",
+            "Tape : [System.Environment]::GetEnvironmentVariables('Machine') | Select-Object -First 10 pour les variables permanentes machine",
+            "Tape : Invoke-Command -ComputerName localhost -ScriptBlock {Get-ComputerInfo | Select-Object CsName, OsName} pour tester Invoke-Command en local"
+          ],
+          "help": {
+            "text": "Invoke-Command retourne une erreur WinRM ou connexion refusee ?",
+            "where": "WinRM (Windows Remote Management) doit etre active pour qu'Invoke-Command fonctionne. En local (localhost), cela devrait toujours marcher. Pour les machines distantes, active WinRM avec : Enable-PSRemoting -Force (en admin). Si tu as une erreur de certificat, ajoute -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck) pour les environnements de test."
+          },
+          "expected_result": [
+            "$env:USERNAME affiche le nom du compte connecte",
+            "$env:PATH affiche une longue liste de chemins separes par des points-virgules",
+            "Get-ChildItem Env: liste toutes les variables d'environnement avec leurs valeurs",
+            "$env:MAVAR est bien accessible apres affectation pour la session courante",
+            "Invoke-Command localhost retourne bien le nom de la machine et le nom de l'OS"
+          ]
+        }
+      ]
+    }
+  ]
+}
