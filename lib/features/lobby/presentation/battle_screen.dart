@@ -188,9 +188,9 @@ class _BattleScreenState extends State<BattleScreen> {
       case 'judgment':
         return _isHost
             ? _buildPerQuestionJudgment(context, s)
-            : _buildWaitingFinalJudgment();
+            : _buildStudentJudgmentView(s);
       case 'final_judgment':
-        return _isHost ? _buildFinalJudgment(context, s) : _buildWaitingFinalJudgment();
+        return _isHost ? _buildFinalJudgment(context, s) : _buildWaitingFinalSummary();
       case 'finished': return _buildFinished(context, s);
       default: return const Center(child: CircularProgressIndicator());
     }
@@ -305,8 +305,12 @@ class _BattleScreenState extends State<BattleScreen> {
                       ),
                     ),
                   EskoliaButton(
-                    label: isLast ? 'Terminer le quiz →' : 'Question suivante →',
-                    icon: isLast ? Icons.checklist_rounded : Icons.arrow_forward_rounded,
+                    label: s.correctionMode == 'after_each'
+                        ? 'Corriger maintenant'
+                        : (isLast ? 'Terminer le quiz →' : 'Question suivante →'),
+                    icon: s.correctionMode == 'after_each'
+                        ? Icons.fact_check_rounded
+                        : (isLast ? Icons.checklist_rounded : Icons.arrow_forward_rounded),
                     variant: EskoliaButtonVariant.primary,
                     expand: true,
                     onPressed: () => _repo.advanceToNextQuestion(widget.lobbyId),
@@ -548,7 +552,143 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
-  Widget _buildWaitingFinalJudgment() {
+  /// Vue élève pendant la correction question par question (phase 'judgment').
+  /// Affiche la question, la bonne réponse et la réponse du joueur avec résultat temps réel.
+  Widget _buildStudentJudgmentView(BattleState s) {
+    if (s.currentQuestion < 0 || s.currentQuestion >= s.questions.length) {
+      return _buildWaitingFinalSummary();
+    }
+    final qi = s.currentQuestion;
+    final q = s.questions[qi];
+    final myAnswer = qi < s.allAnswers.length ? s.allAnswers[qi][_uid] : null;
+    final myJudgment = qi < s.allJudgments.length ? s.allJudgments[qi][_uid] : null;
+    final judged = myJudgment != null;
+    final correct = myJudgment == true;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Bandeau titre
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(left: BorderSide(color: _cyan, width: 3)),
+            ),
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(
+              'CORRECTION — Q${qi + 1}/${s.totalQuestions}',
+              style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.88),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Question
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.04),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            ),
+            child: Text(
+              q.question,
+              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600, height: 1.4),
+            ),
+          ),
+          const SizedBox(height: 14),
+          // Bonne réponse
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: _green.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _green.withValues(alpha: 0.35)),
+            ),
+            child: Row(children: [
+              const Icon(Icons.check_rounded, color: _green, size: 16),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  const Text('RÉPONSE CORRECTE', style: TextStyle(color: _green, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
+                  const SizedBox(height: 4),
+                  Text(q.answer, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                ]),
+              ),
+            ]),
+          ),
+          const SizedBox(height: 10),
+          // Ma réponse
+          if (myAnswer != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: judged
+                    ? (correct ? _green.withValues(alpha: 0.08) : _red.withValues(alpha: 0.08))
+                    : Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: judged
+                      ? (correct ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.35))
+                      : Colors.white.withValues(alpha: 0.12),
+                ),
+              ),
+              child: Row(children: [
+                if (judged)
+                  Icon(
+                    correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                    color: correct ? _green : _red,
+                    size: 20,
+                  )
+                else
+                  const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: _violet, strokeWidth: 2)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      'TA RÉPONSE',
+                      style: TextStyle(
+                        color: judged ? (correct ? _green : _red) : _slate,
+                        fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(myAnswer, style: TextStyle(color: judged ? Colors.white : Colors.white60, fontSize: 14)),
+                  ]),
+                ),
+              ]),
+            ),
+          const SizedBox(height: 20),
+          // Résultat ou attente
+          if (!judged)
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(color: _violet, strokeWidth: 2)),
+              const SizedBox(width: 10),
+              Text('En attente de la correction du prof...', style: TextStyle(color: _slate, fontSize: 13, fontStyle: FontStyle.italic)),
+            ])
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: (correct ? _green : _red).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: (correct ? _green : _red).withValues(alpha: 0.3)),
+              ),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(correct ? '🎉' : '😅', style: const TextStyle(fontSize: 24)),
+                const SizedBox(width: 12),
+                Text(
+                  correct ? 'Bonne réponse ! +1 point' : 'Pas cette fois...',
+                  style: TextStyle(color: correct ? _green : _red, fontWeight: FontWeight.w700, fontSize: 15),
+                ),
+              ]),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Vue élève pendant la correction finale groupée (phase 'final_judgment').
+  Widget _buildWaitingFinalSummary() {
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
@@ -556,9 +696,9 @@ class _BattleScreenState extends State<BattleScreen> {
         children: [
           const Icon(Icons.checklist_rounded, color: _cyan, size: 64),
           const SizedBox(height: 24),
-          const Text('Correction en cours…', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+          const Text('Correction finale en cours…', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
-          Text('Le prof corrige les réponses de tout le monde.', style: TextStyle(color: _slate, fontSize: 15), textAlign: TextAlign.center),
+          Text('Le prof corrige toutes les réponses.', style: TextStyle(color: _slate, fontSize: 15), textAlign: TextAlign.center),
         ],
       ),
     );
