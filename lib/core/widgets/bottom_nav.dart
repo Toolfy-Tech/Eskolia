@@ -52,6 +52,11 @@ class EskoliaBottomNav extends StatelessWidget {
     emoji: '\u{1F52C}',
     label: 'Labo',
   );
+  static const _NavItem _notebook = _NavItem(
+    path: '/notebook',
+    emoji: '\u{1F4D3}',
+    label: 'Notes',
+  );
   static const _NavItem _profil = _NavItem(
     path: '/profil',
     emoji: '\u{1F464}',
@@ -71,6 +76,7 @@ class EskoliaBottomNav extends StatelessWidget {
         _parcours,
         _multijoueur,
         _labo,
+        _notebook,
         _profil,
         if (showAdminNav) _admin,
       ];

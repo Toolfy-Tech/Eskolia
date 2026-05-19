@@ -287,6 +287,46 @@ class QuizRepository {
     );
   }
 
+  /// Construit une QuizSession depuis un JSON Eskolia genere par l'IA (format Notebook).
+  /// Format attendu : {"quiz": {"title": "..."}, "questions": [{...}]}
+  Future<QuizSession> buildFromNotebookQuizJson(String rawJson, String title) async {
+    try {
+      final data = jsonDecode(rawJson) as Map<String, dynamic>;
+      final quizMeta = data['quiz'] as Map<String, dynamic>? ?? {};
+      final quizTitle = (quizMeta['title'] as String?)?.trim().isEmpty ?? true
+          ? title
+          : (quizMeta['title'] as String).trim();
+      final rawQuestions = data['questions'] as List<dynamic>? ?? [];
+      final questions = <QuizQuestion>[];
+      for (int i = 0; i < rawQuestions.length; i++) {
+        final q = rawQuestions[i] as Map<String, dynamic>;
+        final items = q['items'] is List ? List<String>.from(q['items'] as List) : <String>[];
+        final indices = q['indices'] is List ? List<String>.from(q['indices'] as List) : <String>[];
+        questions.add(QuizQuestion(
+          id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
+          type: (q['type'] as String?)?.trim() ?? 'classic',
+          question: (q['question'] as String?)?.trim() ?? '',
+          answer: (q['answer'] as String?)?.trim() ?? '',
+          difficultyBucket: _parseDifficulty(q['difficulty']),
+          contextLine: 'Notebook · $quizTitle',
+          explanation: ((q['hint'] as String?) ?? '').isNotEmpty ? q['hint'] as String : null,
+          indices: indices.isEmpty ? null : indices,
+          answerSequence: items.isEmpty ? null : items,
+          options: items.isEmpty ? null : items,
+          categoryGroup: QuestionCategoryGroup.themes,
+        ));
+      }
+      if (questions.isEmpty) return _buildDailyRandomSession();
+      return _sessionFromQuestions(
+        'notebook_${DateTime.now().millisecondsSinceEpoch}',
+        quizTitle,
+        questions,
+      );
+    } catch (_) {
+      return _buildDailyRandomSession();
+    }
+  }
+
   Future<QuizSession> _loadTipAssetSession({
     required String assetKey,
     required String sessionId,
