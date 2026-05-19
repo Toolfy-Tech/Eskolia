@@ -8,6 +8,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
+import '../../ai/data/ai_key_repository.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../economy/data/badge_catalog.dart';
 import '../../parcours/data/tip_progress_repository.dart';
@@ -134,10 +135,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: _violet.withValues(alpha: 0.2),
-            child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+          StreamBuilder<AiConnectionState>(
+            stream: AiKeyRepository().watch(),
+            builder: (context, snap) {
+              final aiConnected = snap.data?.isConnected ?? false;
+              return Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: _violet.withValues(alpha: 0.2),
+                    child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+                  ),
+                  if (aiConnected)
+                    Positioned(
+                      right: 2,
+                      top: 2,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4CAF50),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: _bg, width: 2.5),
+                        ),
+                        child: const Icon(Icons.psychology_rounded, size: 11, color: Colors.white),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 12),
           Text(p.username, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
@@ -393,6 +420,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         const Text('EXPLORER', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
         const SizedBox(height: 12),
+        _ExplorerTile(icon: Icons.psychology_rounded, label: 'Mon IA', route: '/ai/setup', color: _violet),
         _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: _amber),
         _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: _violet),
         _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: _green),

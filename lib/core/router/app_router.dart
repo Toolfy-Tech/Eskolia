@@ -59,6 +59,7 @@ import '../../features/true_false/presentation/true_false_swipe_screen.dart';
 import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
+import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -264,6 +265,11 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => eskoliaTransitionPage(
         child: ProfileScreen(uid: state.pathParameters['uid']!),
       ),
+    ),
+    GoRoute(
+      path: '/ai/setup',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
     ),
 
     // --- SHELL ROUTE (AVEC BOTTOM NAV) ---
