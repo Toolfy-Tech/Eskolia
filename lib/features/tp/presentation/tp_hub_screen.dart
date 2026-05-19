@@ -81,6 +81,49 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
+                        border: Border(left: BorderSide(color: Color(0xFF3B82F6), width: 3)),
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        'SCRIPTING POWERSHELL',
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 11 * 0.08,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildScenarioCard(
+                      id: 'tp_ps_fondamentaux',
+                      title: 'Fondamentaux PowerShell',
+                      description: 'Navigation, fichiers, variables et pipeline — les bases indispensables.',
+                      emoji: '\u{1F4BB}',
+                      difficulty: 'Débutant',
+                      accentColor: const Color(0xFF3B82F6),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_ps_systeme',
+                      title: 'Gestion du système Windows',
+                      description: 'Processus, services, utilisateurs locaux et réseau en ligne de commande.',
+                      emoji: '\u{2699}\u{FE0F}',
+                      difficulty: 'Intermédiaire',
+                      accentColor: const Color(0xFF8B5CF6),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_ps_scripting',
+                      title: 'Scripting PowerShell',
+                      description: 'Automatiser les tâches admin : boucles, fonctions, gestion d\'erreurs, CSV.',
+                      emoji: '\u{1F680}',
+                      difficulty: 'Avancé',
+                      accentColor: const Color(0xFF10B981),
+                    ),
+                    const SizedBox(height: 32),
+                    Container(
+                      decoration: const BoxDecoration(
                         border: Border(left: BorderSide(color: Color(0xFF64748B), width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
