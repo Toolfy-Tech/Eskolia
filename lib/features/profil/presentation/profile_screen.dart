@@ -99,6 +99,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildHeaderCard(p),
                     const SizedBox(height: 20),
                     _buildMetricsGrid(p),
+                    const SizedBox(height: 20),
+                    _buildStreakCalendar(p),
                     const SizedBox(height: 24),
                     _buildParcoursProgressSection(),
                     const SizedBox(height: 24),
@@ -177,6 +179,110 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: showVictories
               ? _MetricCard(label: 'Victoires', value: '${p.battleWins}', color: _green)
               : _MetricCard(label: 'Multi joués', value: '${p.totalWins}', color: _green),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStreakCalendar(ProfileSnapshot p) {
+    final activeDaySet = p.activeDays.toSet();
+    final now = DateTime.now();
+    final todayInt = now.year * 10000 + now.month * 100 + now.day;
+
+    const days = 28;
+    final slots = List.generate(days, (i) {
+      final d = now.subtract(Duration(days: days - 1 - i));
+      final dayInt = d.year * 10000 + d.month * 100 + d.day;
+      final isActive = activeDaySet.contains(dayInt);
+      final isToday = dayInt == todayInt;
+      return (isActive: isActive, isToday: isToday, day: d);
+    });
+
+    final weekLabels = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+    final startWeekday = slots.first.day.weekday;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Text(
+              'ACTIVITÉ',
+              style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+            ),
+            const SizedBox(width: 8),
+            if (p.streak > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '${p.streak} jour${p.streak > 1 ? "s" : ""} 🔥',
+                  style: const TextStyle(color: Colors.orange, fontSize: 11, fontWeight: FontWeight.w700),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.04),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(7, (i) {
+                  final label = weekLabels[(startWeekday - 1 + i) % 7];
+                  return SizedBox(
+                    width: 28,
+                    child: Text(label, textAlign: TextAlign.center, style: TextStyle(color: _slate.withValues(alpha: 0.5), fontSize: 10, fontWeight: FontWeight.w600)),
+                  );
+                }),
+              ),
+              const SizedBox(height: 6),
+              ...List.generate(4, (row) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(7, (col) {
+                      final idx = row * 7 + col;
+                      if (idx >= slots.length) return const SizedBox(width: 28, height: 28);
+                      final s = slots[idx];
+                      Color dotColor;
+                      if (s.isToday && s.isActive) {
+                        dotColor = _violet;
+                      } else if (s.isActive) {
+                        dotColor = _cyan.withValues(alpha: 0.75);
+                      } else {
+                        dotColor = Colors.white.withValues(alpha: 0.07);
+                      }
+                      return Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: dotColor,
+                          borderRadius: BorderRadius.circular(6),
+                          border: s.isToday
+                              ? Border.all(color: _violet.withValues(alpha: 0.6), width: 1.5)
+                              : null,
+                        ),
+                        alignment: Alignment.center,
+                        child: s.isActive
+                            ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
+                            : null,
+                      );
+                    }),
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       ],
     );

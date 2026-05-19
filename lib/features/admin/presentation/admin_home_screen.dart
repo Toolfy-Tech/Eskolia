@@ -183,6 +183,34 @@ class AdminHomeScreen extends StatelessWidget {
                       onTap: () => context.push('/admin/teacher-quizzes'),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  EskoliaCardContent(
+                    padding: const EdgeInsets.all(16),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Text(
+                        '\u{1F465}',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      title: const Text(
+                        'Vue classe',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'XP, série, quiz et activité de chaque élève',
+                        style: TextStyle(
+                          color: _slate.withValues(alpha: 0.9),
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right, color: Colors.white54),
+                      onTap: () => context.push('/admin/classe'),
+                    ),
+                  ),
                 ],
               ),
             ),
