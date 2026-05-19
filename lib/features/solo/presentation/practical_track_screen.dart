@@ -301,6 +301,62 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
     );
   }
 
+  Widget _buildComingSoon(double hPad) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(hPad),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: EskoliaVisual.neonCyan.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: EskoliaVisual.neonCyan.withValues(alpha: 0.3),
+                ),
+              ),
+              child: const Icon(
+                Icons.construction_rounded,
+                color: EskoliaVisual.neonCyan,
+                size: 36,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Contenu en cours de preparation',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Ce theme sera disponible prochainement.\nReviens dans quelques jours !',
+              style: TextStyle(
+                color: _slate.withValues(alpha: 0.85),
+                fontSize: 14,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+            EskoliaButton(
+              label: 'Retour aux TP',
+              variant: EskoliaButtonVariant.secondary,
+              icon: Icons.arrow_back_rounded,
+              onPressed: () => context.go('/tp'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
@@ -322,16 +378,18 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                 ),
                 Expanded(
                   child: _error != null
-                      ? Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(hPad),
-                            child: Text(
-                              '$_error',
-                              style: TextStyle(color: Colors.red.shade200),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        )
+                      ? _error is UnimplementedError
+                          ? _buildComingSoon(hPad)
+                          : Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(hPad),
+                                child: Text(
+                                  '$_error',
+                                  style: TextStyle(color: Colors.red.shade200),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            )
                       : m == null || ex == null
                           ? const Center(
                               child: CircularProgressIndicator(
