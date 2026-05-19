@@ -384,7 +384,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           ),
           const SizedBox(height: 8),
         ],
-        Text(
+        SelectableText(
           q.question,
           style: const TextStyle(
             color: Colors.white,
@@ -582,7 +582,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                 ? Border.all(color: isCorrect ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.35))
                 : null,
           ),
-          child: Text(
+          child: SelectableText(
             q.answer,
             style: const TextStyle(
               color: Colors.white,
@@ -714,85 +714,159 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   }
 
   Widget _buildSequenceComparison(List<String> correctOrder) {
-    final correctCount = _sequenceOrder.isNotEmpty
+    final userOrder = _sequenceOrder;
+    final correctCount = userOrder.isNotEmpty
         ? List.generate(correctOrder.length, (i) =>
-            i < _sequenceOrder.length && _sequenceOrder[i] == correctOrder[i]).where((v) => v).length
+            i < userOrder.length && userOrder[i] == correctOrder[i]).where((v) => v).length
         : 0;
     final total = correctOrder.length;
     final allCorrect = correctCount == total;
+    final accent = allCorrect ? _green : (correctCount > 0 ? _orange : _red);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Score badge
+        // Bandeau score
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: (allCorrect ? _green : correctCount > 0 ? _orange : _red).withValues(alpha: 0.15),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: (allCorrect ? _green : correctCount > 0 ? _orange : _red).withValues(alpha: 0.4),
-            ),
+            color: accent.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: accent.withValues(alpha: 0.4)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                allCorrect ? Icons.emoji_events_rounded : Icons.sort_rounded,
-                color: allCorrect ? _green : correctCount > 0 ? _orange : _red,
-                size: 18,
-              ),
-              const SizedBox(width: 8),
               Text(
-                '$correctCount / $total étape${total > 1 ? 's' : ''} dans le bon ordre',
-                style: TextStyle(
-                  color: allCorrect ? _green : correctCount > 0 ? _orange : Colors.white70,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
-                ),
+                allCorrect ? '\u{1F3C6}' : (correctCount > 0 ? '\u{1F4CA}' : '\u{1F504}'),
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                allCorrect
+                    ? 'Ordre parfait !'
+                    : '$correctCount / $total étape${total > 1 ? 's' : ''} correcte${correctCount > 1 ? 's' : ''}',
+                style: TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 14),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 14),
-        const Text(
-          'ORDRE CORRECT',
-          style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
+        const SizedBox(height: 16),
+        // En-têtes colonnes
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'TA RÉPONSE',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.45), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.1),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'ORDRE CORRECT',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.45), fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.1),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
+        // Lignes de comparaison
         ...List.generate(correctOrder.length, (i) {
-          final correct = i < _sequenceOrder.length && _sequenceOrder[i] == correctOrder[i];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: (correct ? _green : _red).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: (correct ? _green : _red).withValues(alpha: 0.35)),
-            ),
+          final userStep = i < userOrder.length ? userOrder[i] : null;
+          final correctStep = correctOrder[i];
+          final isCorrect = userStep == correctStep;
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                  color: correct ? _green : _red,
-                  size: 18,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  '${i + 1}.',
-                  style: TextStyle(
-                    color: correct ? _green : _red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                // Colonne user
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isCorrect
+                          ? _green.withValues(alpha: 0.1)
+                          : _red.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isCorrect
+                            ? _green.withValues(alpha: 0.4)
+                            : _red.withValues(alpha: 0.35),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 20,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: isCorrect
+                                ? _green.withValues(alpha: 0.2)
+                                : _red.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isCorrect ? Icons.check_rounded : Icons.close_rounded,
+                            color: isCorrect ? _green : _red,
+                            size: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            userStep ?? '—',
+                            style: TextStyle(
+                              color: isCorrect ? Colors.white : Colors.white54,
+                              fontSize: 12,
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 8),
+                // Colonne correct
                 Expanded(
-                  child: Text(
-                    correctOrder[i],
-                    style: TextStyle(
-                      color: correct ? Colors.white : Colors.white60,
-                      fontSize: 13,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: _green.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: _green.withValues(alpha: 0.25)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 20,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.08),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${i + 1}',
+                            style: const TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            correctStep,
+                            style: const TextStyle(color: Colors.white, fontSize: 12, height: 1.35, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

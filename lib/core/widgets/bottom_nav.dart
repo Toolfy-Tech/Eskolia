@@ -9,6 +9,7 @@ import '../config/staff_bootstrap.dart';
 import '../constants/colors.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
+import 'eskolia_ambient_background.dart';
 import 'eskolia_tips_banner.dart';
 
 const Color _inactiveGray = Color(0xFF64748B);
@@ -259,6 +260,7 @@ class MainShell extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
+                const EskoliaAmbientBackground(),
                 Positioned.fill(
                   child: Padding(
                     padding: const EdgeInsets.only(
