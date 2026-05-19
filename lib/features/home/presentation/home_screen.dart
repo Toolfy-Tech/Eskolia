@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/preferences/onboarding_prefs.dart';
@@ -293,16 +294,90 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHomeContent(BuildContext context, UserModel user, FormationModel? tip) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildWelcomeHeader(user),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
+              _SectionHeader(label: 'QUÊTES DU JOUR', color: _cyan),
+              const SizedBox(height: 12),
+              _buildQuestsList(),
+              const SizedBox(height: 28),
+              _SectionHeader(label: 'PARCOURS', color: _violetBrand),
+              const SizedBox(height: 12),
+              _buildHeroCard(context, tip),
+              const SizedBox(height: 28),
+              _SectionHeader(label: 'ACCÈS RAPIDE', color: const Color(0xFF43E97B)),
+              const SizedBox(height: 12),
+              _buildQuickAccessSection(context),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWelcomeHeader(UserModel user) {
+    final hour = DateTime.now().hour;
+    final greeting = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
+    final name = user.username.isNotEmpty ? user.username : '';
+    final inLevel = user.xp % 1000;
+    final ratio = (inLevel / 1000.0).clamp(0.0, 1.0);
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF1A1040),
+            EskoliaVisual.bgDeep,
+          ],
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopActions(),
-          const SizedBox(height: 12),
-          Text(
-            user.username.isNotEmpty ? 'Bonjour ${user.username} \u{1F44B}' : 'Bonjour \u{1F44B}',
-            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$greeting\u{1F44B}',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.55),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (name.isNotEmpty)
+                    Text(
+                      name,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        height: 1.15,
+                      ),
+                    ),
+                ],
+              ),
+              Row(
+                children: [
+                  _IconAction(icon: Icons.notifications_outlined, onTap: () => context.push('/notifications')),
+                  const SizedBox(width: 4),
+                  _IconAction(icon: Icons.settings_outlined, onTap: () => context.push('/settings')),
+                ],
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           UserStatusPill(
@@ -311,58 +386,48 @@ class _HomeScreenState extends State<HomeScreen> {
             xp: user.xp,
             streak: user.streak,
           ),
-          const SizedBox(height: 24),
-          _buildQuestsSection(),
-          const SizedBox(height: 24),
-          _buildHeroCard(context, tip),
-          const SizedBox(height: 24),
-          _buildQuickAccessSection(context),
+          if (user.streak >= 3) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  const Color(0xFFFF6B35).withValues(alpha: 0.2),
+                  const Color(0xFFFF9F0A).withValues(alpha: 0.1),
+                ]),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFF9F0A).withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('\u{1F525}', style: TextStyle(fontSize: 16)),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${user.streak} jours de série — continue !',
+                    style: GoogleFonts.inter(
+                      color: const Color(0xFFFF9F0A),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildTopActions() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(onPressed: () => context.push('/notifications'), icon: const Icon(Icons.notifications_outlined, color: Colors.white)),
-        IconButton(onPressed: () => context.push('/settings'), icon: const Icon(Icons.settings_outlined, color: Colors.white)),
-      ],
-    );
-  }
-
-  Widget _buildQuestsSection() {
+  Widget _buildQuestsList() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'QUÊTES DU JOUR',
-          style: TextStyle(
-            color: _slateLight,
-            fontSize: 11,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.2,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _QuestPill(
-          label: 'Faire un quiz rapide',
-          isDone: _quests?.quizDone ?? false,
-          icon: '⚡',
-        ),
+        _QuestPill(label: 'Faire un quiz rapide', isDone: _quests?.quizDone ?? false, icon: '\u{26A1}'),
         const SizedBox(height: 8),
-        _QuestPill(
-          label: 'Réviser mes flashcards',
-          isDone: _quests?.flashDone ?? false,
-          icon: '🃏',
-        ),
+        _QuestPill(label: 'Réviser mes flashcards', isDone: _quests?.flashDone ?? false, icon: '\u{1F0CF}'),
         const SizedBox(height: 8),
-        _QuestPill(
-          label: 'Avancer dans le parcours',
-          isDone: _quests?.parcoursDone ?? false,
-          icon: '📚',
-        ),
+        _QuestPill(label: 'Avancer dans le parcours', isDone: _quests?.parcoursDone ?? false, icon: '\u{1F4DA}'),
       ],
     );
   }
@@ -406,39 +471,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildQuickAccessSection(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: EskoliaButton(
-            label: 'Quiz',
-            icon: Icons.bolt_rounded,
-            variant: EskoliaButtonVariant.primary,
-            expand: true,
-            onPressed: () => context.push('/quiz/quick'),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: EskoliaButton(
-            label: 'Multi',
-            icon: Icons.videogame_asset_rounded,
-            variant: EskoliaButtonVariant.primary,
-            color: const Color(0xFF43E97B),
-            textColor: const Color(0xFF0F0F1A),
-            expand: true,
-            onPressed: () => context.push('/lobbys'),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: EskoliaButton(
-            label: 'Cartes',
-            icon: Icons.style_rounded,
-            variant: EskoliaButtonVariant.primary,
-            color: const Color(0xFF22D3EE),
-            textColor: const Color(0xFF0F0F1A),
-            expand: true,
-            onPressed: () => context.push('/flashcards'),
-          ),
-        ),
+        Expanded(child: _QuickCard(
+          emoji: '\u{26A1}',
+          label: 'Quiz rapide',
+          color: _violetBrand,
+          onTap: () => context.push('/quiz/quick'),
+        )),
+        const SizedBox(width: 10),
+        Expanded(child: _QuickCard(
+          emoji: '\u{1F3AE}',
+          label: 'Multi',
+          color: const Color(0xFF43E97B),
+          onTap: () => context.push('/lobbys'),
+        )),
+        const SizedBox(width: 10),
+        Expanded(child: _QuickCard(
+          emoji: '\u{1F0CF}',
+          label: 'Flashcards',
+          color: const Color(0xFF22D3EE),
+          onTap: () => context.push('/flashcards'),
+        )),
       ],
     );
   }
@@ -524,6 +576,98 @@ class _QuestPill extends StatelessWidget {
               child: Icon(Icons.check_circle_rounded, color: _kGreen, size: 20),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.label, required this.color});
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(width: 3, height: 16, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            color: color.withValues(alpha: 0.9),
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.3,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _IconAction extends StatelessWidget {
+  const _IconAction({required this.icon, required this.onTap});
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.07),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: 40,
+          height: 40,
+          alignment: Alignment.center,
+          child: Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 20),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickCard extends StatelessWidget {
+  const _QuickCard({required this.emoji, required this.label, required this.color, required this.onTap});
+  final String emoji;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 28, height: 1)),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

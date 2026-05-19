@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/colors.dart';
 import '../constants/typography.dart';
@@ -33,6 +34,7 @@ abstract final class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
+      fontFamily: GoogleFonts.inter().fontFamily,
       extensions: <ThemeExtension<dynamic>>[
         GlassmorphismTheme(
           glassColor: surface.withValues(alpha: 0.12),
