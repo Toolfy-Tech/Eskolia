@@ -59,6 +59,9 @@ import '../../features/true_false/presentation/true_false_swipe_screen.dart';
 import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
+import '../../features/tp/reseau/data/network_exercise_engine.dart';
+import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
+import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
@@ -162,11 +165,25 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/tp/reseau',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const ReseauHubScreen()),
+    ),
+    GoRoute(
+      path: '/tp/reseau/:category',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) {
+        final slug = state.pathParameters['category']!;
+        final cat = _slugToCategory(slug);
+        return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
+      },
+    ),
+    GoRoute(
       path: '/tp/:trackId',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) {
         final trackId = state.pathParameters['trackId']!;
-        if (trackId.startsWith('tp_ad_')) {
+        if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
           return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
         }
         return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));
@@ -410,6 +427,14 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+NetworkExerciseCategory _slugToCategory(String slug) => switch (slug) {
+  'binaryConversion' => NetworkExerciseCategory.binaryConversion,
+  'ipClass'          => NetworkExerciseCategory.ipClass,
+  'defaultMask'      => NetworkExerciseCategory.defaultMask,
+  'cidrNotation'     => NetworkExerciseCategory.cidrNotation,
+  _                  => NetworkExerciseCategory.subnetCalc,
+};
 
 class AuthRefreshNotifier extends ChangeNotifier {
   AuthRefreshNotifier() {
