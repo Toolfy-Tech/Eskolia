@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../config/staff_bootstrap.dart';
 import '../constants/colors.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
@@ -119,15 +118,8 @@ class EskoliaBottomNav extends StatelessWidget {
             final data = snap.data();
             final role = (data?['role'] as String?)?.trim() ?? 'user';
             bool showAdmin = role == 'admin' || role == 'moderator';
-            if (!showAdmin) {
-              // Fallback bootstrap pour les comptes sans champ role défini.
-              final uname = (data?['usernameLower'] as String?)?.trim() ??
-                  (data?['username'] as String?)?.trim().toLowerCase() ??
-                  '';
-              showAdmin = kAdminNavPrivilegedUsernamesLower.contains(uname);
-            }
             final aiConnected =
-                ((data?['aiApiKey'] as String?) ?? '').isNotEmpty;
+                ((data?['aiProvider'] as String?) ?? '').isNotEmpty;
             return (showAdmin: showAdmin, aiConnected: aiConnected);
           })
           .distinct(),

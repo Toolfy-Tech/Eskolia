@@ -71,6 +71,8 @@ class AiChatService {
             'Content-Type': 'application/json',
           },
           responseType: ResponseType.stream,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 90),
         ),
         data: jsonEncode({
           'model': provider.defaultModel,
@@ -129,6 +131,8 @@ class AiChatService {
             'Content-Type': 'application/json',
           },
           responseType: ResponseType.stream,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 90),
         ),
         data: jsonEncode({
           'model': AiProvider.anthropic.defaultModel,
@@ -191,6 +195,8 @@ class AiChatService {
         options: Options(
           headers: {'Content-Type': 'application/json'},
           responseType: ResponseType.stream,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 90),
         ),
         data: jsonEncode({
           'contents': contents,

@@ -214,8 +214,8 @@ class QuizRepository {
           .collection('teacher_quizzes')
           .doc(quizId)
           .get();
-      if (!snap.exists) return _buildDailyRandomSession();
-      final d = snap.data()!;
+      final d = snap.data();
+      if (!snap.exists || d == null) return _buildDailyRandomSession();
       final title = d['title'] as String? ?? 'Quiz du prof';
       final rawQ = d['questions'] as List<dynamic>? ?? [];
       final authorName = d['authorName'] as String? ?? 'Prof';

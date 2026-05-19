@@ -45,10 +45,9 @@ class StaffGateScaffold extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Cette zone est réservée aux modérateurs.\n\n'
-                  'Demande le rôle « admin » ou « moderator » sur ton document '
-                  'Firestore users/{uid}, ou ajoute ton email dans '
-                  'lib/core/config/staff_bootstrap.dart (dev uniquement).',
+                  'Cette zone est reservee aux moderateurs.\n\n'
+                  'Demande le role admin ou moderator sur ton document '
+                  'Firestore users/{uid}.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.75),

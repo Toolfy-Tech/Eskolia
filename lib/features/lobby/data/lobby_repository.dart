@@ -402,36 +402,42 @@ class LobbyRepository {
   }
 
   Future<void> startBattleCountdown(String lobbyId, LobbyModel lobby) async {
-    final questions = await _pickBattleQuestions(lobby);
-    if (questions.isEmpty) {
-      throw Exception(
-        'Aucune question trouvée pour cette sélection. '
-        'Vérifie les chapitres et filtres de difficulté choisis.',
-      );
+    try {
+      final questions = await _pickBattleQuestions(lobby);
+      if (questions.isEmpty) {
+        throw Exception(
+          'Aucune question trouvee pour cette selection. '
+          'Verifie les chapitres et filtres de difficulte choisis.',
+        );
+      }
+      final players = lobby.playerMeta.map((p) => _playerToInitialState(p, lobby)).toList();
+
+      await _db.collection('lobbies').doc(lobbyId).update({
+        'status': 'in_progress',
+        'battle': {
+          'phase': 'countdown',
+          'currentQuestion': 0,
+          'totalQuestions': questions.length,
+          'questions': questions.map((q) => q.toMap()).toList(),
+          'players': players.map((p) => _playerToMap(p)).toList(),
+          'timed': false,
+          'gameMode': lobby.gameMode,
+          'correctionMode': lobby.correctionMode,
+          'revealedIndices': 0,
+          'allAnswers': [],
+          'allJudgments': [],
+        },
+      });
+
+      // Petit delai pour laisser le countdown s'afficher.
+      Future.delayed(const Duration(seconds: 4), () {
+        _db.collection('lobbies').doc(lobbyId).update({'battle.phase': 'question'});
+      });
+    } on Exception {
+      // Remise du lobby en etat d'attente pour debloquer les joueurs.
+      await _db.collection('lobbies').doc(lobbyId).update({'status': 'waiting'}).catchError((_) {});
+      rethrow;
     }
-    final players = lobby.playerMeta.map((p) => _playerToInitialState(p, lobby)).toList();
-
-    await _db.collection('lobbies').doc(lobbyId).update({
-      'status': 'in_progress',
-      'battle': {
-        'phase': 'countdown',
-        'currentQuestion': 0,
-        'totalQuestions': questions.length,
-        'questions': questions.map((q) => q.toMap()).toList(),
-        'players': players.map((p) => _playerToMap(p)).toList(),
-        'timed': false,
-        'gameMode': lobby.gameMode,
-        'correctionMode': lobby.correctionMode,
-        'revealedIndices': 0,
-        'allAnswers': [],
-        'allJudgments': [],
-      },
-    });
-
-    // Petit délai pour laisser le countdown s'afficher
-    Future.delayed(const Duration(seconds: 4), () {
-      _db.collection('lobbies').doc(lobbyId).update({'battle.phase': 'question'});
-    });
   }
 
   Future<List<BattleQuestion>> _pickBattleQuestions(LobbyModel l) async {
