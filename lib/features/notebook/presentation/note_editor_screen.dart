@@ -14,6 +14,7 @@ import '../../quiz/services/quiz_repository.dart';
 import '../data/note_ai_generator.dart';
 import '../data/note_model.dart';
 import '../data/notebook_repository.dart';
+import '../data/saved_quiz_repository.dart';
 
 const Color _bg = Color(0xFF0B1120);
 const Color _violet = Color(0xFF6C63FF);
@@ -33,6 +34,7 @@ class NoteEditorScreen extends StatefulWidget {
 
 class _NoteEditorScreenState extends State<NoteEditorScreen> {
   final _repo = NotebookRepository();
+  final _savedQuizRepo = SavedQuizRepository();
   final _aiKeyRepo = AiKeyRepository();
   final _aiGenerator = NoteAiGenerator();
 
@@ -226,6 +228,20 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     _downloadFile(_generatedQuiz, 'quiz_$safeTitle.json', 'application/json');
   }
 
+  // ── Sauvegarder le quiz ────────────────────────────────────────────────────
+
+  Future<void> _saveQuiz() async {
+    if (_generatedQuiz.isEmpty) return;
+    final title = _titleCtrl.text.trim().isEmpty ? 'Quiz IA' : _titleCtrl.text.trim();
+    final quiz = SavedNotebookQuiz.create(
+      title: title,
+      rawJson: _generatedQuiz,
+      noteTitle: _titleCtrl.text.trim().isEmpty ? null : _titleCtrl.text.trim(),
+    );
+    await _savedQuizRepo.save(quiz);
+    if (mounted) showEskoliaSnackBar(context, 'Quiz sauvegarde dans Mes quiz IA.');
+  }
+
   // ── Jouer le quiz ──────────────────────────────────────────────────────────
 
   Future<void> _playQuiz() async {
@@ -335,6 +351,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 onDownloadCourse: _downloadCourse,
                 onDownloadQuiz: _downloadQuiz,
                 onPlayQuiz: _playQuiz,
+                onSaveQuiz: _saveQuiz,
               ),
               const SizedBox(height: 120),
             ],
@@ -359,6 +376,7 @@ class _AiSection extends StatelessWidget {
     required this.onDownloadCourse,
     required this.onDownloadQuiz,
     required this.onPlayQuiz,
+    required this.onSaveQuiz,
   });
 
   final AiKeyRepository aiKeyRepo;
@@ -371,6 +389,7 @@ class _AiSection extends StatelessWidget {
   final VoidCallback onDownloadCourse;
   final VoidCallback onDownloadQuiz;
   final VoidCallback onPlayQuiz;
+  final VoidCallback onSaveQuiz;
 
   @override
   Widget build(BuildContext context) {
@@ -437,6 +456,7 @@ class _AiSection extends StatelessWidget {
                 content: generatedQuiz,
                 onDownload: onDownloadQuiz,
                 onPlay: onPlayQuiz,
+                onSave: onSaveQuiz,
               ),
             ],
           ],
@@ -586,12 +606,14 @@ class _GeneratedQuizSection extends StatelessWidget {
     required this.content,
     required this.onDownload,
     required this.onPlay,
+    required this.onSave,
   });
 
   final bool generating;
   final String content;
   final VoidCallback onDownload;
   final VoidCallback onPlay;
+  final VoidCallback onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -659,6 +681,14 @@ class _GeneratedQuizSection extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          EskoliaButton(
+            label: 'Sauvegarder dans Mes quiz IA',
+            icon: Icons.bookmark_add_rounded,
+            variant: EskoliaButtonVariant.secondary,
+            expand: true,
+            onPressed: onSave,
           ),
         ],
       ],
