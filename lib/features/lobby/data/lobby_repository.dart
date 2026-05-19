@@ -182,6 +182,7 @@ class BattleState {
     this.allAnswers = const [],
     this.allJudgments = const [],
     this.correctionMode = 'at_end',
+    this.finalCorrectionTriggered = false,
   });
 
   final String lobbyId;
@@ -202,6 +203,8 @@ class BattleState {
   final List<Map<String, String>> allAnswers;
   /// Jugements finaux par question : allJudgments[questionIdx][userId] = true/false/null.
   final List<Map<String, bool?>> allJudgments;
+  /// True quand le prof a déclenché l'affichage de la correction pour les élèves.
+  final bool finalCorrectionTriggered;
 
   bool get isSurvival => gameMode == kLobbyGameModeSurvival;
 }
@@ -854,6 +857,13 @@ class LobbyRepository {
   }
 
   /// Termine la correction finale et affiche les scores.
+  /// Le prof déclenche l'affichage de la correction finale chez tous les élèves.
+  Future<void> triggerFinalCorrection(String lobbyId) async {
+    await _db.collection('lobbies').doc(lobbyId).update({
+      'battle.finalCorrectionTriggered': true,
+    });
+  }
+
   Future<void> finalizeBattle(String lobbyId) async {
     await _db.collection('lobbies').doc(lobbyId).update({
       'status': 'finished',
@@ -927,6 +937,7 @@ class LobbyRepository {
       revealedIndices: m['revealedIndices'] ?? 0,
       allAnswers: allAnswers,
       allJudgments: allJudgments,
+      finalCorrectionTriggered: m['finalCorrectionTriggered'] as bool? ?? false,
     );
   }
 
