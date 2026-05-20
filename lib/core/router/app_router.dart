@@ -137,11 +137,6 @@ final GoRouter appRouter = GoRouter(
 
     // --- ROUTES PLEIN ÉCRAN (HORS SHELL) ---
     GoRoute(
-      path: '/notifications',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const NotificationsScreen()),
-    ),
-    GoRoute(
       path: '/lobby/:id',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: LobbyDetailScreen(lobbyId: state.pathParameters['id']!)),
@@ -152,60 +147,6 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => eskoliaTransitionPage(
         child: BattleScreen(lobbyId: state.pathParameters['id']!),
       ),
-    ),
-    GoRoute(
-      path: '/admin/drafts',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminDraftsScreen()),
-    ),
-    GoRoute(
-      path: '/admin/tips',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTipsScreen()),
-    ),
-    GoRoute(
-      path: '/admin/signalements',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminSignalementsScreen()),
-    ),
-    GoRoute(
-      path: '/admin/feedback',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminFeedbackScreen()),
-    ),
-    GoRoute(
-      path: '/admin/teacher-quizzes',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTeacherQuizzesScreen()),
-    ),
-    GoRoute(
-      path: '/admin/classe',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminClassDashboardScreen()),
-    ),
-    GoRoute(
-      path: '/admin/teacher-quizzes/:quizId',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(
-        child: AdminTeacherQuizDetailScreen(
-          quizId: state.pathParameters['quizId']!,
-        ),
-      ),
-    ),
-    GoRoute(
-      path: '/labo/create-question',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboCreateQuestionScreen()),
-    ),
-    GoRoute(
-      path: '/labo/create-tip',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboCreateTipScreen()),
-    ),
-    GoRoute(
-      path: '/labo/reports',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboReportsScreen()),
     ),
     GoRoute(
       path: '/profil/:uid',
@@ -315,8 +256,56 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const SettingsScreen()),
         ),
         GoRoute(
+          path: '/notifications',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const NotificationsScreen()),
+        ),
+        GoRoute(
           path: '/admin',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminHomeScreen()),
+        ),
+        GoRoute(
+          path: '/admin/drafts',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminDraftsScreen()),
+        ),
+        GoRoute(
+          path: '/admin/tips',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTipsScreen()),
+        ),
+        GoRoute(
+          path: '/admin/signalements',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminSignalementsScreen()),
+        ),
+        GoRoute(
+          path: '/admin/feedback',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminFeedbackScreen()),
+        ),
+        GoRoute(
+          path: '/admin/teacher-quizzes',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminTeacherQuizzesScreen()),
+        ),
+        GoRoute(
+          path: '/admin/classe',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminClassDashboardScreen()),
+        ),
+        GoRoute(
+          path: '/admin/teacher-quizzes/:quizId',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: AdminTeacherQuizDetailScreen(
+              quizId: state.pathParameters['quizId']!,
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/labo/create-question',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboCreateQuestionScreen()),
+        ),
+        GoRoute(
+          path: '/labo/create-tip',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboCreateTipScreen()),
+        ),
+        GoRoute(
+          path: '/labo/reports',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboReportsScreen()),
         ),
         GoRoute(
           path: '/flashcards',

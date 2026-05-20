@@ -1,5 +1,6 @@
-/// Providers IA supportés — détection automatique par préfixe de clé API.
+/// Providers IA supportes — detection automatique par prefixe de cle API.
 enum AiProvider {
+  ollama,
   anthropic,
   openai,
   gemini,
@@ -10,6 +11,7 @@ enum AiProvider {
   unknown;
 
   String get displayName => switch (this) {
+        AiProvider.ollama => 'Ollama (Local)',
         AiProvider.anthropic => 'Anthropic (Claude)',
         AiProvider.openai => 'OpenAI (ChatGPT)',
         AiProvider.gemini => 'Google Gemini',
@@ -21,6 +23,7 @@ enum AiProvider {
       };
 
   String get emoji => switch (this) {
+        AiProvider.ollama => '\u{1F999}',
         AiProvider.anthropic => '\u{1F7E3}',
         AiProvider.openai => '\u{1F7E2}',
         AiProvider.gemini => '\u{1F535}',
@@ -32,10 +35,10 @@ enum AiProvider {
       };
 
   String get baseUrl => switch (this) {
+        AiProvider.ollama => 'http://localhost:11434',
         AiProvider.anthropic => 'https://api.anthropic.com',
         AiProvider.openai => 'https://api.openai.com',
-        AiProvider.gemini =>
-          'https://generativelanguage.googleapis.com',
+        AiProvider.gemini => 'https://generativelanguage.googleapis.com',
         AiProvider.groq => 'https://api.groq.com/openai',
         AiProvider.perplexity => 'https://api.perplexity.ai',
         AiProvider.xai => 'https://api.x.ai',
@@ -44,6 +47,7 @@ enum AiProvider {
       };
 
   String get defaultModel => switch (this) {
+        AiProvider.ollama => 'gemma3',
         AiProvider.anthropic => 'claude-3-5-haiku-20241022',
         AiProvider.openai => 'gpt-4o-mini',
         AiProvider.gemini => 'gemini-1.5-flash',
@@ -55,6 +59,7 @@ enum AiProvider {
       };
 
   String get apiKeyUrl => switch (this) {
+        AiProvider.ollama => 'https://ollama.com/download',
         AiProvider.anthropic => 'https://console.anthropic.com/settings/keys',
         AiProvider.openai => 'https://platform.openai.com/api-keys',
         AiProvider.gemini => 'https://aistudio.google.com/app/apikey',
@@ -65,18 +70,21 @@ enum AiProvider {
         AiProvider.unknown => '',
       };
 
+  bool get isLocal => this == AiProvider.ollama;
+
   bool get hasFreetier => this == AiProvider.groq || this == AiProvider.gemini;
 
   String get freeTierNote => switch (this) {
-        AiProvider.groq =>
-          'Gratuit avec limites généreuses — idéal pour les élèves',
+        AiProvider.groq => 'Gratuit avec limites genereuuses — ideal pour les eleves',
         AiProvider.gemini => 'Tier gratuit disponible sur Google AI Studio',
         _ => '',
       };
 
-  /// Détecte automatiquement le provider depuis le préfixe de la clé.
+  /// Detecte automatiquement le provider depuis le prefixe de la cle.
+  /// Le sentinel 'ollama' identifie le provider local sans cle API.
   static AiProvider detectFromKey(String key) {
     final k = key.trim();
+    if (k == 'ollama') return AiProvider.ollama;
     if (k.startsWith('sk-ant-')) return AiProvider.anthropic;
     if (k.startsWith('AIza')) return AiProvider.gemini;
     if (k.startsWith('gsk_')) return AiProvider.groq;

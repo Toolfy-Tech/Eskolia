@@ -11,6 +11,7 @@ import '../../../core/utils/eskolia_snackbar.dart';
 import '../data/ai_key_repository.dart';
 import '../data/ai_chat_service.dart';
 import '../data/ai_provider.dart';
+import 'ollama_setup_card.dart';
 
 const Color _bg     = EskoliaVisual.bgDeep;
 const Color _slate  = Color(0xFF94A3B8);
@@ -212,7 +213,8 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       setState(() {
         _state   = s;
         _loading = false;
-        if (s.isConnected && s.apiKey != null) {
+        // Ne pas copier le sentinel 'ollama' dans le champ cle API.
+        if (s.isConnected && s.apiKey != null && !s.provider.isLocal) {
           _keyController.text = s.apiKey!;
           _detected = s.provider;
         }
@@ -293,8 +295,8 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                   const SizedBox(height: 10),
                   _buildDisconnectButton(),
                 ],
-                // Avertissement contextuel
-                if (_detected != AiProvider.unknown) ...[
+                // Avertissement contextuel (cloud providers uniquement)
+                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
                   const SizedBox(height: 20),
                   _buildWarningCard(_detected),
                 ],
@@ -467,6 +469,17 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
           style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12, height: 1.4),
         ),
         const SizedBox(height: 16),
+        // Section LOCAL
+        _TierHeader(label: 'LOCAL — GRATUIT & ILLIMITE', color: _amber),
+        const SizedBox(height: 8),
+        OllamaSetupCard(
+          isConnected: _state.isConnected && _state.provider == AiProvider.ollama,
+          onConnected: () async {
+            final s = await _repo.load();
+            if (mounted) setState(() => _state = s);
+          },
+        ),
+        const SizedBox(height: 12),
         for (final tier in tiers.toList()..sort()) ...[
           _TierHeader(
             label: tierTitles[tier]!.$1,
