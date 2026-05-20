@@ -50,9 +50,10 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
   final _urlController   = TextEditingController(text: 'http://localhost:11434');
   final _modelController = TextEditingController(text: 'gemma3');
 
-  bool    _testing   = false;
-  String? _status;
-  bool    _statusOk  = false;
+  bool         _testing        = false;
+  String?      _status;
+  bool         _statusOk       = false;
+  List<String> _installedModels = [];
 
   @override
   void initState() {
@@ -86,21 +87,39 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
     if (!mounted) return;
 
     if (status.ok) {
+      // Noms normalises depuis /api/tags (ex: "gemma3:latest" -> "gemma3").
+      final installed = status.models
+          .map((m) => m.contains(':') ? m.split(':').first : m)
+          .toList();
+
+      // Auto-selectionner le meilleur modele deja installe (ordre de priorite).
+      final bestInstalled = _kAvailableModels.firstWhere(
+        (m) => installed.contains(m),
+        orElse: () => _modelController.text.trim(),
+      );
+      _modelController.text = bestInstalled;
+
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('ollama_url',   _urlController.text.trim());
-      await prefs.setString('ollama_model', _modelController.text.trim());
+      await prefs.setString('ollama_model', bestInstalled);
 
       await AiKeyRepository().saveOllama(
         url:   _urlController.text.trim(),
-        model: _modelController.text.trim(),
+        model: bestInstalled,
       );
 
       if (!mounted) return;
 
+      final installedCount = installed.where(_kAvailableModels.contains).length;
+      final suffix = installedCount > 0
+          ? ' — $installedCount modele(s) pret(s) a utiliser'
+          : ' — aucun modele installe (ollama pull gemma3)';
+
       setState(() {
-        _testing   = false;
-        _status    = 'Ollama connecte — ${status.models.length} modele(s) disponible(s)';
-        _statusOk  = true;
+        _testing         = false;
+        _installedModels = installed;
+        _status          = 'Ollama connecte$suffix';
+        _statusOk        = true;
       });
 
       widget.onConnected();
@@ -250,7 +269,10 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
             ),
           ),
           const SizedBox(height: 6),
-          _ModelDropdown(controller: _modelController),
+          _ModelDropdown(
+            controller: _modelController,
+            installedModels: _installedModels,
+          ),
           const SizedBox(height: 12),
           // ── Statut ─────────────────────────────────────────────────────────
           if (_status != null) ...[
@@ -430,8 +452,12 @@ class _StatusBanner extends StatelessWidget {
 }
 
 class _ModelDropdown extends StatefulWidget {
-  const _ModelDropdown({required this.controller});
+  const _ModelDropdown({
+    required this.controller,
+    this.installedModels = const [],
+  });
   final TextEditingController controller;
+  final List<String> installedModels;
 
   @override
   State<_ModelDropdown> createState() => _ModelDropdownState();
@@ -449,6 +475,18 @@ class _ModelDropdownState extends State<_ModelDropdown> {
         : _kAvailableModels.first;
     widget.controller.text = _selected;
   }
+
+  @override
+  void didUpdateWidget(_ModelDropdown old) {
+    super.didUpdateWidget(old);
+    // Sync si le parent a change la valeur du controller (auto-selection).
+    final current = widget.controller.text;
+    if (current != _selected && _kAvailableModels.contains(current)) {
+      setState(() => _selected = current);
+    }
+  }
+
+  bool _isInstalled(String model) => widget.installedModels.contains(model);
 
   @override
   Widget build(BuildContext context) {
@@ -470,15 +508,53 @@ class _ModelDropdownState extends State<_ModelDropdown> {
         fillColor: Colors.white.withValues(alpha: 0.04),
       ),
       items: _kAvailableModels.map((m) {
+        final installed = _isInstalled(m);
+        final hasInfo   = widget.installedModels.isNotEmpty;
         return DropdownMenuItem<String>(
           value: m,
-          child: Text(
-            m,
-            style: const TextStyle(
-              color: Colors.white,
-              fontFamily: 'monospace',
-              fontSize: 13,
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  m,
+                  style: TextStyle(
+                    color: hasInfo && !installed
+                        ? _slate.withValues(alpha: 0.45)
+                        : Colors.white,
+                    fontFamily: 'monospace',
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              if (hasInfo) ...[
+                const SizedBox(width: 8),
+                if (installed)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _green.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'installe',
+                      style: TextStyle(
+                        color: _green,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    'ollama pull $m',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.4),
+                      fontSize: 9,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+              ],
+            ],
           ),
         );
       }).toList(),
