@@ -78,6 +78,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Installation et configuration de base d\'un contrôleur de domaine Windows Server 2022.',
                       emoji: '✈️',
                       difficulty: 'Débutant',
+                      missionCount: 18,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -86,6 +87,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Gestion des GPO et déploiement de logiciels pour une école de design.',
                       emoji: '🎨',
                       difficulty: 'Intermédiaire',
+                      missionCount: 16,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -94,6 +96,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Sécuriser l\'infrastructure d\'un hôpital sous contraintes RGPD.',
                       emoji: '🏥',
                       difficulty: 'Avancé',
+                      missionCount: 16,
                       accentColor: const Color(0xFFE74C3C),
                     ),
                     const SizedBox(height: 32),
@@ -119,6 +122,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Navigation, fichiers, variables et pipeline — les bases indispensables.',
                       emoji: '\u{1F4BB}',
                       difficulty: 'Débutant',
+                      missionCount: 16,
                       accentColor: const Color(0xFF3B82F6),
                     ),
                     const SizedBox(height: 12),
@@ -128,6 +132,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Processus, services, utilisateurs locaux et réseau en ligne de commande.',
                       emoji: '\u{2699}\u{FE0F}',
                       difficulty: 'Intermédiaire',
+                      missionCount: 16,
                       accentColor: const Color(0xFF8B5CF6),
                     ),
                     const SizedBox(height: 12),
@@ -137,6 +142,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       description: 'Automatiser les tâches admin : boucles, fonctions, gestion d\'erreurs, CSV.',
                       emoji: '\u{1F680}',
                       difficulty: 'Avancé',
+                      missionCount: 16,
                       accentColor: const Color(0xFF10B981),
                     ),
                     const SizedBox(height: 32),
@@ -178,67 +184,56 @@ class _TpHubScreenState extends State<TpHubScreen> {
   }
 
   Widget _buildReseauCard() {
-    return GestureDetector(
+    return EskoliaCardContent(
+      accentBorderColor: const Color(0xFF00BCD4),
+      padding: const EdgeInsets.all(16),
       onTap: () => context.push('/tp/reseau'),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.04),
-          borderRadius: BorderRadius.circular(16),
-          border: Border(
-            left: const BorderSide(color: Color(0xFF00BCD4), width: 3),
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
-            right: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
-            bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFF00BCD4).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(child: Text('🌐', style: TextStyle(fontSize: 24))),
           ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: const Color(0xFF00BCD4).withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(child: Text('🌐', style: TextStyle(fontSize: 24))),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Adressage IP & Binaire',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'Adressage IP & Binaire',
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          '5 modules',
-                          style: TextStyle(color: Color(0xFF00BCD4), fontSize: 9, fontWeight: FontWeight.bold),
-                        ),
+                      child: const Text(
+                        '5 modules',
+                        style: TextStyle(color: Color(0xFF00BCD4), fontSize: 9, fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Conversion binaire, classes IP, masques, CIDR et calcul de sous-reseaux.',
-                    style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12),
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Conversion binaire, classes IP, masques, CIDR et calcul de sous-reseaux.',
+                  style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12),
+                ),
+              ],
             ),
-            const Icon(Icons.chevron_right_rounded, color: Colors.white24),
-          ],
-        ),
+          ),
+          const Icon(Icons.chevron_right_rounded, color: Colors.white24),
+        ],
       ),
     );
   }
@@ -249,6 +244,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
     required String description,
     required String emoji,
     required String difficulty,
+    required int missionCount,
     Color? accentColor,
   }) {
     final color = accentColor ?? _violet;
@@ -257,35 +253,47 @@ class _TpHubScreenState extends State<TpHubScreen> {
       padding: const EdgeInsets.all(16),
       onTap: () => context.push('/tp/$id'),
       child: Row(
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 32)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(difficulty, style: const TextStyle(color: _slate, fontSize: 9, fontWeight: FontWeight.bold)),
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 32)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                    ],
+                      child: Text(
+                        '$missionCount missions',
+                        style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(height: 4),
-                  Text(description, style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12)),
-                ],
-              ),
+                  child: Text(difficulty, style: const TextStyle(color: _slate, fontSize: 9, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 4),
+                Text(description, style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12)),
+              ],
             ),
-            const Icon(Icons.chevron_right_rounded, color: Colors.white24),
-          ],
-        ),
+          ),
+          const Icon(Icons.chevron_right_rounded, color: Colors.white24),
+        ],
+      ),
     );
   }
 
