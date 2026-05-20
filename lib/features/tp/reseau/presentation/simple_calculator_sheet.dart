@@ -7,6 +7,7 @@ const Color _bg       = Color(0xFF1A1A2E);
 const Color _violet   = Color(0xFF6C63FF);
 const Color _cyan     = Color(0xFF00BCD4);
 const Color _slate    = Color(0xFF94A3B8);
+const Color _red      = Color(0xFFEF4444);
 const Color _surface  = Color(0xFF252540);
 const Color _surface2 = Color(0xFF2E2E50);
 
