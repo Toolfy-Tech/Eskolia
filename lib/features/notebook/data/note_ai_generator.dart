@@ -116,7 +116,50 @@ class NoteAiGenerator {
     );
   }
 
-  // ── Multi-sujets ──────────────────────────────────────────────────────────
+  // ── Multi-sujets combiné ──────────────────────────────────────────────────
+
+  /// Génère en un seul appel cours + quiz pour chaque sujet détecté.
+  /// Format retourné : [{subject, course, quiz: [{question, answer, type, difficulty, hint}]}]
+  Stream<String> streamCombined({
+    required String apiKey,
+    required AiProvider provider,
+    required String allNotesContent,
+  }) {
+    const systemPrompt =
+        'Tu es formateur IT senior ET expert en pedagogie. '
+        'L\'utilisateur a ecrit des notes sur plusieurs sujets distincts. '
+        'Pour chaque sujet detecte, genere : '
+        '1) un mini-cours structure en Markdown, '
+        '2) un quiz de 4 a 8 questions variees (Q&R, sequence, diagnostic). '
+        'Reponds UNIQUEMENT en JSON valide. Aucun texte avant ou apres le JSON.';
+
+    final userPrompt =
+        'Voici les notes de l\'utilisateur :\n\n'
+        '$allNotesContent\n\n'
+        'Pour chaque sujet detecte, genere un cours ET un quiz. '
+        'Reponds UNIQUEMENT avec ce tableau JSON :\n'
+        '[{\n'
+        '  "subject": "Titre du sujet",\n'
+        '  "course": "# Titre\\n\\nContenu Markdown...",\n'
+        '  "quiz": [\n'
+        '    {"question": "...", "answer": "...", '
+        '"type": "classic|sequence|diagnostic_indices|ticket", '
+        '"difficulty": "facile|moyen|difficile", "hint": "..."}\n'
+        '  ]\n'
+        '}]';
+
+    return _service.streamChat(
+      apiKey: apiKey,
+      provider: provider,
+      messages: [AiMessage(role: 'user', content: userPrompt)],
+      systemPrompt: systemPrompt,
+      maxTokens: 10000,
+      temperature: 0.4,
+      jsonMode: true,
+    );
+  }
+
+  // ── Multi-sujets séparés ──────────────────────────────────────────────────
 
   /// Multi-subject course generation.
   /// Returns a JSON stream: [{subject: string, course: string}]
@@ -186,6 +229,7 @@ class NoteAiGenerator {
   // ── Utilitaires statiques ──────────────────────────────────────────────────
 
   /// Extrait le JSON brut d'une reponse IA (retire fences, texte parasite).
+  /// Gere les tableaux JSON ([...]) et les objets ({...}).
   static String extractJson(String text) {
     final trimmed = text.trim();
 
@@ -199,9 +243,18 @@ class NoteAiGenerator {
     final genericMatch = genericFence.firstMatch(trimmed);
     if (genericMatch != null) return genericMatch.group(1)!.trim();
 
-    // 3. Extraction par accolades : premier { jusqu'au dernier }
-    final firstBrace = trimmed.indexOf('{');
-    final lastBrace  = trimmed.lastIndexOf('}');
+    final firstBracket = trimmed.indexOf('[');
+    final lastBracket  = trimmed.lastIndexOf(']');
+    final firstBrace   = trimmed.indexOf('{');
+    final lastBrace    = trimmed.lastIndexOf('}');
+
+    // 3. Tableau JSON : [ vient avant { (ou pas d'objet racine)
+    if (firstBracket != -1 && lastBracket > firstBracket &&
+        (firstBrace == -1 || firstBracket < firstBrace)) {
+      return trimmed.substring(firstBracket, lastBracket + 1).trim();
+    }
+
+    // 4. Objet JSON : premier { jusqu'au dernier }
     if (firstBrace != -1 && lastBrace > firstBrace) {
       return trimmed.substring(firstBrace, lastBrace + 1).trim();
     }

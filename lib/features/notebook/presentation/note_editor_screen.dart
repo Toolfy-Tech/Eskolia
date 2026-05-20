@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:html' as html show Blob, Url, AnchorElement;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/eskolia_visual.dart';
@@ -24,22 +25,22 @@ const Color _green  = Color(0xFF4CAF50);
 const Color _amber  = Color(0xFFFFC107);
 const Color _red    = Color(0xFFEF4444);
 
-// ── Data classes ───────────────────────────────────────────────────────────────
+// ── Modèle résultat ────────────────────────────────────────────────────────────
 
-class _GeneratedCourse {
-  const _GeneratedCourse({required this.subject, required this.content});
-  final String subject;
-  final String content;
-}
+class _SubjectResult {
+  const _SubjectResult({
+    required this.subject,
+    required this.course,
+    required this.quizJson,
+  });
 
-class _GeneratedQuiz {
-  const _GeneratedQuiz({required this.subject, required this.rawJson});
   final String subject;
-  final String rawJson; // Full Eskolia-format {quiz: {}, questions: []}
+  final String course;    // Markdown
+  final String quizJson;  // Eskolia format {quiz:{}, questions:[]}
 
   int get questionCount {
     try {
-      final data = jsonDecode(rawJson) as Map<String, dynamic>;
+      final data = jsonDecode(quizJson) as Map<String, dynamic>;
       return ((data['questions'] as List<dynamic>?)?.length) ?? 0;
     } catch (_) {
       return 0;
@@ -48,13 +49,13 @@ class _GeneratedQuiz {
 
   List<(int, String, Color)> get typeSummary {
     const labels = <String, (String, Color)>{
-      'classic':            ('Q&R', Color(0xFF6C63FF)),
-      'ticket':             ('Ticket', Color(0xFF00BCD4)),
+      'classic':            ('Q&R',        Color(0xFF6C63FF)),
+      'ticket':             ('Ticket',     Color(0xFF00BCD4)),
       'diagnostic_indices': ('Diagnostic', Color(0xFFFFC107)),
-      'sequence':           ('Sequence', Color(0xFF4CAF50)),
+      'sequence':           ('Sequence',   Color(0xFF4CAF50)),
     };
     try {
-      final data = jsonDecode(rawJson) as Map<String, dynamic>;
+      final data = jsonDecode(quizJson) as Map<String, dynamic>;
       final questions = data['questions'] as List<dynamic>? ?? [];
       final counts = <String, int>{};
       for (final q in questions) {
@@ -91,10 +92,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   final List<TextEditingController> _controllers = [];
 
-  bool _generatingCourses = false;
-  bool _generatingQuizzes = false;
-  List<_GeneratedCourse> _courses = [];
-  List<_GeneratedQuiz>   _quizzes = [];
+  bool   _generating      = false;
+  String _generationPhase = '';
+  List<_SubjectResult> _results = [];
+  String? _errorMessage;
+  VoidCallback? _retryAction;
 
   @override
   void initState() {
@@ -138,90 +140,70 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   // ── Generation IA ───────────────────────────────────────────────────────────
 
-  Future<void> _generateCourses(AiConnectionState aiState) async {
-    if (_generatingCourses) return;
+  Future<void> _generateAll(AiConnectionState aiState) async {
+    if (_generating) return;
     final prompt = _buildNotesPrompt();
     if (prompt.isEmpty) {
       showEskoliaSnackBar(context, 'Ecris au moins une note avant de generer.');
       return;
     }
     setState(() {
-      _generatingCourses = true;
-      _courses = [];
+      _generating      = true;
+      _generationPhase = 'Analyse des notes en cours...';
+      _results         = [];
+      _errorMessage    = null;
     });
-    try {
-      final buffer = StringBuffer();
-      await for (final token in _aiGenerator.streamMultiCourse(
-        apiKey: aiState.apiKey!,
-        provider: aiState.provider,
-        allNotesContent: prompt,
-      )) {
-        if (!mounted) return;
-        buffer.write(token);
-      }
-      if (!mounted) return;
-      final raw  = NoteAiGenerator.extractJson(buffer.toString());
-      final list = jsonDecode(raw) as List<dynamic>;
-      setState(() {
-        _courses = list.map((e) {
-          final m = e as Map<String, dynamic>;
-          return _GeneratedCourse(
-            subject: (m['subject'] as String?)?.trim() ?? 'Sujet',
-            content: (m['course']   as String?)?.trim() ?? '',
-          );
-        }).toList();
-      });
-    } catch (e) {
-      if (mounted) showEskoliaSnackBar(context, 'Erreur lors de la generation : $e');
-    } finally {
-      if (mounted) setState(() => _generatingCourses = false);
-    }
-  }
+    _retryAction = () => _generateAll(aiState);
 
-  Future<void> _generateQuizzes(AiConnectionState aiState) async {
-    if (_generatingQuizzes) return;
-    final prompt = _buildNotesPrompt();
-    if (prompt.isEmpty) {
-      showEskoliaSnackBar(context, 'Ecris au moins une note avant de generer.');
-      return;
-    }
-    setState(() {
-      _generatingQuizzes = true;
-      _quizzes = [];
-    });
     try {
-      final buffer = StringBuffer();
-      await for (final token in _aiGenerator.streamMultiQuiz(
+      final buffer          = StringBuffer();
+      bool firstTokenSeen   = false;
+
+      await for (final token in _aiGenerator.streamCombined(
         apiKey: aiState.apiKey!,
         provider: aiState.provider,
         allNotesContent: prompt,
       )) {
         if (!mounted) return;
+        if (!firstTokenSeen) {
+          firstTokenSeen = true;
+          setState(() => _generationPhase = 'Generation des cours et quiz...');
+        }
         buffer.write(token);
       }
       if (!mounted) return;
+
       final raw  = NoteAiGenerator.extractJson(buffer.toString());
       final list = jsonDecode(raw) as List<dynamic>;
+
       setState(() {
-        _quizzes = list.map((e) {
-          final m         = e as Map<String, dynamic>;
-          final subject   = (m['subject']   as String?)?.trim() ?? 'Quiz';
-          final questions = (m['questions'] as List<dynamic>?) ?? [];
+        _results = list.map((e) {
+          final m       = e as Map<String, dynamic>;
+          final subject = (m['subject'] as String?)?.trim() ?? 'Sujet';
+          final course  = (m['course']  as String?)?.trim() ?? '';
+          final rawQ    = (m['quiz']    as List<dynamic>?) ?? [];
           final eskoliaJson = jsonEncode({
             'quiz': {
-              'title': subject,
+              'title':       subject,
               'description': 'Quiz genere par l\'IA Notebook',
-              'author': 'IA Notebook',
+              'author':      'IA Notebook',
             },
-            'questions': questions,
+            'questions': rawQ,
           });
-          return _GeneratedQuiz(subject: subject, rawJson: eskoliaJson);
+          return _SubjectResult(
+            subject:  subject,
+            course:   course,
+            quizJson: eskoliaJson,
+          );
         }).toList();
+        _errorMessage = null;
       });
     } catch (e) {
-      if (mounted) showEskoliaSnackBar(context, 'Erreur lors de la generation : $e');
+      if (mounted) {
+        setState(() => _errorMessage = e.toString());
+      }
     } finally {
-      if (mounted) setState(() => _generatingQuizzes = false);
+      if (mounted) setState(() => _generating = false);
     }
   }
 
@@ -237,28 +219,21 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     html.Url.revokeObjectUrl(url);
   }
 
-  void _downloadCourse(_GeneratedCourse item) {
-    final safe = item.subject
-        .replaceAll(RegExp(r'[^\w\s-]'), '')
-        .replaceAll(' ', '_')
-        .toLowerCase();
-    _downloadFile(item.content, 'cours_$safe.md', 'text/markdown');
-  }
+  String _safeName(String subject) =>
+      subject.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_').toLowerCase();
 
-  void _downloadQuiz(_GeneratedQuiz item) {
-    final safe = item.subject
-        .replaceAll(RegExp(r'[^\w\s-]'), '')
-        .replaceAll(' ', '_')
-        .toLowerCase();
-    _downloadFile(item.rawJson, 'quiz_$safe.json', 'application/json');
-  }
+  void _downloadCourse(_SubjectResult item) =>
+      _downloadFile(item.course, 'cours_${_safeName(item.subject)}.md', 'text/markdown');
+
+  void _downloadQuiz(_SubjectResult item) =>
+      _downloadFile(item.quizJson, 'quiz_${_safeName(item.subject)}.json', 'application/json');
 
   // ── Quiz play / save ─────────────────────────────────────────────────────────
 
-  Future<void> _playQuiz(_GeneratedQuiz item) async {
+  Future<void> _playQuiz(_SubjectResult item) async {
     try {
       final session = await QuizRepository().buildFromNotebookQuizJson(
-        item.rawJson,
+        item.quizJson,
         item.subject,
       );
       if (mounted) context.push('/quiz/run', extra: session);
@@ -269,18 +244,34 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     }
   }
 
-  Future<void> _saveQuiz(_GeneratedQuiz item) async {
+  Future<void> _saveQuiz(_SubjectResult item) async {
     try {
-      await QuizRepository().buildFromNotebookQuizJson(item.rawJson, 'check');
+      await QuizRepository().buildFromNotebookQuizJson(item.quizJson, 'check');
     } on FormatException catch (e) {
       if (mounted) showEskoliaSnackBar(context, e.message);
       return;
     }
     await _savedQuizRepo.save(SavedNotebookQuiz.create(
-      title: item.subject,
-      rawJson: item.rawJson,
+      title:   item.subject,
+      rawJson: item.quizJson,
     ));
     if (mounted) showEskoliaSnackBar(context, 'Quiz sauvegarde dans Mes quiz IA.');
+  }
+
+  // ── Course bottom sheet ───────────────────────────────────────────────────────
+
+  void _openCourseSheet(_SubjectResult item) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CourseSheet(
+        result:          item,
+        onPlayQuiz:      () { Navigator.of(context).pop(); _playQuiz(item); },
+        onDownloadQuiz:  () => _downloadQuiz(item),
+        onDownloadCourse: () => _downloadCourse(item),
+      ),
+    );
   }
 
   // ── Build ────────────────────────────────────────────────────────────────────
@@ -428,52 +419,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: EskoliaButton(
-                    label: 'Generer les cours',
-                    icon: Icons.auto_stories_rounded,
-                    variant: EskoliaButtonVariant.primary,
-                    expand: true,
-                    onPressed: _generatingCourses ? null : () => _generateCourses(aiState),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: EskoliaButton(
-                    label: 'Generer les quiz',
-                    icon: Icons.quiz_rounded,
-                    variant: EskoliaButtonVariant.secondary,
-                    expand: true,
-                    onPressed: _generatingQuizzes ? null : () => _generateQuizzes(aiState),
-                  ),
-                ),
-              ],
+            EskoliaButton(
+              label: _generating ? 'Generation en cours...' : 'Generer les cours et quiz',
+              icon: _generating ? Icons.hourglass_empty_rounded : Icons.auto_awesome_rounded,
+              variant: EskoliaButtonVariant.primary,
+              expand: true,
+              onPressed: _generating ? null : () => _generateAll(aiState),
             ),
-            if (_generatingCourses) ...[
-              const SizedBox(height: 24),
-              _buildGeneratingIndicator('COURS GENERES', _amber, Icons.auto_stories_rounded),
-            ] else if (_courses.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              _buildSectionLabel('COURS GENERES', _amber, Icons.auto_stories_rounded),
-              const SizedBox(height: 10),
-              for (final course in _courses) ...[
-                _buildCourseCard(course),
-                const SizedBox(height: 10),
-              ],
+            if (_generating) ...[
+              const SizedBox(height: 20),
+              _buildProgressSection(),
             ],
-            if (_generatingQuizzes) ...[
+            if (!_generating && _errorMessage != null) ...[
+              const SizedBox(height: 20),
+              _buildErrorCard(),
+            ],
+            if (!_generating && _results.isNotEmpty) ...[
               const SizedBox(height: 24),
-              _buildGeneratingIndicator('QUIZ GENERES', _green, Icons.quiz_rounded),
-            ] else if (_quizzes.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              _buildSectionLabel('QUIZ GENERES', _green, Icons.quiz_rounded),
-              const SizedBox(height: 10),
-              for (final quiz in _quizzes) ...[
-                _buildQuizCard(quiz),
-                const SizedBox(height: 10),
-              ],
+              _buildResultsSection(),
             ],
           ],
         );
@@ -528,145 +491,213 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     );
   }
 
-  Widget _buildSectionLabel(String label, Color color, IconData icon) {
-    return Row(
-      children: [
-        Container(
-          width: 3,
-          height: 14,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Icon(icon, color: color, size: 14),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: 11,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.8,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGeneratingIndicator(String label, Color color, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildSectionLabel(label, color, icon),
-        const SizedBox(height: 10),
-        LinearProgressIndicator(
-          color: color,
-          backgroundColor: Colors.white.withValues(alpha: 0.08),
-          minHeight: 2,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Generation en cours...',
-          style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 12),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCourseCard(_GeneratedCourse course) {
+  Widget _buildProgressSection() {
     return EskoliaCardContent(
-      accentBorderColor: _amber,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              const Text('\u{1F4DA}', style: TextStyle(fontSize: 16)),
-              const SizedBox(width: 8),
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  color: _violet,
+                  strokeWidth: 2,
+                  backgroundColor: Colors.white.withValues(alpha: 0.1),
+                ),
+              ),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  course.subject,
+                  _generationPhase,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 200),
-            child: SingleChildScrollView(
-              child: SelectableText(
-                course.content,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                  height: 1.55,
-                  fontFamily: 'monospace',
-                ),
-              ),
-            ),
-          ),
           const SizedBox(height: 12),
-          EskoliaButton(
-            label: 'Telecharger .md',
-            icon: Icons.download_rounded,
-            variant: EskoliaButtonVariant.secondary,
-            expand: true,
-            color: _amber,
-            textColor: _amber,
-            onPressed: () => _downloadCourse(course),
+          LinearProgressIndicator(
+            color: _violet,
+            backgroundColor: Colors.white.withValues(alpha: 0.08),
+            minHeight: 2,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildQuizCard(_GeneratedQuiz quiz) {
-    final types = quiz.typeSummary;
+  Widget _buildErrorCard() {
     return EskoliaCardContent(
-      accentBorderColor: _green,
+      accentBorderColor: _red,
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Text('\u{1F3AF}', style: TextStyle(fontSize: 16)),
+              const Icon(Icons.error_outline_rounded, color: _red, size: 18),
+              const SizedBox(width: 8),
+              const Text(
+                'Erreur de generation',
+                style: TextStyle(
+                  color: _red,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _errorMessage!,
+            style: TextStyle(
+              color: _slate.withValues(alpha: 0.85),
+              fontSize: 12,
+              height: 1.4,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12),
+          EskoliaButton(
+            label: 'Reessayer',
+            icon: Icons.refresh_rounded,
+            variant: EskoliaButtonVariant.secondary,
+            color: _red,
+            textColor: _red,
+            onPressed: _retryAction,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 3,
+              height: 14,
+              decoration: BoxDecoration(
+                color: _violet,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.auto_awesome_rounded, color: _violet, size: 14),
+            const SizedBox(width: 6),
+            Text(
+              'RESULTATS — ${_results.length} sujet${_results.length > 1 ? 's' : ''} detecte${_results.length > 1 ? 's' : ''}',
+              style: TextStyle(
+                color: _violet,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        for (final result in _results) ...[
+          _buildSubjectCard(result),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSubjectCard(_SubjectResult result) {
+    final types = result.typeSummary;
+    return EskoliaCardContent(
+      accentBorderColor: _violet,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              const Text('\u{1F4DA}', style: TextStyle(fontSize: 18)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  quiz.subject,
+                  result.subject,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: _green.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  '${quiz.questionCount} question${quiz.questionCount > 1 ? 's' : ''}',
-                  style: const TextStyle(
-                    color: _green,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
                   ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 14),
+
+          // Cours buttons
+          Row(
+            children: [
+              Expanded(
+                child: EskoliaButton(
+                  label: 'Lire le cours',
+                  icon: Icons.visibility_rounded,
+                  variant: EskoliaButtonVariant.secondary,
+                  expand: true,
+                  color: _amber,
+                  textColor: _amber,
+                  onPressed: () => _openCourseSheet(result),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: EskoliaButton(
+                  label: 'Telecharger .md',
+                  icon: Icons.download_rounded,
+                  variant: EskoliaButtonVariant.secondary,
+                  expand: true,
+                  onPressed: () => _downloadCourse(result),
+                ),
+              ),
+            ],
+          ),
+
+          // Quiz divider
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  height: 1,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'Quiz associe — ${result.questionCount} question${result.questionCount > 1 ? 's' : ''}',
+                style: TextStyle(
+                  color: _slate.withValues(alpha: 0.6),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Divider(
+                  color: Colors.white.withValues(alpha: 0.10),
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+
           if (types.isNotEmpty) ...[
             const SizedBox(height: 8),
             Wrap(
@@ -691,42 +722,195 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               }).toList(),
             ),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
+
+          // Quiz buttons
           Row(
             children: [
               Expanded(
                 child: EskoliaButton(
-                  label: 'Jouer',
+                  label: 'Faire le quiz',
                   icon: Icons.play_arrow_rounded,
                   variant: EskoliaButtonVariant.primary,
                   expand: true,
-                  onPressed: () => _playQuiz(quiz),
+                  onPressed: () => _playQuiz(result),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: EskoliaButton(
-                  label: 'Sauvegarder',
-                  icon: Icons.bookmark_add_rounded,
+                  label: 'Telecharger .json',
+                  icon: Icons.download_rounded,
                   variant: EskoliaButtonVariant.secondary,
                   expand: true,
-                  onPressed: () => _saveQuiz(quiz),
+                  color: _green,
+                  textColor: _green,
+                  onPressed: () => _downloadQuiz(result),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          EskoliaButton(
-            label: 'Telecharger .json',
-            icon: Icons.download_rounded,
-            variant: EskoliaButtonVariant.secondary,
-            expand: true,
-            color: _green,
-            textColor: _green,
-            onPressed: () => _downloadQuiz(quiz),
-          ),
         ],
       ),
+    );
+  }
+}
+
+// ── Bottom sheet cours ─────────────────────────────────────────────────────────
+
+class _CourseSheet extends StatelessWidget {
+  const _CourseSheet({
+    required this.result,
+    required this.onPlayQuiz,
+    required this.onDownloadQuiz,
+    required this.onDownloadCourse,
+  });
+
+  final _SubjectResult result;
+  final VoidCallback onPlayQuiz;
+  final VoidCallback onDownloadQuiz;
+  final VoidCallback onDownloadCourse;
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
+      maxChildSize: 0.97,
+      builder: (context, scrollCtrl) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: EskoliaVisual.bgElevated,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              // Drag handle
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Row(
+                  children: [
+                    const Text('\u{1F4DA}', style: TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        result.subject,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: Colors.white.withValues(alpha: 0.5)),
+                      onPressed: () => Navigator.of(context).pop(),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(color: Colors.white.withValues(alpha: 0.08), height: 1),
+              // Markdown content
+              Expanded(
+                child: Markdown(
+                  controller: scrollCtrl,
+                  data: result.course,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.6),
+                    h1: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800),
+                    h2: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
+                    h3: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
+                    code: TextStyle(
+                      color: const Color(0xFF00BCD4),
+                      backgroundColor: Colors.white.withValues(alpha: 0.06),
+                      fontSize: 12,
+                      fontFamily: 'monospace',
+                    ),
+                    codeblockDecoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    blockquote: const TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      height: 1.5,
+                    ),
+                    listBullet: const TextStyle(color: Color(0xFF6C63FF), fontSize: 13),
+                    tableBody: const TextStyle(color: Colors.white70, fontSize: 12),
+                    tableHead: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
+                  ),
+                ),
+              ),
+              // Actions
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+                decoration: BoxDecoration(
+                  color: EskoliaVisual.bgElevated,
+                  border: Border(
+                    top: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    EskoliaButton(
+                      label: 'Faire le quiz associe',
+                      icon: Icons.sports_esports_rounded,
+                      variant: EskoliaButtonVariant.primary,
+                      expand: true,
+                      onPressed: onPlayQuiz,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: EskoliaButton(
+                            label: 'Telecharger cours .md',
+                            icon: Icons.download_rounded,
+                            variant: EskoliaButtonVariant.secondary,
+                            expand: true,
+                            color: _amber,
+                            textColor: _amber,
+                            onPressed: onDownloadCourse,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: EskoliaButton(
+                            label: 'Telecharger quiz .json',
+                            icon: Icons.download_rounded,
+                            variant: EskoliaButtonVariant.secondary,
+                            expand: true,
+                            color: _green,
+                            textColor: _green,
+                            onPressed: onDownloadQuiz,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
