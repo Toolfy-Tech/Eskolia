@@ -257,33 +257,34 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = GoRouterState.of(context);
     final path = state.uri.path;
+    final topPad = MediaQuery.of(context).padding.top;
 
     return Scaffold(
+      backgroundColor: const Color(0xFF0F0F1A),
       resizeToAvoidBottomInset: false,
-      extendBody: true,
-      body: Column(
+      body: Stack(
         children: [
-          const EskoliaTipsBanner(),
-          Expanded(
-            child: Stack(
-              children: [
-                const EskoliaAmbientBackground(),
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: kEskoliaBottomNavReserve,
-                    ),
-                    child: child,
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: EskoliaBottomNav(currentPath: path),
-                ),
-              ],
+          const EskoliaAmbientBackground(),
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: topPad + kTipsBannerHeight,
+                bottom: kEskoliaBottomNavReserve,
+              ),
+              child: child,
             ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: const EskoliaTipsBanner(),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: EskoliaBottomNav(currentPath: path),
           ),
         ],
       ),
