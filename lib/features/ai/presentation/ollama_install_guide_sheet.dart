@@ -529,18 +529,23 @@ class _TroubleshootSection extends StatelessWidget {
         const SizedBox(height: 12),
         _TroubleshootItem(
           question: '"Ollama non detecte"',
-          answer: 'Verifiez qu\'Ollama est bien lance.',
+          answer: 'Ollama n\'est pas lance. Sur Windows/macOS cherchez l\'icone '
+              'Ollama dans la barre des taches (pres de l\'heure). '
+              'Si elle est absente, lancez Ollama via le menu Demarrer '
+              'ou avec la commande :',
+          command: 'ollama serve',
         ),
         const SizedBox(height: 8),
         _TroubleshootItem(
           question: 'Generation lente',
-          answer: 'CPU au lieu du GPU. Normal sans GPU dedie.',
+          answer: 'Votre PC utilise le CPU au lieu du GPU. '
+              'Normal sans carte graphique dediee — comptez 1 a 3 min par generation.',
         ),
         const SizedBox(height: 8),
         _TroubleshootItem(
           question: '"model not found"',
-          answer: 'ollama pull gemma3',
-          answerMono: true,
+          answer: 'Le modele n\'est pas encore telecharge. Relancez :',
+          command: 'ollama pull gemma3',
         ),
       ],
     );
@@ -551,11 +556,11 @@ class _TroubleshootItem extends StatelessWidget {
   const _TroubleshootItem({
     required this.question,
     required this.answer,
-    this.answerMono = false,
+    this.command,
   });
   final String question;
   final String answer;
-  final bool answerMono;
+  final String? command;
 
   @override
   Widget build(BuildContext context) {
@@ -572,30 +577,32 @@ class _TroubleshootItem extends StatelessWidget {
           const Text('❓', style: TextStyle(fontSize: 14)),
           const SizedBox(width: 10),
           Expanded(
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(fontSize: 12, height: 1.5),
-                children: [
-                  TextSpan(
-                    text: '$question ',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  question,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    height: 1.4,
                   ),
-                  const TextSpan(
-                    text: '→ ',
-                    style: TextStyle(color: _slate),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  answer,
+                  style: TextStyle(
+                    color: _slate.withValues(alpha: 0.85),
+                    fontSize: 12,
+                    height: 1.5,
                   ),
-                  TextSpan(
-                    text: answer,
-                    style: TextStyle(
-                      color: answerMono ? _terminalGreen : _slate,
-                      fontFamily: answerMono ? 'monospace' : null,
-                    ),
-                  ),
+                ),
+                if (command != null) ...[
+                  const SizedBox(height: 8),
+                  _TerminalBlock(command: command!),
                 ],
-              ),
+              ],
             ),
           ),
         ],
