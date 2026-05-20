@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/eskolia_layout.dart';
 import '../../../../core/theme/eskolia_visual.dart';
+import '../../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../../shared/widgets/eskolia_button.dart';
 import '../../../../shared/widgets/eskolia_card.dart';
@@ -9,10 +11,10 @@ import 'simple_calculator_sheet.dart';
 
 const Color _slate  = Color(0xFF94A3B8);
 const Color _violet = Color(0xFF6C63FF);
+const Color _cyan   = Color(0xFF00BCD4);
 const Color _green  = Color(0xFF4CAF50);
 const Color _amber  = Color(0xFFFFC107);
 const Color _red    = Color(0xFFE53935);
-const Color _cyan   = Color(0xFF00BCD4);
 
 Color _diffColor(TpDifficulty d) => switch (d) {
       TpDifficulty.facile    => _green,
@@ -20,12 +22,12 @@ Color _diffColor(TpDifficulty d) => switch (d) {
       TpDifficulty.difficile => _red,
     };
 
-// ─── State per answer field ───────────────────────────────────────────────────
+// ─── Per-field state ──────────────────────────────────────────────────────────
 
 class _FieldState {
   _FieldState();
   final controller = TextEditingController();
-  bool? correct; // null = not checked yet
+  bool?   correct;
   String? expected;
 
   void dispose() => controller.dispose();
@@ -42,11 +44,11 @@ class TpBinaireSessionScreen extends StatefulWidget {
 }
 
 class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
-  // fields[sectionIdx][questionIdx] = single or sub-question field
+  // _fields[sectionIdx][questionIdx][subIdx]
   late final List<List<List<_FieldState>>> _fields;
 
   bool _corrected = false;
-  int _score = 0;
+  int  _score     = 0;
   late int _total;
 
   @override
@@ -66,8 +68,8 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
   @override
   void dispose() {
     for (final sec in _fields) {
-      for (final qFields in sec) {
-        for (final f in qFields) {
+      for (final qf in sec) {
+        for (final f in qf) {
           f.dispose();
         }
       }
@@ -75,22 +77,19 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
     super.dispose();
   }
 
-  // ── Answer normalization ──────────────────────────────────────────────────
+  // ── Normalise answers ─────────────────────────────────────────────────────
 
-  String _normalize(String s) {
-    return s
-        .trim()
-        .toLowerCase()
-        .replaceAll('–', '-') // en-dash
-        .replaceAll('—', '-') // em-dash
-        .replaceAll(RegExp(r'\s*-\s*'), '-')
-        .replaceAll(RegExp(r'\s+'), ' ');
-  }
+  String _norm(String s) => s
+      .trim()
+      .toLowerCase()
+      .replaceAll('–', '-')
+      .replaceAll('—', '-')
+      .replaceAll(RegExp(r'\s*-\s*'), '-')
+      .replaceAll(RegExp(r'\s+'), ' ');
 
-  bool _isCorrect(String user, String expected) =>
-      _normalize(user) == _normalize(expected);
+  bool _ok(String user, String expected) => _norm(user) == _norm(expected);
 
-  // ── Correct all ──────────────────────────────────────────────────────────
+  // ── Correct ───────────────────────────────────────────────────────────────
 
   void _correctAll() {
     int earned = 0;
@@ -98,48 +97,43 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
       final section = widget.tp.sections[s];
       for (int q = 0; q < section.questions.length; q++) {
         final question = section.questions[q];
-        final qFields = _fields[s][q];
+        final qFields  = _fields[s][q];
         if (question.subQuestions != null) {
-          int subEarned = 0;
           for (int sq = 0; sq < question.subQuestions!.length; sq++) {
-            final ok = _isCorrect(
+            final correct = _ok(
                 qFields[sq].controller.text, question.subQuestions![sq].answer);
-            qFields[sq].correct = ok;
+            qFields[sq].correct  = correct;
             qFields[sq].expected = question.subQuestions![sq].answer;
-            if (ok) subEarned++;
+            if (correct) earned++;
           }
-          earned += subEarned; // each sub-question = 1 pt toward total
         } else {
-          final ok = _isCorrect(qFields[0].controller.text, question.answer);
-          qFields[0].correct = ok;
+          final correct = _ok(qFields[0].controller.text, question.answer);
+          qFields[0].correct  = correct;
           qFields[0].expected = question.answer;
-          if (ok) earned += question.points;
+          if (correct) earned += question.points;
         }
       }
     }
     setState(() {
       _corrected = true;
-      _score = earned;
+      _score     = earned;
     });
   }
 
   void _reset() {
     for (final sec in _fields) {
-      for (final qFields in sec) {
-        for (final f in qFields) {
+      for (final qf in sec) {
+        for (final f in qf) {
           f.controller.clear();
-          f.correct = null;
+          f.correct  = null;
           f.expected = null;
         }
       }
     }
-    setState(() {
-      _corrected = false;
-      _score = 0;
-    });
+    setState(() { _corrected = false; _score = 0; });
   }
 
-  // ── Calculator ───────────────────────────────────────────────────────────
+  // ── Calculator ────────────────────────────────────────────────────────────
 
   void _openCalculator() {
     showModalBottomSheet<void>(
@@ -155,6 +149,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
   @override
   Widget build(BuildContext context) {
     final diffColor = _diffColor(widget.tp.difficulty);
+    final hPad = EskoliaLayout.screenPaddingH;
 
     return Scaffold(
       backgroundColor: EskoliaVisual.bgDeep,
@@ -164,7 +159,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
             decoration: BoxDecoration(
               color: diffColor.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(100),
@@ -182,59 +177,73 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Score bar
-          if (_corrected) _buildScoreBar(),
-          Expanded(
-            child: SafeArea(
-              top: false,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
-                    children: [
-                      for (int s = 0; s < widget.tp.sections.length; s++) ...[
-                        _buildSection(s),
-                        const SizedBox(height: 20),
-                      ],
-                      if (_corrected) _buildFinalMessage() else _buildCorrectButton(),
-                    ],
+          const EskoliaAmbientBackground(),
+          Column(
+            children: [
+              // Score bar — visible after correction
+              if (_corrected) _buildScoreBar(),
+              Expanded(
+                child: SafeArea(
+                  top: false,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: EskoliaLayout.shellContentMaxWidth,
+                      ),
+                      child: ListView(
+                        padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 120),
+                        children: [
+                          for (int s = 0; s < widget.tp.sections.length; s++) ...[
+                            _buildSection(s),
+                            const SizedBox(height: 24),
+                          ],
+                          if (_corrected)
+                            _buildFinalMessage()
+                          else
+                            _buildCorrectButton(),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
-      floatingActionButton: !_corrected
-          ? null
-          : FloatingActionButton.extended(
+      floatingActionButton: _corrected
+          ? FloatingActionButton.extended(
               onPressed: _reset,
               backgroundColor: const Color(0xFF1A1A2E),
               foregroundColor: _violet,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Recommencer'),
+              label: const Text(
+                'Recommencer',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(color: _violet.withValues(alpha: 0.4)),
               ),
-            ),
+            )
+          : null,
     );
   }
 
   // ── Score bar ─────────────────────────────────────────────────────────────
 
   Widget _buildScoreBar() {
-    final ratio = _total > 0 ? _score / _total : 0.0;
-    final barColor = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final ratio      = _total > 0 ? _score / _total : 0.0;
+    final barColor   = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final hPad = EskoliaLayout.screenPaddingH;
 
     return Container(
-      color: const Color(0xFF1A1A2E),
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      color: EskoliaVisual.bgElevated,
+      padding: EdgeInsets.fromLTRB(hPad, 10, hPad, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -276,33 +285,51 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
   // ── Final message ─────────────────────────────────────────────────────────
 
   Widget _buildFinalMessage() {
-    final ratio = _total > 0 ? _score / _total : 0.0;
-    final msg = ratio >= 0.8
+    final ratio  = _total > 0 ? _score / _total : 0.0;
+    final color  = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final msg    = ratio >= 0.8
         ? 'Excellent !'
         : ratio >= 0.6
-            ? 'Bien !'
+            ? 'Bien joue !'
             : 'Continue a t\'entrainer !';
-    final color = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final icon   = ratio >= 0.8
+        ? Icons.emoji_events_rounded
+        : ratio >= 0.6
+            ? Icons.thumb_up_rounded
+            : Icons.school_rounded;
 
     return EskoliaCardContent(
       accentBorderColor: color,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          Icon(
-            ratio >= 0.8
-                ? Icons.emoji_events_rounded
-                : ratio >= 0.6
-                    ? Icons.thumb_up_rounded
-                    : Icons.school_rounded,
-            color: color,
-            size: 28,
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 22),
           ),
-          const SizedBox(width: 12),
-          Text(
-            msg,
-            style: TextStyle(
-              color: color, fontSize: 18, fontWeight: FontWeight.w800),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  msg,
+                  style: TextStyle(
+                    color: color, fontSize: 16, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '$_score points sur $_total',
+                  style: TextStyle(
+                    color: _slate.withValues(alpha: 0.75), fontSize: 12),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -326,7 +353,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section header
+        // Section header — same pattern as TpHubScreen
         Container(
           decoration: const BoxDecoration(
             border: Border(left: BorderSide(color: _violet, width: 3)),
@@ -346,20 +373,25 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
               const SizedBox(height: 2),
               Text(
                 section.instruction,
-                style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
+                style: TextStyle(
+                  color: _slate.withValues(alpha: 0.7),
+                  fontSize: 12,
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         EskoliaCardContent(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(14),
           child: Column(
             children: [
               for (int q = 0; q < section.questions.length; q++) ...[
                 if (q > 0)
                   Divider(
-                      color: Colors.white.withValues(alpha: 0.06), height: 16),
+                    color: Colors.white.withValues(alpha: 0.06),
+                    height: 20,
+                  ),
                 _buildQuestion(sIdx, q, section.questions[q]),
               ],
             ],
@@ -372,16 +404,15 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
   // ── Question ──────────────────────────────────────────────────────────────
 
   Widget _buildQuestion(int sIdx, int qIdx, TpQuestion question) {
-    if (question.subQuestions != null) {
-      return _buildCompoundQuestion(sIdx, qIdx, question);
-    }
-    return _buildSimpleQuestion(sIdx, qIdx, question);
+    return question.subQuestions != null
+        ? _buildCompound(sIdx, qIdx, question)
+        : _buildSimple(sIdx, qIdx, question);
   }
 
-  Widget _buildSimpleQuestion(int sIdx, int qIdx, TpQuestion question) {
-    final field = _fields[sIdx][qIdx][0];
+  Widget _buildSimple(int sIdx, int qIdx, TpQuestion q) {
+    final field   = _fields[sIdx][qIdx][0];
     final checked = _corrected && field.correct != null;
-    final isOk = field.correct == true;
+    final isOk    = field.correct == true;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,11 +420,11 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         Row(
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Text(
-                question.prompt,
-                style: const TextStyle(
-                  color: Colors.white,
+                q.prompt,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 13,
                   fontFamily: 'monospace',
                   fontWeight: FontWeight.w600,
@@ -402,82 +433,64 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
             ),
             const SizedBox(width: 8),
             Expanded(
-              flex: 4,
-              child: _answerField(
-                field: field,
-                correct: checked ? isOk : null,
-              ),
+              flex: 5,
+              child: _field(field: field, ok: checked ? isOk : null),
             ),
-            if (checked)
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Icon(
-                  isOk ? Icons.check_rounded : Icons.close_rounded,
-                  color: isOk ? _green : _red,
-                  size: 18,
-                ),
-              ),
+            const SizedBox(width: 6),
+            _statusIcon(checked, isOk),
           ],
         ),
-        if (checked && !isOk) ...[
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.only(left: 0),
-            child: Text(
-              'Reponse : ${field.expected}',
-              style: const TextStyle(
-                color: _amber,
-                fontSize: 11,
-                fontFamily: 'monospace',
-              ),
-            ),
-          ),
-        ],
+        if (checked && !isOk) _wrongHint(field.expected!),
       ],
     );
   }
 
-  Widget _buildCompoundQuestion(int sIdx, int qIdx, TpQuestion question) {
+  Widget _buildCompound(int sIdx, int qIdx, TpQuestion q) {
     final subFields = _fields[sIdx][qIdx];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          question.prompt,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 13,
-          ),
+        // Main prompt
+        Row(
+          children: [
+            const Icon(Icons.lan_outlined, color: _cyan, size: 15),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                q.prompt,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
-        for (int sq = 0; sq < question.subQuestions!.length; sq++) ...[
-          const SizedBox(height: 6),
-          _buildSubQuestion(
-            subQ:  question.subQuestions![sq],
-            field: subFields[sq],
-          ),
+        // Sub-questions
+        for (int sq = 0; sq < q.subQuestions!.length; sq++) ...[
+          if (sq > 0) const SizedBox(height: 6),
+          _buildSubQ(q.subQuestions![sq], subFields[sq]),
         ],
       ],
     );
   }
 
-  Widget _buildSubQuestion({
-    required TpSubQuestion subQ,
-    required _FieldState field,
-  }) {
+  Widget _buildSubQ(TpSubQuestion subQ, _FieldState field) {
     final checked = _corrected && field.correct != null;
-    final isOk = field.correct == true;
+    final isOk    = field.correct == true;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 12),
+      padding: const EdgeInsets.only(left: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               SizedBox(
-                width: 160,
+                width: 168,
                 child: Text(
                   subQ.label,
                   style: TextStyle(
@@ -488,48 +501,32 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
               ),
               const SizedBox(width: 6),
               Expanded(
-                child: _answerField(
-                  field: field,
-                  correct: checked ? isOk : null,
-                ),
+                child: _field(field: field, ok: checked ? isOk : null),
               ),
-              if (checked)
-                Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: Icon(
-                    isOk ? Icons.check_rounded : Icons.close_rounded,
-                    color: isOk ? _green : _red,
-                    size: 16,
-                  ),
-                ),
+              const SizedBox(width: 6),
+              _statusIcon(checked, isOk),
             ],
           ),
-          if (checked && !isOk) ...[
-            const SizedBox(height: 3),
-            Text(
-              'Reponse : ${field.expected}',
-              style: const TextStyle(
-                color: _amber,
-                fontSize: 11,
-                fontFamily: 'monospace',
-              ),
-            ),
-          ],
+          if (checked && !isOk) _wrongHint(field.expected!),
         ],
       ),
     );
   }
 
-  // ── Answer input field ────────────────────────────────────────────────────
+  // ── Shared field widgets ──────────────────────────────────────────────────
 
-  Widget _answerField({required _FieldState field, required bool? correct}) {
-    Color borderColor;
-    if (correct == true) {
-      borderColor = _green;
-    } else if (correct == false) {
-      borderColor = _red;
+  Widget _field({required _FieldState field, required bool? ok}) {
+    final Color border;
+    final Color fill;
+    if (ok == true) {
+      border = _green.withValues(alpha: 0.6);
+      fill   = _green.withValues(alpha: 0.05);
+    } else if (ok == false) {
+      border = _red.withValues(alpha: 0.6);
+      fill   = _red.withValues(alpha: 0.04);
     } else {
-      borderColor = Colors.white.withValues(alpha: 0.12);
+      border = Colors.white.withValues(alpha: 0.12);
+      fill   = Colors.white.withValues(alpha: 0.05);
     }
 
     return TextField(
@@ -543,28 +540,65 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
       cursorColor: _cyan,
       decoration: InputDecoration(
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
         filled: true,
-        fillColor: Colors.white.withValues(alpha: correct != null ? 0.03 : 0.06),
+        fillColor: fill,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor),
+          borderSide: BorderSide(color: border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor),
+          borderSide: BorderSide(color: border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: correct != null ? borderColor : _cyan, width: 1.5),
+          borderSide: BorderSide(
+            color: ok != null ? border : _cyan.withValues(alpha: 0.7),
+            width: 1.5,
+          ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor),
+          borderSide: BorderSide(color: border),
         ),
         hintText: '...',
-        hintStyle: TextStyle(color: _slate.withValues(alpha: 0.3), fontSize: 13),
+        hintStyle: TextStyle(
+          color: _slate.withValues(alpha: 0.25),
+          fontSize: 13,
+          fontFamily: 'monospace',
+        ),
       ),
     );
   }
+
+  Widget _statusIcon(bool checked, bool isOk) {
+    if (!checked) return const SizedBox(width: 20);
+    return Icon(
+      isOk ? Icons.check_rounded : Icons.close_rounded,
+      color: isOk ? _green : _red,
+      size: 18,
+    );
+  }
+
+  Widget _wrongHint(String expected) => Padding(
+        padding: const EdgeInsets.only(top: 4, left: 2),
+        child: Row(
+          children: [
+            const Icon(Icons.arrow_right_rounded, color: _amber, size: 14),
+            const SizedBox(width: 2),
+            Expanded(
+              child: Text(
+                expected,
+                style: const TextStyle(
+                  color: _amber,
+                  fontSize: 11,
+                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 }

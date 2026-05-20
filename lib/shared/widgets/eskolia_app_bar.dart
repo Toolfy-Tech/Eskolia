@@ -15,6 +15,7 @@ abstract final class EskoliaAppBar {
     bool centerTitle = true,
     VoidCallback? onBack,
     bool showBack = true,
+    PreferredSizeWidget? bottom,
   }) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -44,6 +45,7 @@ abstract final class EskoliaAppBar {
               : null),
       centerTitle: centerTitle,
       actions: actions,
+      bottom: bottom,
     );
   }
 }

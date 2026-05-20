@@ -11,6 +11,7 @@ const Color _slateLight = Color(0xFF94A3B8);
 const Color _cyan = Color(0xFF00BCD4);
 const Color _orange = Color(0xFFFF9800);
 const Color _green = Color(0xFF43E97B);
+const Color _violet = Color(0xFF6C63FF);
 
 class SoloScreen extends StatefulWidget {
   const SoloScreen({super.key});
@@ -52,49 +53,20 @@ class _SoloScreenState extends State<SoloScreen> {
                       const _CategoryHeader(title: 'ENTRAÎNEMENT LIBRE', color: Color(0xFF22D3EE)),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
-                        title: "Configurateur Maîtrise",
-                        subtitle: "Mixez les thèmes pour renforcer vos points faibles.",
-                        icon: Icons.settings_input_component_rounded,
-                        accentColor: _cyan,
-                        onTap: () => context.push('/solo/quiz-solo'),
-                      ),
-                      const SizedBox(height: 12),
-                      _SoloMenuCard(
-                        title: "Vrai ou Faux",
-                        subtitle: "Décision rapide pour ancrer les concepts clés.",
-                        icon: Icons.thumbs_up_down_rounded,
-                        accentColor: Colors.amber,
-                        onTap: () => context.push('/true-false'),
-                      ),
-                      const SizedBox(height: 12),
-                      _SoloMenuCard(
-                        title: "Flashcards",
-                        subtitle: "Mémorisation active par répétition espacée.",
+                        title: 'Flashcards',
+                        subtitle: 'Memorisation active par repetition espacee.',
                         icon: Icons.style_rounded,
                         accentColor: _green,
                         onTap: () => context.push('/flashcards'),
                       ),
-                      const SizedBox(height: 32),
-
-                      const _CategoryHeader(title: 'RÉVISION', color: Color(0xFFEF9F27)),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
-                        title: "Mes lacunes",
-                        subtitle: "Reprends les questions où tu as échoué récemment.",
-                        icon: Icons.error_outline_rounded,
-                        accentColor: _orange,
-                        onTap: () => context.push('/quiz/revision-lacunes'),
+                        title: 'Lexique IT',
+                        subtitle: 'Retrouve la signification des acronymes IT — sans indices.',
+                        icon: Icons.abc_rounded,
+                        accentColor: _violet,
+                        onTap: () => context.push('/lexique'),
                       ),
-                      const SizedBox(height: 12),
-                      _SoloMenuCard(
-                        title: "Le Pool",
-                        subtitle: "Tes questions épinglées pour une révision ciblée.",
-                        icon: Icons.push_pin_rounded,
-                        accentColor: _orange,
-                        onTap: () => context.push('/revision-pool'),
-                      ),
-                      const SizedBox(height: 32),
-                      
                       const SizedBox(height: 40),
                       Text(
                         "Mode Active Recall activé : toutes les réponses sont à saisir librement pour un ancrage mémoriel maximal.",

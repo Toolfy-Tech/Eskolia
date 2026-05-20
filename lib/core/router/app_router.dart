@@ -61,16 +61,15 @@ import '../../features/true_false/presentation/true_false_swipe_screen.dart';
 import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
-import '../../features/tp/reseau/data/network_exercise_engine.dart';
 import '../../features/tp/reseau/data/tp_binaire_data.dart';
 import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
-import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_hub_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_session_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
 import '../../features/notebook/data/note_model.dart';
+import '../../features/lexique/presentation/lexique_screen.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -137,33 +136,6 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // --- ROUTES PLEIN ÉCRAN (HORS SHELL) ---
-    GoRoute(
-      path: '/quiz/run',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final extra = state.extra;
-        if (extra is! QuizSession) return eskoliaTransitionPage(child: const QuizSetupScreen());
-        return eskoliaTransitionPage(
-          child: QuizScreen(sessionId: extra.sessionId, initialSession: extra),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/quiz/:sessionId',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final sessionId = state.pathParameters['sessionId']!;
-        return eskoliaTransitionPage(child: QuizScreen(sessionId: sessionId));
-      },
-    ),
-    GoRoute(
-      path: '/cours/:moduleId',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final moduleId = state.pathParameters['moduleId']!;
-        return eskoliaTransitionPage(child: ChapterLessonScreen(moduleId: moduleId));
-      },
-    ),
     GoRoute(
       path: '/notifications',
       parentNavigatorKey: _rootNavigatorKey,
@@ -234,29 +206,6 @@ final GoRouter appRouter = GoRouter(
       path: '/labo/reports',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const LaboReportsScreen()),
-    ),
-    GoRoute(
-      path: '/flashcards/session',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final args = state.extra;
-        if (args is! FlashcardSessionRouteArgs) {
-          return eskoliaTransitionPage(child: const FlashcardsHubScreen());
-        }
-        return eskoliaTransitionPage(
-          child: FlashcardSessionScreen(
-            cards: args.cards,
-            ephemeral: args.ephemeral,
-            timed: args.timed,
-            survival: args.survival,
-          ),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/true-false',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const TrueFalseSwipeScreen()),
     ),
     GoRoute(
       path: '/profil/:uid',
@@ -394,6 +343,10 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
         ),
         GoRoute(
+          path: '/lexique',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const LexiqueScreen()),
+        ),
+        GoRoute(
           path: '/notebook/edit',
           pageBuilder: (context, state) => eskoliaTransitionPage(
             child: NoteEditorScreen(note: state.extra as NoteModel?),
@@ -408,6 +361,13 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const TpBinaireHubScreen()),
         ),
         GoRoute(
+          path: '/tp/binaire/live',
+          pageBuilder: (context, state) {
+            final tp = state.extra as TpBinaire;
+            return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
+          },
+        ),
+        GoRoute(
           path: '/tp/binaire/:id',
           pageBuilder: (context, state) {
             final id = state.pathParameters['id']!;
@@ -416,14 +376,6 @@ final GoRouter appRouter = GoRouter(
               orElse: () => allTpBinaire.first,
             );
             return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
-          },
-        ),
-        GoRoute(
-          path: '/tp/reseau/:category',
-          pageBuilder: (context, state) {
-            final slug = state.pathParameters['category']!;
-            final cat = _slugToCategory(slug);
-            return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
           },
         ),
         GoRoute(
@@ -448,18 +400,56 @@ final GoRouter appRouter = GoRouter(
             );
           },
         ),
+        GoRoute(
+          path: '/quiz/run',
+          pageBuilder: (context, state) {
+            final extra = state.extra;
+            if (extra is! QuizSession) return eskoliaTransitionPage(child: const QuizSetupScreen());
+            return eskoliaTransitionPage(
+              child: QuizScreen(sessionId: extra.sessionId, initialSession: extra),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/quiz/:sessionId',
+          pageBuilder: (context, state) {
+            final sessionId = state.pathParameters['sessionId']!;
+            return eskoliaTransitionPage(child: QuizScreen(sessionId: sessionId));
+          },
+        ),
+        GoRoute(
+          path: '/cours/:moduleId',
+          pageBuilder: (context, state) {
+            final moduleId = state.pathParameters['moduleId']!;
+            return eskoliaTransitionPage(child: ChapterLessonScreen(moduleId: moduleId));
+          },
+        ),
+        GoRoute(
+          path: '/flashcards/session',
+          pageBuilder: (context, state) {
+            final args = state.extra;
+            if (args is! FlashcardSessionRouteArgs) {
+              return eskoliaTransitionPage(child: const FlashcardsHubScreen());
+            }
+            return eskoliaTransitionPage(
+              child: FlashcardSessionScreen(
+                cards: args.cards,
+                ephemeral: args.ephemeral,
+                timed: args.timed,
+                survival: args.survival,
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/true-false',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const TrueFalseSwipeScreen()),
+        ),
       ],
     ),
   ],
 );
 
-NetworkExerciseCategory _slugToCategory(String slug) => switch (slug) {
-  'binaryConversion' => NetworkExerciseCategory.binaryConversion,
-  'ipClass'          => NetworkExerciseCategory.ipClass,
-  'defaultMask'      => NetworkExerciseCategory.defaultMask,
-  'cidrNotation'     => NetworkExerciseCategory.cidrNotation,
-  _                  => NetworkExerciseCategory.subnetCalc,
-};
 
 class AuthRefreshNotifier extends ChangeNotifier {
   AuthRefreshNotifier() {
