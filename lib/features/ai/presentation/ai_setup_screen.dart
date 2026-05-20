@@ -3,9 +3,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/eskolia_layout.dart';
-import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
+import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_text_field.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../data/ai_key_repository.dart';
 import '../data/ai_chat_service.dart';
@@ -275,13 +276,9 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     return Scaffold(
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: '\u{1F916} Assistant IA'),
-      body: Stack(
-        children: [
-          const EskoliaAmbientBackground(),
-          if (_loading)
-            const Center(child: CircularProgressIndicator(color: _violet))
-          else
-            ListView(
+      body: _loading
+          ? const Center(child: CircularProgressIndicator(color: _violet))
+          : ListView(
               padding: const EdgeInsets.fromLTRB(
                 EskoliaLayout.screenPaddingH, 16,
                 EskoliaLayout.screenPaddingH, 60,
@@ -307,8 +304,6 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                 _buildHowToSection(),
               ],
             ),
-        ],
-      ),
     );
   }
 
@@ -372,32 +367,14 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
           ],
         ]),
         const SizedBox(height: 8),
-        TextField(
+        EskoliaTextField(
           controller: _keyController,
-          onChanged: _onKeyChanged,
+          hintText: 'sk-ant-... / sk-... / AIza... / gsk_...',
           obscureText: _obscure,
-          style: const TextStyle(color: Colors.white, fontSize: 13, fontFamily: 'monospace'),
-          decoration: InputDecoration(
-            hintText: 'sk-ant-... / sk-... / AIza... / gsk_...',
-            hintStyle: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 12),
-            suffixIcon: IconButton(
-              icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: _slate, size: 20),
-              onPressed: () => setState(() => _obscure = !_obscure),
-            ),
-            filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.06),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: _violet.withValues(alpha: 0.7), width: 1.5),
-            ),
+          onChanged: _onKeyChanged,
+          suffixIcon: IconButton(
+            icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: _slate, size: 20),
+            onPressed: () => setState(() => _obscure = !_obscure),
           ),
         ),
         if (_detected != AiProvider.unknown) ...[
@@ -591,19 +568,9 @@ class _ProviderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return EskoliaCardContent(
+      accentBorderColor: isConnected ? _green : info.tierColor,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: isConnected
-            ? _green.withValues(alpha: 0.07)
-            : Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isConnected
-              ? _green.withValues(alpha: 0.5)
-              : info.tierColor.withValues(alpha: 0.2),
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -620,10 +587,10 @@ class _ProviderCard extends StatelessWidget {
                   if (isConnected) ...[
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: _green.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(100),
                       ),
                       child: const Text('CONNECTE', style: TextStyle(color: _green, fontSize: 8, fontWeight: FontWeight.w800)),
                     ),
@@ -638,10 +605,10 @@ class _ProviderCard extends StatelessWidget {
             ),
             // Badge prix
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
                 color: info.priceBadgeColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(100),
                 border: Border.all(color: info.priceBadgeColor.withValues(alpha: 0.4)),
               ),
               child: Text(

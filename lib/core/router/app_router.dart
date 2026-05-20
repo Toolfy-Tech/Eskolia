@@ -62,8 +62,11 @@ import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
 import '../../features/tp/reseau/data/network_exercise_engine.dart';
+import '../../features/tp/reseau/data/tp_binaire_data.dart';
 import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
 import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
+import '../../features/tp/reseau/presentation/tp_binaire_hub_screen.dart';
+import '../../features/tp/reseau/presentation/tp_binaire_session_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
@@ -179,44 +182,6 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/tp/reseau',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const ReseauHubScreen()),
-    ),
-    GoRoute(
-      path: '/tp/reseau/:category',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final slug = state.pathParameters['category']!;
-        final cat = _slugToCategory(slug);
-        return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
-      },
-    ),
-    GoRoute(
-      path: '/tp/:trackId',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final trackId = state.pathParameters['trackId']!;
-        if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
-          return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
-        }
-        return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));
-      },
-    ),
-    GoRoute(
-      path: '/tp/:trackId/missions',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) {
-        final trackId = state.pathParameters['trackId']!;
-        if (trackId.startsWith('tp_ad_')) {
-          return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
-        }
-        return eskoliaTransitionPage(
-          child: PracticalMissionsScreen(trackId: trackId),
-        );
-      },
-    ),
-    GoRoute(
       path: '/admin/drafts',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const AdminDraftsScreen()),
@@ -300,19 +265,6 @@ final GoRouter appRouter = GoRouter(
         child: ProfileScreen(uid: state.pathParameters['uid']!),
       ),
     ),
-    GoRoute(
-      path: '/ai/setup',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
-    ),
-    GoRoute(
-      path: '/notebook/edit',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(
-        child: NoteEditorScreen(note: state.extra as NoteModel?),
-      ),
-    ),
-
     // --- SHELL ROUTE (AVEC BOTTOM NAV) ---
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
@@ -436,6 +388,65 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/solo/flashcards-solo',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const FlashcardSoloSetupScreen()),
+        ),
+        GoRoute(
+          path: '/ai/setup',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
+        ),
+        GoRoute(
+          path: '/notebook/edit',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: NoteEditorScreen(note: state.extra as NoteModel?),
+          ),
+        ),
+        GoRoute(
+          path: '/tp/reseau',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const ReseauHubScreen()),
+        ),
+        GoRoute(
+          path: '/tp/binaire',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const TpBinaireHubScreen()),
+        ),
+        GoRoute(
+          path: '/tp/binaire/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id']!;
+            final tp = allTpBinaire.firstWhere(
+              (t) => t.id == id,
+              orElse: () => allTpBinaire.first,
+            );
+            return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
+          },
+        ),
+        GoRoute(
+          path: '/tp/reseau/:category',
+          pageBuilder: (context, state) {
+            final slug = state.pathParameters['category']!;
+            final cat = _slugToCategory(slug);
+            return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
+          },
+        ),
+        GoRoute(
+          path: '/tp/:trackId',
+          pageBuilder: (context, state) {
+            final trackId = state.pathParameters['trackId']!;
+            if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
+              return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
+            }
+            return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));
+          },
+        ),
+        GoRoute(
+          path: '/tp/:trackId/missions',
+          pageBuilder: (context, state) {
+            final trackId = state.pathParameters['trackId']!;
+            if (trackId.startsWith('tp_ad_')) {
+              return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
+            }
+            return eskoliaTransitionPage(
+              child: PracticalMissionsScreen(trackId: trackId),
+            );
+          },
         ),
       ],
     ),

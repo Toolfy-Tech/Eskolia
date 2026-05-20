@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/widgets/eskolia_ambient_background.dart';
+import '../../../../core/theme/eskolia_visual.dart';
 import '../../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../../shared/widgets/eskolia_button.dart';
+import '../../../../shared/widgets/eskolia_text_field.dart';
 import '../data/network_exercise_engine.dart';
 import 'network_calculator_sheet.dart';
 
-const Color _bg     = Color(0xFF0B1120);
 const Color _violet = Color(0xFF6C63FF);
 const Color _cyan   = Color(0xFF00BCD4);
 const Color _slate  = Color(0xFF94A3B8);
@@ -205,31 +205,9 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
+        EskoliaTextField(
           controller: _controller,
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: isBinary ? 'monospace' : null,
-          ),
-          decoration: InputDecoration(
-            hintText: isBinary ? 'Ex : 11000000' : 'Votre reponse...',
-            hintStyle: TextStyle(color: _slate.withValues(alpha: 0.6)),
-            filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.07),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: _cyan, width: 1.5),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
+          hintText: isBinary ? 'Ex : 11000000' : 'Votre reponse...',
           onSubmitted: (_) => _validate(),
         ),
         const SizedBox(height: 14),
@@ -320,7 +298,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,
         title: _categoryLabel(widget.category),
@@ -333,12 +311,20 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
           const SizedBox(width: 4),
         ],
       ),
-      body: Stack(
-        children: [
-          const EskoliaAmbientBackground(),
-          _sessionDone
-              ? SafeArea(child: _buildScoreScreen())
-              : SafeArea(
+      body: _sessionDone
+          ? SafeArea(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: _buildScoreScreen(),
+                ),
+              ),
+            )
+          : SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
                   child: Column(
                     children: [
                       // Progress bar
@@ -402,8 +388,8 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
                     ],
                   ),
                 ),
-        ],
-      ),
+              ),
+            ),
     );
   }
 }
