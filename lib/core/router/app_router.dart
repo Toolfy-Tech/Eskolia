@@ -62,8 +62,11 @@ import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
 import '../../features/tp/reseau/data/network_exercise_engine.dart';
+import '../../features/tp/reseau/data/tp_binaire_data.dart';
 import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
 import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
+import '../../features/tp/reseau/presentation/tp_binaire_hub_screen.dart';
+import '../../features/tp/reseau/presentation/tp_binaire_session_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
@@ -399,6 +402,21 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/tp/reseau',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const ReseauHubScreen()),
+        ),
+        GoRoute(
+          path: '/tp/binaire',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const TpBinaireHubScreen()),
+        ),
+        GoRoute(
+          path: '/tp/binaire/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id']!;
+            final tp = allTpBinaire.firstWhere(
+              (t) => t.id == id,
+              orElse: () => allTpBinaire.first,
+            );
+            return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
+          },
         ),
         GoRoute(
           path: '/tp/reseau/:category',

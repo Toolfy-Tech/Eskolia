@@ -5,6 +5,7 @@ import '../../../../core/theme/eskolia_layout.dart';
 import '../../../../core/theme/eskolia_visual.dart';
 import '../../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../../shared/widgets/eskolia_card.dart';
 import '../../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/network_exercise_engine.dart';
 import 'network_calculator_sheet.dart';
@@ -117,14 +118,86 @@ class ReseauHubScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Section label
+                // TPs complets card
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: EskoliaCardContent(
+                    accentBorderColor: const Color(0xFF6C63FF),
+                    padding: const EdgeInsets.all(16),
+                    onTap: () => context.push('/tp/binaire'),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF6C63FF).withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Text('\u{1F4DD}', style: TextStyle(fontSize: 22)),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Text(
+                                    'TPs complets',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: const Text(
+                                      '15 TPs',
+                                      style: TextStyle(
+                                        color: Color(0xFF6C63FF),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Feuilles completes : conversions, masques, CIDR et subnetting. 3 niveaux.',
+                                style: TextStyle(
+                                  color: _slate.withValues(alpha: 0.8),
+                                  fontSize: 12,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.chevron_right_rounded, color: Colors.white24),
+                      ],
+                    ),
+                  ),
+                ),
+                // Divider label before exercises
                 Container(
                   decoration: const BoxDecoration(
                     border: Border(left: BorderSide(color: _cyan, width: 3)),
                   ),
                   padding: const EdgeInsets.only(left: 10),
+                  margin: const EdgeInsets.only(bottom: 16),
                   child: const Text(
-                    'CHOISISSEZ UN ENTRAINEMENT',
+                    'ENTRAINEMENT RAPIDE',
                     style: TextStyle(
                       color: _slate,
                       fontSize: 11,
@@ -133,7 +206,6 @@ class ReseauHubScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
                 ..._categories.map(
                   (cat) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
