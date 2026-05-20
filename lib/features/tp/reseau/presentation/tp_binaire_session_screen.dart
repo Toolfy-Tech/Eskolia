@@ -79,13 +79,18 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
 
   // ── Normalise answers ─────────────────────────────────────────────────────
 
-  String _norm(String s) => s
+  String _normalizeAnswer(String s) => s
       .trim()
       .toLowerCase()
-      .replaceAll('–', '-')
-      .replaceAll('—', '-')
-      .replaceAll(RegExp(r'\s*-\s*'), '-')
-      .replaceAll(RegExp(r'\s+'), ' ');
+      .replaceAll(' ', '')
+      .replaceAll('.', '')
+      .replaceAll('-', '')
+      .replaceAll('_', '')
+      .replaceAll('–', '')
+      .replaceAll('—', '');
+
+  // Keep alias so nothing else breaks if referenced elsewhere.
+  String _norm(String s) => _normalizeAnswer(s);
 
   bool _ok(String user, String expected) => _norm(user) == _norm(expected);
 
