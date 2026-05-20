@@ -438,7 +438,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              d.difficultyLabel,
+                              _diffLabel(d),
                               style: TextStyle(
                                 color: isSelected ? color : _slate,
                                 fontSize: 12,
@@ -533,6 +533,12 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
         TpDifficulty.facile    => Icons.emoji_events_outlined,
         TpDifficulty.moyen     => Icons.bar_chart_rounded,
         TpDifficulty.difficile => Icons.bolt_rounded,
+      };
+
+  String _diffLabel(TpDifficulty d) => switch (d) {
+        TpDifficulty.facile    => 'Facile',
+        TpDifficulty.moyen     => 'Moyen',
+        TpDifficulty.difficile => 'Difficile',
       };
 }
 
