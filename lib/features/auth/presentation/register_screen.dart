@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/preferences/onboarding_prefs.dart';
 import '../../../core/theme/app_theme_extensions.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -60,9 +59,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _usernameController.text,
         interestSections: const [],
       );
-      await OnboardingPrefs.requireForNewUser();
       if (!mounted) return;
-      context.go('/onboarding');
+      context.go('/formation-choix');
     } on AuthFailure catch (e) {
       if (mounted) setState(() => _errorMessage = e.message);
     } catch (e) {

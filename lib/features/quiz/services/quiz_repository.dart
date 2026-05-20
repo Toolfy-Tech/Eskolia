@@ -214,8 +214,8 @@ class QuizRepository {
           .collection('teacher_quizzes')
           .doc(quizId)
           .get();
-      if (!snap.exists) return _buildDailyRandomSession();
-      final d = snap.data()!;
+      final d = snap.data();
+      if (!snap.exists || d == null) return _buildDailyRandomSession();
       final title = d['title'] as String? ?? 'Quiz du prof';
       final rawQ = d['questions'] as List<dynamic>? ?? [];
       final authorName = d['authorName'] as String? ?? 'Prof';
@@ -284,6 +284,65 @@ class QuizRepository {
       assetKey: selectedAsset,
       sessionId: 'daily_${DateTime.now().millisecondsSinceEpoch}',
       title: TipQuizCatalog.fallbackContextLineForAssetPath(selectedAsset) ?? 'Quiz rapide',
+    );
+  }
+
+  /// Construit une QuizSession depuis un JSON Eskolia genere par l'IA (format Notebook).
+  /// Format attendu : {"quiz": {"title": "..."}, "questions": [{...}]}
+  /// Parse un JSON genere par l'IA (format Eskolia) en QuizSession.
+  /// Lance une [FormatException] si le JSON est invalide ou le schema incorrect.
+  Future<QuizSession> buildFromNotebookQuizJson(String rawJson, String title) async {
+    final Map<String, dynamic> data;
+    try {
+      data = jsonDecode(rawJson) as Map<String, dynamic>;
+    } catch (_) {
+      throw FormatException('Le JSON genere est mal forme. Regenere le quiz.');
+    }
+
+    final rawQuestions = data['questions'];
+    if (rawQuestions is! List || rawQuestions.isEmpty) {
+      throw const FormatException('Aucune question trouvee dans le quiz genere. Regenere le quiz.');
+    }
+
+    final quizMeta  = data['quiz'] as Map<String, dynamic>? ?? {};
+    final rawTitle  = (quizMeta['title'] as String?)?.trim() ?? '';
+    final quizTitle = rawTitle.isEmpty ? title : rawTitle;
+
+    final questions = <QuizQuestion>[];
+    for (int i = 0; i < rawQuestions.length; i++) {
+      final q = rawQuestions[i];
+      if (q is! Map<String, dynamic>) continue;
+
+      final question = (q['question'] as String?)?.trim() ?? '';
+      final answer   = (q['answer'] as String?)?.trim() ?? '';
+      if (question.isEmpty || answer.isEmpty) continue;
+
+      final items   = q['items']   is List ? List<String>.from(q['items']   as List) : <String>[];
+      final indices = q['indices'] is List ? List<String>.from(q['indices'] as List) : <String>[];
+
+      questions.add(QuizQuestion(
+        id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
+        type: (q['type'] as String?)?.trim() ?? 'classic',
+        question: question,
+        answer: answer,
+        difficultyBucket: _parseDifficulty(q['difficulty']),
+        contextLine: 'Notebook · $quizTitle',
+        explanation: ((q['hint'] as String?) ?? '').isNotEmpty ? q['hint'] as String : null,
+        indices: indices.isEmpty ? null : indices,
+        answerSequence: items.isEmpty ? null : items,
+        options: items.isEmpty ? null : items,
+        categoryGroup: QuestionCategoryGroup.themes,
+      ));
+    }
+
+    if (questions.isEmpty) {
+      throw const FormatException('Toutes les questions sont invalides. Regenere le quiz.');
+    }
+
+    return _sessionFromQuestions(
+      'notebook_${DateTime.now().millisecondsSinceEpoch}',
+      quizTitle,
+      questions,
     );
   }
 

@@ -8,12 +8,15 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/teacher_quiz_picker_widget.dart';
+import '../../notebook/data/saved_quiz_repository.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
 
 const Color _violet = Color(0xFF6C63FF);
+const Color _green = Color(0xFF4CAF50);
+const Color _slate = Color(0xFF94A3B8);
 
 /// Compose un quiz solo (Mode Maîtrise).
 class QuizSoloSetupScreen extends StatefulWidget {
@@ -30,6 +33,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   int _questionCount = 15;
   bool _busy = false;
   QuizCatalogTrack _catalogTrack = QuizCatalogTrack.optimusOnly;
+  List<SavedNotebookQuiz> _savedQuizzes = [];
 
   @override
   void initState() {
@@ -39,16 +43,47 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
 
   Future<void> _load() async {
     try {
-      final list = await TipQuizCatalog.loadChaptersWithQuiz();
+      final results = await Future.wait([
+        TipQuizCatalog.loadChaptersWithQuiz(),
+        SavedQuizRepository().loadAll(),
+      ]);
       if (!mounted) return;
       setState(() {
-        _chapters = list;
+        _chapters = results[0] as List<TipQuizChapterRef>;
+        _savedQuizzes = results[1] as List<SavedNotebookQuiz>;
         _error = null;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = e);
     }
+  }
+
+  Future<void> _playSavedQuiz(SavedNotebookQuiz quiz) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      final session = await QuizRepository().buildFromNotebookQuizJson(
+        quiz.rawJson,
+        quiz.title,
+      );
+      if (!mounted) return;
+      context.push('/quiz/run', extra: session);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Quiz invalide — regenere-le depuis tes notes.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _deleteSavedQuiz(SavedNotebookQuiz quiz) async {
+    await SavedQuizRepository().delete(quiz.id);
+    if (!mounted) return;
+    setState(() => _savedQuizzes.removeWhere((q) => q.id == quiz.id));
   }
 
   Future<void> _startQuickRandom() async {
@@ -224,8 +259,20 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
             ),
           ),
         ),
+        if (_savedQuizzes.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          _buildSectionHeader('Mes quiz IA'),
+          const SizedBox(height: 10),
+          ..._savedQuizzes.map((q) => _SavedQuizCard(
+                quiz: q,
+                busy: _busy,
+                onPlay: () => _playSavedQuiz(q),
+                onDelete: () => _deleteSavedQuiz(q),
+              )),
+        ],
+
         const SizedBox(height: 24),
-        
+
         const Text(
           'Entraînement personnalisé',
           style: TextStyle(
@@ -320,6 +367,87 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
         color: Colors.white.withValues(alpha: 0.9),
         fontWeight: FontWeight.w700,
         fontSize: 13,
+      ),
+    );
+  }
+}
+
+class _SavedQuizCard extends StatelessWidget {
+  const _SavedQuizCard({
+    required this.quiz,
+    required this.busy,
+    required this.onPlay,
+    required this.onDelete,
+  });
+
+  final SavedNotebookQuiz quiz;
+  final bool busy;
+  final VoidCallback onPlay;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(14),
+        border: Border(
+          left: BorderSide(color: _green, width: 3),
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
+          right: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Text('\u{1F4DD}', style: TextStyle(fontSize: 20)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  quiz.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (quiz.noteTitle != null && quiz.noteTitle != quiz.title)
+                  Text(
+                    'Note : ${quiz.noteTitle}',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.7),
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.play_arrow_rounded, color: _green, size: 22),
+            onPressed: busy ? null : onPlay,
+            tooltip: 'Jouer',
+            constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+            padding: EdgeInsets.zero,
+          ),
+          IconButton(
+            icon: Icon(Icons.delete_outline_rounded,
+                color: _slate.withValues(alpha: 0.5), size: 18),
+            onPressed: onDelete,
+            tooltip: 'Supprimer',
+            constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+            padding: EdgeInsets.zero,
+          ),
+        ],
       ),
     );
   }

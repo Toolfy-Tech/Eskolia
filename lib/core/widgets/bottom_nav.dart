@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../config/staff_bootstrap.dart';
 import '../constants/colors.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
@@ -52,6 +51,11 @@ class EskoliaBottomNav extends StatelessWidget {
     emoji: '\u{1F52C}',
     label: 'Labo',
   );
+  static const _NavItem _notebook = _NavItem(
+    path: '/notebook',
+    emoji: '\u{1F4D3}',
+    label: 'Notes',
+  );
   static const _NavItem _profil = _NavItem(
     path: '/profil',
     emoji: '\u{1F464}',
@@ -71,6 +75,7 @@ class EskoliaBottomNav extends StatelessWidget {
         _parcours,
         _multijoueur,
         _labo,
+        _notebook,
         _profil,
         if (showAdminNav) _admin,
       ];
@@ -104,7 +109,7 @@ class EskoliaBottomNav extends StatelessWidget {
       );
     }
 
-    return StreamBuilder<bool>(
+    return StreamBuilder<({bool showAdmin, bool aiConnected})>(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
@@ -112,22 +117,22 @@ class EskoliaBottomNav extends StatelessWidget {
           .map((snap) {
             final data = snap.data();
             final role = (data?['role'] as String?)?.trim() ?? 'user';
-            if (role == 'admin' || role == 'moderator') return true;
-            // Fallback bootstrap pour les comptes sans champ role défini.
-            final uname = (data?['usernameLower'] as String?)?.trim() ??
-                (data?['username'] as String?)?.trim().toLowerCase() ??
-                '';
-            return kAdminNavPrivilegedUsernamesLower.contains(uname);
+            bool showAdmin = role == 'admin' || role == 'moderator';
+            final aiConnected =
+                ((data?['aiProvider'] as String?) ?? '').isNotEmpty;
+            return (showAdmin: showAdmin, aiConnected: aiConnected);
           })
           .distinct(),
       builder: (context, snap) {
-        final showAdminNav = snap.data ?? false;
+        final showAdminNav = snap.data?.showAdmin ?? false;
+        final aiConnected = snap.data?.aiConnected ?? false;
         final items = _itemsFor(showAdminNav: showAdminNav);
         return _buildBar(
           context,
           items: items,
           glassBorder: glassBorder,
           neon: neon,
+          aiConnected: aiConnected,
         );
       },
     );
@@ -138,6 +143,7 @@ class EskoliaBottomNav extends StatelessWidget {
     required List<_NavItem> items,
     required Color glassBorder,
     required NeonTheme? neon,
+    bool aiConnected = false,
   }) {
     final index = _indexForPath(currentPath, items);
 
@@ -208,6 +214,7 @@ class EskoliaBottomNav extends StatelessWidget {
                         item: item,
                         active: active,
                         neon: neon,
+                        showBadge: item.path == '/profil' && aiConnected,
                         onTap: () async {
                           final router = GoRouter.of(context);
                           final current =
@@ -307,12 +314,14 @@ class _NavCell extends StatelessWidget {
     required this.active,
     required this.neon,
     required this.onTap,
+    this.showBadge = false,
   });
 
   final _NavItem item;
   final bool active;
   final NeonTheme? neon;
   final VoidCallback onTap;
+  final bool showBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -375,24 +384,46 @@ class _NavCell extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  item.emoji,
-                  style: TextStyle(
-                    fontSize: active ? 28 : 26,
-                    height: 1,
-                    shadows: active
-                        ? [
-                            Shadow(
-                              color: primary.withValues(alpha: 0.9),
-                              blurRadius: 14,
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Text(
+                      item.emoji,
+                      style: TextStyle(
+                        fontSize: active ? 28 : 26,
+                        height: 1,
+                        shadows: active
+                            ? [
+                                Shadow(
+                                  color: primary.withValues(alpha: 0.9),
+                                  blurRadius: 14,
+                                ),
+                                Shadow(
+                                  color: _cyanGlow.withValues(alpha: 0.45),
+                                  blurRadius: 10,
+                                ),
+                              ]
+                            : null,
+                      ),
+                    ),
+                    if (showBadge)
+                      Positioned(
+                        top: -2,
+                        right: -4,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF4CAF50),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xFF0F172A),
+                              width: 1.5,
                             ),
-                            Shadow(
-                              color: _cyanGlow.withValues(alpha: 0.45),
-                              blurRadius: 10,
-                            ),
-                          ]
-                        : null,
-                  ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 6),
                 Text(

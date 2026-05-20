@@ -40,6 +40,24 @@ class _TpHubScreenState extends State<TpHubScreen> {
                   children: [
                     Container(
                       decoration: const BoxDecoration(
+                        border: Border(left: BorderSide(color: Color(0xFF00BCD4), width: 3)),
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        'RÉSEAU & ADRESSAGE IP',
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 11 * 0.08,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildReseauCard(),
+                    const SizedBox(height: 32),
+                    Container(
+                      decoration: const BoxDecoration(
                         border: Border(left: BorderSide(color: Color(0xFF3B82F6), width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
@@ -81,6 +99,49 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
+                        border: Border(left: BorderSide(color: Color(0xFF3B82F6), width: 3)),
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        'SCRIPTING POWERSHELL',
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 11 * 0.08,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildScenarioCard(
+                      id: 'tp_ps_fondamentaux',
+                      title: 'Fondamentaux PowerShell',
+                      description: 'Navigation, fichiers, variables et pipeline — les bases indispensables.',
+                      emoji: '\u{1F4BB}',
+                      difficulty: 'Débutant',
+                      accentColor: const Color(0xFF3B82F6),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_ps_systeme',
+                      title: 'Gestion du système Windows',
+                      description: 'Processus, services, utilisateurs locaux et réseau en ligne de commande.',
+                      emoji: '\u{2699}\u{FE0F}',
+                      difficulty: 'Intermédiaire',
+                      accentColor: const Color(0xFF8B5CF6),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_ps_scripting',
+                      title: 'Scripting PowerShell',
+                      description: 'Automatiser les tâches admin : boucles, fonctions, gestion d\'erreurs, CSV.',
+                      emoji: '\u{1F680}',
+                      difficulty: 'Avancé',
+                      accentColor: const Color(0xFF10B981),
+                    ),
+                    const SizedBox(height: 32),
+                    Container(
+                      decoration: const BoxDecoration(
                         border: Border(left: BorderSide(color: Color(0xFF64748B), width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
@@ -112,6 +173,72 @@ class _TpHubScreenState extends State<TpHubScreen> {
                 ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildReseauCard() {
+    return GestureDetector(
+      onTap: () => context.push('/tp/reseau'),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(16),
+          border: Border(
+            left: const BorderSide(color: Color(0xFF00BCD4), width: 3),
+            top: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+            right: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+            bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: const Color(0xFF00BCD4).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(child: Text('🌐', style: TextStyle(fontSize: 24))),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Adressage IP & Binaire',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          '5 modules',
+                          style: TextStyle(color: Color(0xFF00BCD4), fontSize: 9, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Conversion binaire, classes IP, masques, CIDR et calcul de sous-reseaux.',
+                    style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded, color: Colors.white24),
+          ],
+        ),
       ),
     );
   }

@@ -15,11 +15,14 @@ import '../../solo/data/practical_missions_firestore_repository.dart';
 const Color _slate = Color(0xFF94A3B8);
 const Color _surface = Color(0xFF1A1A2E);
 
-/// Mapping trackId → chemin asset JSON du scénario AD.
+/// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
-  'tp_ad_aerotech':    'assets/tp/AD/scenario_a_aerotech.json',
-  'tp_ad_pixel':       'assets/tp/AD/scenario_b_pixel_academy.json',
-  'tp_ad_saint_lazare':'assets/tp/AD/scenario_c_saint_lazare.json',
+  'tp_ad_aerotech':     'assets/tp/AD/scenario_a_aerotech.json',
+  'tp_ad_pixel':        'assets/tp/AD/scenario_b_pixel_academy.json',
+  'tp_ad_saint_lazare': 'assets/tp/AD/scenario_c_saint_lazare.json',
+  'tp_ps_fondamentaux': 'assets/tp/PS/scenario_ps_fondamentaux.json',
+  'tp_ps_systeme':      'assets/tp/PS/scenario_ps_systeme.json',
+  'tp_ps_scripting':    'assets/tp/PS/scenario_ps_scripting.json',
 };
 
 class TpScenarioScreen extends StatefulWidget {

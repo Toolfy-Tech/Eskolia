@@ -1,17 +1,6 @@
-import '../../../core/config/staff_bootstrap.dart';
 import '../../auth/data/user_model.dart';
 
+/// Acces staff base uniquement sur le champ `role` Firestore (admin ou moderator).
 bool userHasStaffAccess(UserModel? user, String? authEmail) {
-  if (user != null && user.isStaff) return true;
-  final uname = user?.username.trim().toLowerCase();
-  if (uname != null &&
-      uname.isNotEmpty &&
-      kAdminNavPrivilegedUsernamesLower.contains(uname)) {
-    return true;
-  }
-  final e = authEmail?.trim().toLowerCase();
-  if (e != null && e.isNotEmpty && kBootstrapStaffEmails.contains(e)) {
-    return true;
-  }
-  return false;
+  return user != null && user.isStaff;
 }

@@ -182,6 +182,7 @@ class BattleState {
     this.allAnswers = const [],
     this.allJudgments = const [],
     this.correctionMode = 'at_end',
+    this.finalCorrectionTriggered = false,
   });
 
   final String lobbyId;
@@ -202,6 +203,8 @@ class BattleState {
   final List<Map<String, String>> allAnswers;
   /// Jugements finaux par question : allJudgments[questionIdx][userId] = true/false/null.
   final List<Map<String, bool?>> allJudgments;
+  /// True quand le prof a déclenché l'affichage de la correction pour les élèves.
+  final bool finalCorrectionTriggered;
 
   bool get isSurvival => gameMode == kLobbyGameModeSurvival;
 }
@@ -399,36 +402,42 @@ class LobbyRepository {
   }
 
   Future<void> startBattleCountdown(String lobbyId, LobbyModel lobby) async {
-    final questions = await _pickBattleQuestions(lobby);
-    if (questions.isEmpty) {
-      throw Exception(
-        'Aucune question trouvée pour cette sélection. '
-        'Vérifie les chapitres et filtres de difficulté choisis.',
-      );
+    try {
+      final questions = await _pickBattleQuestions(lobby);
+      if (questions.isEmpty) {
+        throw Exception(
+          'Aucune question trouvee pour cette selection. '
+          'Verifie les chapitres et filtres de difficulte choisis.',
+        );
+      }
+      final players = lobby.playerMeta.map((p) => _playerToInitialState(p, lobby)).toList();
+
+      await _db.collection('lobbies').doc(lobbyId).update({
+        'status': 'in_progress',
+        'battle': {
+          'phase': 'countdown',
+          'currentQuestion': 0,
+          'totalQuestions': questions.length,
+          'questions': questions.map((q) => q.toMap()).toList(),
+          'players': players.map((p) => _playerToMap(p)).toList(),
+          'timed': false,
+          'gameMode': lobby.gameMode,
+          'correctionMode': lobby.correctionMode,
+          'revealedIndices': 0,
+          'allAnswers': [],
+          'allJudgments': [],
+        },
+      });
+
+      // Petit delai pour laisser le countdown s'afficher.
+      Future.delayed(const Duration(seconds: 4), () {
+        _db.collection('lobbies').doc(lobbyId).update({'battle.phase': 'question'});
+      });
+    } on Exception {
+      // Remise du lobby en etat d'attente pour debloquer les joueurs.
+      await _db.collection('lobbies').doc(lobbyId).update({'status': 'waiting'}).catchError((_) {});
+      rethrow;
     }
-    final players = lobby.playerMeta.map((p) => _playerToInitialState(p, lobby)).toList();
-
-    await _db.collection('lobbies').doc(lobbyId).update({
-      'status': 'in_progress',
-      'battle': {
-        'phase': 'countdown',
-        'currentQuestion': 0,
-        'totalQuestions': questions.length,
-        'questions': questions.map((q) => q.toMap()).toList(),
-        'players': players.map((p) => _playerToMap(p)).toList(),
-        'timed': false,
-        'gameMode': lobby.gameMode,
-        'correctionMode': lobby.correctionMode,
-        'revealedIndices': 0,
-        'allAnswers': [],
-        'allJudgments': [],
-      },
-    });
-
-    // Petit délai pour laisser le countdown s'afficher
-    Future.delayed(const Duration(seconds: 4), () {
-      _db.collection('lobbies').doc(lobbyId).update({'battle.phase': 'question'});
-    });
   }
 
   Future<List<BattleQuestion>> _pickBattleQuestions(LobbyModel l) async {
@@ -854,6 +863,13 @@ class LobbyRepository {
   }
 
   /// Termine la correction finale et affiche les scores.
+  /// Le prof déclenche l'affichage de la correction finale chez tous les élèves.
+  Future<void> triggerFinalCorrection(String lobbyId) async {
+    await _db.collection('lobbies').doc(lobbyId).update({
+      'battle.finalCorrectionTriggered': true,
+    });
+  }
+
   Future<void> finalizeBattle(String lobbyId) async {
     await _db.collection('lobbies').doc(lobbyId).update({
       'status': 'finished',
@@ -927,6 +943,7 @@ class LobbyRepository {
       revealedIndices: m['revealedIndices'] ?? 0,
       allAnswers: allAnswers,
       allJudgments: allJudgments,
+      finalCorrectionTriggered: m['finalCorrectionTriggered'] as bool? ?? false,
     );
   }
 

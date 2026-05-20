@@ -171,8 +171,10 @@ class AuthRepository {
   }) async {
     final emailNorm = email.trim().toLowerCase();
     final aliasId = usernameAliasId(username);
-    if (aliasId.contains('/') || aliasId.contains('\\')) {
-      throw const AuthFailure('Le pseudo ne peut pas contenir / ou \\');
+    if (!RegExp(r'^[a-zA-Z0-9_\-]{3,20}$').hasMatch(username)) {
+      throw const AuthFailure(
+        'Le pseudo doit contenir 3 à 20 caractères alphanumériques (lettres, chiffres, _ ou -).',
+      );
     }
     try {
       await assertUsernameAvailable(username);

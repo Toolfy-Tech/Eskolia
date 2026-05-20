@@ -8,6 +8,8 @@ import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/onboarding/presentation/formation_choice_screen.dart';
+import '../../features/profil/presentation/certificate_screen.dart';
 import '../../features/classement/presentation/leaderboard_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/solo/presentation/practical_missions_screen.dart';
@@ -59,6 +61,13 @@ import '../../features/true_false/presentation/true_false_swipe_screen.dart';
 import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
+import '../../features/tp/reseau/data/network_exercise_engine.dart';
+import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
+import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
+import '../../features/ai/presentation/ai_setup_screen.dart';
+import '../../features/notebook/presentation/notebook_screen.dart';
+import '../../features/notebook/presentation/note_editor_screen.dart';
+import '../../features/notebook/data/note_model.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -111,6 +120,18 @@ final GoRouter appRouter = GoRouter(
       path: '/onboarding',
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const OnboardingScreen()),
     ),
+    GoRoute(
+      path: '/formation-choix',
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const FormationChoiceScreen()),
+    ),
+    GoRoute(
+      path: '/certificate/:formationId',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) {
+        final formationId = state.pathParameters['formationId'] ?? 'optimus';
+        return eskoliaTransitionPage(child: CertificateScreen(formationId: formationId));
+      },
+    ),
 
     // --- ROUTES PLEIN ÉCRAN (HORS SHELL) ---
     GoRoute(
@@ -158,11 +179,25 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/tp/reseau',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const ReseauHubScreen()),
+    ),
+    GoRoute(
+      path: '/tp/reseau/:category',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) {
+        final slug = state.pathParameters['category']!;
+        final cat = _slugToCategory(slug);
+        return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
+      },
+    ),
+    GoRoute(
       path: '/tp/:trackId',
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (context, state) {
         final trackId = state.pathParameters['trackId']!;
-        if (trackId.startsWith('tp_ad_')) {
+        if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
           return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
         }
         return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));
@@ -265,6 +300,18 @@ final GoRouter appRouter = GoRouter(
         child: ProfileScreen(uid: state.pathParameters['uid']!),
       ),
     ),
+    GoRoute(
+      path: '/ai/setup',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const AiSetupScreen()),
+    ),
+    GoRoute(
+      path: '/notebook/edit',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) => eskoliaTransitionPage(
+        child: NoteEditorScreen(note: state.extra as NoteModel?),
+      ),
+    ),
 
     // --- SHELL ROUTE (AVEC BOTTOM NAV) ---
     ShellRoute(
@@ -355,6 +402,10 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const DocsScreen()),
         ),
         GoRoute(
+          path: '/notebook',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const NotebookScreen()),
+        ),
+        GoRoute(
           path: '/profil',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const ProfileScreen()),
         ),
@@ -390,6 +441,14 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+NetworkExerciseCategory _slugToCategory(String slug) => switch (slug) {
+  'binaryConversion' => NetworkExerciseCategory.binaryConversion,
+  'ipClass'          => NetworkExerciseCategory.ipClass,
+  'defaultMask'      => NetworkExerciseCategory.defaultMask,
+  'cidrNotation'     => NetworkExerciseCategory.cidrNotation,
+  _                  => NetworkExerciseCategory.subnetCalc,
+};
 
 class AuthRefreshNotifier extends ChangeNotifier {
   AuthRefreshNotifier() {

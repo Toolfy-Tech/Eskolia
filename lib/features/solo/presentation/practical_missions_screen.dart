@@ -156,35 +156,93 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
                           ),
                         )
                       : _error != null
-                          ? Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(hPad),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      '$_error',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.red.shade200,
-                                      ),
+                          ? _error is UnimplementedError
+                              ? _buildComingSoon(context, hPad)
+                              : Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(hPad),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '$_error',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.red.shade200,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        EskoliaButton(
+                                          label: 'Retour',
+                                          variant: EskoliaButtonVariant.secondary,
+                                          onPressed: () => context.pop(),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 16),
-                                    EskoliaButton(
-                                      label: 'Retour',
-                                      variant: EskoliaButtonVariant.secondary,
-                                      onPressed: () => context.pop(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                                  ),
+                                )
                           : _buildContent(context, hPad),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildComingSoon(BuildContext context, double hPad) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(hPad),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: EskoliaVisual.neonCyan.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: EskoliaVisual.neonCyan.withValues(alpha: 0.3),
+                ),
+              ),
+              child: const Icon(
+                Icons.construction_rounded,
+                color: EskoliaVisual.neonCyan,
+                size: 36,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Contenu en cours de preparation',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Ce parcours missions sera disponible prochainement.',
+              style: TextStyle(
+                color: _slate.withValues(alpha: 0.85),
+                fontSize: 14,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+            EskoliaButton(
+              label: 'Retour aux TP',
+              variant: EskoliaButtonVariant.secondary,
+              icon: Icons.arrow_back_rounded,
+              onPressed: () => context.go('/tp'),
+            ),
+          ],
+        ),
       ),
     );
   }

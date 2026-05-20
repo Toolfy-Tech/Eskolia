@@ -190,7 +190,10 @@ class _BattleScreenState extends State<BattleScreen> {
             ? _buildPerQuestionJudgment(context, s)
             : _buildStudentJudgmentView(s);
       case 'final_judgment':
-        return _isHost ? _buildFinalJudgment(context, s) : _buildWaitingFinalSummary();
+        if (_isHost) return _buildFinalJudgment(context, s);
+        return s.finalCorrectionTriggered
+            ? _buildFinalCorrectionReadonly(s)
+            : _buildWaitingFinalSummary();
       case 'finished': return _buildFinished(context, s);
       default: return const Center(child: CircularProgressIndicator());
     }
@@ -687,6 +690,166 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
+  /// Vue eleve : correction finale declenchee par le prof — lecture seule.
+  Widget _buildFinalCorrectionReadonly(BattleState s) {
+    final me = _me(s);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+          child: Row(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(left: BorderSide(color: _cyan, width: 3)),
+                ),
+                padding: const EdgeInsets.only(left: 10),
+                child: const Text(
+                  'CORRECTION FINALE',
+                  style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.88),
+                ),
+              ),
+              const Spacer(),
+              if (me != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _violet.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _violet.withValues(alpha: 0.4)),
+                  ),
+                  child: Text(
+                    '${me.score.toStringAsFixed(0)} pts',
+                    style: const TextStyle(color: _violet, fontWeight: FontWeight.w800, fontSize: 13),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
+            itemCount: s.questions.length,
+            itemBuilder: (context, qi) {
+              final q = s.questions[qi];
+              final answers = qi < s.allAnswers.length ? s.allAnswers[qi] : <String, String>{};
+              final judgments = qi < s.allJudgments.length ? s.allJudgments[qi] : <String, bool?>{};
+              final myAnswer = me != null ? (answers[me.userId] ?? '—') : '—';
+              final myJudgment = me != null ? judgments[me.userId] : null;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Q${qi + 1}', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w700)),
+                            const SizedBox(height: 4),
+                            Text(q.question, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600, height: 1.3)),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: _green.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: _green.withValues(alpha: 0.3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.check_rounded, color: _green, size: 14),
+                                  const SizedBox(width: 6),
+                                  Expanded(child: Text(q.answer, style: const TextStyle(color: _green, fontSize: 13, fontWeight: FontWeight.w600))),
+                                ],
+                              ),
+                            ),
+                            if (me != null) ...[
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: myJudgment == null
+                                      ? Colors.white.withValues(alpha: 0.05)
+                                      : (myJudgment ? _green.withValues(alpha: 0.08) : _red.withValues(alpha: 0.08)),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: myJudgment == null
+                                        ? Colors.white12
+                                        : (myJudgment ? _green.withValues(alpha: 0.3) : _red.withValues(alpha: 0.3)),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      myJudgment == null
+                                          ? Icons.hourglass_empty_rounded
+                                          : (myJudgment ? Icons.check_circle_rounded : Icons.cancel_rounded),
+                                      color: myJudgment == null ? _slate : (myJudgment ? _green : _red),
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        'Ta reponse : $myAnswer',
+                                        style: TextStyle(
+                                          color: myJudgment == null ? _slate : (myJudgment ? _green : _red),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const Divider(color: Colors.white12, height: 1),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 6,
+                          children: s.players.map((p) {
+                            final j = judgments[p.userId];
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(p.avatar, style: const TextStyle(fontSize: 14)),
+                                const SizedBox(width: 4),
+                                Text(p.displayName, style: TextStyle(color: _slate, fontSize: 11)),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  j == null ? Icons.hourglass_empty_rounded : (j ? Icons.check_rounded : Icons.close_rounded),
+                                  color: j == null ? _slate : (j ? _green : _red),
+                                  size: 13,
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   /// Vue élève pendant la correction finale groupée (phase 'final_judgment').
   Widget _buildWaitingFinalSummary() {
     return Padding(
@@ -850,7 +1013,23 @@ class _BattleScreenState extends State<BattleScreen> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+          child: EskoliaButton(
+            label: s.finalCorrectionTriggered
+                ? 'Correction visible par les eleves'
+                : 'Declencher la correction finale',
+            icon: s.finalCorrectionTriggered
+                ? Icons.visibility_rounded
+                : Icons.send_rounded,
+            variant: EskoliaButtonVariant.secondary,
+            expand: true,
+            onPressed: s.finalCorrectionTriggered
+                ? null
+                : () => _repo.triggerFinalCorrection(widget.lobbyId),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           child: EskoliaButton(
             label: 'Afficher les scores finaux',
             icon: Icons.emoji_events_rounded,
