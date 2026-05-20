@@ -213,7 +213,8 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       setState(() {
         _state   = s;
         _loading = false;
-        if (s.isConnected && s.apiKey != null) {
+        // Ne pas copier le sentinel 'ollama' dans le champ cle API.
+        if (s.isConnected && s.apiKey != null && !s.provider.isLocal) {
           _keyController.text = s.apiKey!;
           _detected = s.provider;
         }
@@ -294,8 +295,8 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                   const SizedBox(height: 10),
                   _buildDisconnectButton(),
                 ],
-                // Avertissement contextuel
-                if (_detected != AiProvider.unknown) ...[
+                // Avertissement contextuel (cloud providers uniquement)
+                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
                   const SizedBox(height: 20),
                   _buildWarningCard(_detected),
                 ],

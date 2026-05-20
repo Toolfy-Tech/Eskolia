@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../ai/data/ai_chat_service.dart';
 import '../../../ai/data/ai_key_repository.dart';
+import '../../../ai/data/ai_provider.dart';
 import 'tp_binaire_data.dart';
 
 class TpBinaireAiGenerator {
@@ -62,20 +65,31 @@ Toutes les réponses mathématiques DOIVENT être correctes. AUCUN markdown, UNI
       TpDifficulty.difficile => 'difficile',
     };
 
+    // Lecture des settings Ollama si le provider est local.
+    String ollamaUrl   = 'http://localhost:11434';
+    String ollamaModel = 'gemma3';
+    if (state.provider == AiProvider.ollama) {
+      final prefs = await SharedPreferences.getInstance();
+      ollamaUrl   = prefs.getString('ollama_url')   ?? ollamaUrl;
+      ollamaModel = prefs.getString('ollama_model') ?? ollamaModel;
+    }
+
     final buf = StringBuffer();
     await for (final chunk in service.streamChat(
-      apiKey: state.apiKey!,
+      apiKey: state.apiKey ?? 'ollama',
       provider: state.provider,
       systemPrompt: _system,
       messages: [
         AiMessage(
           role: 'user',
-          content: 'Génère un TP de niveau "$diffLabel". Retourne uniquement le JSON.',
+          content: 'Genere un TP de niveau "$diffLabel". Retourne uniquement le JSON.',
         ),
       ],
       maxTokens: 4096,
       temperature: 0.25,
       jsonMode: true,
+      ollamaBaseUrl: ollamaUrl,
+      ollamaModel: ollamaModel,
     )) {
       buf.write(chunk);
     }
