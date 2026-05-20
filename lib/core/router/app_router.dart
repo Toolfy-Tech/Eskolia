@@ -61,10 +61,8 @@ import '../../features/true_false/presentation/true_false_swipe_screen.dart';
 import '../../features/lobby/presentation/battle_screen.dart';
 import '../../features/tp/presentation/tp_hub_screen.dart';
 import '../../features/tp/presentation/tp_scenario_screen.dart';
-import '../../features/tp/reseau/data/network_exercise_engine.dart';
 import '../../features/tp/reseau/data/tp_binaire_data.dart';
 import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
-import '../../features/tp/reseau/presentation/reseau_session_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_hub_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_session_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
@@ -408,6 +406,13 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const TpBinaireHubScreen()),
         ),
         GoRoute(
+          path: '/tp/binaire/live',
+          pageBuilder: (context, state) {
+            final tp = state.extra as TpBinaire;
+            return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
+          },
+        ),
+        GoRoute(
           path: '/tp/binaire/:id',
           pageBuilder: (context, state) {
             final id = state.pathParameters['id']!;
@@ -416,14 +421,6 @@ final GoRouter appRouter = GoRouter(
               orElse: () => allTpBinaire.first,
             );
             return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
-          },
-        ),
-        GoRoute(
-          path: '/tp/reseau/:category',
-          pageBuilder: (context, state) {
-            final slug = state.pathParameters['category']!;
-            final cat = _slugToCategory(slug);
-            return eskoliaTransitionPage(child: ReseauSessionScreen(category: cat));
           },
         ),
         GoRoute(
@@ -453,13 +450,6 @@ final GoRouter appRouter = GoRouter(
   ],
 );
 
-NetworkExerciseCategory _slugToCategory(String slug) => switch (slug) {
-  'binaryConversion' => NetworkExerciseCategory.binaryConversion,
-  'ipClass'          => NetworkExerciseCategory.ipClass,
-  'defaultMask'      => NetworkExerciseCategory.defaultMask,
-  'cidrNotation'     => NetworkExerciseCategory.cidrNotation,
-  _                  => NetworkExerciseCategory.subnetCalc,
-};
 
 class AuthRefreshNotifier extends ChangeNotifier {
   AuthRefreshNotifier() {
