@@ -11,6 +11,7 @@ import '../../../shared/widgets/gradient_border_card.dart';
 import '../../ai/data/ai_key_repository.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../economy/data/badge_catalog.dart';
+import '../../parcours/data/parcours_repository.dart';
 import '../../parcours/data/tip_progress_repository.dart';
 import '../../quiz/services/revision_pool_repository.dart';
 import '../data/profile_repository.dart';
@@ -53,8 +54,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<({int optimusCompleted, int totalChapters, int poolPins})> _loadLearningSnapshot() async {
     final done = await OptimusProgressRepository().readCompletedIds();
     final parcoursDone = done.where((id) => id.startsWith('optimus_')).length;
-    // Mocking total chapters for UI display as per plan "12/23"
-    const totalChapters = 23; 
+    final catalogCount = ParcoursRepository.moduleCatalog.keys
+        .where((k) => k.startsWith('optimus_'))
+        .length;
+    final totalChapters = catalogCount > 0 ? catalogCount : 23;
     final pool = await RevisionPoolRepository().readEntries();
     return (optimusCompleted: parcoursDone, totalChapters: totalChapters, poolPins: pool.length);
   }
@@ -345,6 +348,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 12),
                   LinearProgressIndicator(value: ratio, backgroundColor: Colors.white10, color: _cyan, minHeight: 8),
+                  if (ratio >= 1.0) ...[
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () => context.push('/certificate/optimus'),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFFFD166).withValues(alpha: 0.5)),
+                          color: const Color(0xFFFFD166).withValues(alpha: 0.07),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.emoji_events_rounded, color: Color(0xFFFFD166), size: 18),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Voir mon certificat',
+                              style: TextStyle(
+                                color: Color(0xFFFFD166),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(Icons.arrow_forward_ios_rounded, color: const Color(0xFFFFD166).withValues(alpha: 0.7), size: 12),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

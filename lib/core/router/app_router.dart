@@ -8,6 +8,8 @@ import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/register_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/onboarding/presentation/formation_choice_screen.dart';
+import '../../features/profil/presentation/certificate_screen.dart';
 import '../../features/classement/presentation/leaderboard_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/solo/presentation/practical_missions_screen.dart';
@@ -117,6 +119,18 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/onboarding',
       pageBuilder: (context, state) => eskoliaTransitionPage(child: const OnboardingScreen()),
+    ),
+    GoRoute(
+      path: '/formation-choix',
+      pageBuilder: (context, state) => eskoliaTransitionPage(child: const FormationChoiceScreen()),
+    ),
+    GoRoute(
+      path: '/certificate/:formationId',
+      parentNavigatorKey: _rootNavigatorKey,
+      pageBuilder: (context, state) {
+        final formationId = state.pathParameters['formationId'] ?? 'optimus';
+        return eskoliaTransitionPage(child: CertificateScreen(formationId: formationId));
+      },
     ),
 
     // --- ROUTES PLEIN ÉCRAN (HORS SHELL) ---
