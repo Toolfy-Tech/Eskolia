@@ -57,3 +57,4 @@ node_modules/
 
 # Claude Code — permissions locales (chemins machine-spécifiques)
 .claude/settings.local.json
+.claude/worktrees/
