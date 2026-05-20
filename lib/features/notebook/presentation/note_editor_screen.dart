@@ -419,12 +419,61 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            EskoliaButton(
-              label: _generating ? 'Generation en cours...' : 'Generer les cours et quiz',
-              icon: _generating ? Icons.hourglass_empty_rounded : Icons.auto_awesome_rounded,
-              variant: EskoliaButtonVariant.primary,
-              expand: true,
-              onPressed: _generating ? null : () => _generateAll(aiState),
+            EskoliaCardContent(
+              accentBorderColor: _violet,
+              padding: const EdgeInsets.all(14),
+              onTap: _generating ? null : () => _generateAll(aiState),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: _violet.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: _generating
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: _violet,
+                                strokeWidth: 2,
+                                backgroundColor: Colors.white.withValues(alpha: 0.1),
+                              ),
+                            )
+                          : const Icon(Icons.auto_awesome_rounded, color: _violet, size: 22),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _generating ? 'Generation en cours...' : 'Generer les cours et quiz',
+                          style: TextStyle(
+                            color: _generating ? _slate : Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Mini-cours Markdown + quiz par sujet detecte',
+                          style: TextStyle(
+                            color: _slate.withValues(alpha: 0.6),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!_generating)
+                    const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+                ],
+              ),
             ),
             if (_generating) ...[
               const SizedBox(height: 20),
