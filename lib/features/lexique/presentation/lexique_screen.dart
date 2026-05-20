@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -17,7 +16,14 @@ const Color _green  = Color(0xFF43E97B);
 const Color _red    = Color(0xFFEF4444);
 const Color _amber  = Color(0xFFFFC107);
 
-enum _Phase { intro, playing, done }
+enum _Phase { intro, worksheet, corrected }
+
+class _FieldState {
+  final ctrl = TextEditingController();
+  bool? correct;
+
+  void dispose() => ctrl.dispose();
+}
 
 class LexiqueScreen extends StatefulWidget {
   const LexiqueScreen({super.key});
@@ -27,86 +33,65 @@ class LexiqueScreen extends StatefulWidget {
 }
 
 class _LexiqueScreenState extends State<LexiqueScreen> {
-  static const _questionsPerRound = 20;
-  static const _secondsPerQuestion = 10;
-
   _Phase _phase = _Phase.intro;
-  List<LexiqueEntry> _questions = [];
-  int _currentIndex = 0;
-  List<LexiqueEntry> _options = [];
-  int? _selectedOption;
-  bool _answered = false;
+  int _count = 15;
+  List<LexiqueEntry> _entries = [];
+  List<_FieldState> _fields = [];
   int _score = 0;
-  int _timeLeft = _secondsPerQuestion;
-  Timer? _timer;
 
   final _rng = Random();
 
   @override
   void dispose() {
-    _timer?.cancel();
+    for (final f in _fields) f.dispose();
     super.dispose();
   }
 
-  void _startGame() {
+  void _start() {
     final all = allLexique.toList()..shuffle(_rng);
+    final selected = all.take(_count).toList();
+    for (final f in _fields) f.dispose();
     setState(() {
-      _questions = all.take(_questionsPerRound).toList();
-      _currentIndex = 0;
-      _score = 0;
-      _phase = _Phase.playing;
-    });
-    _loadQuestion();
-  }
-
-  void _loadQuestion() {
-    final correct = _questions[_currentIndex];
-    final wrongPool = allLexique.where((e) => e.acronym != correct.acronym).toList()
-      ..shuffle(_rng);
-    final opts = [correct, ...wrongPool.take(3)]..shuffle(_rng);
-    setState(() {
-      _options = opts;
-      _selectedOption = null;
-      _answered = false;
-      _timeLeft = _secondsPerQuestion;
-    });
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_timeLeft > 1) {
-        setState(() => _timeLeft--);
-      } else {
-        _autoAdvance();
-      }
+      _entries = selected;
+      _fields  = List.generate(_count, (_) => _FieldState());
+      _score   = 0;
+      _phase   = _Phase.worksheet;
     });
   }
 
-  void _autoAdvance() {
-    _timer?.cancel();
-    if (!_answered) setState(() { _answered = true; _selectedOption = null; });
-    Future.delayed(const Duration(milliseconds: 1300), _nextQuestion);
-  }
-
-  void _selectOption(int idx) {
-    if (_answered) return;
-    _timer?.cancel();
-    final correct = _options[idx].acronym == _questions[_currentIndex].acronym;
-    setState(() {
-      _selectedOption = idx;
-      _answered = true;
-      if (correct) _score++;
-    });
-    Future.delayed(const Duration(milliseconds: 1300), _nextQuestion);
-  }
-
-  void _nextQuestion() {
-    if (!mounted) return;
-    if (_currentIndex + 1 >= _questions.length) {
-      setState(() => _phase = _Phase.done);
-    } else {
-      setState(() => _currentIndex++);
-      _loadQuestion();
+  void _correct() {
+    var score = 0;
+    for (int i = 0; i < _entries.length; i++) {
+      final ok = _check(_fields[i].ctrl.text, _entries[i]);
+      _fields[i].correct = ok;
+      if (ok) score++;
     }
+    setState(() {
+      _score = score;
+      _phase = _Phase.corrected;
+    });
+    FocusScope.of(context).unfocus();
   }
+
+  void _restart() {
+    setState(() => _phase = _Phase.intro);
+  }
+
+  // 65 % des mots-clés de l'expansion doivent être présents dans la réponse.
+  bool _check(String answer, LexiqueEntry entry) {
+    if (answer.trim().isEmpty) return false;
+    final expansion = entry.definition.split(' — ').first.toLowerCase();
+    final ansLow    = answer.toLowerCase();
+    final expWords  = expansion
+        .split(RegExp(r'\s+'))
+        .where((w) => w.length > 2)
+        .toList();
+    if (expWords.isEmpty) return false;
+    final hits = expWords.where((w) => ansLow.contains(w)).length;
+    return hits / expWords.length >= 0.65;
+  }
+
+  String _expansion(LexiqueEntry e) => e.definition.split(' — ').first;
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +104,24 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           EskoliaShellBody(
             safeAreaTop: false,
             child: switch (_phase) {
-              _Phase.intro   => _buildIntro(),
-              _Phase.playing => _buildGame(),
-              _Phase.done    => _buildDone(),
+              _Phase.intro      => _buildIntro(),
+              _Phase.worksheet  => _buildWorksheet(corrected: false),
+              _Phase.corrected  => _buildWorksheet(corrected: true),
             },
           ),
         ],
+      ),
+      floatingActionButton: _phase == _Phase.intro ? null : FloatingActionButton.extended(
+        backgroundColor: _phase == _Phase.corrected ? _violet : _green,
+        foregroundColor: Colors.white,
+        onPressed: _phase == _Phase.corrected ? _restart : _correct,
+        icon: Icon(_phase == _Phase.corrected
+            ? Icons.replay_rounded
+            : Icons.check_rounded),
+        label: Text(
+          _phase == _Phase.corrected ? 'Recommencer' : 'Corriger tout',
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }
@@ -134,7 +131,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   Widget _buildIntro() {
     final hPad = EskoliaLayout.screenPaddingH;
     return ListView(
-      padding: EdgeInsets.fromLTRB(hPad, 24, hPad, 100),
+      padding: EdgeInsets.fromLTRB(hPad, 24, hPad, 120),
       children: [
         EskoliaCardHero(
           child: Column(
@@ -143,26 +140,24 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
               const SizedBox(height: 12),
               const Text(
                 'Lexique IT',
-                style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Connais-tu tes acronymes IT ? Retrouve la bonne definition parmi 4 choix avant la fin du compte a rebours.',
+                'Une liste d\'acronymes t\'est presentee — ecris la signification de chacun, puis corrige.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+                style: TextStyle(
+                  color: _slate.withValues(alpha: 0.9),
+                  fontSize: 13,
+                  height: 1.5,
+                ),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _statChip('📝 ${allLexique.length} termes',      _violet),
-            _statChip('⏱ 10 s / question',                   _amber),
-            _statChip('🎯 $_questionsPerRound questions',     _green),
-          ],
         ),
         const SizedBox(height: 20),
         Container(
@@ -172,8 +167,69 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           padding: const EdgeInsets.only(left: 10),
           margin: const EdgeInsets.only(bottom: 12),
           child: const Text(
-            'CATEGORIES',
-            style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: 0.8),
+            'NOMBRE D\'ACRONYMES',
+            style: TextStyle(
+              color: _slate,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
+            ),
+          ),
+        ),
+        Row(
+          children: [10, 15, 20].map((n) {
+            final selected = _count == n;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: n != 20 ? 10 : 0),
+                child: GestureDetector(
+                  onTap: () => setState(() => _count = n),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? _violet.withValues(alpha: 0.15)
+                          : Colors.white.withValues(alpha: 0.04),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selected
+                            ? _violet.withValues(alpha: 0.5)
+                            : Colors.white.withValues(alpha: 0.08),
+                        width: selected ? 1.5 : 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$n',
+                        style: TextStyle(
+                          color: selected ? _violet : _slate,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          decoration: const BoxDecoration(
+            border: Border(left: BorderSide(color: _slate, width: 3)),
+          ),
+          padding: const EdgeInsets.only(left: 10),
+          margin: const EdgeInsets.only(bottom: 12),
+          child: const Text(
+            'CATEGORIES COUVERTES',
+            style: TextStyle(
+              color: _slate,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.8,
+            ),
           ),
         ),
         for (final cat in lexiqueCategories)
@@ -185,9 +241,22 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                 children: [
                   Text(cat.emoji, style: const TextStyle(fontSize: 18)),
                   const SizedBox(width: 12),
-                  Text(cat.name, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                  Text(
+                    cat.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const Spacer(),
-                  Text('${cat.count} termes', style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12)),
+                  Text(
+                    '${cat.count} termes',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -197,239 +266,233 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           width: double.infinity,
           height: 52,
           child: FilledButton.icon(
-            onPressed: _startGame,
+            onPressed: _start,
             style: FilledButton.styleFrom(
               backgroundColor: _violet,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
             icon: const Icon(Icons.play_arrow_rounded),
-            label: const Text('Commencer', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            label: const Text(
+              'Commencer',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ─── Game ─────────────────────────────────────────────────────────────────
+  // ─── Worksheet / Corrected ────────────────────────────────────────────────
 
-  Widget _buildGame() {
-    final question   = _questions[_currentIndex];
-    final correctIdx = _options.indexWhere((e) => e.acronym == question.acronym);
-    final progress   = (_currentIndex + 1) / _questions.length;
-    final timerPct   = _timeLeft / _secondsPerQuestion;
+  Widget _buildWorksheet({required bool corrected}) {
+    final hPad = EskoliaLayout.screenPaddingH;
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('${_currentIndex + 1} / ${_questions.length}', style: const TextStyle(color: _slate, fontSize: 12)),
-                  Text('Score : $_score', style: const TextStyle(color: _violet, fontSize: 12, fontWeight: FontWeight.w700)),
-                ],
-              ),
-              const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.white.withValues(alpha: 0.06),
-                  color: _violet,
-                  minHeight: 4,
-                ),
-              ),
-              const SizedBox(height: 6),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(3),
-                child: LinearProgressIndicator(
-                  value: timerPct,
-                  backgroundColor: Colors.white.withValues(alpha: 0.06),
-                  color: _timeLeft <= 3 ? _red : _amber,
-                  minHeight: 3,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  '$_timeLeft s',
-                  style: TextStyle(
-                    color: _timeLeft <= 3 ? _red : _slate,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: EskoliaCardHero(
-            child: Column(
-              children: [
-                Text(
-                  question.acronym,
-                  style: const TextStyle(color: Colors.white, fontSize: 38, fontWeight: FontWeight.w900, letterSpacing: 3),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  question.category,
-                  style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
+        // Score bar (visible après correction)
+        if (corrected) _buildScoreBar(),
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 80),
-            itemCount: _options.length,
-            itemBuilder: (_, idx) {
-              final isSelected = _selectedOption == idx;
-              final isCorrect  = idx == correctIdx;
-              Color? borderColor;
-              Color? bgColor;
-              if (_answered) {
-                if (isCorrect) {
-                  borderColor = _green;
-                  bgColor     = _green.withValues(alpha: 0.08);
-                } else if (isSelected) {
-                  borderColor = _red;
-                  bgColor     = _red.withValues(alpha: 0.08);
-                }
-              }
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: GestureDetector(
-                  onTap: _answered ? null : () => _selectOption(idx),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: bgColor ?? const Color(0xFF1E1E38),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: borderColor ?? Colors.white.withValues(alpha: 0.10),
-                        width: borderColor != null ? 1.5 : 0.5,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: (borderColor ?? _violet).withValues(alpha: 0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: _answered && isCorrect
-                                ? const Icon(Icons.check_rounded, color: _green, size: 16)
-                                : _answered && isSelected
-                                    ? const Icon(Icons.close_rounded, color: _red, size: 16)
-                                    : Text(
-                                        String.fromCharCode(65 + idx),
-                                        style: TextStyle(
-                                          color: borderColor ?? _violet,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            _options[idx].definition,
-                            style: TextStyle(
-                              color: _answered && isCorrect
-                                  ? _green
-                                  : _answered && isSelected
-                                      ? _red.withValues(alpha: 0.9)
-                                      : Colors.white.withValues(alpha: 0.9),
-                              fontSize: 13,
-                              height: 1.4,
-                              fontWeight: _answered && isCorrect ? FontWeight.w600 : FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+            padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
+            itemCount: _entries.length,
+            itemBuilder: (_, i) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildEntry(i, corrected: corrected),
+            ),
           ),
         ),
       ],
     );
   }
 
-  // ─── Done ─────────────────────────────────────────────────────────────────
-
-  Widget _buildDone() {
-    final hPad  = EskoliaLayout.screenPaddingH;
-    final total = _questions.length;
-    final pct   = _score / total;
-    final (emoji, msg, color) = pct >= 0.8
-        ? ('🏆', 'Excellent !', _green)
-        : pct >= 0.6
-            ? ('👍', 'Bon score !', _amber)
-            : ('📚', 'Continue a t\'entrainer !', _red);
-
-    return ListView(
-      padding: EdgeInsets.fromLTRB(hPad, 40, hPad, 100),
-      children: [
-        EskoliaCardHero(
-          child: Column(
+  Widget _buildScoreBar() {
+    final ratio = _total > 0 ? _score / _total : 0.0;
+    final color = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    return Container(
+      color: EskoliaVisual.bgElevated,
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 56)),
-              const SizedBox(height: 12),
-              Text(msg, style: TextStyle(color: color, fontSize: 22, fontWeight: FontWeight.w800)),
-              const SizedBox(height: 8),
               Text(
-                '$_score / $total bonnes reponses',
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                '$_score / $_total corrects',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
-              const SizedBox(height: 4),
               Text(
-                '${(pct * 100).round()} %',
-                style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 13),
+                '${(ratio * 100).round()} %',
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 24),
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: FilledButton.icon(
-            onPressed: _startGame,
-            style: FilledButton.styleFrom(
-              backgroundColor: _violet,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: ratio,
+              backgroundColor: Colors.white.withValues(alpha: 0.08),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+              minHeight: 5,
             ),
-            icon: const Icon(Icons.replay_rounded),
-            label: const Text('Rejouer', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _statChip(String label, Color color) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+  int get _total => _fields.length;
+
+  Widget _buildEntry(int i, {required bool corrected}) {
+    final entry   = _entries[i];
+    final field   = _fields[i];
+    final correct = field.correct;
+
+    Color borderColor = Colors.white.withValues(alpha: 0.10);
+    if (corrected && correct == true)  borderColor = _green;
+    if (corrected && correct == false) borderColor = _red;
+
+    return EskoliaCardContent(
+      accentBorderColor: corrected ? borderColor : null,
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                entry.acronym,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                  fontFamily: 'monospace',
+                ),
+              ),
+              const Spacer(),
+              _catBadge(entry.category),
+              if (corrected) ...[
+                const SizedBox(width: 8),
+                Icon(
+                  correct == true ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                  color: correct == true ? _green : _red,
+                  size: 18,
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: field.ctrl,
+            enabled: !corrected,
+            maxLines: 2,
+            minLines: 1,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontFamily: 'monospace',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Signification de ${entry.acronym}...',
+              hintStyle: TextStyle(
+                color: _slate.withValues(alpha: 0.45),
+                fontSize: 13,
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              filled: true,
+              fillColor: Colors.white.withValues(alpha: corrected ? 0.03 : 0.06),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.10)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.10)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: _violet, width: 1.5),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: corrected && correct == true
+                      ? _green.withValues(alpha: 0.4)
+                      : corrected
+                          ? _red.withValues(alpha: 0.4)
+                          : Colors.white.withValues(alpha: 0.08),
+                ),
+              ),
+            ),
+          ),
+          // Réponse attendue si faux
+          if (corrected && correct == false) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: _amber.withValues(alpha: 0.07),
+                borderRadius: BorderRadius.circular(8),
+                border: Border(
+                  left: BorderSide(color: _amber.withValues(alpha: 0.6), width: 3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.arrow_right_rounded, color: _amber, size: 16),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      _expansion(entry),
+                      style: const TextStyle(
+                        color: _amber,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _catBadge(String cat) {
+    final (label, color) = switch (cat) {
+      'reseau'   => ('Réseau',       _violet),
+      'windows'  => ('Windows/AD',   const Color(0xFF00BCD4)),
+      'securite' => ('Sécurité',     _red),
+      _          => ('Matériel/OS',  _slate),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
         ),
-        child: Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
-      );
+      ),
+    );
+  }
 }

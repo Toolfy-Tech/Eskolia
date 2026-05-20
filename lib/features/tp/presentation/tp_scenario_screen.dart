@@ -9,11 +9,12 @@ import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
 
 const Color _slate = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1A1A2E);
+const Color _surface = Color(0xFF1E1E38);
 
 /// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
@@ -149,13 +150,8 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
 
         // ── Context intro ────────────────────────────────────────
         if ((s['context_intro'] as String?)?.isNotEmpty == true) ...[
-          Container(
+          EskoliaCardContent(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-            ),
             child: Text(
               s['context_intro'] as String,
               style: TextStyle(
@@ -286,7 +282,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: total > 0 ? done / total : 0,
-                backgroundColor: Colors.white10,
+                backgroundColor: Colors.white.withValues(alpha: 0.10),
                 color: const Color(0xFF6C63FF),
                 minHeight: 6,
               ),
@@ -517,7 +513,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: Colors.white.withValues(alpha: 0.24),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -549,7 +545,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                   ],
                 ),
               ),
-              const Divider(color: Colors.white12, height: 24),
+              Divider(color: Colors.white.withValues(alpha: 0.12), height: 24),
               // Contenu scrollable
               Expanded(
                 child: ListView(
