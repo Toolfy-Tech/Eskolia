@@ -11,6 +11,7 @@ const Color _slateLight = Color(0xFF94A3B8);
 const Color _cyan = Color(0xFF00BCD4);
 const Color _orange = Color(0xFFFF9800);
 const Color _green = Color(0xFF43E97B);
+const Color _violet = Color(0xFF6C63FF);
 
 class SoloScreen extends StatefulWidget {
   const SoloScreen({super.key});
@@ -73,6 +74,14 @@ class _SoloScreenState extends State<SoloScreen> {
                         icon: Icons.style_rounded,
                         accentColor: _green,
                         onTap: () => context.push('/flashcards'),
+                      ),
+                      const SizedBox(height: 12),
+                      _SoloMenuCard(
+                        title: 'Lexique IT',
+                        subtitle: 'Retrouve la definition des acronymes IT avant la fin du compte a rebours.',
+                        icon: Icons.abc_rounded,
+                        accentColor: _violet,
+                        onTap: () => context.push('/lexique'),
                       ),
                       const SizedBox(height: 32),
 

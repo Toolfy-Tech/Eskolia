@@ -464,7 +464,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
   }
 }
 
-class _MissionDetailSheet extends StatelessWidget {
+class _MissionDetailSheet extends StatefulWidget {
   const _MissionDetailSheet({
     required this.mission,
     required this.flatIndex,
@@ -478,14 +478,26 @@ class _MissionDetailSheet extends StatelessWidget {
   final VoidCallback onComplete;
 
   @override
+  State<_MissionDetailSheet> createState() => _MissionDetailSheetState();
+}
+
+class _MissionDetailSheetState extends State<_MissionDetailSheet> {
+  final Map<String, bool> _expanded = {
+    'context':  false,
+    'steps':    false,
+    'expected': false,
+    'help':     false,
+  };
+
+  @override
   Widget build(BuildContext context) {
-    final title = mission['title'] as String? ?? '';
-    final objective = mission['objective'] as String? ?? '';
-    final missionContext = mission['context'] as String? ?? '';
-    final steps = (mission['steps'] as List<dynamic>?)?.cast<String>() ?? [];
-    final expected = (mission['expected_result'] as List<dynamic>?)?.cast<String>() ?? [];
-    final helpMap = mission['help'] as Map<String, dynamic>?;
-    final minutes = mission['estimated_minutes'] as int? ?? 0;
+    final title = widget.mission['title'] as String? ?? '';
+    final objective = widget.mission['objective'] as String? ?? '';
+    final missionContext = widget.mission['context'] as String? ?? '';
+    final steps = (widget.mission['steps'] as List<dynamic>?)?.cast<String>() ?? [];
+    final expected = (widget.mission['expected_result'] as List<dynamic>?)?.cast<String>() ?? [];
+    final helpMap = widget.mission['help'] as Map<String, dynamic>?;
+    final minutes = widget.mission['estimated_minutes'] as int? ?? 0;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
@@ -520,7 +532,7 @@ class _MissionDetailSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Mission ${flatIndex + 1}',
+                            'Mission ${widget.flatIndex + 1}',
                             style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
@@ -551,83 +563,91 @@ class _MissionDetailSheet extends StatelessWidget {
                       const SizedBox(height: 16),
                     ],
                     if (missionContext.isNotEmpty) ...[
-                      _sectionTitle('📖 Contexte'),
+                      _collapsibleSection(
+                        key: 'context',
+                        title: '📖 Contexte',
+                        child: _card(Text(missionContext, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.5))),
+                      ),
                       const SizedBox(height: 8),
-                      _card(Text(missionContext, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.5))),
-                      const SizedBox(height: 16),
                     ],
                     if (steps.isNotEmpty) ...[
-                      _sectionTitle('📋 Étapes à réaliser'),
-                      const SizedBox(height: 8),
-                      _card(Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: steps.asMap().entries.map((e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 22,
-                                height: 22,
-                                margin: const EdgeInsets.only(top: 1, right: 10),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                      _collapsibleSection(
+                        key: 'steps',
+                        title: '📋 Étapes à réaliser',
+                        child: _card(Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: steps.asMap().entries.map((e) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 22,
+                                  height: 22,
+                                  margin: const EdgeInsets.only(top: 1, right: 10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text('${e.key + 1}', style: const TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.bold)),
                                 ),
-                                alignment: Alignment.center,
-                                child: Text('${e.key + 1}', style: const TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.bold)),
-                              ),
-                              Expanded(child: Text(e.value, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
-                            ],
-                          ),
-                        )).toList(),
-                      )),
-                      const SizedBox(height: 16),
+                                Expanded(child: Text(e.value, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
+                              ],
+                            ),
+                          )).toList(),
+                        )),
+                      ),
+                      const SizedBox(height: 8),
                     ],
                     if (expected.isNotEmpty) ...[
-                      _sectionTitle('✅ Résultat attendu'),
+                      _collapsibleSection(
+                        key: 'expected',
+                        title: '✅ Résultat attendu',
+                        child: _card(Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: expected.map((e) => Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('• ', style: TextStyle(color: Color(0xFF43E97B), fontWeight: FontWeight.bold)),
+                                Expanded(child: Text(e, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
+                              ],
+                            ),
+                          )).toList(),
+                        )),
+                      ),
                       const SizedBox(height: 8),
-                      _card(Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: expected.map((e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('• ', style: TextStyle(color: Color(0xFF43E97B), fontWeight: FontWeight.bold)),
-                              Expanded(child: Text(e, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
-                            ],
-                          ),
-                        )).toList(),
-                      )),
-                      const SizedBox(height: 16),
                     ],
                     if (helpMap != null) ...[
-                      _sectionTitle('💡 Aide'),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFF9800).withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.3)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.w600)),
-                            if ((helpMap['where'] as String?)?.isNotEmpty == true) ...[
-                              const SizedBox(height: 6),
-                              Text(helpMap['where'] as String, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.4)),
+                      _collapsibleSection(
+                        key: 'help',
+                        title: '💡 Aide',
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF9800).withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.3)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.w600)),
+                              if ((helpMap['where'] as String?)?.isNotEmpty == true) ...[
+                                const SizedBox(height: 6),
+                                Text(helpMap['where'] as String, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.4)),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                     ],
                     FilledButton.icon(
-                      onPressed: onComplete,
+                      onPressed: widget.onComplete,
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF43E97B),
                         foregroundColor: Colors.black,
@@ -643,6 +663,41 @@ class _MissionDetailSheet extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _collapsibleSection({required String key, required String title, required Widget child}) {
+    final isExpanded = _expanded[key] ?? false;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => setState(() => _expanded[key] = !isExpanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Expanded(child: _sectionTitle(title)),
+                Icon(
+                  isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                  color: const Color(0xFF94A3B8),
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
+        AnimatedCrossFade(
+          firstChild: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: child,
+          ),
+          secondChild: const SizedBox.shrink(),
+          crossFadeState: isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 200),
+        ),
+      ],
     );
   }
 
