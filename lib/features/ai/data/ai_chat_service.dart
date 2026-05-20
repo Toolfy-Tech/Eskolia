@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import 'ai_provider.dart';
+import 'ollama_service.dart';
 
 class AiMessage {
   const AiMessage({required this.role, required this.content});
@@ -23,9 +24,11 @@ class AiChatService {
 
   final Dio _dio;
 
-  /// Stream les tokens de réponse au fur et à mesure.
-  /// [temperature] : 0.0 (déterministe) → 1.0 (créatif). Défaut 0.7.
-  /// [jsonMode]    : force une sortie JSON valide (OpenAI, Groq, Gemini).
+  /// Stream les tokens de reponse au fur et a mesure.
+  /// [temperature]  : 0.0 (deterministe) -> 1.0 (creatif). Defaut 0.7.
+  /// [jsonMode]     : force une sortie JSON valide (OpenAI, Groq, Gemini).
+  /// [ollamaBaseUrl]: URL de base Ollama (defaut http://localhost:11434).
+  /// [ollamaModel]  : modele Ollama (defaut gemma3).
   Stream<String> streamChat({
     required String apiKey,
     required AiProvider provider,
@@ -34,8 +37,17 @@ class AiChatService {
     int maxTokens = 4096,
     double temperature = 0.7,
     bool jsonMode = false,
+    String ollamaBaseUrl = 'http://localhost:11434',
+    String ollamaModel = 'gemma3',
   }) {
     return switch (provider) {
+      AiProvider.ollama => OllamaService(dio: _dio).streamGenerate(
+          messages: messages,
+          systemPrompt: systemPrompt,
+          model: ollamaModel,
+          baseUrl: ollamaBaseUrl,
+          temperature: temperature,
+        ),
       AiProvider.anthropic => _streamAnthropic(
           apiKey, messages, systemPrompt, maxTokens, temperature),
       AiProvider.gemini => _streamGemini(

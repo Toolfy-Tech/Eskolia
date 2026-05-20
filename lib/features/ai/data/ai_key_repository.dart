@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ai_provider.dart';
+
+const String _kOllamaUrl   = 'ollama_url';
+const String _kOllamaModel = 'ollama_model';
 
 class AiConnectionState {
   const AiConnectionState({
@@ -89,6 +93,42 @@ class AiKeyRepository {
     if (keyRef == null || userRef == null) return;
     await keyRef.delete();
     await userRef.update({'aiProvider': FieldValue.delete()});
+  }
+
+  // ── Ollama (provider local, sans cle API) ─────────────────────────────────
+
+  /// Enregistre les parametres Ollama et ecrit le sentinel dans Firestore.
+  Future<void> saveOllama({
+    String url   = 'http://localhost:11434',
+    String model = 'gemma3',
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kOllamaUrl, url);
+    await prefs.setString(_kOllamaModel, model);
+
+    // Sentinel dans la sous-collection : indique Ollama sans exposer de cle.
+    final keyRef  = _keyDoc;
+    final userRef = _userDoc;
+    if (keyRef == null || userRef == null) return;
+    await keyRef.set({'apiKey': 'ollama'}, SetOptions(merge: true));
+    await userRef.update({'aiProvider': 'ollama', 'aiApiKey': FieldValue.delete()});
+  }
+
+  /// Lit les parametres Ollama depuis SharedPreferences.
+  Future<({String url, String model})> loadOllamaSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (
+      url:   prefs.getString(_kOllamaUrl)   ?? 'http://localhost:11434',
+      model: prefs.getString(_kOllamaModel) ?? 'gemma3',
+    );
+  }
+
+  /// Supprime les parametres Ollama (SharedPreferences + Firestore).
+  Future<void> deleteOllama() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kOllamaUrl);
+    await prefs.remove(_kOllamaModel);
+    await delete();
   }
 
   Stream<AiConnectionState> watch() {

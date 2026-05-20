@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../features/ai/data/ai_chat_service.dart';
 import '../../../features/ai/data/ai_provider.dart';
 
@@ -7,6 +9,40 @@ class NoteAiGenerator {
       : _service = service ?? AiChatService();
 
   final AiChatService _service;
+
+  /// Lit les parametres Ollama depuis SharedPreferences.
+  Future<({String url, String model})> _ollamaConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    return (
+      url:   prefs.getString('ollama_url')   ?? 'http://localhost:11434',
+      model: prefs.getString('ollama_model') ?? 'gemma3',
+    );
+  }
+
+  /// Retourne un Stream vers streamChat en injectant les params Ollama si besoin.
+  Stream<String> _chat({
+    required String apiKey,
+    required AiProvider provider,
+    required Future<({String url, String model})> ollamaCfg,
+    required List<AiMessage> messages,
+    String? systemPrompt,
+    int maxTokens = 4096,
+    double temperature = 0.7,
+    bool jsonMode = false,
+  }) async* {
+    final cfg = provider == AiProvider.ollama ? await ollamaCfg : (url: '', model: '');
+    yield* _service.streamChat(
+      apiKey: apiKey,
+      provider: provider,
+      messages: messages,
+      systemPrompt: systemPrompt,
+      maxTokens: maxTokens,
+      temperature: temperature,
+      jsonMode: jsonMode,
+      ollamaBaseUrl: cfg.url,
+      ollamaModel: cfg.model,
+    );
+  }
 
   // ── Mini-cours ─────────────────────────────────────────────────────────────
 
@@ -42,9 +78,10 @@ class NoteAiGenerator {
         'Titre des notes : $noteTitle\n'
         'Contenu :\n$noteContent';
 
-    return _service.streamChat(
+    return _chat(
       apiKey: apiKey,
       provider: provider,
+      ollamaCfg: _ollamaConfig(),
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 4096,
@@ -105,9 +142,10 @@ class NoteAiGenerator {
         'Titre des notes : $noteTitle\n'
         'Contenu :\n$noteContent';
 
-    return _service.streamChat(
+    return _chat(
       apiKey: apiKey,
       provider: provider,
+      ollamaCfg: _ollamaConfig(),
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 4096,
@@ -148,9 +186,10 @@ class NoteAiGenerator {
         '  ]\n'
         '}]';
 
-    return _service.streamChat(
+    return _chat(
       apiKey: apiKey,
       provider: provider,
+      ollamaCfg: _ollamaConfig(),
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 10000,
@@ -159,7 +198,7 @@ class NoteAiGenerator {
     );
   }
 
-  // ── Multi-sujets séparés ──────────────────────────────────────────────────
+  // ── Multi-sujets separes ──────────────────────────────────────────────────
 
   /// Multi-subject course generation.
   /// Returns a JSON stream: [{subject: string, course: string}]
@@ -181,9 +220,10 @@ class NoteAiGenerator {
         'Reponds UNIQUEMENT avec un tableau JSON :\n'
         '[{"subject": "Titre court du sujet", "course": "# Titre\\n\\nContenu Markdown du cours..."}]';
 
-    return _service.streamChat(
+    return _chat(
       apiKey: apiKey,
       provider: provider,
+      ollamaCfg: _ollamaConfig(),
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 8192,
@@ -215,9 +255,10 @@ class NoteAiGenerator {
         '"type": "classic|sequence|diagnostic_indices|ticket", "hint": "..."}'
         ']}]';
 
-    return _service.streamChat(
+    return _chat(
       apiKey: apiKey,
       provider: provider,
+      ollamaCfg: _ollamaConfig(),
       messages: [AiMessage(role: 'user', content: userPrompt)],
       systemPrompt: systemPrompt,
       maxTokens: 8192,
