@@ -10,6 +10,7 @@ import '../../../../shared/widgets/eskolia_card.dart';
 import '../../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../ai/data/ai_chat_service.dart';
 import '../../../ai/data/ai_key_repository.dart';
+import '../../../ai/presentation/ai_config_widget.dart';
 import '../data/tp_binaire_ai_generator.dart';
 import '../data/tp_binaire_data.dart';
 import 'simple_calculator_sheet.dart';
@@ -300,14 +301,21 @@ class _AiGenerateSheet extends StatefulWidget {
 }
 
 class _AiGenerateSheetState extends State<_AiGenerateSheet> {
-  late TpDifficulty _selected;
-  bool _generating = false;
-  String? _error;
+  late AiDifficulty   _difficulty;
+  int                 _questionCount = 10;
+  TpExerciseType      _exerciseType  = TpExerciseType.complet;
+  bool                _generating    = false;
+  String?             _error;
 
   @override
   void initState() {
     super.initState();
-    _selected = widget.initialDifficulty ?? TpDifficulty.facile;
+    _difficulty = switch (widget.initialDifficulty) {
+      TpDifficulty.facile    => AiDifficulty.debutant,
+      TpDifficulty.moyen     => AiDifficulty.intermediaire,
+      TpDifficulty.difficile => AiDifficulty.avance,
+      null                   => AiDifficulty.intermediaire,
+    };
   }
 
   Future<void> _generate() async {
@@ -317,7 +325,11 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
         service: AiChatService(),
         state: widget.aiState,
       );
-      final tp = await generator.generate(_selected);
+      final tp = await generator.generate(
+        difficulty:    _difficulty,
+        questionCount: _questionCount,
+        exerciseType:  _exerciseType,
+      );
       if (!mounted) return;
       Navigator.of(context).pop();
       context.push('/tp/binaire/live', extra: tp);
@@ -332,12 +344,15 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.92,
+      ),
       decoration: BoxDecoration(
         color: EskoliaVisual.bgElevated,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -355,7 +370,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                 ),
               ),
             ),
-            // Title
+            // Titre
             Row(
               children: [
                 Container(
@@ -370,30 +385,41 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Générer un TP avec l\'IA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Generer un TP avec l\'IA',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'Exercices uniques, corrigés automatiquement',
-                      style: TextStyle(color: _slate, fontSize: 12),
-                    ),
-                  ],
+                      SizedBox(height: 2),
+                      Text(
+                        'Exercices uniques, corriges automatiquement',
+                        style: TextStyle(color: _slate, fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
-            // Difficulty label
+            // ── AiConfigWidget ────────────────────────────────────────────────
+            AiConfigWidget(
+              difficulty:          _difficulty,
+              questionCount:       _questionCount,
+              enabled:             !_generating,
+              onDifficultyChanged: (d) => setState(() => _difficulty = d),
+              onCountChanged:      (c) => setState(() => _questionCount = c),
+            ),
+            const SizedBox(height: 20),
+            // ── Type d'exercice ───────────────────────────────────────────────
             const Text(
-              'DIFFICULTÉ',
+              'TYPE D\'EXERCICE',
               style: TextStyle(
                 color: _slate,
                 fontSize: 11,
@@ -401,60 +427,69 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                 letterSpacing: 0.8,
               ),
             ),
-            const SizedBox(height: 10),
-            // Difficulty chips
-            Row(
-              children: TpDifficulty.values.map((d) {
-                final color     = _diffColor(d);
-                final isSelected = _selected == d;
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: d != TpDifficulty.difficile ? 8 : 0,
-                    ),
-                    child: GestureDetector(
-                      onTap: _generating ? null : () => setState(() => _selected = d),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 150),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? color.withValues(alpha: 0.15)
-                              : Colors.white.withValues(alpha: 0.04),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? color.withValues(alpha: 0.5)
-                                : Colors.white.withValues(alpha: 0.06),
-                            width: isSelected ? 1.5 : 1,
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Icon(
-                              _diffIcon(d),
-                              color: isSelected ? color : _slate,
-                              size: 18,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _diffLabel(d),
-                              style: TextStyle(
-                                color: isSelected ? color : _slate,
-                                fontSize: 12,
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<TpExerciseType>(
+              value: _exerciseType,
+              dropdownColor: const Color(0xFF1E1E38),
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: _violet.withValues(alpha: 0.6)),
+                ),
+                filled: true,
+                fillColor: Colors.white.withValues(alpha: 0.04),
+              ),
+              items: TpExerciseType.values.map((t) {
+                return DropdownMenuItem<TpExerciseType>(
+                  value: t,
+                  child: Text(
+                    t.label,
+                    style: TextStyle(
+                      color: t == TpExerciseType.complet
+                          ? _violet
+                          : Colors.white,
+                      fontWeight: t == TpExerciseType.complet
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                 );
               }).toList(),
+              onChanged: _generating
+                  ? null
+                  : (v) => setState(() => _exerciseType = v ?? _exerciseType),
             ),
+            // Info mode cible
+            if (_exerciseType != TpExerciseType.complet) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: _violet.withValues(alpha: 0.07),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: _violet.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.my_location_rounded, color: _violet, size: 14),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Mode entraine ment cible — $_questionCount question(s) en "${_exerciseType.label}" uniquement.',
+                        style: TextStyle(color: _violet.withValues(alpha: 0.9), fontSize: 11, height: 1.4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            // Erreur
             if (_error != null) ...[
               const SizedBox(height: 16),
               Container(
@@ -465,13 +500,14 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                   border: Border.all(color: _red.withValues(alpha: 0.2)),
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Icon(Icons.error_outline_rounded, color: _red, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _error!,
-                        style: const TextStyle(color: _red, fontSize: 12),
+                        style: const TextStyle(color: _red, fontSize: 12, height: 1.4),
                       ),
                     ),
                   ],
@@ -479,7 +515,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
               ),
             ],
             const SizedBox(height: 24),
-            // Generate button
+            // Bouton generer
             SizedBox(
               width: double.infinity,
               child: _generating
@@ -496,25 +532,18 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                           SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: _violet,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: _violet),
                           ),
                           SizedBox(width: 10),
                           Text(
-                            'Génération en cours...',
-                            style: TextStyle(
-                              color: _violet,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            'Generation en cours...',
+                            style: TextStyle(color: _violet, fontSize: 14, fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
                     )
                   : EskoliaButton(
-                      label: 'Générer le TP',
+                      label: 'Generer le TP',
                       icon: Icons.auto_awesome_rounded,
                       variant: EskoliaButtonVariant.primary,
                       color: _violet,
@@ -528,18 +557,6 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
       ),
     );
   }
-
-  IconData _diffIcon(TpDifficulty d) => switch (d) {
-        TpDifficulty.facile    => Icons.emoji_events_outlined,
-        TpDifficulty.moyen     => Icons.bar_chart_rounded,
-        TpDifficulty.difficile => Icons.bolt_rounded,
-      };
-
-  String _diffLabel(TpDifficulty d) => switch (d) {
-        TpDifficulty.facile    => 'Facile',
-        TpDifficulty.moyen     => 'Moyen',
-        TpDifficulty.difficile => 'Difficile',
-      };
 }
 
 // ─── TP Card ─────────────────────────────────────────────────────────────────

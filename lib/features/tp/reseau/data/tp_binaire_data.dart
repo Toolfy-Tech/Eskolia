@@ -2,6 +2,39 @@
 
 enum TpDifficulty { facile, moyen, difficile }
 
+// ── Types d'exercices cibles ──────────────────────────────────────────────────
+
+enum TpExerciseType {
+  complet,
+  decimalVersBinaire,
+  binaireVersDecimal,
+  conversionIpClasse,
+  masqueDefautClasse,
+  notationCidr,
+  calculSousReseau;
+
+  String get label => switch (this) {
+        TpExerciseType.complet            => 'TP Complet (Par defaut)',
+        TpExerciseType.decimalVersBinaire => 'Decimal -> Binaire',
+        TpExerciseType.binaireVersDecimal => 'Binaire -> Decimal',
+        TpExerciseType.conversionIpClasse => 'Conversion IP + Classe',
+        TpExerciseType.masqueDefautClasse => 'Masque par defaut + Classe',
+        TpExerciseType.notationCidr       => 'Notation CIDR',
+        TpExerciseType.calculSousReseau   => 'Calcul de sous-reseau',
+      };
+
+  /// Nom de la section correspondante dans le JSON de l'IA.
+  String get sectionName => switch (this) {
+        TpExerciseType.complet            => '',
+        TpExerciseType.decimalVersBinaire => 'Decimal vers Binaire',
+        TpExerciseType.binaireVersDecimal => 'Binaire vers Decimal',
+        TpExerciseType.conversionIpClasse => 'Classes IP',
+        TpExerciseType.masqueDefautClasse => 'Masques par defaut',
+        TpExerciseType.notationCidr       => 'Notation CIDR',
+        TpExerciseType.calculSousReseau   => 'Subnetting',
+      };
+}
+
 class TpSubQuestion {
   const TpSubQuestion({required this.label, required this.answer});
   final String label;
