@@ -201,10 +201,11 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
                       child: ListView(
                         padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 120),
                         children: [
-                          for (int s = 0; s < widget.tp.sections.length; s++) ...[
-                            _buildSection(s),
-                            const SizedBox(height: 24),
-                          ],
+                          for (int s = 0; s < widget.tp.sections.length; s++)
+                            if (widget.tp.sections[s].questions.isNotEmpty) ...[
+                              _buildSection(s),
+                              const SizedBox(height: 24),
+                            ],
                           if (_corrected)
                             _buildFinalMessage()
                           else
