@@ -4,8 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ai_provider.dart';
 
-const String _kOllamaUrl   = 'ollama_url';
-const String _kOllamaModel = 'ollama_model';
+const String _kOllamaUrl    = 'ollama_url';
+const String _kOllamaModel  = 'ollama_model';
+const String _kGeminiModel  = 'gemini_model';
 
 class AiConnectionState {
   const AiConnectionState({
@@ -93,6 +94,18 @@ class AiKeyRepository {
     if (keyRef == null || userRef == null) return;
     await keyRef.delete();
     await userRef.update({'aiProvider': FieldValue.delete()});
+  }
+
+  // ── Gemini — modele selectionne ──────────────────────────────────────────
+
+  Future<void> saveGeminiModel(String modelId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kGeminiModel, modelId);
+  }
+
+  Future<String> loadGeminiModel() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_kGeminiModel) ?? 'gemini-2.5-flash';
   }
 
   // ── Ollama (provider local, sans cle API) ─────────────────────────────────

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ai_provider.dart';
 import 'ollama_service.dart';
@@ -200,11 +201,14 @@ class AiChatService {
     }
     final promptText = buf.toString().trim();
 
+    final prefs      = await SharedPreferences.getInstance();
+    final geminiModel = prefs.getString('gemini_model') ?? 'gemini-2.5-flash';
+
     Response<dynamic> response;
     try {
       response = await _dio.post<dynamic>(
         'https://generativelanguage.googleapis.com/v1beta/models/'
-        'gemini-2.5-flash:generateContent?key=$key',
+        '$geminiModel:generateContent?key=$key',
         options: Options(
           headers: {'Content-Type': 'application/json'},
           sendTimeout: const Duration(seconds: 15),
