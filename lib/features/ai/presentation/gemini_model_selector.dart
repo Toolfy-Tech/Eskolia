@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../data/gemini_model_info.dart';
 
-const Color _slate  = Color(0xFF94A3B8);
+const Color _slate = Color(0xFF94A3B8);
 
 /// Selecteur de modele Gemini avec tier list visuelle.
 /// Recupere la liste depuis l'API Google et trie S > A > B > C.
@@ -47,10 +47,13 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
 
   Future<void> _fetch() async {
     if (widget.apiKey.length < 10) return;
+
+    if (!mounted) return;
     setState(() {
       _loading = true;
       _offline  = false;
     });
+
     try {
       final dio = Dio();
       final resp = await dio.get<dynamic>(
@@ -61,6 +64,9 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
           receiveTimeout: const Duration(seconds: 15),
         ),
       );
+
+      if (!mounted) return;
+
       final data = resp.data is Map
           ? resp.data as Map<String, dynamic>
           : jsonDecode(resp.data.toString()) as Map<String, dynamic>;
@@ -70,16 +76,21 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
 
       final models = rawList
           .whereType<Map>()
-          .map((m) => m['name'] as String?)
-          .where((n) =>
-              n != null &&
-              n.contains('gemini') &&
-              !n.contains('embedding') &&
-              !n.contains('-aqa') &&
-              !n.contains('vision') &&
-              !n.contains('bison') &&
-              !n.contains('gecko'))
-          .map((n) => GeminiModelInfo.from(n!))
+          .where((m) {
+            final name = m['name'] as String? ?? '';
+            // Filtrer sur supportedGenerationMethods si disponible.
+            final methods = m['supportedGenerationMethods'];
+            if (methods is List) {
+              if (!methods.contains('generateContent')) return false;
+            }
+            return name.contains('gemini') &&
+                !name.contains('embedding') &&
+                !name.contains('-aqa') &&
+                !name.contains('vision') &&
+                !name.contains('bison') &&
+                !name.contains('gecko');
+          })
+          .map((m) => GeminiModelInfo.from(m['name'] as String))
           .toList()
         ..sort((a, b) {
           final t = a.sortOrder.compareTo(b.sortOrder);
@@ -87,7 +98,6 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
         });
 
       if (models.isEmpty) throw const FormatException('liste vide');
-
       _applyModels(models);
     } catch (_) {
       _applyModels(GeminiModelInfo.defaults(), offline: true);
@@ -95,16 +105,23 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
   }
 
   void _applyModels(List<GeminiModelInfo> models, {bool offline = false}) {
+    if (!mounted) return;
+
     final inList = models.any((m) => m.modelId == _selected);
     if (!inList) {
       final aTier = models.where((m) => m.tier == 'A').toList();
       _selected = aTier.isNotEmpty ? aTier.first.modelId : models.first.modelId;
     }
-    widget.onChanged(_selected);
+
     setState(() {
       _models  = models;
       _loading = false;
       _offline  = offline;
+    });
+
+    // Notifier le parent apres le setState pour eviter les conflits de frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onChanged(_selected);
     });
   }
 
@@ -113,6 +130,7 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // En-tete
         Row(children: [
           const Text(
             'MODELE GEMINI',
@@ -145,8 +163,11 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
           ],
         ]),
         const SizedBox(height: 8),
-        if (_loading && _models.isEmpty)
+        // Corps
+        if (_loading)
           _buildSkeleton()
+        else if (_models.isEmpty)
+          _buildEmpty()
         else
           _buildDropdown(),
       ],
@@ -155,138 +176,149 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
 
   Widget _buildSkeleton() {
     return Container(
-      height: 48,
+      height: 52,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
-      child: Center(
-        child: SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: _slate.withValues(alpha: 0.4),
+      child: Row(
+        children: [
+          const SizedBox(width: 14),
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: _slate.withValues(alpha: 0.5),
+            ),
           ),
-        ),
+          const SizedBox(width: 10),
+          Text(
+            'Chargement des modeles...',
+            style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 12),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildDropdown() {
+  Widget _buildEmpty() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      height: 52,
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _selected,
-          isExpanded: true,
-          itemHeight: null,
-          dropdownColor: const Color(0xFF1E2D40),
-          icon: Icon(Icons.expand_more_rounded, color: _slate.withValues(alpha: 0.7), size: 20),
-          selectedItemBuilder: (context) =>
-              _models.map((m) => _buildSelectedItem(m)).toList(),
-          items: _models
-              .map((m) => DropdownMenuItem<String>(
-                    value: m.modelId,
-                    child: _buildDropdownItem(m),
-                  ))
-              .toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() => _selected = val);
-              widget.onChanged(val);
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectedItem(GeminiModelInfo m) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          _TierBadge(tier: m.tier, color: m.tierColor),
+          const SizedBox(width: 14),
+          Icon(Icons.info_outline_rounded, size: 15, color: _slate.withValues(alpha: 0.6)),
           const SizedBox(width: 8),
           Text(
-            m.simpleName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+            'Aucun modele compatible trouve.',
+            style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDropdownItem(GeminiModelInfo m) {
-    final isFirstA = m.tier == 'A' &&
-        _models.indexWhere((x) => x.tier == 'A') ==
-            _models.indexOf(m);
+  Widget _buildDropdown() {
+    final firstATier = _models.firstWhere(
+      (m) => m.tier == 'A',
+      orElse: () => _models.first,
+    );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-      child: Row(
-        children: [
-          _TierBadge(tier: m.tier, color: m.tierColor),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  m.simpleName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  m.tierLabel,
-                  style: TextStyle(
-                    color: _slate.withValues(alpha: 0.7),
-                    fontSize: 11,
-                  ),
-                ),
-              ],
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: const Color(0xFF1E2D40),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: _selected,
+            isExpanded: true,
+            itemHeight: 56,
+            icon: Icon(
+              Icons.expand_more_rounded,
+              color: _slate.withValues(alpha: 0.7),
+              size: 20,
             ),
+            items: _models.map((m) {
+              final isDefaultA = m.modelId == firstATier.modelId;
+              return DropdownMenuItem<String>(
+                value: m.modelId,
+                child: Row(
+                  children: [
+                    _TierBadge(tier: m.tier, color: m.tierColor),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            m.simpleName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            m.tierLabel,
+                            style: TextStyle(
+                              color: _slate.withValues(alpha: 0.7),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (isDefaultA)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: m.tierColor.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: m.tierColor.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Text(
+                          'DEFAUT',
+                          style: TextStyle(
+                            color: m.tierColor,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val == null) return;
+              setState(() => _selected = val);
+              widget.onChanged(val);
+            },
           ),
-          if (isFirstA)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: m.tierColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: m.tierColor.withValues(alpha: 0.4)),
-              ),
-              child: Text(
-                'DEFAUT',
-                style: TextStyle(
-                  color: m.tierColor,
-                  fontSize: 8,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }
 }
 
-// ── Badge tier ───────────────────────────────────────────────────────────────
+// ── Badge tier ────────────────────────────────────────────────────────────────
 
 class _TierBadge extends StatelessWidget {
   const _TierBadge({required this.tier, required this.color});
@@ -297,8 +329,8 @@ class _TierBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 24,
-      height: 24,
+      width: 26,
+      height: 26,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(6),
@@ -309,7 +341,7 @@ class _TierBadge extends StatelessWidget {
           tier,
           style: TextStyle(
             color: color,
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: FontWeight.w900,
           ),
         ),
