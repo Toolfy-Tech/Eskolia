@@ -452,7 +452,19 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
 
   Widget _buildSequenceReorder(QuizQuestion q) {
     if (_sequenceQuestionId != q.id || _sequenceOrder.isEmpty) {
-      return const Center(child: CircularProgressIndicator(color: _cyan));
+      // Sequence broken (AI forgot items field) — show answer as plain text.
+      return Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        ),
+        child: Text(
+          q.answer,
+          style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+        ),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

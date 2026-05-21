@@ -317,12 +317,28 @@ class QuizRepository {
       final answer   = (q['answer'] as String?)?.trim() ?? '';
       if (question.isEmpty || answer.isEmpty) continue;
 
-      final items   = q['items']   is List ? List<String>.from(q['items']   as List) : <String>[];
+      var   items   = q['items']   is List ? List<String>.from(q['items']   as List) : <String>[];
       final indices = q['indices'] is List ? List<String>.from(q['indices'] as List) : <String>[];
+      var   rawType = (q['type'] as String?)?.trim() ?? 'classic';
+
+      // If AI declared 'sequence' but forgot items, try to extract from numbered answer.
+      if (rawType == 'sequence' && items.isEmpty) {
+        final extracted = _extractNumberedList(answer);
+        if (extracted.length >= 2) {
+          items = extracted;
+        } else {
+          rawType = 'classic';
+        }
+      }
+
+      // If AI declared 'diagnostic_indices' but forgot indices, downgrade.
+      if (rawType == 'diagnostic_indices' && indices.isEmpty) {
+        rawType = 'classic';
+      }
 
       questions.add(QuizQuestion(
         id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
-        type: (q['type'] as String?)?.trim() ?? 'classic',
+        type: rawType,
         question: question,
         answer: answer,
         difficultyBucket: _parseDifficulty(q['difficulty']),
@@ -368,6 +384,12 @@ class QuizRepository {
       runMode: QuizRunMode.standard,
       timed: false,
     );
+  }
+
+  /// Extracts ordered items from a numbered list in `text` (e.g. "1. Foo\n2. Bar").
+  static List<String> _extractNumberedList(String text) {
+    final pattern = RegExp(r'^\d+[.)]\s*(.+)$', multiLine: true);
+    return pattern.allMatches(text).map((m) => m.group(1)!.trim()).where((s) => s.isNotEmpty).toList();
   }
 
   static String _parseDifficulty(dynamic raw) {
