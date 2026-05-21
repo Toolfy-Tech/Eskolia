@@ -242,11 +242,11 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       return;
     }
     setState(() => _testing = true);
-    final ok = await _service.testKey(key, _detected);
+    final error = await _service.testKey(key, _detected);
     if (!mounted) return;
-    if (!ok) {
+    if (error != null) {
       setState(() => _testing = false);
-      showEskoliaSnackBar(context, 'Connexion echouee — cle invalide ou quota depasse.');
+      showEskoliaSnackBar(context, error);
       return;
     }
     await _repo.save(key);
