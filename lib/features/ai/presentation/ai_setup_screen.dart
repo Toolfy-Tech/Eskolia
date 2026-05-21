@@ -300,18 +300,32 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
               ),
               children: [
                 _buildStatusBanner(),
+                // Sélecteur de modèle Gemini — visible dès que Gemini est actif
+                // (clé sauvegardée ou en cours de saisie).
+                Builder(builder: (_) {
+                  final connectedGemini =
+                      _state.isConnected && _state.provider == AiProvider.gemini;
+                  final typingGemini = _detected == AiProvider.gemini &&
+                      _keyController.text.trim().length >= 10;
+                  if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
+                  final apiKey = connectedGemini
+                      ? (_state.apiKey ?? _keyController.text.trim())
+                      : _keyController.text.trim();
+                  return Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      GeminiModelSelector(
+                        key: ValueKey(apiKey),
+                        apiKey: apiKey,
+                        initialModel: _geminiModel,
+                        onChanged: (m) => setState(() => _geminiModel = m),
+                      ),
+                    ],
+                  );
+                }),
                 const SizedBox(height: 16),
                 _buildKeyInput(),
                 const SizedBox(height: 14),
-                if (_detected == AiProvider.gemini &&
-                    _keyController.text.trim().length >= 10) ...[
-                  const SizedBox(height: 14),
-                  GeminiModelSelector(
-                    apiKey: _keyController.text.trim(),
-                    initialModel: _geminiModel,
-                    onChanged: (m) => setState(() => _geminiModel = m),
-                  ),
-                ],
                 if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
                   const SizedBox(height: 14),
                   _buildConsentCheckbox(),
