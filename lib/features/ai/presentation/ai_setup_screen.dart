@@ -11,6 +11,7 @@ import '../../../core/utils/eskolia_snackbar.dart';
 import '../data/ai_key_repository.dart';
 import '../data/ai_chat_service.dart';
 import '../data/ai_provider.dart';
+import 'gemini_model_selector.dart';
 import 'ollama_setup_card.dart';
 
 const Color _bg     = EskoliaVisual.bgDeep;
@@ -199,6 +200,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   bool _testing        = false;
   bool _obscure        = true;
   bool _privacyConsent = false;
+  String _geminiModel  = 'gemini-2.5-flash';
   AiConnectionState _state    = const AiConnectionState(isConnected: false);
   AiProvider        _detected = AiProvider.unknown;
 
@@ -209,11 +211,13 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   }
 
   Future<void> _load() async {
-    final s = await _repo.load();
+    final s     = await _repo.load();
+    final model = await _repo.loadGeminiModel();
     if (mounted) {
       setState(() {
-        _state   = s;
-        _loading = false;
+        _state        = s;
+        _loading      = false;
+        _geminiModel  = model;
         // Ne pas copier le sentinel 'ollama' dans le champ cle API.
         if (s.isConnected && s.apiKey != null && !s.provider.isLocal) {
           _keyController.text = s.apiKey!;
@@ -250,6 +254,9 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       return;
     }
     await _repo.save(key);
+    if (_detected == AiProvider.gemini) {
+      await _repo.saveGeminiModel(_geminiModel);
+    }
     if (!mounted) return;
     setState(() {
       _testing = false;
@@ -296,7 +303,17 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                 const SizedBox(height: 16),
                 _buildKeyInput(),
                 const SizedBox(height: 14),
+                if (_detected == AiProvider.gemini &&
+                    _keyController.text.trim().length >= 10) ...[
+                  const SizedBox(height: 14),
+                  GeminiModelSelector(
+                    apiKey: _keyController.text.trim(),
+                    initialModel: _geminiModel,
+                    onChanged: (m) => setState(() => _geminiModel = m),
+                  ),
+                ],
                 if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
+                  const SizedBox(height: 14),
                   _buildConsentCheckbox(),
                   const SizedBox(height: 10),
                 ],
@@ -307,7 +324,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                 ],
                 // Avertissement contextuel (cloud providers uniquement)
                 if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
                   _buildWarningCard(_detected),
                 ],
                 const SizedBox(height: 32),
