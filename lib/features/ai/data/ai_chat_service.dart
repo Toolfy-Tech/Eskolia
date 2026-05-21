@@ -235,7 +235,8 @@ class AiChatService {
 
   // ── Test de connexion ─────────────────────────────────────────────────────
 
-  Future<bool> testKey(String key, AiProvider provider) async {
+  /// Retourne null si la cle est valide, ou le message d'erreur reel sinon.
+  Future<String?> testKey(String key, AiProvider provider) async {
     try {
       await for (final _ in streamChat(
         apiKey: key,
@@ -243,19 +244,31 @@ class AiChatService {
         messages: const [AiMessage(role: 'user', content: 'Reply with OK only.')],
         maxTokens: 10,
       )) {
-        return true;
+        return null; // succes
       }
-      return false;
-    } catch (_) {
-      return false;
+      return null; // stream vide = OK (Gemini non-streaming)
+    } catch (e) {
+      return e.toString();
     }
   }
 
   String _dioError(DioException e) {
     final status = e.response?.statusCode;
-    if (status == 401) return 'Clé API invalide ou expirée.';
-    if (status == 429) return 'Quota API dépassé — réessaie plus tard.';
-    if (status == 403) return 'Accès refusé par le provider.';
-    return 'Erreur réseau (${e.message})';
+
+    // Extraire le message d'erreur reel depuis le body de la reponse (Gemini, OpenAI, etc.)
+    String? apiMessage;
+    final body = e.response?.data;
+    if (body is Map) {
+      apiMessage = (body['error'] as Map?)?['message'] as String?;
+    } else if (body is String && body.isNotEmpty) {
+      apiMessage = body.length > 200 ? body.substring(0, 200) : body;
+    }
+
+    final detail = apiMessage != null ? ' — $apiMessage' : '';
+    if (status == 400) return 'Requete invalide (400)$detail';
+    if (status == 401) return 'Cle API invalide ou expiree (401)$detail';
+    if (status == 403) return 'Acces refuse (403)$detail';
+    if (status == 429) return 'Quota depasse — reessaie plus tard (429)$detail';
+    return 'Erreur reseau ${status ?? ""}$detail (${e.message})';
   }
 }
