@@ -227,10 +227,28 @@ class AiChatService {
     final data = response.data is Map
         ? response.data as Map<String, dynamic>
         : jsonDecode(response.data.toString()) as Map<String, dynamic>;
-    final text = (data['candidates'] as List?)
-        ?.firstOrNull?['content']?['parts']
-        ?.firstOrNull?['text'] as String?;
+    final text = _extractGeminiText(data);
     if (text != null && text.isNotEmpty) yield text;
+  }
+
+  /// Extrait le texte d'une reponse Gemini generateContent de facon securisee.
+  /// Evite les crashs sur Flutter Web (dart2js) dus aux operateurs ?. sur dynamic.
+  static String? _extractGeminiText(Map<String, dynamic> data) {
+    try {
+      final candidates = data['candidates'];
+      if (candidates is! List || candidates.isEmpty) return null;
+      final first = candidates[0];
+      if (first is! Map) return null;
+      final content = first['content'];
+      if (content is! Map) return null;
+      final parts = content['parts'];
+      if (parts is! List || parts.isEmpty) return null;
+      final part = parts[0];
+      if (part is! Map) return null;
+      return part['text'] as String?;
+    } catch (_) {
+      return null;
+    }
   }
 
   // ── Test de connexion ─────────────────────────────────────────────────────
@@ -238,15 +256,21 @@ class AiChatService {
   /// Retourne null si la cle est valide, ou le message d'erreur reel sinon.
   Future<String?> testKey(String key, AiProvider provider) async {
     try {
-      await for (final _ in streamChat(
+      var received = false;
+      await for (final chunk in streamChat(
         apiKey: key,
         provider: provider,
         messages: const [AiMessage(role: 'user', content: 'Reply with OK only.')],
         maxTokens: 10,
       )) {
-        return null; // succes
+        if (chunk.isNotEmpty) received = true;
+        break; // premier token suffit
       }
-      return null; // stream vide = OK (Gemini non-streaming)
+      // Gemini retourne un seul chunk — stream vide = parsing a echoue
+      if (!received && provider == AiProvider.gemini) {
+        return 'Reponse Gemini vide ou format inattendu — verifie le modele gemini-2.5-flash.';
+      }
+      return null; // succes
     } catch (e) {
       return e.toString();
     }
