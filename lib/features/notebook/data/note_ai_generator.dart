@@ -130,15 +130,15 @@ class NoteAiGenerator {
         'REGLES SUR LES TYPES :\n'
         '- classic : question ouverte standard (reutilise pour la majorite)\n'
         '- ticket : question presentee comme un ticket d\'incident reseau/systeme (utilise si pertinent)\n'
-        '- diagnostic_indices : question avec 2-4 indices du plus vague au plus precis — "indices" requis (utilise pour 1-2 questions de diagnostic)\n'
-        '- sequence : elements a remettre dans le bon ordre — "items" requis dans l\'ordre correct, "answer" = description de l\'ordre (utilise si les notes contiennent une procedure ou des etapes)\n\n'
+        '- diagnostic_indices : question avec 2-4 indices du plus vague au plus precis — champ "indices" OBLIGATOIRE (tableau de 2-4 chaines). Si tu ne fournis pas "indices", utilise "classic" a la place.\n'
+        '- sequence : elements a remettre dans le bon ordre — champ "items" OBLIGATOIRE (tableau de 3-6 chaines dans l\'ordre correct), "answer" = phrase decrivant l\'ordre. INTERDIT d\'utiliser "sequence" sans fournir le champ "items".\n\n'
         'REGLES DE QUALITE :\n'
         '- Utilise au moins 2 types differents si le contenu le permet\n'
         '- difficulty "facile" = definition/acronyme, "moyen" = procedure/comparaison, "difficile" = diagnostic/cas complexe\n'
         '- Les reponses doivent etre concises (1-3 phrases max) et directement issues du contenu\n'
         '- Le hint doit vraiment expliquer le pourquoi, pas repeter la reponse\n'
-        '- Pour sequence : mini 3 items, maxi 6 items\n'
-        '- Pour diagnostic_indices : 2 indices minimum (du plus vague au plus precis)\n\n'
+        '- Pour sequence : 3 items minimum, 6 items maximum — chaque item est une etape/element court (1-5 mots)\n'
+        '- Pour diagnostic_indices : 2 indices minimum, 4 maximum (du plus vague au plus precis)\n\n'
         'Titre des notes : $noteTitle\n'
         'Contenu :\n$noteContent';
 
@@ -182,9 +182,12 @@ class NoteAiGenerator {
         '  "quiz": [\n'
         '    {"question": "...", "answer": "...", '
         '"type": "classic|sequence|diagnostic_indices|ticket", '
-        '"difficulty": "facile|moyen|difficile", "hint": "..."}\n'
+        '"difficulty": "facile|moyen|difficile", "hint": "...", '
+        '"items": ["item1","item2","item3"], '
+        '"indices": ["indice vague","indice precis"]}\n'
         '  ]\n'
-        '}]';
+        '}]\n'
+        'IMPORTANT: si type=sequence, le champ items est OBLIGATOIRE. Si type=diagnostic_indices, le champ indices est OBLIGATOIRE. Sinon utilise classic.';
 
     return _chat(
       apiKey: apiKey,
@@ -252,8 +255,10 @@ class NoteAiGenerator {
         'Reponds avec un tableau JSON — chaque element a ce format :\n'
         '[{"subject": "Titre du sujet", "questions": ['
         '{"question": "...", "answer": "...", "difficulty": "facile|moyen|difficile", '
-        '"type": "classic|sequence|diagnostic_indices|ticket", "hint": "..."}'
-        ']}]';
+        '"type": "classic|sequence|diagnostic_indices|ticket", "hint": "...", '
+        '"items": ["item1","item2","item3"], "indices": ["indice vague","indice precis"]}'
+        ']}]\n'
+        'IMPORTANT: si type=sequence, items OBLIGATOIRE. Si type=diagnostic_indices, indices OBLIGATOIRE. Sinon utilise classic.';
 
     return _chat(
       apiKey: apiKey,
