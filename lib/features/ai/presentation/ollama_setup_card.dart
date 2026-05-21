@@ -15,15 +15,9 @@ const Color _violet = Color(0xFF6C63FF);
 const Color _green  = Color(0xFF4CAF50);
 const Color _red    = Color(0xFFE53935);
 
-// ── Modeles disponibles ───────────────────────────────────────────────────────
+// ── Prefixes preferes pour l'auto-selection du meilleur modele ───────────────
 
-const _kAvailableModels = <String>[
-  'gemma3',
-  'gemma3:12b',
-  'llama3.3',
-  'mistral',
-  'qwen2.5',
-];
+const _kPreferredPrefixes = <String>['gemma3', 'llama3', 'mistral', 'qwen'];
 
 // ── Widget principal ──────────────────────────────────────────────────────────
 
@@ -47,12 +41,12 @@ class OllamaSetupCard extends StatefulWidget {
 }
 
 class _OllamaSetupCardState extends State<OllamaSetupCard> {
-  final _urlController   = TextEditingController(text: 'http://localhost:11434');
+  final _urlController   = TextEditingController(text: 'http://127.0.0.1:11434');
   final _modelController = TextEditingController(text: 'gemma3');
 
-  bool         _testing        = false;
+  bool         _testing         = false;
   String?      _status;
-  bool         _statusOk       = false;
+  bool         _statusOk        = false;
   List<String> _installedModels = [];
 
   @override
@@ -69,7 +63,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
     if (url != null && url.isNotEmpty) {
       _urlController.text = url;
     }
-    if (model != null && model.isNotEmpty && _kAvailableModels.contains(model)) {
+    if (model != null && model.isNotEmpty) {
       _modelController.text = model;
     }
   }
@@ -87,16 +81,17 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
     if (!mounted) return;
 
     if (status.ok) {
-      // Noms normalises depuis /api/tags (ex: "gemma3:latest" -> "gemma3").
-      final installed = status.models
-          .map((m) => m.contains(':') ? m.split(':').first : m)
-          .toList();
+      // Noms bruts depuis /api/tags (ex: "gemma3:latest", "llama3.3:70b").
+      final rawNames = status.models;
 
-      // Auto-selectionner le meilleur modele deja installe (ordre de priorite).
-      final bestInstalled = _kAvailableModels.firstWhere(
-        (m) => installed.contains(m),
-        orElse: () => _modelController.text.trim(),
-      );
+      // Auto-selectionner le meilleur modele selon les prefixes preferes.
+      final currentModel = _modelController.text.trim();
+      final bestInstalled = rawNames.isEmpty
+          ? currentModel
+          : rawNames.firstWhere(
+              (m) => _kPreferredPrefixes.any((p) => m.startsWith(p)),
+              orElse: () => rawNames.first,
+            );
       _modelController.text = bestInstalled;
 
       final prefs = await SharedPreferences.getInstance();
@@ -110,14 +105,13 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
 
       if (!mounted) return;
 
-      final installedCount = installed.where(_kAvailableModels.contains).length;
-      final suffix = installedCount > 0
-          ? ' — $installedCount modele(s) pret(s) a utiliser'
+      final suffix = rawNames.isNotEmpty
+          ? ' — ${rawNames.length} modele(s) detecte(s)'
           : ' — aucun modele installe (ollama pull gemma3)';
 
       setState(() {
         _testing         = false;
-        _installedModels = installed;
+        _installedModels = rawNames;
         _status          = 'Ollama connecte$suffix';
         _statusOk        = true;
       });
@@ -125,9 +119,9 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
       widget.onConnected();
     } else {
       setState(() {
-        _testing   = false;
-        _status    = 'Ollama non detecte — verifiez qu\'Ollama est lance';
-        _statusOk  = false;
+        _testing  = false;
+        _status   = 'Ollama non detecte — verifiez qu\'Ollama est lance';
+        _statusOk = false;
       });
     }
   }
@@ -154,7 +148,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
               const SizedBox(width: 10),
               const Expanded(
                 child: Text(
-                  'Ollama + Gemma 3',
+                  'Ollama (Local)',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -180,7 +174,6 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
                 ),
                 const SizedBox(width: 8),
               ],
-              // Badge ILLIMITE
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
@@ -200,9 +193,8 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
             ],
           ),
           const SizedBox(height: 4),
-          // Sous-titre
           Text(
-            'gemma3 · Tourne sur votre PC',
+            'gemma3 · llama3 · mistral — Tourne sur votre PC',
             style: TextStyle(
               color: _slate.withValues(alpha: 0.7),
               fontSize: 11,
@@ -223,7 +215,6 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           _ProLine('Donnees restent sur votre machine'),
           _ProLine('Fonctionne sans Internet'),
           const SizedBox(height: 4),
-          // Avertissement
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -255,10 +246,28 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           const SizedBox(height: 6),
           EskoliaTextField(
             controller: _urlController,
-            hintText: 'http://localhost:11434',
+            hintText: 'http://127.0.0.1:11434',
           ),
-          const SizedBox(height: 8),
-          // ── Dropdown modele ────────────────────────────────────────────────
+          const SizedBox(height: 4),
+          // Note URLs selon la plateforme
+          Row(
+            children: [
+              Icon(Icons.info_outline_rounded, color: _slate.withValues(alpha: 0.5), size: 11),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Text(
+                  'Web/Bureau : 127.0.0.1:11434  |  Emulateur Android : 10.0.2.2:11434',
+                  style: TextStyle(
+                    color: _slate.withValues(alpha: 0.55),
+                    fontSize: 10,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // ── Modele ────────────────────────────────────────────────────────
           Text(
             'Modele',
             style: TextStyle(
@@ -269,7 +278,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
             ),
           ),
           const SizedBox(height: 6),
-          _ModelDropdown(
+          _ModelSelector(
             controller: _modelController,
             installedModels: _installedModels,
           ),
@@ -365,7 +374,6 @@ class _ProLine extends StatelessWidget {
   }
 }
 
-/// Barres de qualite inline (equivalent de _QualityBar prive dans ai_setup_screen).
 class _QualityDots extends StatelessWidget {
   const _QualityDots({required this.label, required this.score});
   final String label;
@@ -451,8 +459,9 @@ class _StatusBanner extends StatelessWidget {
   }
 }
 
-class _ModelDropdown extends StatefulWidget {
-  const _ModelDropdown({
+/// Selecteur de modele : champ texte libre avant connexion, dropdown dynamique apres.
+class _ModelSelector extends StatefulWidget {
+  const _ModelSelector({
     required this.controller,
     this.installedModels = const [],
   });
@@ -460,36 +469,51 @@ class _ModelDropdown extends StatefulWidget {
   final List<String> installedModels;
 
   @override
-  State<_ModelDropdown> createState() => _ModelDropdownState();
+  State<_ModelSelector> createState() => _ModelSelectorState();
 }
 
-class _ModelDropdownState extends State<_ModelDropdown> {
-  late String _selected;
+class _ModelSelectorState extends State<_ModelSelector> {
+  String? _selected;
 
   @override
   void initState() {
     super.initState();
-    final initial = widget.controller.text;
-    _selected = _kAvailableModels.contains(initial)
-        ? initial
-        : _kAvailableModels.first;
-    widget.controller.text = _selected;
+    _syncSelected();
   }
 
   @override
-  void didUpdateWidget(_ModelDropdown old) {
+  void didUpdateWidget(_ModelSelector old) {
     super.didUpdateWidget(old);
-    // Sync si le parent a change la valeur du controller (auto-selection).
-    final current = widget.controller.text;
-    if (current != _selected && _kAvailableModels.contains(current)) {
-      setState(() => _selected = current);
+    if (old.installedModels != widget.installedModels) {
+      setState(_syncSelected);
     }
   }
 
-  bool _isInstalled(String model) => widget.installedModels.contains(model);
+  void _syncSelected() {
+    if (widget.installedModels.isEmpty) {
+      _selected = null;
+      return;
+    }
+    final current = widget.controller.text;
+    if (widget.installedModels.contains(current)) {
+      _selected = current;
+    } else {
+      _selected = widget.installedModels.first;
+      widget.controller.text = _selected!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Avant connexion : champ texte libre
+    if (widget.installedModels.isEmpty) {
+      return EskoliaTextField(
+        controller: widget.controller,
+        hintText: 'Tester la connexion pour voir les modeles',
+      );
+    }
+
+    // Apres connexion : dropdown peuple dynamiquement depuis /api/tags
     return DropdownButtonFormField<String>(
       value: _selected,
       dropdownColor: const Color(0xFF1E1E38),
@@ -507,53 +531,24 @@ class _ModelDropdownState extends State<_ModelDropdown> {
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.04),
       ),
-      items: _kAvailableModels.map((m) {
-        final installed = _isInstalled(m);
-        final hasInfo   = widget.installedModels.isNotEmpty;
+      items: widget.installedModels.map((m) {
         return DropdownMenuItem<String>(
           value: m,
           child: Row(
             children: [
+              const Icon(Icons.check_circle_rounded, color: _green, size: 13),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   m,
-                  style: TextStyle(
-                    color: hasInfo && !installed
-                        ? _slate.withValues(alpha: 0.45)
-                        : Colors.white,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontFamily: 'monospace',
                     fontSize: 13,
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (hasInfo) ...[
-                const SizedBox(width: 8),
-                if (installed)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: _green.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      'installe',
-                      style: TextStyle(
-                        color: _green,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  )
-                else
-                  Text(
-                    'ollama pull $m',
-                    style: TextStyle(
-                      color: _slate.withValues(alpha: 0.4),
-                      fontSize: 9,
-                      fontFamily: 'monospace',
-                    ),
-                  ),
-              ],
             ],
           ),
         );

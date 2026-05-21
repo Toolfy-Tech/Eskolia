@@ -50,7 +50,7 @@ enum AiProvider {
         AiProvider.ollama => 'gemma3',
         AiProvider.anthropic => 'claude-3-5-haiku-20241022',
         AiProvider.openai => 'gpt-4o-mini',
-        AiProvider.gemini => 'gemini-1.5-flash',
+        AiProvider.gemini => 'gemini-2.5-flash',
         AiProvider.groq => 'llama-3.3-70b-versatile',
         AiProvider.perplexity => 'llama-3.1-sonar-small-128k-online',
         AiProvider.xai => 'grok-beta',

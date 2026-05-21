@@ -180,6 +180,7 @@ class AiChatService {
   }
 
   // ── Google Gemini ─────────────────────────────────────────────────────────
+  // Appel non-streaming vers generateContent — format canonique Google.
 
   Stream<String> _streamGemini(
     String key,
@@ -188,62 +189,48 @@ class AiChatService {
     double temperature,
     bool jsonMode,
   ) async* {
-    final contents = messages
-        .where((m) => m.role != 'system')
-        .map((m) => {
-              'role': m.role == 'assistant' ? 'model' : 'user',
-              'parts': [
-                {'text': m.content}
-              ],
-            })
-        .toList();
+    // Concatene system + messages en un seul bloc texte.
+    final buf = StringBuffer();
+    if (systemPrompt != null && systemPrompt.isNotEmpty) {
+      buf.writeln(systemPrompt);
+      buf.writeln();
+    }
+    for (final m in messages) {
+      buf.writeln(m.content);
+    }
+    final promptText = buf.toString().trim();
 
-    Response<ResponseBody> response;
+    Response<dynamic> response;
     try {
-      response = await _dio.post<ResponseBody>(
+      response = await _dio.post<dynamic>(
         'https://generativelanguage.googleapis.com/v1beta/models/'
-        '${AiProvider.gemini.defaultModel}:streamGenerateContent'
-        '?alt=sse&key=$key',
+        'gemini-2.5-flash:generateContent?key=$key',
         options: Options(
           headers: {'Content-Type': 'application/json'},
-          responseType: ResponseType.stream,
           sendTimeout: const Duration(seconds: 15),
           receiveTimeout: const Duration(seconds: 90),
         ),
         data: jsonEncode({
-          'contents': contents,
-          if (systemPrompt != null)
-            'systemInstruction': {
-              'parts': [{'text': systemPrompt}]
-            },
-          'generationConfig': {
-            'temperature': temperature,
-            if (jsonMode) 'responseMimeType': 'application/json',
-          },
+          'contents': [
+            {
+              'parts': [
+                {'text': promptText}
+              ]
+            }
+          ],
         }),
       );
     } on DioException catch (e) {
       throw _dioError(e);
     }
 
-    String buffer = '';
-    await for (final chunk in response.data!.stream) {
-      buffer += utf8.decode(chunk, allowMalformed: true);
-      final lines = buffer.split('\n');
-      buffer = lines.removeLast();
-      for (final line in lines) {
-        final trimmed = line.trim();
-        if (!trimmed.startsWith('data: ')) continue;
-        final data = trimmed.substring(6).trim();
-        try {
-          final json = jsonDecode(data) as Map<String, dynamic>;
-          final text = (json['candidates'] as List?)
-              ?.firstOrNull?['content']?['parts']
-              ?.firstOrNull?['text'] as String?;
-          if (text != null && text.isNotEmpty) yield text;
-        } catch (_) {}
-      }
-    }
+    final data = response.data is Map
+        ? response.data as Map<String, dynamic>
+        : jsonDecode(response.data.toString()) as Map<String, dynamic>;
+    final text = (data['candidates'] as List?)
+        ?.firstOrNull?['content']?['parts']
+        ?.firstOrNull?['text'] as String?;
+    if (text != null && text.isNotEmpty) yield text;
   }
 
   // ── Test de connexion ─────────────────────────────────────────────────────

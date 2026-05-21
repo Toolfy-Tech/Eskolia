@@ -80,6 +80,8 @@ class OllamaInstallGuideSheet extends StatelessWidget {
                     SizedBox(height: 20),
                     _Step3(),
                     SizedBox(height: 20),
+                    _UrlSection(),
+                    SizedBox(height: 20),
                     _VerifySection(),
                     SizedBox(height: 20),
                     _ModelsTable(),
@@ -299,6 +301,103 @@ class _Step1 extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ── Section URLs ──────────────────────────────────────────────────────────────
+
+class _UrlSection extends StatelessWidget {
+  const _UrlSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _SectionHeader('URL DE CONNEXION'),
+        const SizedBox(height: 12),
+        Text(
+          'Selon votre plateforme, utilisez l\'URL adaptee :',
+          style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+        ),
+        const SizedBox(height: 10),
+        _UrlRow(label: 'Web / Bureau', url: 'http://127.0.0.1:11434'),
+        const SizedBox(height: 6),
+        _UrlRow(label: 'Emulateur Android', url: 'http://10.0.2.2:11434'),
+      ],
+    );
+  }
+}
+
+class _UrlRow extends StatelessWidget {
+  const _UrlRow({required this.label, required this.url});
+  final String label;
+  final String url;
+
+  Future<void> _copy(BuildContext context) async {
+    await Clipboard.setData(ClipboardData(text: url));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('URL copiee : $url'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: _surface,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: _terminalBg,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: _violet.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: _violet,
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              url,
+              style: const TextStyle(
+                color: _terminalGreen,
+                fontFamily: 'monospace',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () => _copy(context),
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: Text(
+                '\u{1F4CB}',
+                style: TextStyle(fontSize: 14, color: _slate.withValues(alpha: 0.8)),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -537,6 +636,16 @@ class _TroubleshootSection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         _TroubleshootItem(
+          question: 'Erreur CORS (Windows)',
+          answer: 'Le navigateur bloque la requete vers Ollama. '
+              'Quittez Ollama (icone systray > Quitter), '
+              'ajoutez la variable d\'environnement systeme, '
+              'puis relancez Ollama.',
+          command: 'setx OLLAMA_ORIGINS "*"',
+          commandNote: 'Dans PowerShell, puis relancez Ollama depuis le menu Demarrer.',
+        ),
+        const SizedBox(height: 8),
+        _TroubleshootItem(
           question: 'Generation lente',
           answer: 'Votre PC utilise le CPU au lieu du GPU. '
               'Normal sans carte graphique dediee — comptez 1 a 3 min par generation.',
@@ -557,10 +666,12 @@ class _TroubleshootItem extends StatelessWidget {
     required this.question,
     required this.answer,
     this.command,
+    this.commandNote,
   });
   final String question;
   final String answer;
   final String? command;
+  final String? commandNote;
 
   @override
   Widget build(BuildContext context) {
@@ -601,6 +712,18 @@ class _TroubleshootItem extends StatelessWidget {
                 if (command != null) ...[
                   const SizedBox(height: 8),
                   _TerminalBlock(command: command!),
+                  if (commandNote != null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      commandNote!,
+                      style: TextStyle(
+                        color: _slate.withValues(alpha: 0.7),
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ],
               ],
             ),

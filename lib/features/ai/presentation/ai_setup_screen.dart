@@ -195,9 +195,10 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   final _service       = AiChatService();
   final _keyController = TextEditingController();
 
-  bool _loading = true;
-  bool _testing = false;
-  bool _obscure = true;
+  bool _loading        = true;
+  bool _testing        = false;
+  bool _obscure        = true;
+  bool _privacyConsent = false;
   AiConnectionState _state    = const AiConnectionState(isConnected: false);
   AiProvider        _detected = AiProvider.unknown;
 
@@ -224,7 +225,12 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
 
   void _onKeyChanged(String value) {
     final detected = AiProvider.detectFromKey(value);
-    if (detected != _detected) setState(() => _detected = detected);
+    if (detected != _detected) {
+      setState(() {
+        _detected = detected;
+        _privacyConsent = false;
+      });
+    }
   }
 
   Future<void> _save() async {
@@ -290,6 +296,10 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                 const SizedBox(height: 16),
                 _buildKeyInput(),
                 const SizedBox(height: 14),
+                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
+                  _buildConsentCheckbox(),
+                  const SizedBox(height: 10),
+                ],
                 _buildSaveButton(),
                 if (_state.isConnected) ...[
                   const SizedBox(height: 10),
@@ -387,13 +397,18 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     );
   }
 
-  Widget _buildSaveButton() => EskoliaButton(
-    label: _testing ? 'Test en cours...' : (_state.isConnected ? 'Mettre a jour' : 'Connecter mon IA'),
-    icon: _testing ? Icons.hourglass_empty_rounded : Icons.bolt_rounded,
-    variant: EskoliaButtonVariant.primary,
-    expand: true,
-    onPressed: _testing ? null : _save,
-  );
+  Widget _buildSaveButton() {
+    final needsConsent = _detected != AiProvider.unknown &&
+        !_detected.isLocal &&
+        !_privacyConsent;
+    return EskoliaButton(
+      label: _testing ? 'Test en cours...' : (_state.isConnected ? 'Mettre a jour' : 'Connecter mon IA'),
+      icon: _testing ? Icons.hourglass_empty_rounded : Icons.bolt_rounded,
+      variant: EskoliaButtonVariant.primary,
+      expand: true,
+      onPressed: (_testing || needsConsent) ? null : _save,
+    );
+  }
 
   Widget _buildDisconnectButton() => EskoliaButton(
     label: 'Deconnecter',
@@ -402,6 +417,47 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     expand: true,
     onPressed: _disconnect,
   );
+
+  // ── Consentement confidentialite ───────────────────────────────────────────
+
+  Widget _buildConsentCheckbox() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _amber.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _amber.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Checkbox(
+            value: _privacyConsent,
+            onChanged: (v) => setState(() => _privacyConsent = v ?? false),
+            activeColor: _violet,
+            side: BorderSide(color: _slate.withValues(alpha: 0.4)),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _privacyConsent = !_privacyConsent),
+              child: Text(
+                'J\'ai compris qu\'en utilisant une cle API Cloud, mes requetes peuvent etre analysees par le fournisseur. '
+                'Je m\'engage a ne partager aucune donnee personnelle.',
+                style: TextStyle(
+                  color: _slate.withValues(alpha: 0.85),
+                  fontSize: 12,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   // ── Avertissement contextuel ───────────────────────────────────────────────
 
