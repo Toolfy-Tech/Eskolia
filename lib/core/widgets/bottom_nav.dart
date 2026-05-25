@@ -147,12 +147,10 @@ class EskoliaBottomNav extends StatelessWidget {
   }) {
     final index = _indexForPath(currentPath, items);
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-        child: Center(
-          child: ClipRRect(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+      child: Center(
+        child: ClipRRect(
             borderRadius: BorderRadius.circular(40),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
@@ -243,7 +241,6 @@ class EskoliaBottomNav extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }
@@ -258,9 +255,10 @@ class MainShell extends StatelessWidget {
     final state = GoRouterState.of(context);
     final path = state.uri.path;
     final topPad = MediaQuery.of(context).padding.top;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F1A),
+      backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -283,8 +281,10 @@ class MainShell extends StatelessWidget {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 0,
-            child: EskoliaBottomNav(currentPath: path),
+            bottom: 12 + bottomInset,
+            child: Center(
+              child: EskoliaBottomNav(currentPath: path),
+            ),
           ),
         ],
       ),
