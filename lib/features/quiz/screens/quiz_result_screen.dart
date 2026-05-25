@@ -475,6 +475,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
   }
 
   Widget _buildBottomButtons(BuildContext context) {
+    final next = _findNextModule();
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -482,16 +483,37 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       ),
       child: Column(
         children: [
+          if (next != null) ...[
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.go('/parcours');
+              },
+              style: FilledButton.styleFrom(backgroundColor: _violet, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+              icon: const Icon(Icons.arrow_forward_rounded),
+              label: Text(
+                next.title,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(backgroundColor: _violet, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+            style: FilledButton.styleFrom(
+              backgroundColor: next != null ? Colors.white.withValues(alpha: 0.08) : _violet,
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(54),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             child: const Text('REJOUER LA SESSION', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.1)),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () {
               final destination = widget.exitDestination == QuizResultExitDestination.soloMenu ? '/solo' : '/parcours';
-              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
               context.go(destination);
             },
             child: Text('RETOUR AU MENU', style: TextStyle(color: _slate, fontWeight: FontWeight.w700, fontSize: 13)),
