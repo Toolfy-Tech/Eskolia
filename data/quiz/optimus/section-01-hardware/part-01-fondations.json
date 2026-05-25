@@ -111,5 +111,35 @@
     "question": "Dans quel sens doit-on généralement installer les ventilateurs en façade d'un boîtier ?",
     "answer": "En aspiration (Inspiration) : l'air frais entre dans le boîtier.",
     "comment": "Astuce de pro : La face 'jolie' du ventilateur aspire, la face avec la grille/étiquette rejette l'air. L'air chaud montant, on l'extrait par l'arrière et le haut."
+  },
+  {
+    "id": "O01-C01-004",
+    "category": "Hardware",
+    "chapter": "Carte mère",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque facteur de forme de carte mère a sa caracteristique principale.",
+    "pairs": [
+      {"left": "ATX", "right": "Format standard pour desktop"},
+      {"left": "Micro-ATX", "right": "Format compact intermediaire"},
+      {"left": "Mini-ITX", "right": "Format tres compact pour HTPC"},
+      {"left": "E-ATX", "right": "Format etendu haute performance"}
+    ],
+    "comment": "Le facteur de forme determine la taille de la carte mere et le nombre de slots disponibles."
+  },
+  {
+    "id": "O01-C01-005",
+    "category": "Hardware",
+    "chapter": "Carte mère",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque composant de la carte mere a son role.",
+    "pairs": [
+      {"left": "Socket CPU", "right": "Connecteur physique du processeur"},
+      {"left": "Chipset", "right": "Controleur des bus et peripheriques"},
+      {"left": "Slot PCIe", "right": "Emplacement pour cartes d'extension"},
+      {"left": "Slot RAM", "right": "Emplacement pour barettes memoire"}
+    ],
+    "comment": "Le chipset orchestre les communications entre le CPU, la RAM et les peripheriques."
   }
 ]

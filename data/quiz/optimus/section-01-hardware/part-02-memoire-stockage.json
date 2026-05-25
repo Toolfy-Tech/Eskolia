@@ -137,5 +137,35 @@
     ],
     "answer": "Disque dur (HDD) en fin de vie ou saturé par les processus système.",
     "comment": "Réflexe TIP : C'est le moment idéal pour proposer au client un clonage vers un SSD : c'est l'upgrade la plus rentable pour le confort utilisateur."
+  },
+  {
+    "id": "O01-C02-016",
+    "category": "Hardware",
+    "chapter": "Memoire",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque type de memoire a sa description.",
+    "pairs": [
+      {"left": "DDR4", "right": "SDRAM double debit 4e generation"},
+      {"left": "ECC", "right": "Memoire avec correction d'erreurs"},
+      {"left": "Cache L1", "right": "Memoire la plus rapide, integree au CPU"},
+      {"left": "ROM", "right": "Memoire en lecture seule non volatile"}
+    ],
+    "comment": "La memoire ECC est indispensable dans les serveurs pour garantir l'integrite des donnees."
+  },
+  {
+    "id": "O01-C02-017",
+    "category": "Hardware",
+    "chapter": "Stockage",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque technologie de stockage a sa caracteristique principale.",
+    "pairs": [
+      {"left": "HDD", "right": "Disque mecanique a plateau rotatif"},
+      {"left": "SSD SATA", "right": "Flash sans pieces mobiles, interface SATA"},
+      {"left": "NVMe", "right": "SSD ultra-rapide sur interface PCIe"},
+      {"left": "eMMC", "right": "Stockage flash soude sur la carte mere"}
+    ],
+    "comment": "NVMe peut atteindre 7000 Mo/s en lecture, contre 550 Mo/s pour un SSD SATA."
   }
 ]
