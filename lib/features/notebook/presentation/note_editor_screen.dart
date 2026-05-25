@@ -98,6 +98,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   String? _errorMessage;
   VoidCallback? _retryAction;
 
+  bool    _generatingFlashcards = false;
+  String? _flashcardJson;
+
   @override
   void initState() {
     super.initState();
@@ -204,6 +207,38 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       }
     } finally {
       if (mounted) setState(() => _generating = false);
+    }
+  }
+
+  Future<void> _generateFlashcards(AiConnectionState aiState) async {
+    if (_generatingFlashcards) return;
+    final prompt = _buildNotesPrompt();
+    if (prompt.isEmpty) {
+      showEskoliaSnackBar(context, 'Ecris au moins une note avant de generer.');
+      return;
+    }
+    setState(() {
+      _generatingFlashcards = true;
+      _flashcardJson = null;
+    });
+    try {
+      final buffer = StringBuffer();
+      await for (final token in _aiGenerator.streamFlashcards(
+        apiKey: aiState.apiKey!,
+        provider: aiState.provider,
+        noteContent: prompt,
+        noteTitle: widget.note?.title ?? 'Notes',
+      )) {
+        if (!mounted) return;
+        buffer.write(token);
+      }
+      if (!mounted) return;
+      final raw = NoteAiGenerator.extractJson(buffer.toString());
+      setState(() => _flashcardJson = raw);
+    } catch (e) {
+      if (mounted) showEskoliaSnackBar(context, 'Erreur flashcards : $e');
+    } finally {
+      if (mounted) setState(() => _generatingFlashcards = false);
     }
   }
 
@@ -487,9 +522,113 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
               const SizedBox(height: 24),
               _buildResultsSection(),
             ],
+            const SizedBox(height: 12),
+            EskoliaCardContent(
+              accentBorderColor: _amber,
+              padding: const EdgeInsets.all(14),
+              onTap: _generatingFlashcards ? null : () => _generateFlashcards(aiState),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: _amber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: _generatingFlashcards
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: _amber,
+                                strokeWidth: 2,
+                                backgroundColor: Colors.white.withValues(alpha: 0.1),
+                              ),
+                            )
+                          : const Icon(Icons.style_rounded, color: _amber, size: 22),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _generatingFlashcards ? 'Generation en cours...' : 'Generer des flashcards',
+                          style: TextStyle(
+                            color: _generatingFlashcards ? _slate : Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Termes cles + definitions a telecharger en .json',
+                          style: TextStyle(
+                            color: _slate.withValues(alpha: 0.6),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!_generatingFlashcards)
+                    const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+                ],
+              ),
+            ),
+            if (_flashcardJson != null) ...[
+              const SizedBox(height: 10),
+              _buildFlashcardDownloadRow(),
+            ],
           ],
         );
       },
+    );
+  }
+
+  Widget _buildFlashcardDownloadRow() {
+    final json = _flashcardJson!;
+    int count = 0;
+    try {
+      final data = jsonDecode(json) as Map<String, dynamic>;
+      count = (data['questions'] as List?)?.length ?? 0;
+    } catch (_) {}
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _amber.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _amber.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded, color: _amber, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '$count flashcards generees',
+              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+          ),
+          FilledButton.icon(
+            onPressed: () => _downloadFile(
+              json,
+              'flashcards_${_safeName(widget.note?.title ?? 'notes')}.json',
+              'application/json',
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: _amber,
+              foregroundColor: Colors.black87,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            icon: const Icon(Icons.download_rounded, size: 16),
+            label: const Text('Telecharger', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
     );
   }
 
