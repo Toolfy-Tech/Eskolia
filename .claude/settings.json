@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "count=$(git -C /home/user/Eskolia diff --name-only HEAD 2>/dev/null | grep '\\.dart$' | wc -l | tr -d ' '); if [ \"$count\" -le 3 ]; then label='leger'; suggestion='rien'; elif [ \"$count\" -le 6 ]; then label='moyen'; suggestion='/compact recommande'; else label='CHARGE'; suggestion='/compact maintenant'; fi; echo \"{\\\"systemMessage\\\": \\\"Contexte : $label ($count fichiers Dart touches) — $suggestion\\\"}\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

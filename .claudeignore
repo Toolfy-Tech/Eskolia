@@ -1,0 +1,62 @@
+# ── Dependances & lock files ──────────────────────────────────────────────────
+pubspec.lock
+package-lock.json
+package.json
+
+# ── Plateformes natives (projet web-first) ────────────────────────────────────
+android/
+ios/
+
+# ── Build & artefacts generes ─────────────────────────────────────────────────
+web/flutter_service_worker.js
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.g.dart
+*.freezed.dart
+
+# ── Git internals ─────────────────────────────────────────────────────────────
+.git/
+
+# ── Session Claude ─────────────────────────────────────────────────────────────
+.claude/worktrees/
+
+# ── Donnees statiques (contenu pedagogique — jamais edite manuellement) ───────
+data/quiz/
+data/tip-quiz/
+data/home/
+
+# ── Cours Markdown sources (contenu, pas code) ────────────────────────────────
+data/curriculum/
+data/docs/
+
+# ── Binaires & medias ─────────────────────────────────────────────────────────
+assets/images/
+assets/icons/
+assets/tp/
+docs/*.pdf
+data/curriculum/optimus/images/
+
+# ── Scripts one-shot de generation ────────────────────────────────────────────
+tool/
+scripts/
+convert_pdf.py
+
+# ── Documentation projet (onboarding uniquement, pas dev quotidien) ───────────
+docs/
+plan/
+CLAUDE_SYNC.md
+
+# ── Fichiers fantomes (ancienne arbo remplacee par presentation/) ─────────────
+lib/features/auth/forgot_password_screen.dart
+lib/features/auth/login_screen.dart
+lib/features/auth/register_screen.dart
+lib/features/home/home_screen.dart
+lib/features/lobby/lobby_detail_screen.dart
+lib/features/lobby/lobby_list_screen.dart
+lib/features/lobby/lobbys_screen.dart
+lib/features/notifications/notifications_screen.dart
+lib/features/parcours/parcours_screen.dart
+lib/features/profil/profil_screen.dart
+lib/features/settings/settings_screen.dart
