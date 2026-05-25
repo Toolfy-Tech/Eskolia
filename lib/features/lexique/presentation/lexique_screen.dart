@@ -20,7 +20,8 @@ enum _Phase { intro, worksheet, corrected }
 
 class _FieldState {
   final ctrl = TextEditingController();
-  bool? correct;
+  // null = pas encore auto-corrige, true = correct, false = faux
+  bool? selfValidated;
 
   void dispose() => ctrl.dispose();
 }
@@ -37,9 +38,11 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   int _count = 15;
   List<LexiqueEntry> _entries = [];
   List<_FieldState> _fields = [];
-  int _score = 0;
 
   final _rng = Random();
+
+  int get _validatedCount => _fields.where((f) => f.selfValidated != null).length;
+  int get _correctCount   => _fields.where((f) => f.selfValidated == true).length;
 
   @override
   void dispose() {
@@ -54,44 +57,22 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
     setState(() {
       _entries = selected;
       _fields  = List.generate(_count, (_) => _FieldState());
-      _score   = 0;
       _phase   = _Phase.worksheet;
     });
   }
 
-  void _correct() {
-    var score = 0;
-    for (int i = 0; i < _entries.length; i++) {
-      final ok = _check(_fields[i].ctrl.text, _entries[i]);
-      _fields[i].correct = ok;
-      if (ok) score++;
-    }
-    setState(() {
-      _score = score;
-      _phase = _Phase.corrected;
-    });
+  void _showAnswers() {
     FocusScope.of(context).unfocus();
+    setState(() => _phase = _Phase.corrected);
+  }
+
+  void _validate(int i, bool correct) {
+    setState(() => _fields[i].selfValidated = correct);
   }
 
   void _restart() {
     setState(() => _phase = _Phase.intro);
   }
-
-  // 65 % des mots-clés de l'expansion doivent être présents dans la réponse.
-  bool _check(String answer, LexiqueEntry entry) {
-    if (answer.trim().isEmpty) return false;
-    final expansion = entry.definition.split(' — ').first.toLowerCase();
-    final ansLow    = answer.toLowerCase();
-    final expWords  = expansion
-        .split(RegExp(r'\s+'))
-        .where((w) => w.length > 2)
-        .toList();
-    if (expWords.isEmpty) return false;
-    final hits = expWords.where((w) => ansLow.contains(w)).length;
-    return hits / expWords.length >= 0.65;
-  }
-
-  String _expansion(LexiqueEntry e) => e.definition.split(' — ').first;
 
   @override
   Widget build(BuildContext context) {
@@ -114,12 +95,12 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
       floatingActionButton: _phase == _Phase.intro ? null : FloatingActionButton.extended(
         backgroundColor: _phase == _Phase.corrected ? _violet : _green,
         foregroundColor: Colors.white,
-        onPressed: _phase == _Phase.corrected ? _restart : _correct,
+        onPressed: _phase == _Phase.corrected ? _restart : _showAnswers,
         icon: Icon(_phase == _Phase.corrected
             ? Icons.replay_rounded
             : Icons.check_rounded),
         label: Text(
-          _phase == _Phase.corrected ? 'Recommencer' : 'Corriger tout',
+          _phase == _Phase.corrected ? 'Recommencer' : 'Voir les reponses',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -148,7 +129,8 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Une liste d\'acronymes t\'est presentee — ecris la signification de chacun, puis corrige.',
+                'Un terme, un acronyme ou un concept du metier t\'est presente. '
+                'Ecris ta definition, puis compare avec la correction et auto-evalue-toi.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: _slate.withValues(alpha: 0.9),
@@ -167,7 +149,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           padding: const EdgeInsets.only(left: 10),
           margin: const EdgeInsets.only(bottom: 12),
           child: const Text(
-            'NOMBRE D\'ACRONYMES',
+            'NOMBRE DE TERMES',
             style: TextStyle(
               color: _slate,
               fontSize: 11,
@@ -291,7 +273,6 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
 
     return Column(
       children: [
-        // Score bar (visible après correction)
         if (corrected) _buildScoreBar(),
         Expanded(
           child: ListView.builder(
@@ -308,8 +289,12 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   }
 
   Widget _buildScoreBar() {
-    final ratio = _total > 0 ? _score / _total : 0.0;
-    final color = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final validated = _validatedCount;
+    final correct   = _correctCount;
+    final total     = _fields.length;
+    final ratio     = validated > 0 ? correct / validated : 0.0;
+    final color     = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+
     return Container(
       color: EskoliaVisual.bgElevated,
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -319,28 +304,31 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '$_score / $_total corrects',
+                validated < total
+                    ? '$correct corrects · $validated / $total evalues'
+                    : '$correct / $total corrects',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
                 ),
               ),
-              Text(
-                '${(ratio * 100).round()} %',
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
+              if (validated > 0)
+                Text(
+                  '${(ratio * 100).round()} %',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: ratio,
+              value: validated > 0 ? correct / total : 0,
               backgroundColor: Colors.white.withValues(alpha: 0.08),
               valueColor: AlwaysStoppedAnimation<Color>(color),
               minHeight: 5,
@@ -351,48 +339,48 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
     );
   }
 
-  int get _total => _fields.length;
-
   Widget _buildEntry(int i, {required bool corrected}) {
-    final entry   = _entries[i];
-    final field   = _fields[i];
-    final correct = field.correct;
+    final entry     = _entries[i];
+    final field     = _fields[i];
+    final validated = field.selfValidated;
 
-    Color borderColor = Colors.white.withValues(alpha: 0.10);
-    if (corrected && correct == true)  borderColor = _green;
-    if (corrected && correct == false) borderColor = _red;
+    Color accentColor = Colors.transparent;
+    if (corrected && validated == true)  accentColor = _green;
+    if (corrected && validated == false) accentColor = _red;
 
     return EskoliaCardContent(
-      accentBorderColor: corrected ? borderColor : null,
+      accentBorderColor: corrected ? accentColor : null,
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // En-tete : terme + badge categorie
           Row(
             children: [
-              Text(
-                entry.acronym,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.5,
-                  fontFamily: 'monospace',
+              Expanded(
+                child: Text(
+                  entry.term,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
-              const Spacer(),
               _catBadge(entry.category),
-              if (corrected) ...[
+              if (corrected && validated != null) ...[
                 const SizedBox(width: 8),
                 Icon(
-                  correct == true ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                  color: correct == true ? _green : _red,
+                  validated ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                  color: validated ? _green : _red,
                   size: 18,
                 ),
               ],
             ],
           ),
           const SizedBox(height: 10),
+          // Champ de saisie
           TextField(
             controller: field.ctrl,
             enabled: !corrected,
@@ -401,10 +389,9 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
             style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
-              fontFamily: 'monospace',
             ),
             decoration: InputDecoration(
-              hintText: 'Signification de ${entry.acronym}...',
+              hintText: 'Ta definition...',
               hintStyle: TextStyle(
                 color: _slate.withValues(alpha: 0.45),
                 fontSize: 13,
@@ -426,45 +413,96 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: corrected && correct == true
-                      ? _green.withValues(alpha: 0.4)
-                      : corrected
-                          ? _red.withValues(alpha: 0.4)
-                          : Colors.white.withValues(alpha: 0.08),
-                ),
+                borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
               ),
             ),
           ),
-          // Réponse attendue si faux
-          if (corrected && correct == false) ...[
-            const SizedBox(height: 8),
+          // Correction ouverte : definition complete affichee apres "Voir les reponses"
+          if (corrected) ...[
+            const SizedBox(height: 10),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: _amber.withValues(alpha: 0.07),
+                color: _violet.withValues(alpha: 0.07),
                 borderRadius: BorderRadius.circular(8),
                 border: Border(
-                  left: BorderSide(color: _amber.withValues(alpha: 0.6), width: 3),
+                  left: BorderSide(color: _violet.withValues(alpha: 0.5), width: 3),
                 ),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.arrow_right_rounded, color: _amber, size: 16),
-                  const SizedBox(width: 4),
+                  Icon(Icons.lightbulb_outline_rounded, color: _violet.withValues(alpha: 0.8), size: 14),
+                  const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      _expansion(entry),
-                      style: const TextStyle(
-                        color: _amber,
+                      entry.definition,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
                         fontSize: 12,
-                        fontStyle: FontStyle.italic,
+                        height: 1.5,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+            // Auto-evaluation
+            if (validated == null)
+              Row(
+                children: [
+                  Expanded(
+                    child: _ValidationButton(
+                      label: 'J\'avais bon',
+                      icon: Icons.check_rounded,
+                      color: _green,
+                      onTap: () => _validate(i, true),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ValidationButton(
+                      label: 'J\'avais faux',
+                      icon: Icons.close_rounded,
+                      color: _red,
+                      onTap: () => _validate(i, false),
+                    ),
+                  ),
+                ],
+              )
+            else
+              Row(
+                children: [
+                  Icon(
+                    validated ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                    color: (validated ? _green : _red).withValues(alpha: 0.7),
+                    size: 14,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    validated ? 'Marque comme correct' : 'Marque comme faux',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.6),
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => setState(() => _fields[i].selfValidated = null),
+                    child: Text(
+                      'Modifier',
+                      style: TextStyle(
+                        color: _violet.withValues(alpha: 0.7),
+                        fontSize: 11,
+                        decoration: TextDecoration.underline,
+                        decorationColor: _violet.withValues(alpha: 0.4),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ],
       ),
@@ -473,6 +511,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
 
   Widget _catBadge(String cat) {
     final (label, color) = switch (cat) {
+      'metier'   => ('Métier',       _amber),
       'reseau'   => ('Réseau',       _violet),
       'windows'  => ('Windows/AD',   const Color(0xFF00BCD4)),
       'securite' => ('Sécurité',     _red),
@@ -491,6 +530,52 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           color: color,
           fontSize: 10,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Bouton d'auto-evaluation ─────────────────────────────────────────────────
+
+class _ValidationButton extends StatelessWidget {
+  const _ValidationButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 9),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 15),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );
