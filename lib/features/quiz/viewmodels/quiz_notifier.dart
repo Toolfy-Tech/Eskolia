@@ -172,6 +172,36 @@ class QuizNotifier extends Notifier<QuizState> {
     }
   }
 
+  Future<void> revealAndScoreAssociation(Map<String, String> userPairings, List<List<String>> correctPairs) async {
+    if (state.isFlipped) return;
+    _timer?.cancel();
+
+    int correctCount = 0;
+    for (final pair in correctPairs) {
+      if (pair.length >= 2 && userPairings[pair[0]] == pair[1]) correctCount++;
+    }
+    final score = correctPairs.isEmpty ? 0.0 : correctCount / correctPairs.length;
+
+    final s = state.session!;
+    final idx = s.currentIndex;
+    final q = s.questions[idx];
+    final scores = List<double?>.from(s.userScores);
+    scores[idx] = score;
+
+    state = state.copyWith(
+      session: s.copyWith(userScores: scores),
+      isFlipped: true,
+      isValidated: true,
+      isTimedOut: false,
+    );
+
+    if (score >= 0.5) {
+      await _lacunesRepo.removeIfCorrect(q);
+    } else {
+      await _lacunesRepo.addWrong(q);
+    }
+  }
+
   void toggleTicketCheck(int index) {
     if (state.isValidated) return;
     final newChecks = List<bool>.from(state.ticketChecks);

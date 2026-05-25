@@ -245,6 +245,7 @@ class QuizRepository {
           indices: indices.isEmpty ? null : indices,
           answerSequence: items.isEmpty ? null : items,
           options: items.isEmpty ? null : items,
+          matchPairs: _parsePairs(q['pairs']),
         ));
       }
       if (questions.isEmpty) return _buildDailyRandomSession();
@@ -336,6 +337,12 @@ class QuizRepository {
         rawType = 'classic';
       }
 
+      // If AI declared 'association' but forgot pairs, downgrade.
+      final rawPairs = _parsePairs(q['pairs']);
+      if (rawType == 'association' && (rawPairs == null || rawPairs.isEmpty)) {
+        rawType = 'classic';
+      }
+
       questions.add(QuizQuestion(
         id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
         type: rawType,
@@ -347,6 +354,7 @@ class QuizRepository {
         indices: indices.isEmpty ? null : indices,
         answerSequence: items.isEmpty ? null : items,
         options: items.isEmpty ? null : items,
+        matchPairs: rawPairs,
         categoryGroup: QuestionCategoryGroup.themes,
       ));
     }
@@ -384,6 +392,21 @@ class QuizRepository {
       runMode: QuizRunMode.standard,
       timed: false,
     );
+  }
+
+  static List<List<String>>? _parsePairs(dynamic raw) {
+    if (raw is! List) return null;
+    final result = <List<String>>[];
+    for (final item in raw) {
+      if (item is Map) {
+        final left = item['left']?.toString() ?? '';
+        final right = item['right']?.toString() ?? '';
+        if (left.isNotEmpty && right.isNotEmpty) result.add([left, right]);
+      } else if (item is List && item.length >= 2) {
+        result.add([item[0].toString(), item[1].toString()]);
+      }
+    }
+    return result.isEmpty ? null : result;
   }
 
   /// Extracts ordered items from a numbered list in `text` (e.g. "1. Foo\n2. Bar").
@@ -427,6 +450,7 @@ class QuizRepository {
           answerSequence: m['answer'] is List
               ? List<String>.from(m['answer'] as List)
               : null,
+          matchPairs: _parsePairs(m['pairs']),
           explanation: (m['explanation'] ?? m['comment']) as String?,
           sourceAssetPath: sourceAssetPath,
           options: m['options'] is List ? List<String>.from(m['options']) : null,
