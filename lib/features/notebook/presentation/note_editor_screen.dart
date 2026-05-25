@@ -1,6 +1,5 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
-import 'dart:html' as html show Blob, Url, AnchorElement;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -13,6 +12,7 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../ai/data/ai_key_repository.dart';
 import '../../quiz/services/quiz_repository.dart';
 import '../data/note_ai_generator.dart';
@@ -268,24 +268,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   // ── Download ─────────────────────────────────────────────────────────────────
 
-  void _downloadFile(String content, String filename, String mimeType) {
-    final bytes = utf8.encode(content);
-    final blob  = html.Blob([bytes], mimeType);
-    final url   = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute('download', filename)
-      ..click();
-    html.Url.revokeObjectUrl(url);
-  }
+  final _fs = EskoliaFolderService.instance;
 
   String _safeName(String subject) =>
       subject.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_').toLowerCase();
 
-  void _downloadCourse(_SubjectResult item) =>
-      _downloadFile(item.course, 'cours_${_safeName(item.subject)}.md', 'text/markdown');
+  Future<void> _downloadCourse(_SubjectResult item) => _fs.saveFile(
+        EskoliaFolder.cours,
+        'cours_${_safeName(item.subject)}.md',
+        item.course,
+        mimeType: 'text/markdown',
+      );
 
-  void _downloadQuiz(_SubjectResult item) =>
-      _downloadFile(item.quizJson, 'quiz_${_safeName(item.subject)}.json', 'application/json');
+  Future<void> _downloadQuiz(_SubjectResult item) => _fs.saveFile(
+        EskoliaFolder.quiz,
+        'quiz_${_safeName(item.subject)}.json',
+        item.quizJson,
+        mimeType: 'application/json',
+      );
 
   // ── Quiz play / save ─────────────────────────────────────────────────────────
 
@@ -626,10 +626,11 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
             ),
           ),
           FilledButton.icon(
-            onPressed: () => _downloadFile(
-              json,
+            onPressed: () => _fs.saveFile(
+              EskoliaFolder.flashcards,
               'flashcards_${_safeName(widget.note?.title ?? 'notes')}.json',
-              'application/json',
+              json,
+              mimeType: 'application/json',
             ),
             style: FilledButton.styleFrom(
               backgroundColor: _amber,
