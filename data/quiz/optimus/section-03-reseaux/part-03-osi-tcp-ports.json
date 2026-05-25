@@ -218,5 +218,35 @@
     "question": "Quel protocole est utilisé par la commande 'PING' ?",
     "answer": "ICMP (Internet Control Message Protocol).",
     "comment": "Astuce de pro : L'ICMP appartient à la Couche 3 (Réseau), c'est pour cela qu'un ping ne peut pas tester si un port TCP spécifique (Couche 4) est ouvert."
+  },
+  {
+    "id": "O03-C03-021",
+    "category": "Reseaux",
+    "chapter": "Modele OSI",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque couche OSI a son role principal.",
+    "pairs": [
+      {"left": "Couche 1 - Physique", "right": "Transmission des bits sur le support"},
+      {"left": "Couche 3 - Reseau", "right": "Adressage IP et routage"},
+      {"left": "Couche 4 - Transport", "right": "TCP/UDP, fiabilite et ports"},
+      {"left": "Couche 7 - Application", "right": "Protocoles HTTP, FTP, SMTP"}
+    ],
+    "comment": "Les couches 1 a 3 sont les couches reseau, les couches 4 a 7 sont les couches logicielles."
+  },
+  {
+    "id": "O03-C03-022",
+    "category": "Reseaux",
+    "chapter": "Ports",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque protocole reseau a son numero de port standard.",
+    "pairs": [
+      {"left": "HTTP", "right": "80"},
+      {"left": "HTTPS", "right": "443"},
+      {"left": "SSH", "right": "22"},
+      {"left": "DNS", "right": "53"}
+    ],
+    "comment": "Les ports inférieurs a 1024 sont reserves aux services systeme et nécessitent des privileges administrateur."
   }
 ]

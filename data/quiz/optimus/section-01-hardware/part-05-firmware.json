@@ -110,5 +110,35 @@
     "question": "Vrai ou Faux : L'UEFI permet de naviguer à la souris, contrairement à l'ancien BIOS qui ne gérait que le clavier.",
     "answer": "Vrai",
     "comment": "C'est l'un des changements les plus visibles pour l'utilisateur final."
+  },
+  {
+    "id": "O01-C05-011",
+    "category": "Hardware",
+    "chapter": "Firmware",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque terme BIOS/UEFI a sa definition.",
+    "pairs": [
+      {"left": "POST", "right": "Autotest au demarrage avant le boot"},
+      {"left": "Secure Boot", "right": "Verifie la signature des chargeurs de demarrage"},
+      {"left": "Fast Boot", "right": "Reduit le temps de demarrage en sautant des tests"},
+      {"left": "TPM", "right": "Puce de securite pour le chiffrement"}
+    ],
+    "comment": "Le TPM 2.0 est exige par Windows 11 pour activer BitLocker et d'autres fonctions de securite."
+  },
+  {
+    "id": "O01-C05-012",
+    "category": "Hardware",
+    "chapter": "Firmware",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque ordre de priorite de boot a son usage typique.",
+    "pairs": [
+      {"left": "Cle USB en premier", "right": "Installation ou reparation du systeme"},
+      {"left": "Disque dur en premier", "right": "Demarrage normal du systeme installe"},
+      {"left": "Reseau (PXE) en premier", "right": "Demarrage depuis un serveur de deploiement"},
+      {"left": "DVD en premier", "right": "Installation depuis un support optique"}
+    ],
+    "comment": "L'ordre de boot se configure dans l'UEFI et peut aussi s'afficher via une touche rapide (F11, F12) au demarrage."
   }
 ]

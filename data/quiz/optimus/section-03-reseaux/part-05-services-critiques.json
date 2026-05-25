@@ -239,5 +239,35 @@
     "question": "Pourquoi le NAT est-il considéré comme une 'barrière de sécurité' naturelle pour un réseau domestique ?",
     "answer": "Car il cache les adresses IP privées de vos PC. Depuis internet, on ne voit que l'IP de la box.",
     "comment": "Astuce de pro : Sans redirection de port (PAT) explicite, un pirate extérieur ne peut pas 'entrer' directement vers votre ordinateur."
+  },
+  {
+    "id": "O03-C05-021",
+    "category": "Reseaux",
+    "chapter": "Services reseau",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque service reseau a son role.",
+    "pairs": [
+      {"left": "DNS", "right": "Traduit les noms de domaine en adresses IP"},
+      {"left": "DHCP", "right": "Distribue automatiquement les adresses IP"},
+      {"left": "NTP", "right": "Synchronise l'heure des machines du reseau"},
+      {"left": "SNMP", "right": "Surveille et gere les equipements reseau"}
+    ],
+    "comment": "Sans DNS fonctionnel, la navigation web est impossible meme si la connexion internet est active."
+  },
+  {
+    "id": "O03-C05-022",
+    "category": "Reseaux",
+    "chapter": "Services reseau",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque protocole de messagerie a son role.",
+    "pairs": [
+      {"left": "SMTP", "right": "Envoi des e-mails"},
+      {"left": "IMAP", "right": "Reception avec synchronisation du serveur"},
+      {"left": "POP3", "right": "Reception avec telechargement local"},
+      {"left": "STARTTLS", "right": "Chiffrement de la session email"}
+    ],
+    "comment": "IMAP est prefere a POP3 car il conserve les emails sur le serveur et permet l'acces multi-appareils."
   }
 ]

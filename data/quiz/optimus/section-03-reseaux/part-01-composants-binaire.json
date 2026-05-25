@@ -216,5 +216,35 @@
     "question": "Quel est le rôle de la 'Passerelle par défaut' (Default Gateway) dans la configuration réseau d'un PC ?",
     "answer": "C'est l'adresse IP du routeur. C'est la porte de sortie pour aller sur un autre réseau ou sur Internet.",
     "comment": "Astuce de pro : Si la passerelle est absente ou fausse, vous pouvez parler à vos voisins de bureau, mais vous n'aurez jamais accès à Google."
+  },
+  {
+    "id": "O03-C01-021",
+    "category": "Reseaux",
+    "chapter": "Composants reseau",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque equipement reseau a son role principal.",
+    "pairs": [
+      {"left": "Switch", "right": "Interconnecte des appareils dans un meme reseau local"},
+      {"left": "Routeur", "right": "Dirige les paquets entre reseaux differents"},
+      {"left": "Point d'acces Wi-Fi", "right": "Etend le reseau en sans-fil"},
+      {"left": "Pare-feu (Firewall)", "right": "Filtre le trafic selon des regles de securite"}
+    ],
+    "comment": "Un switch travaille en couche 2 (MAC), un routeur en couche 3 (IP) du modele OSI."
+  },
+  {
+    "id": "O03-C01-022",
+    "category": "Reseaux",
+    "chapter": "Binaire",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque valeur decimale a sa representation binaire sur 8 bits.",
+    "pairs": [
+      {"left": "255", "right": "11111111"},
+      {"left": "128", "right": "10000000"},
+      {"left": "192", "right": "11000000"},
+      {"left": "10", "right": "00001010"}
+    ],
+    "comment": "Savoir convertir 192, 168, 255 et 0 en binaire est essentiel pour comprendre les masques de sous-reseau."
   }
 ]

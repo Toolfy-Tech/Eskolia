@@ -284,5 +284,35 @@
     "question": "Expliquez la différence entre une sauvegarde 'à froid' (Offline) et 'à chaud' (Online).",
     "answer": "À chaud : le PC tourne et travaille pendant qu'on sauvegarde (pratique mais plus risqué). À froid : on éteint tout pour faire une copie parfaite (très sûr mais immobilise le PC).",
     "comment": "Critère de réussite : Mentionner que la sauvegarde à froid nécessite l'arrêt de l'activité."
+  },
+  {
+    "id": "O04-C02-026",
+    "category": "Maintenance",
+    "chapter": "Strategies de sauvegarde",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque type de sauvegarde a sa description.",
+    "pairs": [
+      {"left": "Sauvegarde complete", "right": "Copie integrale de toutes les donnees"},
+      {"left": "Sauvegarde incrementielle", "right": "Copie uniquement les changements depuis la derniere sauvegarde"},
+      {"left": "Sauvegarde differentielle", "right": "Copie tous les changements depuis la derniere sauvegarde complete"},
+      {"left": "Sauvegarde miroir", "right": "Copie identique en temps reel, sans historique"}
+    ],
+    "comment": "La restauration incrementielle est plus longue car elle necessite la sauvegarde complete plus toutes les incrementielles."
+  },
+  {
+    "id": "O04-C02-027",
+    "category": "Maintenance",
+    "chapter": "Plans de maintenance",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque plan de continuite a son objectif.",
+    "pairs": [
+      {"left": "PCA (Plan de Continuite)", "right": "Maintenir l'activite pendant un sinistre"},
+      {"left": "PRI (Plan de Reprise)", "right": "Relancer les systemes apres un sinistre"},
+      {"left": "DRP (Disaster Recovery)", "right": "Restaurer l'infrastructure IT apres catastrophe"},
+      {"left": "BCP (Business Continuity)", "right": "Assurer la continuite globale de l'entreprise"}
+    ],
+    "comment": "Le PRI definit les priorites de restauration (systemes critiques en premier) et les responsables de chaque action."
   }
 ]

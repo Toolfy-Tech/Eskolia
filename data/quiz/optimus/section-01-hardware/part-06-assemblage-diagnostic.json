@@ -248,5 +248,35 @@
     "question": "Quelle manipulation permet de s'assurer que le problème vient bien de la carte graphique et non de l'écran ou du câble ?",
     "answer": "Brancher l'écran sur le port vidéo de la carte mère (si le CPU a un processeur graphique intégré).",
     "comment": "Astuce de pro : Si l'affichage revient, votre carte graphique dédiée est probablement HS ou mal alimentée."
+  },
+  {
+    "id": "O01-C06-021",
+    "category": "Hardware",
+    "chapter": "Assemblage",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque etape d'assemblage a son ordre logique.",
+    "pairs": [
+      {"left": "Installer le CPU", "right": "Avant de fixer la carte mere dans le boitier"},
+      {"left": "Poser la carte mere", "right": "Apres les entretoises, vissage sur le boitier"},
+      {"left": "Brancher les cables ATX", "right": "Apres avoir place tous les composants"},
+      {"left": "Test de demarrage", "right": "Avant de fermer le capot definitif"}
+    ],
+    "comment": "Le test de demarrage a nu (bench test) permet de valider le materiel avant assemblage final."
+  },
+  {
+    "id": "O01-C06-022",
+    "category": "Hardware",
+    "chapter": "Diagnostic",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque symptome de panne a sa cause materielle probable.",
+    "pairs": [
+      {"left": "Bips repetitifs au demarrage", "right": "Probleme RAM ou carte graphique"},
+      {"left": "Ecran bleu (BSOD)", "right": "Pilote defaillant ou RAM corrompue"},
+      {"left": "PC chaud, throttling", "right": "Dissipateur mal fixe ou pate thermique seche"},
+      {"left": "PC eteint sous charge", "right": "Alimentation sous-dimensionnee"}
+    ],
+    "comment": "Les bips POST sont codes selon le fabricant du BIOS (AMI, Award, Phoenix) et indiquent le composant en cause."
   }
 ]

@@ -222,5 +222,35 @@
     "question": "Quel est le risque d'utiliser une plage d'adresses PUBLIQUES (ex: 8.8.8.0/24) pour son réseau LOCAL ?",
     "answer": "Le PC ne pourra jamais accéder aux vrais serveurs sur internet qui possèdent ces adresses.",
     "comment": "Astuce de pro : Le PC croira que ces serveurs sont dans son propre bureau et ne sortira jamais par la passerelle."
+  },
+  {
+    "id": "O03-C02-021",
+    "category": "Reseaux",
+    "chapter": "Adressage IP",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque plage d'adresses IP privees a sa classe.",
+    "pairs": [
+      {"left": "10.0.0.0/8", "right": "Classe A, grands reseaux d'entreprise"},
+      {"left": "172.16.0.0/12", "right": "Classe B, reseaux de taille moyenne"},
+      {"left": "192.168.0.0/16", "right": "Classe C, reseaux domestiques et PME"},
+      {"left": "169.254.0.0/16", "right": "APIPA, adresse auto-attribuee sans DHCP"}
+    ],
+    "comment": "Une adresse 169.254.x.x signale que le PC n'a pas recu de reponse du serveur DHCP."
+  },
+  {
+    "id": "O03-C02-022",
+    "category": "Reseaux",
+    "chapter": "Masque de sous-reseau",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque notation CIDR a son masque decimal equivalent.",
+    "pairs": [
+      {"left": "/24", "right": "255.255.255.0"},
+      {"left": "/16", "right": "255.255.0.0"},
+      {"left": "/8", "right": "255.0.0.0"},
+      {"left": "/25", "right": "255.255.255.128"}
+    ],
+    "comment": "Un /25 divise un reseau /24 en deux sous-reseaux de 128 adresses chacun."
   }
 ]

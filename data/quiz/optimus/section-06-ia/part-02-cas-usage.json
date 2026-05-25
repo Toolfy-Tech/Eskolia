@@ -299,5 +299,35 @@
     "question": "Expliquez ce qu'est un 'Pare-feu' (Firewall) à un utilisateur non-technique en utilisant l'image d'un bâtiment.",
     "answer": "C'est comme le vigile à l'entrée d'un immeuble : il vérifie l'identité de chaque personne qui veut entrer ou sortir, et refuse l'accès à ceux qui n'ont pas d'invitation ou qui semblent suspects.",
     "comment": "Critère de réussite : Utiliser l'image du contrôle (vigile, douane) et éviter les termes comme 'paquets', 'ports' ou 'IP'."
+  },
+  {
+    "id": "O06-C02-026",
+    "category": "IA",
+    "chapter": "Cas d'usage technicien",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque tache technicien a l'usage IA le plus adapte.",
+    "pairs": [
+      {"left": "Rediger un rapport d'incident", "right": "Generation de texte structure"},
+      {"left": "Diagnostiquer une panne reseau", "right": "Analyse de logs et suggestions de resolution"},
+      {"left": "Inventorier le parc materiel", "right": "Extraction et structuration de donnees"},
+      {"left": "Former un utilisateur sur un outil", "right": "Generation de contenu pedagogique adapte"}
+    ],
+    "comment": "L'IA excelle dans la structuration et la redaction, ce qui reduit le temps passe sur les taches administratives du technicien."
+  },
+  {
+    "id": "O06-C02-027",
+    "category": "IA",
+    "chapter": "Outils IA",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque type d'IA a sa modalite principale.",
+    "pairs": [
+      {"left": "LLM (Grands modeles de langage)", "right": "Traitement et generation de texte"},
+      {"left": "IA de vision", "right": "Analyse d'images et reconnaissance visuelle"},
+      {"left": "IA de synthese vocale", "right": "Conversion texte vers audio"},
+      {"left": "IA de transcription", "right": "Conversion audio vers texte"}
+    ],
+    "comment": "Les LLM multimodaux (comme GPT-4o ou Gemini) combinent texte et vision dans un seul modele."
   }
 ]

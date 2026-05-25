@@ -161,5 +161,35 @@
     "question": "Un technicien remarque qu'un GPU de 400W n'est alimenté que par un seul câble PCIe qui se dédouble (Y-cable). Quel est le risque ?",
     "answer": "Surchauffe des câbles ou instabilité (redémarrages) car un seul câble ne peut pas transporter autant de puissance en toute sécurité.",
     "comment": "Astuce de pro : Toujours utiliser deux câbles séparés venant de l'alimentation pour les cartes graphiques haut de gamme."
+  },
+  {
+    "id": "O01-C03-016",
+    "category": "Hardware",
+    "chapter": "Connectique",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque port video a sa caracteristique principale.",
+    "pairs": [
+      {"left": "HDMI", "right": "Transporte video et audio numerique"},
+      {"left": "DisplayPort", "right": "Ideal pour moniteurs haute frequence"},
+      {"left": "VGA", "right": "Signal analogique, obsolete"},
+      {"left": "DVI", "right": "Numerique sans audio integre"}
+    ],
+    "comment": "Le DisplayPort supporte les configurations multi-ecrans en guirlande (Daisy Chain)."
+  },
+  {
+    "id": "O01-C03-017",
+    "category": "Hardware",
+    "chapter": "Connectique",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque connecteur a sa description physique.",
+    "pairs": [
+      {"left": "USB Type-A", "right": "Rectangulaire, non reversible"},
+      {"left": "USB Type-C", "right": "Ovale, reversible et universel"},
+      {"left": "RJ45", "right": "Prise reseau Ethernet a 8 contacts"},
+      {"left": "Jack 3.5mm", "right": "Prise audio analogique ronde"}
+    ],
+    "comment": "USB Type-C peut transporter donnees, video et alimentation sur un seul cable."
   }
 ]

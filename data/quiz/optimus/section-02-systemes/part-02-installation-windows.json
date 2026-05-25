@@ -184,5 +184,35 @@
     ],
     "answer": "Ordre de priorité de boot incorrect dans le BIOS ou Fast Boot empêchant la détection de la clé au démarrage.",
     "comment": "Technique de pro : Parfois, il faut désactiver le 'Secure Boot' ou passer par les options de démarrage avancé de Windows pour forcer le boot USB."
+  },
+  {
+    "id": "O01-C02-016",
+    "category": "Systemes",
+    "chapter": "Installation",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque etape d'installation Windows a son moment dans le processus.",
+    "pairs": [
+      {"left": "Choix de la partition", "right": "Avant la copie des fichiers systeme"},
+      {"left": "Creation du compte utilisateur", "right": "Apres le premier redemarrage"},
+      {"left": "Activation de Windows", "right": "Apres la connexion au compte Microsoft"},
+      {"left": "Installation des pilotes", "right": "Apres que le bureau est accessible"}
+    ],
+    "comment": "Les pilotes (notamment GPU et chipset) sont prioritaires car ils garantissent la stabilite du systeme."
+  },
+  {
+    "id": "O01-C02-017",
+    "category": "Systemes",
+    "chapter": "Partitionnement",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque concept de partitionnement a sa definition.",
+    "pairs": [
+      {"left": "MBR", "right": "Table de partition, max 2 To et 4 partitions"},
+      {"left": "GPT", "right": "Table de partition moderne, requis par UEFI"},
+      {"left": "Partition systeme EFI", "right": "Contient les chargeurs de demarrage UEFI"},
+      {"left": "Partition de recuperation", "right": "Contient les outils Windows RE"}
+    ],
+    "comment": "GPT est obligatoire pour installer Windows 11 en mode UEFI natif."
   }
 ]

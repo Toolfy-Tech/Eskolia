@@ -192,5 +192,35 @@
     "question": "Pourquoi est-il conseillé de débrancher le câble réseau pendant l'installation d'une VM Windows 11 ?",
     "answer": "Pour éviter l'obligation de créer un compte Microsoft et faciliter la création d'un compte local.",
     "comment": "Astuce de pro : Cela permet aussi de gagner du temps en évitant le téléchargement de mises à jour lourdes pendant que l'on configure l'environnement de test."
+  },
+  {
+    "id": "O02-C03-016",
+    "category": "Systemes",
+    "chapter": "Virtualisation",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque terme de virtualisation a sa definition.",
+    "pairs": [
+      {"left": "Hyperviseur", "right": "Logiciel qui gere les machines virtuelles"},
+      {"left": "VM (Machine virtuelle)", "right": "Ordinateur simule dans un logiciel"},
+      {"left": "Snapshot", "right": "Capture de l'etat d'une VM a un instant T"},
+      {"left": "Guest Additions", "right": "Pilotes installes dans la VM pour meilleures performances"}
+    ],
+    "comment": "VirtualBox et VMware Workstation sont des hyperviseurs de type 2, s'executant par-dessus un OS hote."
+  },
+  {
+    "id": "O02-C03-017",
+    "category": "Systemes",
+    "chapter": "Virtualisation",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque hyperviseur a son type ou usage typique.",
+    "pairs": [
+      {"left": "VirtualBox", "right": "Hyperviseur type 2, usage desktop gratuit"},
+      {"left": "VMware ESXi", "right": "Hyperviseur type 1 bare-metal entreprise"},
+      {"left": "Hyper-V", "right": "Hyperviseur Microsoft integre a Windows Server"},
+      {"left": "Proxmox VE", "right": "Hyperviseur open source base sur KVM"}
+    ],
+    "comment": "Un hyperviseur de type 1 tourne directement sur le materiel, sans OS hote sous-jacent."
   }
 ]

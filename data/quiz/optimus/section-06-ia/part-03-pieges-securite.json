@@ -109,5 +109,35 @@
     "question": "Quelle est la règle d'or avant d'appliquer une solution de dépannage critique donnée par une IA ?",
     "answer": "Avoir une sauvegarde récente et testée (Lien Section 04) et tester la solution sur une machine de test ou une VM (Lien Section 02).",
     "comment": "Astuce de pro : L'IA est un assistant, pas un chef. Le responsable final des dégâts éventuels reste le technicien."
+  },
+  {
+    "id": "O06-C03-011",
+    "category": "IA",
+    "chapter": "Pieges et limites de l'IA",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque risque lie a l'IA a sa description.",
+    "pairs": [
+      {"left": "Hallucination", "right": "L'IA invente des informations incorrectes avec confiance"},
+      {"left": "Prompt injection", "right": "Un attaquant manipule l'IA via des instructions cachees"},
+      {"left": "Fuite de donnees", "right": "Des donnees confidentielles partagees avec une IA cloud"},
+      {"left": "Biais algorithmique", "right": "L'IA reproduit des discriminations presentes dans ses donnees"}
+    ],
+    "comment": "Ne jamais partager de donnees personnelles, mots de passe ou codes sources confidentiels avec une IA cloud."
+  },
+  {
+    "id": "O06-C03-012",
+    "category": "IA",
+    "chapter": "Securite IA",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque bonne pratique de securite IA a sa justification.",
+    "pairs": [
+      {"left": "Utiliser une IA locale pour les donnees sensibles", "right": "Les donnees ne quittent pas l'infrastructure de l'entreprise"},
+      {"left": "Verifier les scripts generes avant execution", "right": "L'IA peut produire du code malveillant ou defaillant"},
+      {"left": "Ne pas aveuglément faire confiance aux URLs generees", "right": "L'IA peut halluciner des liens inexistants ou dangereux"},
+      {"left": "Tracer les usages de l'IA en entreprise", "right": "Responsabilite juridique et audit de conformite"}
+    ],
+    "comment": "Des solutions comme Ollama permettent d'utiliser des LLM puissants en local sans envoyer de donnees a des serveurs tiers."
   }
 ]

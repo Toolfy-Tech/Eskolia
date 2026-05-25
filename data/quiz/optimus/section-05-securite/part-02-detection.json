@@ -223,5 +223,35 @@
     "question": "Pourquoi est-il vital de garder son antivirus (et ses bases de signatures) à jour quotidiennement ?",
     "answer": "Parce que des milliers de nouveaux virus sont créés chaque jour. Un antivirus pas à jour est comme un vaccin contre une maladie de l'année dernière : il ne protège plus.",
     "comment": "Astuce de pro : Windows Update gère heureusement les mises à jour de Defender automatiquement."
+  },
+  {
+    "id": "O05-C02-021",
+    "category": "Securite",
+    "chapter": "Detection",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque methode de detection de malware a son principe.",
+    "pairs": [
+      {"left": "Detection par signature", "right": "Compare le code a une base de virus connus"},
+      {"left": "Detection heuristique", "right": "Analyse les comportements suspects sans signature connue"},
+      {"left": "Sandbox", "right": "Execute le fichier dans un environnement isole"},
+      {"left": "EDR", "right": "Surveille en continu les endpoints pour detecter les menaces"}
+    ],
+    "comment": "Les ransomwares modernes utilisent du chiffrement polymorphe pour echapper a la detection par signature."
+  },
+  {
+    "id": "O05-C02-022",
+    "category": "Securite",
+    "chapter": "Outils de detection",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque outil de detection a son usage principal.",
+    "pairs": [
+      {"left": "Malwarebytes", "right": "Scanner et suppression de malwares sur postes clients"},
+      {"left": "Wireshark", "right": "Analyse du trafic reseau pour detecter des connexions suspectes"},
+      {"left": "Process Monitor", "right": "Surveille les acces fichiers et registre en temps reel"},
+      {"left": "Autoruns", "right": "Liste tous les programmes qui demarrent avec Windows"}
+    ],
+    "comment": "Autoruns de Sysinternals est l'outil incontournable pour detecter les malwares persistants qui se lancent au demarrage."
   }
 ]

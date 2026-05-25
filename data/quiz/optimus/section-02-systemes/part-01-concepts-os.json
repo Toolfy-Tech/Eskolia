@@ -178,5 +178,35 @@
     ],
     "answer": "Trop de programmes lancés automatiquement au démarrage de la session utilisateur.",
     "comment": "Technique de pro : Même avec le meilleur Hardware, un surplus de logiciels inutiles (bloatwares) saturera les ressources logicielles."
+  },
+  {
+    "id": "O02-C01-016",
+    "category": "Systemes",
+    "chapter": "OS",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque composant du systeme d'exploitation a son role.",
+    "pairs": [
+      {"left": "Noyau (Kernel)", "right": "Gere le materiel et les ressources systeme"},
+      {"left": "Shell", "right": "Interface entre l'utilisateur et le noyau"},
+      {"left": "Pilote (Driver)", "right": "Programme de communication avec un peripherique"},
+      {"left": "Gestionnaire de taches", "right": "Controle les processus en cours d'execution"}
+    ],
+    "comment": "Le noyau Windows (ntoskrnl.exe) tourne en mode noyau (ring 0), isolé des applications utilisateur."
+  },
+  {
+    "id": "O02-C01-017",
+    "category": "Systemes",
+    "chapter": "Systeme de fichiers",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque systeme de fichiers a son usage typique.",
+    "pairs": [
+      {"left": "NTFS", "right": "Systeme Windows avec droits et journalisation"},
+      {"left": "FAT32", "right": "Compatible tous OS, limite a 4 Go par fichier"},
+      {"left": "exFAT", "right": "Cles USB modernes, pas de limite de taille"},
+      {"left": "ext4", "right": "Systeme de fichiers natif Linux"}
+    ],
+    "comment": "exFAT est le meilleur choix pour les cles USB devant fonctionner sur Windows et macOS."
   }
 ]

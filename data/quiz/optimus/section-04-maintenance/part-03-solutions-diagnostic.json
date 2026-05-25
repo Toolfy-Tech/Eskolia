@@ -309,5 +309,35 @@
     ],
     "answer": "Migration via sauvegarde et virtualisation (P2V).",
     "comment": "Réflexe TIP : C'est bien plus sûr et rapide que d'essayer de réinstaller tout manuellement sur un nouveau matériel souvent incompatible."
+  },
+  {
+    "id": "O04-C03-026",
+    "category": "Maintenance",
+    "chapter": "Outils de diagnostic",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque outil de diagnostic Windows a son usage.",
+    "pairs": [
+      {"left": "CrystalDiskInfo", "right": "Etat de sante S.M.A.R.T. du disque"},
+      {"left": "MemTest86", "right": "Test de la memoire RAM"},
+      {"left": "CPU-Z", "right": "Informations detaillees sur le processeur"},
+      {"left": "Speccy", "right": "Vue complete du materiel du PC"}
+    ],
+    "comment": "CrystalDiskInfo affiche les indicateurs S.M.A.R.T. en temps reel et alerte si un disque montre des signes de defaillance."
+  },
+  {
+    "id": "O04-C03-027",
+    "category": "Maintenance",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque solution de sauvegarde a son usage principal.",
+    "pairs": [
+      {"left": "Veeam", "right": "Sauvegarde et restauration de VMs en entreprise"},
+      {"left": "Macrium Reflect", "right": "Clonage et sauvegarde d'image disque Windows"},
+      {"left": "Acronis Cyber Protect", "right": "Sauvegarde tout-en-un avec protection anti-ransomware"},
+      {"left": "Windows Server Backup", "right": "Sauvegarde native incluse dans Windows Server"}
+    ],
+    "comment": "Veeam est la reference en entreprise pour les environnements VMware et Hyper-V grace a sa technologie Changed Block Tracking."
   }
 ]

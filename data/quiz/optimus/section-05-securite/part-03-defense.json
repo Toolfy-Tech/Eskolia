@@ -222,5 +222,35 @@
     "question": "Pourquoi un technicien doit-il désactiver le Wi-Fi et le Bluetooth sur un PC portable s'il travaille sur un dossier 'Confidentiel Défense' ?",
     "answer": "Pour supprimer tout risque d'interception des données par les ondes (attaques de proximité) ou de rebond via un malware sans fil.",
     "comment": "Astuce de pro : En sécurité maximale, on travaille dans une zone isolée sans aucune onde (Cage de Faraday)."
+  },
+  {
+    "id": "O05-C03-021",
+    "category": "Securite",
+    "chapter": "Defense",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque mesure de defense a sa categorie.",
+    "pairs": [
+      {"left": "MFA (Authentification multi-facteurs)", "right": "Protection de l'identite et des acces"},
+      {"left": "Pare-feu applicatif (WAF)", "right": "Protection des applications web"},
+      {"left": "Chiffrement BitLocker", "right": "Protection des donnees au repos sur le disque"},
+      {"left": "VPN", "right": "Protection du trafic reseau en transit"}
+    ],
+    "comment": "Le MFA reduit de 99% le risque de compromission de compte selon les statistiques Microsoft."
+  },
+  {
+    "id": "O05-C03-022",
+    "category": "Securite",
+    "chapter": "Principes de securite",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque principe de securite a sa definition.",
+    "pairs": [
+      {"left": "Moindre privilege", "right": "N'accorder que les droits strictement necessaires"},
+      {"left": "Defense en profondeur", "right": "Superposer plusieurs couches de protection"},
+      {"left": "Zero Trust", "right": "Ne jamais faire confiance par defaut, toujours verifier"},
+      {"left": "Segmentation reseau", "right": "Isoler les zones pour limiter la propagation d'une attaque"}
+    ],
+    "comment": "Le principe Zero Trust s'oppose au modele perimetre : on ne fait plus confiance aux connexions internes au reseau."
   }
 ]

@@ -171,5 +171,35 @@
     "question": "Quelle est la meilleure façon d'obtenir un script PowerShell sécurisé de la part d'une IA ?",
     "answer": "Lui demander d'ajouter des commentaires détaillés et de vérifier les erreurs (Error Handling) dans son propre code.",
     "comment": "Astuce de pro : L'IA a tendance à donner le code le plus court. En lui demandant d'être 'robuste', elle ajoutera des sécurités indispensables en entreprise."
+  },
+  {
+    "id": "O06-C01-016",
+    "category": "IA",
+    "chapter": "R.O.C.T.",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque lettre de ROCT a sa signification dans un prompt IA.",
+    "pairs": [
+      {"left": "R - Role", "right": "Definit le persona que l'IA doit incarner"},
+      {"left": "O - Objectif", "right": "Decrit la tache precise a accomplir"},
+      {"left": "C - Contexte", "right": "Fournit les informations necessaires a la comprEhension"},
+      {"left": "T - Taille", "right": "Precise le format ou la longueur attendus"}
+    ],
+    "comment": "Un prompt ROCT bien structure reduit les allers-retours et ameliore significativement la qualite des reponses de l'IA."
+  },
+  {
+    "id": "O06-C01-017",
+    "category": "IA",
+    "chapter": "Prompting",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque technique de prompting a son effet sur la reponse de l'IA.",
+    "pairs": [
+      {"left": "Few-shot prompting", "right": "Donner des exemples concrets dans le prompt"},
+      {"left": "Chain of thought", "right": "Demander a l'IA de raisonner etape par etape"},
+      {"left": "Temperature elevee", "right": "Reponses plus creatives mais moins precises"},
+      {"left": "Temperature basse", "right": "Reponses plus deterministres et factuelles"}
+    ],
+    "comment": "Pour des taches techniques (code, diagnostic), une temperature basse (0.1-0.3) est recommandee pour obtenir des reponses coherentes."
   }
 ]

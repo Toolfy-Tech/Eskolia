@@ -167,5 +167,35 @@
     ],
     "answer": "Mauvais contact thermique ou ventilateur bloqué/inversé après manipulation.",
     "comment": "Réflexe TIP : En nettoyant, on peut parfois décoller légèrement le ventirad du CPU, cassant le joint de pâte thermique."
+  },
+  {
+    "id": "O01-C04-016",
+    "category": "Hardware",
+    "chapter": "Alimentation",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque connecteur d'alimentation a son usage.",
+    "pairs": [
+      {"left": "ATX 24 broches", "right": "Alimentation principale de la carte mere"},
+      {"left": "EPS 8 broches", "right": "Alimentation du processeur (CPU)"},
+      {"left": "PCIe 6+2 broches", "right": "Alimentation de la carte graphique"},
+      {"left": "SATA power", "right": "Alimentation des disques et SSD"}
+    ],
+    "comment": "Un PC qui ne demarre pas peut avoir un connecteur EPS oublie sur la carte mere."
+  },
+  {
+    "id": "O01-C04-017",
+    "category": "Hardware",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque solution de refroidissement a sa description.",
+    "pairs": [
+      {"left": "Ventirad", "right": "Dissipateur passif avec ventilateur actif"},
+      {"left": "AIO", "right": "Watercooling tout-en-un scelle en usine"},
+      {"left": "Pate thermique", "right": "Conducteur thermique entre CPU et dissipateur"},
+      {"left": "Chambre a vapeur", "right": "Caloduc plat pour dissipation horizontale"}
+    ],
+    "comment": "La pate thermique doit etre renouvelee tous les 3 a 5 ans pour maintenir une bonne conductivite."
   }
 ]

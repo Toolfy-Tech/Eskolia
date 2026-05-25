@@ -226,5 +226,35 @@
     "question": "Pourquoi Nadia, l'admin réseau, sourit-elle quand un ping entre deux VLANs différents échoue ?",
     "answer": "Parce que cela prouve que sa segmentation fonctionne et que les réseaux sont bien isolés.",
     "comment": "Astuce de pro : En réseau, un échec de communication est parfois le signe d'une sécurité réussie !"
+  },
+  {
+    "id": "O03-C04-021",
+    "category": "Reseaux",
+    "chapter": "VLANs",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque concept VLAN a sa definition.",
+    "pairs": [
+      {"left": "VLAN natif", "right": "VLAN par defaut sur un port trunk sans tag"},
+      {"left": "Port Access", "right": "Port switch assigne a un seul VLAN"},
+      {"left": "Port Trunk", "right": "Port switch transportant plusieurs VLANs"},
+      {"left": "Tag 802.1Q", "right": "En-tete ajoutee a la trame pour identifier le VLAN"}
+    ],
+    "comment": "Le VLAN natif est une source de vulnerabilite (VLAN hopping) s'il n'est pas correctement configure."
+  },
+  {
+    "id": "O03-C04-022",
+    "category": "Reseaux",
+    "chapter": "Securite reseau",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque attaque reseau a sa methode.",
+    "pairs": [
+      {"left": "ARP Spoofing", "right": "Usurpation d'adresse MAC pour intercepter le trafic"},
+      {"left": "VLAN Hopping", "right": "Traverser des VLANs sans autorisation"},
+      {"left": "Port scanning", "right": "Decouvrir les ports ouverts sur une cible"},
+      {"left": "MAC flooding", "right": "Saturer la table CAM d'un switch"}
+    ],
+    "comment": "Le port security sur les switchs Cisco limite le nombre d'adresses MAC autorisees et previent le MAC flooding."
   }
 ]

@@ -179,5 +179,35 @@
     "question": "Vrai ou Faux : Un snapshot de machine virtuelle peut tenir lieu de sauvegarde dans le cadre d'un PRI (Plan de Reprise Informatique).",
     "answer": "Faux",
     "comment": "Un snapshot est lié au serveur physique hôte. Si celui-ci disparaît (incendie, vol, panne matérielle totale), les snapshots disparaissent avec lui. Un PRI s'appuie sur des sauvegardes externes ou hors site indépendantes du matériel d'origine."
+  },
+  {
+    "id": "O04-C04-016",
+    "category": "Maintenance",
+    "chapter": "RPO/RTO",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque indicateur de reprise a sa definition.",
+    "pairs": [
+      {"left": "RPO", "right": "Perte de donnees maximale tolerable (en temps)"},
+      {"left": "RTO", "right": "Duree maximale d'indisponibilite tolerable"},
+      {"left": "SLA", "right": "Contrat definissant les engagements de service"},
+      {"left": "MTTR", "right": "Temps moyen de reparation apres une panne"}
+    ],
+    "comment": "Un RPO de 1 heure signifie que les donnees de la derniere heure peuvent etre perdues en cas de sinistre."
+  },
+  {
+    "id": "O04-C04-017",
+    "category": "Maintenance",
+    "chapter": "Snapshots",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque type de snapshot a sa caracteristique.",
+    "pairs": [
+      {"left": "Snapshot a chaud", "right": "Pris sans arreter la VM, peut contenir des donnees en transit"},
+      {"left": "Snapshot a froid", "right": "Pris apres arret propre, garantit la coherence"},
+      {"left": "Snapshot applicatif (VSS)", "right": "Coordonne avec l'application pour une coherence parfaite"},
+      {"left": "Checkpoint Hyper-V", "right": "Equivalent Hyper-V d'un snapshot VMware"}
+    ],
+    "comment": "VSS (Volume Shadow Copy Service) est le mecanisme Windows permettant les snapshots coherents pendant qu'une application est ouverte."
   }
 ]

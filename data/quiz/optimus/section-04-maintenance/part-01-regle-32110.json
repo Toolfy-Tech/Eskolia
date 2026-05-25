@@ -217,5 +217,35 @@
     "question": "Comment tester facilement le '0' (Zéro échec) de vos sauvegardes sans tout casser ?",
     "answer": "Effectuer une 'Restauration de test' d'un seul petit dossier au hasard une fois par mois.",
     "comment": "Astuce de pro : Si vous pouvez restaurer un petit fichier, il y a de grandes chances que le reste soit sain aussi."
+  },
+  {
+    "id": "O04-C01-021",
+    "category": "Maintenance",
+    "chapter": "Regle 3-2-1-1-0",
+    "tier": "C",
+    "type": "association",
+    "question": "Associe chaque chiffre de la regle 3-2-1-1-0 a sa signification.",
+    "pairs": [
+      {"left": "3", "right": "Nombre total de copies des donnees"},
+      {"left": "2", "right": "Nombre de supports de stockage differents"},
+      {"left": "1", "right": "Une copie hors site (offsite)"},
+      {"left": "0", "right": "Zero echec de restauration verifie"}
+    ],
+    "comment": "Le dernier '1' de 3-2-1-1-0 represente une copie immuable (air-gapped ou WORM), protegee contre les ransomwares."
+  },
+  {
+    "id": "O04-C01-022",
+    "category": "Maintenance",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "association",
+    "question": "Associe chaque support de sauvegarde a son avantage principal.",
+    "pairs": [
+      {"left": "Disque dur externe", "right": "Portable, faible cout, local"},
+      {"left": "NAS", "right": "Sauvegarde automatique en reseau local"},
+      {"left": "Cloud (S3, Azure)", "right": "Hors site, accessible de partout"},
+      {"left": "Bande magnetique (LTO)", "right": "Tres haute capacite, archivage long terme"}
+    ],
+    "comment": "La bande LTO est encore utilisee en entreprise pour son cout au Go tres bas et sa duree de vie de 30 ans."
   }
 ]
