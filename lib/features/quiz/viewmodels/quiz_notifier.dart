@@ -197,9 +197,6 @@ class QuizNotifier extends Notifier<QuizState> {
 
     double finalScore = wasCorrect ? 1.0 : 0.0;
 
-    if (wasCorrect && q.type == 'diagnostic_indices' && state.revealedIndicesCount > 0) {
-      finalScore = (1.0 - (state.revealedIndicesCount * 0.25)).clamp(0.25, 1.0);
-    }
 
     if (wasCorrect && q.type == 'ticket' && state.ticketChecks.contains(false)) {
       final checkedCount = state.ticketChecks.where((c) => c).length;

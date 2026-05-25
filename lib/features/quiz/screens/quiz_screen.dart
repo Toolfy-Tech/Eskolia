@@ -418,7 +418,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             TextButton.icon(
               onPressed: () => ref.read(quizProvider(widget.sessionId).notifier).incrementIndices(),
               icon: const Icon(Icons.lightbulb_outline, size: 16),
-              label: Text('Révéler l\'indice ${state.revealedIndicesCount + 1} (-25% points)'),
+              label: Text('Révéler l\'indice ${state.revealedIndicesCount + 1}'),
               style: TextButton.styleFrom(foregroundColor: _orange),
             ),
         ],
