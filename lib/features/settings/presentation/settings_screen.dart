@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../data/repositories/user_repository.dart';
@@ -310,6 +311,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
+                                const _EskoliaFolderCard(),
+                                const SizedBox(height: 16),
                                 _sectionCard(
                                   title: 'À propos',
                                   children: [
@@ -564,6 +567,185 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         );
       },
+    );
+  }
+}
+
+// ── Dossier Eskolia ────────────────────────────────────────────────────────────
+
+class _EskoliaFolderCard extends StatefulWidget {
+  const _EskoliaFolderCard();
+
+  @override
+  State<_EskoliaFolderCard> createState() => _EskoliaFolderCardState();
+}
+
+class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
+  final _fs = EskoliaFolderService.instance;
+
+  bool _loading = true;
+  String? _folderName;
+
+  static const _teal = Color(0xFF00BCD4);
+  static const _amber = Color(0xFFFFC107);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
+  }
+
+  Future<void> _loadState() async {
+    final name = await _fs.getFolderName();
+    if (mounted) setState(() { _folderName = name; _loading = false; });
+  }
+
+  Future<void> _pick() async {
+    setState(() => _loading = true);
+    final ok = await _fs.pickFolder();
+    if (!mounted) return;
+    if (ok) {
+      await _loadState();
+      showEskoliaSnackBar(context, 'Dossier Eskolia configure.');
+    } else {
+      setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _forget() async {
+    await _fs.forgetFolder();
+    if (mounted) setState(() => _folderName = null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(16, 14, 16, 8),
+            child: Text(
+              'Mes fichiers',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          if (!_fs.isSupported)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: _amber.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: _amber.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.info_outline_rounded, color: _amber, size: 16),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Ton navigateur ne supporte pas le dossier Eskolia. '
+                        'Les fichiers seront telecharges dans ton dossier Telechargements. '
+                        'Utilise Chrome ou Edge pour cette fonctionnalite.',
+                        style: TextStyle(
+                          color: _amber.withValues(alpha: 0.9),
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else if (_loading)
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: _teal)),
+            )
+          else ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              child: Text(
+                'Quiz, flashcards, cours et bilans seront enregistres directement '
+                'dans un dossier de ton choix sur ton ordinateur, organises '
+                'automatiquement en sous-dossiers. Choisis un emplacement dans tes '
+                'Documents par exemple.',
+                style: TextStyle(
+                  color: _slateLight.withValues(alpha: 0.7),
+                  fontSize: 12,
+                  height: 1.4,
+                ),
+              ),
+            ),
+            if (_folderName != null)
+              ListTile(
+                leading: const Icon(Icons.folder_rounded, color: _teal),
+                title: Text(
+                  _folderName!,
+                  style: const TextStyle(color: Colors.white, fontSize: 13),
+                ),
+                subtitle: Text(
+                  'Dossier actif',
+                  style: TextStyle(color: _slateLight, fontSize: 11),
+                ),
+                trailing: TextButton(
+                  onPressed: _forget,
+                  style: TextButton.styleFrom(
+                    foregroundColor: _danger,
+                    textStyle: const TextStyle(fontSize: 12),
+                  ),
+                  child: const Text('Oublier'),
+                ),
+              ),
+            ListTile(
+              leading: Icon(
+                _folderName != null
+                    ? Icons.drive_folder_upload_rounded
+                    : Icons.create_new_folder_rounded,
+                color: _teal,
+              ),
+              title: Text(
+                _folderName != null ? 'Modifier le dossier' : 'Choisir mon dossier Eskolia',
+                style: const TextStyle(color: Colors.white),
+              ),
+              trailing: const Icon(Icons.chevron_right, color: _slate),
+              onTap: _pick,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: EskoliaFolder.values.map((f) => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: _teal.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: _teal.withValues(alpha: 0.2)),
+                  ),
+                  child: Text(
+                    f.folderName,
+                    style: TextStyle(color: _teal, fontSize: 10, fontWeight: FontWeight.w600),
+                  ),
+                )).toList(),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
