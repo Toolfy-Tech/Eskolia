@@ -123,6 +123,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: 'Quiz'),
       body: Stack(

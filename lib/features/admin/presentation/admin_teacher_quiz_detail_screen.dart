@@ -68,6 +68,7 @@ class _AdminTeacherQuizDetailScreenState
   @override
   Widget build(BuildContext context) {
     return StaffGateScaffold(
+      extendBodyBehindAppBar: true,
       title: 'Détail quiz',
       child: StreamBuilder<List<TeacherQuiz>>(
         stream: _repo.watchAll(),
@@ -75,6 +76,7 @@ class _AdminTeacherQuizDetailScreenState
           final quiz = snap.data?.where((q) => q.id == widget.quizId).firstOrNull;
 
           return Scaffold(
+            extendBodyBehindAppBar: true,
             backgroundColor: _bg,
             appBar: EskoliaAppBar.standard(
               context,

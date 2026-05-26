@@ -20,6 +20,7 @@ class ReseauHubScreen extends StatelessWidget {
     final hPad = EskoliaLayout.screenPaddingH;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,

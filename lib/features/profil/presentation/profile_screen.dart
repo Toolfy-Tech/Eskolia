@@ -71,6 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: 'Moi', showBack: false),
       body: Stack(

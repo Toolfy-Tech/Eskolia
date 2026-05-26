@@ -201,6 +201,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
     final greenBg = _dragX > 0;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,

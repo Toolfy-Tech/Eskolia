@@ -85,6 +85,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,

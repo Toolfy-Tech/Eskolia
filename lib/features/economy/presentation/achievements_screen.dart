@@ -23,6 +23,7 @@ class AchievementsScreen extends StatelessWidget {
     final repo = AchievementsRepository();
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: 'Hauts faits', showBack: false),
       body: Stack(

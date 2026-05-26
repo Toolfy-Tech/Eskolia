@@ -35,8 +35,10 @@ class AdminTipsScreen extends StatelessWidget {
     final repo = CommunityTipRepository();
 
     return StaffGateScaffold(
+      extendBodyBehindAppBar: true,
       title: 'Tips',
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: _bg,
         appBar: EskoliaAppBar.standard(context, title: 'Tips communauté'),
         body: Stack(

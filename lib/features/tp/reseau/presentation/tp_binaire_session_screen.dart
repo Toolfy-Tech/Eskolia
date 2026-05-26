@@ -157,6 +157,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
     final hPad = EskoliaLayout.screenPaddingH;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,

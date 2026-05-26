@@ -62,6 +62,7 @@ class _FlashcardsHubScreenState extends State<FlashcardsHubScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(context, title: 'Flashcards'),
       body: Stack(

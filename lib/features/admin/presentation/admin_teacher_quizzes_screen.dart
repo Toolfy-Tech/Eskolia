@@ -92,8 +92,10 @@ class _AdminTeacherQuizzesScreenState
   @override
   Widget build(BuildContext context) {
     return StaffGateScaffold(
+      extendBodyBehindAppBar: true,
       title: 'Quiz du prof',
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: _bg,
         appBar: EskoliaAppBar.standard(context, title: 'Quiz du prof'),
         body: Stack(

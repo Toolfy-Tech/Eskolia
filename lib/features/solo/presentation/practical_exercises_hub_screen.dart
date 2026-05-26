@@ -163,6 +163,7 @@ class _PracticalExercisesHubScreenState
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       body: Stack(
         children: [

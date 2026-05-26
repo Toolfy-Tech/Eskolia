@@ -77,6 +77,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(context, title: 'Lexique IT'),
       body: Stack(

@@ -144,6 +144,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: 'Nouvelle question'),
       body: Stack(

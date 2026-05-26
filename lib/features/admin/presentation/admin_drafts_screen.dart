@@ -35,8 +35,10 @@ class AdminDraftsScreen extends StatelessWidget {
     final repo = LaboQuestionDraftRepository();
 
     return StaffGateScaffold(
+      extendBodyBehindAppBar: true,
       title: 'Brouillons',
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: _bg,
         appBar: EskoliaAppBar.standard(context, title: 'Brouillons questions'),
         body: Stack(

@@ -223,6 +223,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
   Widget build(BuildContext context) {
     if (_cards.isEmpty) {
       return Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: EskoliaVisual.bgDeep,
         appBar: EskoliaAppBar.standard(context, title: 'Flashcards'),
         body: const Center(
@@ -233,6 +234,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
     final c = _cards[_index];
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(
         context,

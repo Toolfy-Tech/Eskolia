@@ -82,6 +82,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
         }
       },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: EskoliaVisual.bgDeep,
         appBar: EskoliaAppBar.standard(
           context,

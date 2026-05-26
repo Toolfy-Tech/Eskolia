@@ -42,6 +42,7 @@ class _NotebookScreenState extends State<NotebookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: 'Mon Carnet', showBack: false),
       floatingActionButton: FloatingActionButton(

@@ -97,6 +97,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       body: Stack(
         children: [

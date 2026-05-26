@@ -28,6 +28,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
     final hPad = EskoliaLayout.screenPaddingH;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       appBar: EskoliaAppBar.standard(context, title: 'Travaux Pratiques'),
       body: Stack(

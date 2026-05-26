@@ -128,6 +128,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: EskoliaVisual.bgDeep,
       body: Stack(
         children: [

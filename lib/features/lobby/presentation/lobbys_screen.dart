@@ -864,6 +864,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.screenPaddingH;
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(
         context,
