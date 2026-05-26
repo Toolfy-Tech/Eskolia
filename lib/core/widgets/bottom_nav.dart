@@ -39,7 +39,7 @@ class EskoliaBottomNav extends StatelessWidget {
   static const _NavItem _solo = _NavItem(
     path: '/solo',
     emoji: '\u{1F3AF}',
-    label: 'S\'entraîner',
+    label: 'Pratique',
   );
   static const _NavItem _multijoueur = _NavItem(
     path: '/lobbys',

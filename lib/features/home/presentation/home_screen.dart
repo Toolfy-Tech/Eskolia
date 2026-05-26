@@ -11,18 +11,11 @@ import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_button.dart';
-import '../../../shared/widgets/gradient_border_card.dart';
-import '../../../shared/widgets/user_status_pill.dart';
 import '../../auth/data/user_model.dart';
 import '../../economy/data/achievement_triggers.dart';
-import '../../parcours/data/parcours_repository.dart';
-import '../data/daily_quests_repository.dart';
 import '../data/home_repository.dart';
 import 'widgets/tech_news_section.dart';
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _violetBrand = Color(0xFF6C63FF);
 const Color _surfaceBar = Color(0xFF1E293B);
 const Color _redStreak = Color(0xFFEF4444);
 
@@ -35,17 +28,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeRepository _repo = HomeRepository();
-  final DailyQuestsRepository _questsRepo = DailyQuestsRepository();
-  final ParcoursRepository _parcoursRepo = ParcoursRepository();
 
   UserModel? _user;
-  DailyQuestsSnapshot? _quests;
   bool _isLoading = true;
   String? _errorMessage;
   final List<bool> _sectionVisible = List.filled(2, false);
 
   StreamSubscription<UserModel?>? _userSub;
-  bool _questsLoaded = false;
 
   @override
   void initState() {
@@ -66,10 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
     context.go('/onboarding');
   }
 
-  // Retry entry point — cancels any stale sub before re-subscribing.
   Future<void> _loadData() async {
     _userSub?.cancel();
-    _questsLoaded = false;
     _subscribeToUser();
   }
 
@@ -81,7 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _userSub = _repo.watchCurrentUser().listen(
       (user) async {
         if (!mounted) return;
-
         if (user == null) {
           setState(() => _isLoading = false);
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -89,27 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           return;
         }
-
-        // Subsequent emissions: username/XP updates — refresh UI without re-loading quests.
-        if (_questsLoaded) {
-          setState(() => _user = user);
-          return;
-        }
-
-        // First emission: load quests + achievements.
         try {
           await AchievementTriggers(
             onUnlocked: (emoji, title) {
               if (mounted) showAchievementSnackBar(context, emoji, title);
             },
           ).syncFromUserSnapshot(user);
-          await _questsRepo.ensureToday();
-          final quests = await _questsRepo.snapshot();
           if (!mounted) return;
-          _questsLoaded = true;
           setState(() {
             _user = user;
-            _quests = quests;
             _isLoading = false;
           });
           _triggerSectionAnimations();
@@ -189,7 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Top actions
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -199,34 +172,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          // Greeting
           _skeletonBox(16, 200, radius: 8),
           const SizedBox(height: 20),
-          // UserStatusPill
-          _skeletonBox(72, double.infinity, radius: 28),
-          const SizedBox(height: 24),
-          // Quests header
-          _skeletonBox(11, 120, radius: 6),
+          _skeletonBox(100, double.infinity, radius: 14),
           const SizedBox(height: 12),
-          _skeletonBox(64, double.infinity, radius: 14),
-          const SizedBox(height: 8),
-          _skeletonBox(64, double.infinity, radius: 14),
-          const SizedBox(height: 8),
-          _skeletonBox(64, double.infinity, radius: 14),
-          const SizedBox(height: 24),
-          // Hero card
-          _skeletonBox(110, double.infinity, radius: 20),
-          const SizedBox(height: 24),
-          // Quick access
-          Row(
-            children: [
-              Expanded(child: _skeletonBox(56, double.infinity, radius: 14)),
-              const SizedBox(width: 10),
-              Expanded(child: _skeletonBox(56, double.infinity, radius: 14)),
-              const SizedBox(width: 10),
-              Expanded(child: _skeletonBox(56, double.infinity, radius: 14)),
-            ],
-          ),
+          _skeletonBox(100, double.infinity, radius: 14),
         ],
       ),
     );
@@ -250,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const Icon(Icons.error_outline, color: _redStreak, size: 48),
           Text(_errorMessage ?? 'Erreur'),
-          EskoliaButton(label: 'Réessayer', onPressed: _loadData),
+          EskoliaButton(label: 'Reessayer', onPressed: _loadData),
         ],
       ),
     );
@@ -258,86 +208,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildMain(BuildContext context) {
     final user = _user!;
-
-    return StreamBuilder<List<FormationModel>>(
-      stream: _parcoursRepo.watchFormations(user.uid),
-      builder: (context, snap) {
-        FormationModel? tip;
-        final list = snap.data;
-        if (list != null && list.isNotEmpty) {
-          tip = list.firstWhere((f) => f.id == 'tip', orElse: () => list.first);
-        }
-
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _animatedSection(0, _buildHomeContent(context, user, tip)),
-              _animatedSection(1, const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: TechNewsSection(),
-              )),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _animatedSection(0, _buildWelcomeHeader(user)),
+          _animatedSection(
+            1,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: TechNewsSection(),
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
   Widget _animatedSection(int index, Widget child) {
-    final visible = _sectionVisible[index];
     return AnimatedOpacity(
-      opacity: visible ? 1 : 0,
+      opacity: _sectionVisible[index] ? 1 : 0,
       duration: const Duration(milliseconds: 300),
       child: child,
     );
   }
 
-  Widget _buildHomeContent(BuildContext context, UserModel user, FormationModel? tip) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildWelcomeHeader(user),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              _SectionHeader(label: 'QUÊTES DU JOUR', color: _cyan),
-              const SizedBox(height: 12),
-              _buildQuestsList(),
-              const SizedBox(height: 28),
-              _SectionHeader(label: 'PARCOURS', color: _violetBrand),
-              const SizedBox(height: 12),
-              _buildHeroCard(context, tip),
-              const SizedBox(height: 28),
-              _SectionHeader(label: 'ACCÈS RAPIDE', color: const Color(0xFF43E97B)),
-              const SizedBox(height: 12),
-              _buildQuickAccessSection(context),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildWelcomeHeader(UserModel user) {
     final hour = DateTime.now().hour;
-    final greeting = hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon après-midi' : 'Bonsoir');
+    final greeting =
+        hour < 12 ? 'Bonjour' : (hour < 18 ? 'Bon apres-midi' : 'Bonsoir');
     final name = user.username.isNotEmpty ? user.username : '';
-    final inLevel = user.xp % 1000;
-    final ratio = (inLevel / 1000.0).clamp(0.0, 1.0);
 
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFF1A1040),
-            EskoliaVisual.bgDeep,
-          ],
+          colors: [const Color(0xFF1A1040), EskoliaVisual.bgDeep],
         ),
       ),
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -372,19 +279,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Row(
                 children: [
-                  _IconAction(icon: Icons.notifications_outlined, onTap: () => context.push('/notifications')),
+                  _IconAction(
+                    icon: Icons.notifications_outlined,
+                    onTap: () => context.push('/notifications'),
+                  ),
                   const SizedBox(width: 4),
-                  _IconAction(icon: Icons.settings_outlined, onTap: () => context.push('/settings')),
+                  _IconAction(
+                    icon: Icons.settings_outlined,
+                    onTap: () => context.push('/settings'),
+                  ),
                 ],
               ),
             ],
-          ),
-          const SizedBox(height: 16),
-          UserStatusPill(
-            displayName: user.username,
-            level: user.level,
-            xp: user.xp,
-            streak: user.streak,
           ),
           if (user.streak >= 3) ...[
             const SizedBox(height: 12),
@@ -396,7 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Color(0xFFFF9F0A).withValues(alpha: 0.1),
                 ]),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFFF9F0A).withValues(alpha: 0.4)),
+                border: Border.all(
+                  color: const Color(0xFFFF9F0A).withValues(alpha: 0.4),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -404,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Text('\u{1F525}', style: TextStyle(fontSize: 16)),
                   const SizedBox(width: 8),
                   Text(
-                    '${user.streak} jours de série — continue !',
+                    '${user.streak} jours de serie — continue !',
                     style: GoogleFonts.inter(
                       color: const Color(0xFFFF9F0A),
                       fontSize: 12,
@@ -417,191 +325,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildQuestsList() {
-    return Column(
-      children: [
-        _QuestPill(label: 'Faire un quiz rapide', isDone: _quests?.quizDone ?? false, icon: '\u{26A1}'),
-        const SizedBox(height: 8),
-        _QuestPill(label: 'Réviser mes flashcards', isDone: _quests?.flashDone ?? false, icon: '\u{1F0CF}'),
-        const SizedBox(height: 8),
-        _QuestPill(label: 'Avancer dans le parcours', isDone: _quests?.parcoursDone ?? false, icon: '\u{1F4DA}'),
-      ],
-    );
-  }
-
-  Widget _buildHeroCard(BuildContext context, FormationModel? tip) {
-    final total = tip?.totalModules ?? 23; // Valeur par défaut de l'audit
-    final done = tip?.completedModules ?? 0;
-    final pct = total > 0 ? (done / total).clamp(0.0, 1.0) : 0.0;
-    
-    return GradientBorderCard(
-      gradientColors: EskoliaVisual.borderPrimary,
-      glowColor: _violetBrand,
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Parcours Optimus', style: TextStyle(color: _slateLight, fontSize: 13, fontWeight: FontWeight.w600)),
-              Text('$done / $total', style: const TextStyle(color: _cyan, fontSize: 13, fontWeight: FontWeight.w900)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text('Continuer ma formation', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 14),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: pct, 
-              backgroundColor: Colors.white10, 
-              color: _cyan,
-              minHeight: 6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickAccessSection(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _QuickCard(
-          emoji: '\u{26A1}',
-          label: 'Quiz rapide',
-          color: _violetBrand,
-          onTap: () => context.push('/quiz/quick'),
-        )),
-        const SizedBox(width: 10),
-        Expanded(child: _QuickCard(
-          emoji: '\u{1F3AE}',
-          label: 'Multi',
-          color: const Color(0xFF43E97B),
-          onTap: () => context.push('/lobbys'),
-        )),
-        const SizedBox(width: 10),
-        Expanded(child: _QuickCard(
-          emoji: '\u{1F0CF}',
-          label: 'Flashcards',
-          color: const Color(0xFF22D3EE),
-          onTap: () => context.push('/flashcards'),
-        )),
-      ],
-    );
-  }
-}
-
-class _QuestPill extends StatelessWidget {
-  const _QuestPill({
-    required this.label,
-    required this.isDone,
-    required this.icon,
-  });
-
-  final String label;
-  final bool isDone;
-  final String icon;
-
-  static const _kGreen = Color(0xFF43E97B);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDone
-            ? _kGreen.withValues(alpha: 0.08)
-            : Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDone
-              ? _kGreen.withValues(alpha: 0.35)
-              : Colors.white.withValues(alpha: 0.08),
-        ),
-      ),
-      child: Row(
-        children: [
-          Text(icon, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: isDone
-                            ? Colors.white.withValues(alpha: 0.7)
-                            : Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      isDone ? '1 / 1' : '0 / 1',
-                      style: TextStyle(
-                        color: isDone
-                            ? _kGreen
-                            : _slateLight.withValues(alpha: 0.6),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(3),
-                  child: LinearProgressIndicator(
-                    value: isDone ? 1.0 : 0.0,
-                    backgroundColor: Colors.white.withValues(alpha: 0.08),
-                    color: isDone ? _kGreen : _slateLight.withValues(alpha: 0.25),
-                    minHeight: 5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (isDone)
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Icon(Icons.check_circle_rounded, color: _kGreen, size: 20),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.label, required this.color});
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(width: 3, height: 16, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: color.withValues(alpha: 0.9),
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.3,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -623,49 +346,10 @@ class _IconAction extends StatelessWidget {
           width: 40,
           height: 40,
           alignment: Alignment.center,
-          child: Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 20),
-        ),
-      ),
-    );
-  }
-}
-
-class _QuickCard extends StatelessWidget {
-  const _QuickCard({required this.emoji, required this.label, required this.color, required this.onTap});
-  final String emoji;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(emoji, style: const TextStyle(fontSize: 28, height: 1)),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          child: Icon(
+            icon,
+            color: Colors.white.withValues(alpha: 0.8),
+            size: 20,
           ),
         ),
       ),
