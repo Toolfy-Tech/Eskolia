@@ -31,6 +31,7 @@ import '../../features/quiz/screens/quiz_setup_screen.dart';
 import '../../features/quiz/screens/quiz_quick_screen.dart';
 import '../../features/quiz/screens/quiz_survival_screen.dart';
 import '../../features/quiz/screens/revision_lacunes_screen.dart';
+import '../../features/quiz/screens/bilan_recap_screen.dart';
 import '../../features/quiz/screens/revision_pool_screen.dart';
 import '../../features/quiz/screens/grand_finale_optimus_screen.dart';
 import '../../features/quiz/screens/grand_finale_tip_screen.dart';
@@ -219,6 +220,10 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(
             child: RevisionLacunesScreen(initialCatalogTrack: TipQuizCatalog.parseTrackQuery(state.uri.queryParameters['track'])),
           ),
+        ),
+        GoRoute(
+          path: '/quiz/bilan-recap',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const BilanRecapScreen()),
         ),
         GoRoute(
           path: '/revision-pool',
