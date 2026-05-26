@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
@@ -11,6 +12,8 @@ import '../../../features/ai/data/ai_provider.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
+import '../../flashcards/data/flashcard_deck_repository.dart';
+import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../notebook/data/note_ai_generator.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
@@ -53,6 +56,56 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
       _files = files;
       _loading = false;
     });
+  }
+
+  Future<void> _reviserErreurs() async {
+    final cards = <DeckFlashcard>[];
+    for (final filename in _selected) {
+      final raw = await _fs.readFile(EskoliaFolder.bilans, filename);
+      if (raw == null) continue;
+      try {
+        final decoded = json.decode(raw);
+        if (decoded is! Map) continue;
+        final questions = decoded['questions'];
+        if (questions is! List) continue;
+        for (final q in questions) {
+          if (q is! Map) continue;
+          final result = q['result'] as String?;
+          if (result != 'wrong' && result != 'partial') continue;
+          final front = q['question'] as String?;
+          final back = q['answer'] as String?;
+          if (front == null || back == null) continue;
+          final explanation = q['explanation'] as String?;
+          cards.add(DeckFlashcard(
+            id: 'revision_${cards.length}_${front.hashCode}',
+            front: front.trim(),
+            back: explanation != null && explanation.isNotEmpty
+                ? '$back\n\n$explanation'
+                : back.trim(),
+            mastery: 0,
+            nextDue: DateTime.now(),
+          ));
+        }
+      } catch (_) {}
+    }
+
+    if (!mounted) return;
+    if (cards.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucune erreur trouvee dans les bilans selectionnes.')),
+      );
+      return;
+    }
+    cards.shuffle();
+    context.push(
+      '/flashcards/session',
+      extra: FlashcardSessionRouteArgs(
+        cards: cards,
+        ephemeral: true,
+        timed: false,
+        survival: false,
+      ),
+    );
   }
 
   Future<void> _analyze() async {
@@ -172,6 +225,18 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
                           )
                         : const Icon(Icons.auto_awesome_rounded, size: 18),
                     label: Text(_analyzing ? 'Analyse en cours...' : 'Analyser mes lacunes'),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: (_selected.isEmpty || _analyzing) ? null : _reviserErreurs,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _cyan,
+                      side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    icon: const Icon(Icons.style_rounded, size: 18),
+                    label: const Text('Reviser mes erreurs (flashcards)'),
                   ),
                   if (_errorMessage != null) ...[
                     const SizedBox(height: 12),
