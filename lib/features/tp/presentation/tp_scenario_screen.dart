@@ -18,12 +18,14 @@ const Color _surface = Color(0xFF1E1E38);
 
 /// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
-  'tp_ad_aerotech':     'assets/tp/AD/scenario_a_aerotech.json',
-  'tp_ad_pixel':        'assets/tp/AD/scenario_b_pixel_academy.json',
-  'tp_ad_saint_lazare': 'assets/tp/AD/scenario_c_saint_lazare.json',
-  'tp_ps_fondamentaux': 'assets/tp/PS/scenario_ps_fondamentaux.json',
-  'tp_ps_systeme':      'assets/tp/PS/scenario_ps_systeme.json',
-  'tp_ps_scripting':    'assets/tp/PS/scenario_ps_scripting.json',
+  'tp_ad_aerotech':       'assets/tp/AD/scenario_a_aerotech.json',
+  'tp_ad_pixel':          'assets/tp/AD/scenario_b_pixel_academy.json',
+  'tp_ad_saint_lazare':   'assets/tp/AD/scenario_c_saint_lazare.json',
+  'tp_ps_fondamentaux':   'assets/tp/PS/scenario_ps_fondamentaux.json',
+  'tp_ps_systeme':        'assets/tp/PS/scenario_ps_systeme.json',
+  'tp_ps_scripting':      'assets/tp/PS/scenario_ps_scripting.json',
+  'tp_pt_fondamentaux':   'assets/tp/PT/scenario_pt_fondamentaux.json',
+  'tp_pt_depannage_1':    'assets/tp/PT/scenario_pt_depannage_1.json',
 };
 
 class TpScenarioScreen extends StatefulWidget {
@@ -484,7 +486,47 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
     'steps':    false,
     'expected': false,
     'help':     false,
+    'commands': false,
   };
+
+  final _answerController = TextEditingController();
+  int? _selectedChoice;
+  bool _validationPassed = false;
+  bool _validationWrong = false;
+
+  @override
+  void dispose() {
+    _answerController.dispose();
+    super.dispose();
+  }
+
+  Map<String, dynamic>? get _validation {
+    final v = widget.mission['validation'];
+    if (v is Map) return Map<String, dynamic>.from(v);
+    return null;
+  }
+
+  void _checkAnswer() {
+    final v = _validation;
+    if (v == null) return;
+    final type = v['type'] as String? ?? 'text';
+    final expected = (v['expected_answer'] as String? ?? '').trim().toLowerCase();
+
+    bool passed = false;
+    if (type == 'qcm') {
+      final choices = v['choices'];
+      if (choices is List && _selectedChoice != null) {
+        final chosen = (choices[_selectedChoice!] as String).trim().toLowerCase();
+        passed = chosen == expected;
+      }
+    } else {
+      passed = _answerController.text.trim().toLowerCase() == expected;
+    }
+    setState(() {
+      _validationPassed = passed;
+      _validationWrong = !passed;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -495,6 +537,9 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
     final expected = (widget.mission['expected_result'] as List<dynamic>?)?.cast<String>() ?? [];
     final helpMap = widget.mission['help'] as Map<String, dynamic>?;
     final minutes = widget.mission['estimated_minutes'] as int? ?? 0;
+    final rawCommands = widget.mission['ios_commands'];
+    final iosCommands = rawCommands is List ? rawCommands : <dynamic>[];
+    final pktUrl = widget.mission['pkt_start_url'] as String?;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
@@ -618,6 +663,41 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                       ),
                       const SizedBox(height: 8),
                     ],
+                    if (pktUrl != null && pktUrl.isNotEmpty) ...[
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF22D3EE).withValues(alpha: 0.12),
+                          foregroundColor: const Color(0xFF22D3EE),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: Color(0xFF22D3EE), width: 1),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        icon: const Icon(Icons.download_rounded, size: 18),
+                        label: const Text('Télécharger le fichier .pkt de départ', style: TextStyle(fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    if (iosCommands.isNotEmpty) ...[
+                      _collapsibleSection(
+                        key: 'commands',
+                        title: '\u{1F4BB} Commandes Cisco IOS',
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final block in iosCommands)
+                              if (block is Map) ...[
+                                _iosCommandBlock(block),
+                                const SizedBox(height: 8),
+                              ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                     if (helpMap != null) ...[
                       _collapsibleSection(
                         key: 'help',
@@ -643,11 +723,17 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                       ),
                       const SizedBox(height: 16),
                     ],
+                    if (_validation != null) ...[
+                      _buildValidationSection(_validation!),
+                      const SizedBox(height: 16),
+                    ],
                     FilledButton.icon(
-                      onPressed: widget.onComplete,
+                      onPressed: (_validation == null || _validationPassed) ? widget.onComplete : null,
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF43E97B),
                         foregroundColor: Colors.black,
+                        disabledBackgroundColor: const Color(0xFF43E97B).withValues(alpha: 0.25),
+                        disabledForegroundColor: Colors.white30,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       icon: const Icon(Icons.check_rounded),
@@ -660,6 +746,224 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
           ),
         );
       },
+    );
+  }
+
+  Widget _iosCommandBlock(Map block) {
+    final device = block['device'] as String? ?? '';
+    final label = block['label'] as String? ?? '';
+    final rawCmds = block['commands'];
+    final commands = rawCmds is List ? rawCmds.map((c) => c.toString()).toList() : <String>[];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D1117),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFF22D3EE).withValues(alpha: 0.25)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF22D3EE).withValues(alpha: 0.08),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+            ),
+            child: Row(
+              children: [
+                const Text('\u{1F4BB}', style: TextStyle(fontSize: 12)),
+                const SizedBox(width: 6),
+                Text(
+                  device.isNotEmpty ? device : label,
+                  style: const TextStyle(color: Color(0xFF22D3EE), fontSize: 11, fontWeight: FontWeight.w600),
+                ),
+                if (device.isNotEmpty && label.isNotEmpty) ...[
+                  const Text(' — ', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                  Expanded(
+                    child: Text(label, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: commands.map((cmd) => Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(
+                  cmd,
+                  style: const TextStyle(
+                    color: Color(0xFF4ADE80),
+                    fontFamily: 'monospace',
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
+                ),
+              )).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildValidationSection(Map<String, dynamic> v) {
+    final type = v['type'] as String? ?? 'text';
+    final question = v['question'] as String? ?? '';
+    final hint = v['hint'] as String?;
+    final rawChoices = v['choices'];
+    final choices = rawChoices is List ? rawChoices.map((c) => c.toString()).toList() : <String>[];
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: _validationPassed
+            ? const Color(0xFF43E97B).withValues(alpha: 0.08)
+            : _validationWrong
+                ? const Color(0xFFEF4444).withValues(alpha: 0.08)
+                : const Color(0xFF6C63FF).withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _validationPassed
+              ? const Color(0xFF43E97B).withValues(alpha: 0.4)
+              : _validationWrong
+                  ? const Color(0xFFEF4444).withValues(alpha: 0.4)
+                  : const Color(0xFF6C63FF).withValues(alpha: 0.4),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                _validationPassed ? '\u{2705}' : '\u{1F9E0}',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'Question de validation',
+                style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(question, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4)),
+          const SizedBox(height: 12),
+          if (type == 'qcm') ...[
+            for (int i = 0; i < choices.length; i++)
+              _choiceTile(i, choices[i]),
+          ] else ...[
+            TextField(
+              controller: _answerController,
+              enabled: !_validationPassed,
+              style: const TextStyle(color: Colors.white, fontFamily: 'monospace'),
+              decoration: InputDecoration(
+                hintText: 'Ta réponse...',
+                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+                filled: true,
+                fillColor: Colors.white.withValues(alpha: 0.06),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Color(0xFF6C63FF)),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ),
+            ),
+          ],
+          if (_validationWrong && hint != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              '\u{1F4A1} $hint',
+              style: TextStyle(color: const Color(0xFFFF9800).withValues(alpha: 0.9), fontSize: 12, height: 1.4),
+            ),
+          ],
+          if (_validationPassed) ...[
+            const SizedBox(height: 8),
+            const Text(
+              'Bonne réponse ! Tu peux valider la mission.',
+              style: TextStyle(color: Color(0xFF43E97B), fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+          ] else ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _checkAnswer,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                  foregroundColor: const Color(0xFF6C63FF),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                  ),
+                ),
+                child: const Text('Valider ma réponse', style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _choiceTile(int index, String label) {
+    final isSelected = _selectedChoice == index;
+    return GestureDetector(
+      onTap: _validationPassed ? null : () => setState(() {
+        _selectedChoice = index;
+        _validationWrong = false;
+      }),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF6C63FF).withValues(alpha: 0.15)
+              : Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? const Color(0xFF6C63FF).withValues(alpha: 0.6)
+                : Colors.white.withValues(alpha: 0.08),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 18,
+              height: 18,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: isSelected ? const Color(0xFF6C63FF) : Colors.white30,
+                  width: 2,
+                ),
+                color: isSelected ? const Color(0xFF6C63FF) : Colors.transparent,
+              ),
+              child: isSelected
+                  ? const Icon(Icons.check, size: 11, color: Colors.white)
+                  : null,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(label, style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 13)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

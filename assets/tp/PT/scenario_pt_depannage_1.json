@@ -1,0 +1,178 @@
+{
+  "id": "tp_pt_depannage_1",
+  "title": "Dépannage Réseau — Niveau 1",
+  "subtitle": "TechCorp — Trouve la panne",
+  "emoji": "🔧",
+  "color": "#EF9F27",
+  "difficulty": "debutant",
+  "difficulty_label": "Débutant",
+  "description": "Trois pannes réseau à diagnostiquer et corriger. Les topologies sont déjà montées — quelque chose ne fonctionne pas. À toi de trouver pourquoi.",
+  "domain": "Réseau",
+  "type": "depannage",
+  "company": "TechCorp",
+  "packet_tracer_version": "8.2",
+  "total_missions": 3,
+  "estimated_hours": "1h30",
+  "prerequisite": null,
+  "context_intro": "Dans ces exercices, tu reçois un réseau déjà monté avec une ou plusieurs pannes. Tu dois diagnostiquer le problème avec les bons outils (ping, show ip interface brief, ipconfig) et corriger la configuration. Fichiers .pkt fournis pour chaque exercice.",
+  "badges": [],
+  "levels": [
+    {
+      "id": "niveau_depannage",
+      "title": "Pannes à corriger",
+      "emoji": "🔍",
+      "color": "#EF9F27",
+      "missions": [
+        {
+          "id": "PT-D-1",
+          "order": 1,
+          "title": "Panne 1 — PC1 ne ping pas PC2",
+          "type": "depannage",
+          "estimated_minutes": 20,
+          "pkt_start_url": "",
+          "objective": "Trouver pourquoi PC1 ne peut pas joindre PC2 sur le même réseau et corriger le problème.",
+          "context": "Tu reçois un signalement : 'PC1 n'arrive pas à joindre PC2 alors qu'ils sont sur le même réseau.' Les deux machines sont connectées au même switch. Charge le fichier .pkt et diagnostique.",
+          "steps": [
+            "Charge le fichier .pkt de départ (bouton ci-dessus)",
+            "Essaie d'abord de reproduire la panne : sur PC1, ouvre 'Desktop' → 'Command Prompt' et tape : ping 192.168.1.2",
+            "Vérifie la configuration IP de PC1 : 'Desktop' → 'IP Configuration'",
+            "Vérifie la configuration IP de PC2 : 'Desktop' → 'IP Configuration'",
+            "Compare les adresses et les masques — repère la différence",
+            "Corrige la mauvaise configuration et refais le ping"
+          ],
+          "ios_commands": [
+            {
+              "device": "PC1",
+              "label": "Diagnostic",
+              "commands": ["ping 192.168.1.2"]
+            }
+          ],
+          "help": {
+            "text": "Tu ne vois pas la différence entre les deux configs ?",
+            "where": "Regarde attentivement le masque de sous-réseau. Un masque incorrect (ex: 255.255.0.0 au lieu de 255.255.255.0) peut faire croire à un PC qu'il est sur un réseau différent."
+          },
+          "expected_result": [
+            "La panne a été identifiée (mauvaise IP ou mauvais masque sur l'un des PCs)",
+            "La configuration a été corrigée",
+            "PC1 ping PC2 avec succès"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quelle était la cause de la panne ?",
+            "choices": [
+              "Mauvais masque de sous-réseau sur PC2",
+              "Câble déconnecté entre PC2 et le switch",
+              "IP dupliquée — PC1 et PC2 avaient la même adresse",
+              "Le switch était éteint"
+            ],
+            "expected_answer": "Mauvais masque de sous-réseau sur PC2",
+            "hint": "Le masque de sous-réseau détermine l'étendue du réseau. Un mauvais masque peut isoler un poste."
+          }
+        },
+        {
+          "id": "PT-D-2",
+          "order": 2,
+          "title": "Panne 2 — Pas d'accès à l'autre réseau",
+          "type": "depannage",
+          "estimated_minutes": 25,
+          "pkt_start_url": "",
+          "objective": "PC3 ne peut pas joindre PC7 qui est sur un autre réseau. Trouver et corriger la cause.",
+          "context": "La topologie comporte deux réseaux (192.168.1.0/24 et 192.168.2.0/24) reliés par un routeur. La communication intra-réseau fonctionne mais les PCs ne peuvent pas joindre l'autre réseau. Le routeur est pourtant bien connecté.",
+          "steps": [
+            "Charge le fichier .pkt de départ",
+            "Vérifie que la communication fonctionne en intra-réseau : ping 192.168.1.2 depuis PC1",
+            "Teste la communication inter-réseau : ping 192.168.2.1 depuis PC1 — ça doit échouer",
+            "Vérifie la configuration de la Default Gateway sur PC1 (Desktop → IP Configuration)",
+            "Vérifie sur le routeur que les interfaces sont bien en état 'up' : CLI → enable → show ip interface brief",
+            "Identifie le problème et corrige-le"
+          ],
+          "ios_commands": [
+            {
+              "device": "PC1",
+              "label": "Diagnostic connectivité",
+              "commands": ["ping 192.168.1.2", "ping 192.168.2.1"]
+            },
+            {
+              "device": "Routeur R1",
+              "label": "Vérification interfaces",
+              "commands": ["enable", "show ip interface brief"]
+            }
+          ],
+          "help": {
+            "text": "Les interfaces du routeur sont 'up' mais le ping échoue ?",
+            "where": "La Default Gateway sur les PCs est cruciale. Si elle est absente ou incorrecte, le PC envoie les paquets à destination d'un autre réseau... dans le vide. Vérifie que la gateway sur PC1 correspond bien à l'IP de l'interface du routeur sur le réseau 192.168.1.0."
+          },
+          "expected_result": [
+            "La cause a été identifiée (Default Gateway manquante ou incorrecte sur les PCs)",
+            "La Default Gateway a été configurée correctement",
+            "PC1 peut joindre PC7 (192.168.2.3) avec succès"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Quelle était l'adresse correcte de la Default Gateway pour les PCs du réseau 192.168.1.0/24 ?",
+            "expected_answer": "192.168.1.254",
+            "hint": "La Default Gateway d'un PC doit être l'IP de l'interface du routeur qui est dans le même réseau que ce PC."
+          }
+        },
+        {
+          "id": "PT-D-3",
+          "order": 3,
+          "title": "Panne 3 — Interface routeur désactivée",
+          "type": "depannage",
+          "estimated_minutes": 20,
+          "pkt_start_url": "",
+          "objective": "Identifier et corriger une interface routeur désactivée qui bloque tout le réseau 2.",
+          "context": "Tout le réseau 2 (192.168.2.0/24) est inaccessible depuis le réseau 1. Pourtant les PCs sont bien configurés. La piste pointe vers le routeur.",
+          "steps": [
+            "Charge le fichier .pkt de départ",
+            "Teste la connectivité : ping 192.168.2.1 depuis PC1 — échec attendu",
+            "Sur le routeur, vérifie l'état des interfaces : enable → show ip interface brief",
+            "Repère l'interface en état 'administratively down'",
+            "Active l'interface : conf t → interface [nom] → no shutdown → end",
+            "Vérifie que l'interface passe en 'up/up' avec show ip interface brief",
+            "Reteste le ping depuis PC1 vers PC5"
+          ],
+          "ios_commands": [
+            {
+              "device": "Routeur R1",
+              "label": "Diagnostic",
+              "commands": ["enable", "show ip interface brief"]
+            },
+            {
+              "device": "Routeur R1",
+              "label": "Correction",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/1",
+                "no shutdown",
+                "end"
+              ]
+            }
+          ],
+          "help": {
+            "text": "Comment différencier 'down' et 'administratively down' ?",
+            "where": "'Administratively down' signifie que l'interface a été désactivée manuellement avec la commande 'shutdown'. La commande 'no shutdown' la réactive. Un 'down' simple indique un problème physique (câble, équipement éteint)."
+          },
+          "expected_result": [
+            "L'interface GigabitEthernet0/1 du routeur était en état 'administratively down'",
+            "La commande 'no shutdown' a été appliquée",
+            "L'interface est maintenant 'up/up'",
+            "PC1 peut joindre PC5 avec succès"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quelle commande Cisco IOS permet de réactiver une interface désactivée manuellement ?",
+            "choices": [
+              "no shutdown",
+              "interface up",
+              "enable interface",
+              "no administratively-down"
+            ],
+            "expected_answer": "no shutdown",
+            "hint": "En Cisco IOS, toutes les interfaces sont désactivées par défaut. La commande 'no shutdown' est celle qu'on tape systématiquement après avoir configuré une interface."
+          }
+        }
+      ]
+    }
+  ]
+}

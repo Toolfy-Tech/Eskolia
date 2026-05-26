@@ -376,7 +376,7 @@ final GoRouter appRouter = GoRouter(
           path: '/tp/:trackId',
           pageBuilder: (context, state) {
             final trackId = state.pathParameters['trackId']!;
-            if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
+            if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_') || trackId.startsWith('tp_pt_')) {
               return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
             }
             return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));

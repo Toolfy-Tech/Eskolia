@@ -149,6 +149,42 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
+                        border: Border(left: BorderSide(color: Color(0xFF22D3EE), width: 3)),
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Text(
+                        'PACKET TRACER — SIMULATION RÉSEAU',
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 11 * 0.08,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildScenarioCard(
+                      id: 'tp_pt_fondamentaux',
+                      title: 'Fondamentaux Réseau',
+                      description: 'Construis le réseau de TechCorp depuis zéro — câblage, IP, routage statique.',
+                      emoji: '\u{1F310}',
+                      difficulty: 'Débutant',
+                      missionCount: 4,
+                      accentColor: const Color(0xFF22D3EE),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_pt_depannage_1',
+                      title: 'Dépannage Réseau — Niveau 1',
+                      description: 'Trois pannes à diagnostiquer et corriger. Fichiers .pkt fournis.',
+                      emoji: '\u{1F527}',
+                      difficulty: 'Débutant',
+                      missionCount: 3,
+                      accentColor: const Color(0xFFEF9F27),
+                    ),
+                    const SizedBox(height: 32),
+                    Container(
+                      decoration: const BoxDecoration(
                         border: Border(left: BorderSide(color: Color(0xFF64748B), width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
@@ -164,17 +200,10 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildComingSoonCard(
-                      id: 'tp_filius',
-                      title: 'Simulation Réseau',
-                      description: 'Maîtrise les topologies réseau avec Filius et Packet Tracer.',
-                      emoji: '🌐',
-                    ),
-                    const SizedBox(height: 12),
-                    _buildComingSoonCard(
                       id: 'tp_itil',
                       title: 'Gestion de Tickets (ITIL)',
                       description: 'Apprends à gérer un Service Desk comme un pro.',
-                      emoji: '🎫',
+                      emoji: '\u{1F3AB}',
                     ),
                   ],
                 ),
