@@ -92,8 +92,7 @@ class _AdminTeacherQuizzesScreenState
   @override
   Widget build(BuildContext context) {
     return StaffGateScaffold(
-      extendBodyBehindAppBar: true,
-      title: 'Quiz du prof',
+            title: 'Quiz du prof',
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: _bg,

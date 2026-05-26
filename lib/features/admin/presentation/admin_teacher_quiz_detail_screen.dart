@@ -68,8 +68,7 @@ class _AdminTeacherQuizDetailScreenState
   @override
   Widget build(BuildContext context) {
     return StaffGateScaffold(
-      extendBodyBehindAppBar: true,
-      title: 'Détail quiz',
+            title: 'Détail quiz',
       child: StreamBuilder<List<TeacherQuiz>>(
         stream: _repo.watchAll(),
         builder: (context, snap) {

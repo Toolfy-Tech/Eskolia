@@ -41,8 +41,7 @@ class AdminSignalementsScreen extends StatelessWidget {
     final repo = AdminSignalementsRepository();
 
     return StaffGateScaffold(
-      extendBodyBehindAppBar: true,
-      title: 'Signalements',
+            title: 'Signalements',
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: _bg,

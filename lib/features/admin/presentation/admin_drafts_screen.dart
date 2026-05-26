@@ -35,8 +35,7 @@ class AdminDraftsScreen extends StatelessWidget {
     final repo = LaboQuestionDraftRepository();
 
     return StaffGateScaffold(
-      extendBodyBehindAppBar: true,
-      title: 'Brouillons',
+            title: 'Brouillons',
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: _bg,

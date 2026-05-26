@@ -35,8 +35,7 @@ class AdminTipsScreen extends StatelessWidget {
     final repo = CommunityTipRepository();
 
     return StaffGateScaffold(
-      extendBodyBehindAppBar: true,
-      title: 'Tips',
+            title: 'Tips',
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: _bg,
