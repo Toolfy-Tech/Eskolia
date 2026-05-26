@@ -14,7 +14,7 @@
   "total_missions": 3,
   "estimated_hours": "1h30",
   "prerequisite": null,
-  "context_intro": "Dans ces exercices, tu reçois un réseau déjà monté avec une ou plusieurs pannes. Tu dois diagnostiquer le problème avec les bons outils (ping, show ip interface brief, ipconfig) et corriger la configuration. Fichiers .pkt fournis pour chaque exercice.",
+  "context_intro": "Dans ces exercices, tu recois un reseau deja monte avec une ou plusieurs pannes. Tu dois diagnostiquer le probleme avec les bons outils (ping, show ip interface brief, ipconfig) et corriger la configuration. Les topologies de depart sont decrites dans chaque mission — construis-les toi-meme avant de simuler la panne.",
   "badges": [],
   "levels": [
     {
@@ -29,11 +29,9 @@
           "title": "Panne 1 — PC1 ne ping pas PC2",
           "type": "depannage",
           "estimated_minutes": 20,
-          "pkt_start_url": "",
           "objective": "Trouver pourquoi PC1 ne peut pas joindre PC2 sur le même réseau et corriger le problème.",
           "context": "Tu reçois un signalement : 'PC1 n'arrive pas à joindre PC2 alors qu'ils sont sur le même réseau.' Les deux machines sont connectées au même switch. Charge le fichier .pkt et diagnostique.",
           "steps": [
-            "Charge le fichier .pkt de départ (bouton ci-dessus)",
             "Essaie d'abord de reproduire la panne : sur PC1, ouvre 'Desktop' → 'Command Prompt' et tape : ping 192.168.1.2",
             "Vérifie la configuration IP de PC1 : 'Desktop' → 'IP Configuration'",
             "Vérifie la configuration IP de PC2 : 'Desktop' → 'IP Configuration'",
@@ -44,7 +42,9 @@
             {
               "device": "PC1",
               "label": "Diagnostic",
-              "commands": ["ping 192.168.1.2"]
+              "commands": [
+                "ping 192.168.1.2"
+              ]
             }
           ],
           "help": {
@@ -75,11 +75,9 @@
           "title": "Panne 2 — Pas d'accès à l'autre réseau",
           "type": "depannage",
           "estimated_minutes": 25,
-          "pkt_start_url": "",
           "objective": "PC3 ne peut pas joindre PC7 qui est sur un autre réseau. Trouver et corriger la cause.",
           "context": "La topologie comporte deux réseaux (192.168.1.0/24 et 192.168.2.0/24) reliés par un routeur. La communication intra-réseau fonctionne mais les PCs ne peuvent pas joindre l'autre réseau. Le routeur est pourtant bien connecté.",
           "steps": [
-            "Charge le fichier .pkt de départ",
             "Vérifie que la communication fonctionne en intra-réseau : ping 192.168.1.2 depuis PC1",
             "Teste la communication inter-réseau : ping 192.168.2.1 depuis PC1 — ça doit échouer",
             "Vérifie la configuration de la Default Gateway sur PC1 (Desktop → IP Configuration)",
@@ -90,12 +88,18 @@
             {
               "device": "PC1",
               "label": "Diagnostic connectivité",
-              "commands": ["ping 192.168.1.2", "ping 192.168.2.1"]
+              "commands": [
+                "ping 192.168.1.2",
+                "ping 192.168.2.1"
+              ]
             },
             {
               "device": "Routeur R1",
               "label": "Vérification interfaces",
-              "commands": ["enable", "show ip interface brief"]
+              "commands": [
+                "enable",
+                "show ip interface brief"
+              ]
             }
           ],
           "help": {
@@ -120,11 +124,9 @@
           "title": "Panne 3 — Interface routeur désactivée",
           "type": "depannage",
           "estimated_minutes": 20,
-          "pkt_start_url": "",
           "objective": "Identifier et corriger une interface routeur désactivée qui bloque tout le réseau 2.",
           "context": "Tout le réseau 2 (192.168.2.0/24) est inaccessible depuis le réseau 1. Pourtant les PCs sont bien configurés. La piste pointe vers le routeur.",
           "steps": [
-            "Charge le fichier .pkt de départ",
             "Teste la connectivité : ping 192.168.2.1 depuis PC1 — échec attendu",
             "Sur le routeur, vérifie l'état des interfaces : enable → show ip interface brief",
             "Repère l'interface en état 'administratively down'",
@@ -136,7 +138,10 @@
             {
               "device": "Routeur R1",
               "label": "Diagnostic",
-              "commands": ["enable", "show ip interface brief"]
+              "commands": [
+                "enable",
+                "show ip interface brief"
+              ]
             },
             {
               "device": "Routeur R1",

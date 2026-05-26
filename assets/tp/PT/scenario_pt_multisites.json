@@ -292,7 +292,6 @@
           "title": "Dépannage multi-sites",
           "type": "depannage",
           "estimated_minutes": 25,
-          "pkt_start_url": "",
           "objective": "Lyon ne peut pas joindre Paris — trouver et corriger la route statique manquante.",
           "context": "La topologie Paris-Lyon est montée et configurée, mais les PCs de Lyon ne peuvent pas joindre les PCs de Paris. La communication intra-site fonctionne correctement dans les deux sens. La piste pointe vers le routage.",
           "steps": [

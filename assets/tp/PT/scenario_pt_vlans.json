@@ -271,7 +271,6 @@
           "title": "Dépannage VLAN",
           "type": "depannage",
           "estimated_minutes": 25,
-          "pkt_start_url": "",
           "objective": "Diagnostiquer pourquoi deux PCs du même VLAN ne se joignent pas.",
           "context": "Un collègue a configuré les VLANs mais quelque chose ne va pas — des PCs censés être dans le même VLAN ne peuvent pas communiquer. Charge le fichier .pkt et trouve la panne.",
           "steps": [

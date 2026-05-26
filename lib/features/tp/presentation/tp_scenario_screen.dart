@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -542,7 +541,6 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
     final minutes = widget.mission['estimated_minutes'] as int? ?? 0;
     final rawCommands = widget.mission['ios_commands'];
     final iosCommands = rawCommands is List ? rawCommands : <dynamic>[];
-    final pktUrl = widget.mission['pkt_start_url'] as String?;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
@@ -665,27 +663,6 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                         )),
                       ),
                       const SizedBox(height: 8),
-                    ],
-                    if (pktUrl != null && pktUrl.isNotEmpty) ...[
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          final uri = Uri.tryParse(pktUrl);
-                          if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF22D3EE).withValues(alpha: 0.12),
-                          foregroundColor: const Color(0xFF22D3EE),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Color(0xFF22D3EE), width: 1),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        icon: const Icon(Icons.download_rounded, size: 18),
-                        label: const Text('Télécharger le fichier .pkt de départ', style: TextStyle(fontWeight: FontWeight.w600)),
-                      ),
-                      const SizedBox(height: 16),
                     ],
                     if (iosCommands.isNotEmpty) ...[
                       _collapsibleSection(
