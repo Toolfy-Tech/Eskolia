@@ -150,6 +150,21 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/revision-lacunes'),
               ),
+              const SizedBox(height: 6),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Text('\u{1F9EC}', style: TextStyle(fontSize: 28)),
+                title: const Text(
+                  'Recap IA de mes quiz',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                ),
+                subtitle: Text(
+                  'Solo — L\'IA analyse tes bilans enregistres et identifie tes lacunes recurrentes.',
+                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                ),
+                trailing: const Icon(Icons.chevron_right, color: Colors.white38),
+                onTap: () => context.push('/quiz/bilan-recap'),
+              ),
               const SizedBox(height: 20),
               const Text(
                 'Composer une Maîtrise',

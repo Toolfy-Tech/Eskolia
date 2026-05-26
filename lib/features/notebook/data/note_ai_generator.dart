@@ -390,6 +390,59 @@ class NoteAiGenerator {
     );
   }
 
+  // ── Recap IA des bilans ────────────────────────────────────────────────────
+
+  /// Analyse une liste de bilans de quiz et identifie les lacunes recurrentes.
+  /// [bilansJson] : JSON encode d'une liste d'objets bilan (format Eskolia Bilans/).
+  Stream<String> streamBilanRecap({
+    required String apiKey,
+    required AiProvider provider,
+    required String bilansJson,
+  }) {
+    const systemPrompt =
+        'Tu es formateur IT senior. Tu analyses les resultats de quiz d\'un eleve '
+        'pour identifier ses lacunes recurrentes et lui proposer un plan de revision personnalise. '
+        'Reponds en Markdown structure, en francais, de facon encourageante et pedagogique. '
+        'Genere UNIQUEMENT du Markdown brut, sans fence, sans commentaire.';
+
+    final userPrompt =
+        'Voici les bilans de quiz de l\'eleve (format JSON) :\n\n'
+        '$bilansJson\n\n'
+        'Analyse ces resultats et redige un rapport de lacunes en Markdown avec cette structure exacte :\n\n'
+        '# Recap de tes quiz\n'
+        '> Phrase d\'intro personnalisee selon les resultats globaux (encourageante)\n\n'
+        '## Synthese\n'
+        '- Nombre de quiz analyses\n'
+        '- Score moyen global\n'
+        '- Progression eventuelle si plusieurs quiz sur le meme theme\n\n'
+        '## Tes principales lacunes\n'
+        'Pour chaque lacune identifiee (max 5) :\n'
+        '### [Nom du theme/concept]\n'
+        '- **Pourquoi c\'est une lacune** : questions ratees sur ce theme\n'
+        '- **Ce que tu dois revoir** : notions precises a maitriser\n'
+        '- **Conseil** : astuce concrete pour progresser\n\n'
+        '## Points positifs\n'
+        '- Ce que l\'eleve maitrise bien (basé sur les bonnes reponses)\n\n'
+        '## Plan de revision recommande\n'
+        'Liste ordonnee de 3 a 5 actions concretes a faire en priorite.\n\n'
+        'REGLES :\n'
+        '- Base-toi uniquement sur les donnees fournies, ne fabrique pas de resultats\n'
+        '- Si une question est "wrong" ou "partial" sur plusieurs quiz, c\'est une lacune prioritaire\n'
+        '- Tone encourageant : valorise les efforts, pas que les erreurs\n'
+        '- Sois precis sur les notions IT (noms de protocoles, commandes, concepts reels)\n'
+        '- Si un seul bilan est fourni, adapte le discours en consequence';
+
+    return _chat(
+      apiKey: apiKey,
+      provider: provider,
+      ollamaCfg: _ollamaConfig(),
+      messages: [AiMessage(role: 'user', content: userPrompt)],
+      systemPrompt: systemPrompt,
+      maxTokens: 4096,
+      temperature: 0.5,
+    );
+  }
+
   // ── Utilitaires statiques ──────────────────────────────────────────────────
 
   /// Extrait le JSON brut d'une reponse IA (retire fences, texte parasite).
