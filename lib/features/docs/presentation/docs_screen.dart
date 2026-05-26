@@ -73,7 +73,7 @@ class DocsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const _MesCoursSauvegardésCard(),
+                const _MesCoursCard(),
                 const SizedBox(height: 16),
                 _DocSectionCard(
                   title: 'RGPD (UE)',
@@ -213,14 +213,14 @@ const String _technicianBody = '• Moindre privilège et comptes nominatifs (é
     '• Chiffrement des supports nomades et des canaux sensibles.\n'
     '• En cas d\'incident : préserver les preuves, escalader, ne pas improviser seul.';
 
-class _MesCoursSauvegardésCard extends StatefulWidget {
-  const _MesCoursSauvegardésCard();
+class _MesCoursCard extends StatefulWidget {
+  const _MesCoursCard();
 
   @override
-  State<_MesCoursSauvegardésCard> createState() => _MesCoursSauvegardésCardState();
+  State<_MesCoursCard> createState() => _MesCoursCardState();
 }
 
-class _MesCoursSauvegardésCardState extends State<_MesCoursSauvegardésCard> {
+class _MesCoursCardState extends State<_MesCoursCard> {
   Future<void> _pick() async {
     final fs = EskoliaFolderService.instance;
     final files = await fs.listFiles(EskoliaFolder.cours);

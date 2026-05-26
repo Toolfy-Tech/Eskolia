@@ -64,10 +64,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
     }
     try {
       final data = CustomQuizData.fromJsonString(raw);
-      final session = QuizSession(
-        sessionId: 'eskolia_${DateTime.now().millisecondsSinceEpoch}',
-        title: data.title,
-        questions: data.questions.asMap().entries.map((e) {
+      final qs = data.questions.asMap().entries.map((e) {
           final q = e.value;
           return QuizQuestion(
             id: 'cq_${e.key}',
@@ -82,7 +79,14 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
             options: q.items.isNotEmpty ? q.items : null,
             authorName: data.author,
           );
-        }).toList(),
+        }).toList();
+      final session = QuizSession(
+        sessionId: 'eskolia_${DateTime.now().millisecondsSinceEpoch}',
+        title: data.title,
+        questions: qs,
+        currentIndex: 0,
+        userScores: List.filled(qs.length, null),
+        startTime: DateTime.now(),
       );
       if (mounted) context.push('/quiz/run', extra: session);
     } on FormatException catch (e) {
