@@ -70,6 +70,37 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
     }
   }
 
+  Future<void> _importFromEskolia() async {
+    final fs = EskoliaFolderService.instance;
+    final files = await fs.listFiles(EskoliaFolder.quiz);
+    if (!mounted) return;
+    if (files.isEmpty) {
+      showEskoliaSnackBar(context, 'Aucun quiz dans Eskolia/Quiz/. Configure ton dossier dans les parametres.');
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: _surface,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _EskoliaQFilePicker(files: files),
+    );
+    if (picked == null || !mounted) return;
+    final raw = await fs.readFile(EskoliaFolder.quiz, picked);
+    if (raw == null) {
+      if (mounted) showEskoliaSnackBar(context, 'Impossible de lire ce fichier.');
+      return;
+    }
+    try {
+      final data = CustomQuizData.fromJsonString(raw);
+      if (mounted) {
+        widget.onImported(data);
+        showEskoliaSnackBar(context, '${data.questions.length} questions importees — "${data.title}"');
+      }
+    } on FormatException catch (e) {
+      if (mounted) showEskoliaSnackBar(context, 'Format invalide : ${e.message}');
+    }
+  }
+
   Future<void> _importFile() async {
     if (_importing) return;
     setState(() => _importing = true);
@@ -146,6 +177,17 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
                 )
               : const Icon(Icons.folder_open_rounded, size: 18),
           label: const Text('Importer mon quiz .json'),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _importFromEskolia,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF00BCD4),
+            side: BorderSide(color: const Color(0xFF00BCD4).withValues(alpha: 0.4)),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+          icon: const Icon(Icons.folder_special_rounded, size: 18),
+          label: const Text('Depuis mon dossier Eskolia'),
         ),
         const SizedBox(height: 10),
         Text(
@@ -261,6 +303,60 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
           icon: const Icon(Icons.refresh_rounded, size: 16),
           label: const Text('Changer de fichier'),
         ),
+      ],
+    );
+  }
+}
+
+class _EskoliaQFilePicker extends StatelessWidget {
+  const _EskoliaQFilePicker({required this.files});
+  final List<String> files;
+
+  String _label(String f) => f
+      .replaceAll('quiz_', '')
+      .replaceAll('eskolia_quiz_template', 'Modele vide')
+      .replaceAll('.json', '')
+      .replaceAll('_', ' ');
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+        ),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Choisir un quiz Eskolia',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: files.length,
+            itemBuilder: (_, i) => ListTile(
+              leading: const Icon(Icons.quiz_rounded, color: _violet),
+              title: Text(
+                _label(files[i]),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              subtitle: Text(
+                files[i],
+                style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+              ),
+              onTap: () => Navigator.of(context).pop(files[i]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
       ],
     );
   }
