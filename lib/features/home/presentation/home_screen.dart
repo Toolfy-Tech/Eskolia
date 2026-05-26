@@ -285,6 +285,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 4),
                   _IconAction(
+                    icon: Icons.person_outline_rounded,
+                    onTap: () => context.push('/profil'),
+                  ),
+                  const SizedBox(width: 4),
+                  _IconAction(
                     icon: Icons.settings_outlined,
                     onTap: () => context.push('/settings'),
                   ),

@@ -56,10 +56,10 @@ class EskoliaBottomNav extends StatelessWidget {
     emoji: '\u{1F4D3}',
     label: 'Notes',
   );
-  static const _NavItem _profil = _NavItem(
-    path: '/profil',
-    emoji: '\u{1F464}',
-    label: 'Moi',
+  static const _NavItem _ai = _NavItem(
+    path: '/ai/setup',
+    emoji: '\u{1F916}',
+    label: 'IA',
   );
   static const _NavItem _admin = _NavItem(
     path: '/admin',
@@ -76,7 +76,7 @@ class EskoliaBottomNav extends StatelessWidget {
         _multijoueur,
         _labo,
         _notebook,
-        _profil,
+        _ai,
         if (showAdminNav) _admin,
       ];
 
@@ -212,7 +212,7 @@ class EskoliaBottomNav extends StatelessWidget {
                         item: item,
                         active: active,
                         neon: neon,
-                        showBadge: item.path == '/profil' && aiConnected,
+                        showBadge: item.path == '/ai/setup' && aiConnected,
                         onTap: () async {
                           final router = GoRouter.of(context);
                           final current =
@@ -231,7 +231,11 @@ class EskoliaBottomNav extends StatelessWidget {
                             if (!context.mounted || !ok) return;
                           }
                           if (!context.mounted) return;
-                          router.go(target);
+                          if (target == '/ai/setup') {
+                            router.push(target);
+                          } else {
+                            router.go(target);
+                          }
                         },
                       );
                     }),
