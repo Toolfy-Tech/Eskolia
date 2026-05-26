@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/services/asset_cache_service.dart';
+import '../../../../core/services/eskolia_folder_service.dart';
 import '../../../../core/utils/eskolia_snackbar.dart';
 import '../../data/models/custom_quiz_data.dart';
-
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show Blob, Url, AnchorElement;
 
 const Color _slate = Color(0xFF94A3B8);
 const Color _violet = Color(0xFF6C63FF);
@@ -47,7 +45,12 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
       final raw = await AssetCacheService.loadString(
           'assets/templates/eskolia_quiz_template.json');
       if (kIsWeb) {
-        _downloadWeb(raw);
+        await EskoliaFolderService.instance.saveFile(
+          EskoliaFolder.quiz,
+          'eskolia_quiz_template.json',
+          raw,
+          mimeType: 'application/json',
+        );
       } else {
         await _shareMobile(raw);
       }
@@ -56,16 +59,6 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
     } finally {
       if (mounted) setState(() => _downloading = false);
     }
-  }
-
-  void _downloadWeb(String content) {
-    final bytes = utf8.encode(content);
-    final blob = html.Blob([bytes], 'application/json');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute('download', 'eskolia_quiz_template.json')
-      ..click();
-    html.Url.revokeObjectUrl(url);
   }
 
   Future<void> _shareMobile(String content) async {

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -186,6 +189,8 @@ class _FlashcardsHubScreenState extends State<FlashcardsHubScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  _EskoliaFlashcardsCard(onSession: _openSession),
+                  const SizedBox(height: 16),
                   EskoliaCardContent(
                     padding: const EdgeInsets.all(18),
                     child: Column(
@@ -231,6 +236,139 @@ class _FlashcardsHubScreenState extends State<FlashcardsHubScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+const Color _cyan = Color(0xFF00BCD4);
+const Color _slate = Color(0xFF94A3B8);
+
+class _EskoliaFlashcardsCard extends StatelessWidget {
+  const _EskoliaFlashcardsCard({required this.onSession});
+  final void Function(List<DeckFlashcard> cards, {bool ephemeral}) onSession;
+
+  Future<void> _pick(BuildContext context) async {
+    final fs = EskoliaFolderService.instance;
+    final files = await fs.listFiles(EskoliaFolder.flashcards);
+    if (!context.mounted) return;
+    if (files.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucun fichier dans Eskolia/Flashcards/. Configure ton dossier dans les parametres.')),
+      );
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF1E293B),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _FlashcardFilePicker(files: files),
+    );
+    if (picked == null || !context.mounted) return;
+    final raw = await fs.readFile(EskoliaFolder.flashcards, picked);
+    if (raw == null) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Impossible de lire ce fichier.')));
+      return;
+    }
+    try {
+      final decoded = json.decode(raw);
+      if (decoded is! Map) throw const FormatException('format invalide');
+      final questions = decoded['questions'];
+      if (questions is! List || questions.isEmpty) throw const FormatException('aucune question');
+      final cards = <DeckFlashcard>[];
+      for (final q in questions) {
+        if (q is! Map) continue;
+        final front = q['question'] as String?;
+        final back = q['answer'] as String?;
+        if (front == null || back == null) continue;
+        final hint = q['hint'] as String?;
+        cards.add(DeckFlashcard(
+          id: 'eskolia_fc_${cards.length}_${front.hashCode}',
+          front: front.trim(),
+          back: hint != null && hint.isNotEmpty ? '$back\n\n$hint' : back.trim(),
+          mastery: 0,
+          nextDue: DateTime.now(),
+        ));
+      }
+      if (cards.isEmpty) throw const FormatException('aucune carte valide');
+      if (context.mounted) onSession(cards, ephemeral: true);
+    } on FormatException catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fichier invalide : ${e.message}')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return EskoliaCardContent(
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Text('\u{1F4C2}', style: TextStyle(fontSize: 22)),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Mes flashcards Eskolia',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Lance une session depuis un fichier .json sauvegarde dans Eskolia/Flashcards/.',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12, height: 1.35),
+          ),
+          const SizedBox(height: 14),
+          OutlinedButton(
+            onPressed: () => _pick(context),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _cyan,
+              side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            child: const Text('Choisir un fichier'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FlashcardFilePicker extends StatelessWidget {
+  const _FlashcardFilePicker({required this.files});
+  final List<String> files;
+
+  String _label(String f) => f.replaceAll('flashcards_', '').replaceAll('.json', '').replaceAll('_', ' ');
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Container(width: 36, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2))),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text('Choisir un paquet', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: files.length,
+            itemBuilder: (_, i) => ListTile(
+              leading: const Icon(Icons.style_rounded, color: _cyan),
+              title: Text(_label(files[i]), style: const TextStyle(color: Colors.white, fontSize: 14)),
+              subtitle: Text(files[i], style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11)),
+              onTap: () => Navigator.of(context).pop(files[i]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
