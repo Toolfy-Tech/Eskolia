@@ -68,7 +68,7 @@ class _TpBinaireHubScreenState extends State<TpBinaireHubScreen> {
           length: 3,
           child: Scaffold(
             extendBodyBehindAppBar: true,
-            backgroundColor: EskoliaVisual.bgDeep,
+            backgroundColor: Colors.transparent,
             appBar: EskoliaAppBar.standard(
               context,
               title: 'TPs Binaire & Adressage',

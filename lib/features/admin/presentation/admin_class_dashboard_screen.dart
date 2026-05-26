@@ -77,7 +77,7 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
       title: 'Vue classe',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Vue classe'),
         body: Stack(
           children: [

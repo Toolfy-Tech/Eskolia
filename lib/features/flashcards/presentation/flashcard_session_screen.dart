@@ -224,7 +224,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
     if (_cards.isEmpty) {
       return Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: EskoliaVisual.bgDeep,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Flashcards'),
         body: const Center(
           child: Text('Aucune carte', style: TextStyle(color: Colors.white54)),
@@ -235,7 +235,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Flashcards ${_index + 1}/${_cards.length}',

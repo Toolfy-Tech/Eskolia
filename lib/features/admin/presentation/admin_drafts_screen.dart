@@ -38,7 +38,7 @@ class AdminDraftsScreen extends StatelessWidget {
             title: 'Brouillons',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Brouillons questions'),
         body: Stack(
           children: [

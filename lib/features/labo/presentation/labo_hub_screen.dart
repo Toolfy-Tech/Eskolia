@@ -31,7 +31,7 @@ class LaboHubScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Le Labo'),
       body: Stack(
         children: [

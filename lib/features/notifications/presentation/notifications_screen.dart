@@ -88,7 +88,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: '\u{1F514} Notifications',

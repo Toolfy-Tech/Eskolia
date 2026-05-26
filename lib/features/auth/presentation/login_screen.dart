@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             Positioned.fill(

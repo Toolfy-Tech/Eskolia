@@ -108,7 +108,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
     final busy = _busySrsQuiz;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Révision'),
       body: Stack(
         children: [

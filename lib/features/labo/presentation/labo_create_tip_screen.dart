@@ -84,7 +84,7 @@ class _LaboCreateTipScreenState extends State<LaboCreateTipScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Proposer un tip'),
       body: Stack(
         children: [

@@ -45,7 +45,7 @@ class DocsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: '\u{1F4CB} Docs métier',

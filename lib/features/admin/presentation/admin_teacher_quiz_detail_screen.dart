@@ -76,7 +76,7 @@ class _AdminTeacherQuizDetailScreenState
 
           return Scaffold(
             extendBodyBehindAppBar: true,
-            backgroundColor: _bg,
+            backgroundColor: Colors.transparent,
             appBar: EskoliaAppBar.standard(
               context,
               title: quiz?.title ?? 'Quiz du prof',

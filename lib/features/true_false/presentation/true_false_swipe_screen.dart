@@ -203,7 +203,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Vrai / Faux',

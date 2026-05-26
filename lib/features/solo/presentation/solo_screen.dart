@@ -26,7 +26,7 @@ class _SoloScreenState extends State<SoloScreen> {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

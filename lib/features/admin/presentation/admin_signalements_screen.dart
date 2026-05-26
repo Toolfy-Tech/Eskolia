@@ -44,7 +44,7 @@ class AdminSignalementsScreen extends StatelessWidget {
             title: 'Signalements',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Signalements'),
         body: Stack(
           children: [

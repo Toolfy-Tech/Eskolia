@@ -55,7 +55,7 @@ class _PracticalMarkdownScreenState extends State<PracticalMarkdownScreen> {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: widget.title),
       body: Stack(
         children: [

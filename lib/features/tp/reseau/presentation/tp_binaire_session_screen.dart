@@ -158,7 +158,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: widget.tp.title,

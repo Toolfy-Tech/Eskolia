@@ -29,7 +29,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Travaux Pratiques'),
       body: Stack(
         children: [

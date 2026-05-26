@@ -38,7 +38,7 @@ class AdminTipsScreen extends StatelessWidget {
             title: 'Tips',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Tips communauté'),
         body: Stack(
           children: [

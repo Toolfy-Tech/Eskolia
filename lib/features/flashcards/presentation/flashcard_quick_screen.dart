@@ -68,7 +68,7 @@ class _FlashcardQuickScreenState extends State<FlashcardQuickScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

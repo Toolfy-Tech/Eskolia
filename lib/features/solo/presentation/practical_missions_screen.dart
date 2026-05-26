@@ -129,7 +129,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

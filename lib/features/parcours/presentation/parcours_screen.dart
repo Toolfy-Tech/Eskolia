@@ -80,7 +80,7 @@ class _ParcoursScreenState extends State<ParcoursScreen>
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

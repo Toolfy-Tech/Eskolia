@@ -177,7 +177,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     final String displayScore = widget.score.toStringAsFixed(widget.score.truncateToDouble() == widget.score ? 0 : 2);
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

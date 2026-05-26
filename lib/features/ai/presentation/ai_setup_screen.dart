@@ -384,7 +384,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: '\u{1F916} Assistant IA'),
       body: Stack(
         children: [

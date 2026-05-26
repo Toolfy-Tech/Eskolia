@@ -24,7 +24,7 @@ class AchievementsScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Hauts faits', showBack: false),
       body: Stack(
         children: [

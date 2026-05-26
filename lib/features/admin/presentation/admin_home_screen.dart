@@ -21,7 +21,7 @@ class AdminHomeScreen extends StatelessWidget {
             title: 'Modération',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Modération'),
         body: Stack(
           children: [

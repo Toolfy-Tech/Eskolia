@@ -148,7 +148,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Mode Maîtrise'),
       body: Stack(
         children: [

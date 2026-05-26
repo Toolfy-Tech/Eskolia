@@ -81,7 +81,7 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
       title: 'Feedback questions',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(
           context,
           title: 'Feedback questions',

@@ -61,7 +61,7 @@ class _LaboReportsScreenState extends State<LaboReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Mes signalements'),
       body: Stack(
         children: [

@@ -865,7 +865,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     final hPad = EskoliaLayout.screenPaddingH;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Multijoueur',

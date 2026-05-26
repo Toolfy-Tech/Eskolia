@@ -95,7 +95,7 @@ class _AdminTeacherQuizzesScreenState
             title: 'Quiz du prof',
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Quiz du prof'),
         body: Stack(
           children: [

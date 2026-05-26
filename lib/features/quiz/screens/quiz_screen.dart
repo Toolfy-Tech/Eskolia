@@ -209,7 +209,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         });
       },
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),

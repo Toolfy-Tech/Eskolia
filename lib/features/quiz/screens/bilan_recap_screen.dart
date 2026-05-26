@@ -164,7 +164,7 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Recap IA de mes quiz'),
       body: Stack(
         children: [

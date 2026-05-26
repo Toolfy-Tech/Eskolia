@@ -77,7 +77,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.deferToChild,
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),

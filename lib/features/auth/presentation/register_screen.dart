@@ -79,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // opaque capte trop de gestes et peut bloquer le swipe du carrousel.
       behavior: HitTestBehavior.deferToChild,
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),
