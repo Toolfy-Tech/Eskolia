@@ -27,7 +27,7 @@ import '../../notebook/data/note_ai_generator.dart';
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _surface = Color(0xFF1E293B);
 const Color _green = Color(0xFF10B981);

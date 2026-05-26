@@ -13,7 +13,7 @@ import '../data/notification_repository.dart';
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _surface = Color(0xFF1E293B);
 const Color _redBadge = Color(0xFFE53935);
