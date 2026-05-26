@@ -182,6 +182,26 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       missionCount: 3,
                       accentColor: const Color(0xFFEF9F27),
                     ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_pt_vlans',
+                      title: 'VLANs & Routage Inter-VLAN',
+                      description: 'Segmente le réseau TechCorp par département et configure le Router-on-a-Stick.',
+                      emoji: '\u{1F500}',
+                      difficulty: 'Moyen',
+                      missionCount: 4,
+                      accentColor: const Color(0xFF6C63FF),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildScenarioCard(
+                      id: 'tp_pt_multisites',
+                      title: 'TechCorp Multi-Sites',
+                      description: 'Paris + Lyon — 2 classes d\'adresses, 2 VLANs par site, routage statique complet.',
+                      emoji: '\u{1F3E2}',
+                      difficulty: 'Moyen+',
+                      missionCount: 5,
+                      accentColor: const Color(0xFFEF9F27),
+                    ),
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(

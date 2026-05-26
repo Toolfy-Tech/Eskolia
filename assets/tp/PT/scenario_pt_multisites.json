@@ -1,0 +1,339 @@
+{
+  "id": "tp_pt_multisites",
+  "title": "TechCorp Multi-Sites",
+  "subtitle": "Paris + Lyon — Routage statique",
+  "emoji": "🏢",
+  "color": "#EF9F27",
+  "difficulty": "moyen_plus",
+  "difficulty_label": "Moyen+",
+  "description": "Construis l'infrastructure réseau complète de TechCorp avec deux sites géographiques (Paris et Lyon), deux classes d'adresses différentes, 2 VLANs par site et un routage statique entre les deux routeurs.",
+  "domain": "Réseau",
+  "type": "construction",
+  "company": "TechCorp",
+  "packet_tracer_version": "8.2",
+  "total_missions": 5,
+  "estimated_hours": "3h",
+  "prerequisite": "tp_pt_vlans",
+  "context_intro": "TechCorp dispose de deux sites : le siège social à Paris et une agence à Lyon. Les deux sites ont leurs propres réseaux locaux avec des VLANs par département. Un lien WAN (point-à-point) relie les deux routeurs. L'objectif est que n'importe quel PC de Paris puisse joindre n'importe quel PC de Lyon — et inversement.",
+  "badges": [],
+  "levels": [
+    {
+      "id": "niveau_site_paris",
+      "title": "Site Paris",
+      "emoji": "🗼",
+      "color": "#3B82F6",
+      "missions": [
+        {
+          "id": "PT-M-1",
+          "order": 1,
+          "title": "Monter le site Paris",
+          "type": "construction",
+          "estimated_minutes": 35,
+          "objective": "Créer la topologie complète du site Paris : 2 switchs, 4 PCs par switch, 2 VLANs, routeur R1.",
+          "context": "Le site Paris utilise la classe C : réseau 192.168.1.0/24 pour le VLAN 10 (RH) et 192.168.2.0/24 pour le VLAN 20 (IT). Deux switchs (SW1 et SW2) alimentent chacun un département. Le routeur R1 assure le routage inter-VLAN en Router-on-a-Stick.",
+          "steps": [
+            "Place dans l'espace de travail : 1 routeur 1941 (R1), 2 switchs 2960 (SW1, SW2), 8 PCs (PC1 à PC8)",
+            "Câblage SW1 : PC1, PC2, PC3, PC4 → ports Fa0/1 à Fa0/4 du SW1",
+            "Câblage SW2 : PC5, PC6, PC7, PC8 → ports Fa0/1 à Fa0/4 du SW2",
+            "Connecte SW1 à R1 sur Gi0/0 (câble droit) — note le port du switch utilisé (ex: Fa0/24)",
+            "Connecte SW2 à SW1 sur Gi0/1 (lien inter-switch trunk)",
+            "Sur SW1 et SW2 : crée VLAN 10 (RH) et VLAN 20 (IT)",
+            "Sur SW1 : Fa0/1 et Fa0/2 → VLAN 10 | Fa0/3 et Fa0/4 → VLAN 20 | port vers R1 → trunk | port vers SW2 → trunk",
+            "Sur SW2 : Fa0/1 et Fa0/2 → VLAN 10 | Fa0/3 et Fa0/4 → VLAN 20 | port vers SW1 → trunk",
+            "Sur R1 : configure les sous-interfaces G0/0.10 (192.168.1.254/24) et G0/0.20 (192.168.2.254/24)",
+            "IPs des PCs VLAN 10 (RH) : 192.168.1.1 à .4, gateway 192.168.1.254",
+            "IPs des PCs VLAN 20 (IT) : 192.168.2.1 à .4, gateway 192.168.2.254",
+            "Teste la connectivité intra-site : PC1 ping PC5 (même VLAN, switchs différents)"
+          ],
+          "ios_commands": [
+            {
+              "device": "SW1 et SW2",
+              "label": "VLANs",
+              "commands": [
+                "conf t",
+                "vlan 10",
+                "name RH",
+                "exit",
+                "vlan 20",
+                "name IT",
+                "exit"
+              ]
+            },
+            {
+              "device": "R1",
+              "label": "Router-on-a-Stick Paris",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/0.10",
+                "encapsulation dot1Q 10",
+                "ip address 192.168.1.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0.20",
+                "encapsulation dot1Q 20",
+                "ip address 192.168.2.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0",
+                "no shutdown",
+                "end"
+              ]
+            }
+          ],
+          "help": {
+            "text": "PC1 ne ping pas PC5 (même VLAN, switch différent) ?",
+            "where": "Vérifie que le lien entre SW1 et SW2 est bien en mode trunk sur les deux switchs ('show interfaces trunk'). Ensuite vérifie que le VLAN 10 existe bien sur SW2 ('show vlan brief'). Les VLANs ne se propagent pas automatiquement d'un switch à l'autre."
+          },
+          "expected_result": [
+            "R1 a les sous-interfaces 192.168.1.254 (VLAN 10) et 192.168.2.254 (VLAN 20)",
+            "Tous les PCs sont configurés avec la bonne IP et gateway",
+            "PC1 ping PC5 avec succès (VLAN 10, SW1 vers SW2)",
+            "PC1 ping PC6 avec succès (VLAN 10 vers VLAN 20 via routeur)"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Quelle est l'adresse IP de la passerelle pour les PCs du VLAN 20 (IT) à Paris ?",
+            "expected_answer": "192.168.2.254",
+            "hint": "La gateway d'un PC est l'IP de la sous-interface du routeur dans son sous-réseau."
+          }
+        },
+        {
+          "id": "PT-M-2",
+          "order": 2,
+          "title": "Monter le site Lyon",
+          "type": "construction",
+          "estimated_minutes": 30,
+          "objective": "Créer la topologie du site Lyon avec une classe d'adresses différente (classe A).",
+          "context": "Le site Lyon utilise la classe A : réseau 10.0.1.0/24 pour le VLAN 30 (Commercial) et 10.0.2.0/24 pour le VLAN 40 (Direction). On change de classe d'adresses pour bien distinguer les deux sites. La structure est identique à Paris : 2 switchs, 8 PCs, 1 routeur R2.",
+          "steps": [
+            "Dans le même projet Packet Tracer, ajoute à droite : 1 routeur 1941 (R2), 2 switchs 2960 (SW3, SW4), 8 PCs (PC9 à PC16)",
+            "Câble les PCs sur SW3 et SW4 comme pour Paris",
+            "Connecte SW3 à R2 sur Gi0/0 (trunk) et SW3 à SW4 (trunk)",
+            "Sur SW3 et SW4 : crée VLAN 30 (Commercial) et VLAN 40 (Direction)",
+            "Sur SW3 : Fa0/1-2 → VLAN 30 | Fa0/3-4 → VLAN 40 | port vers R2 → trunk | port vers SW4 → trunk",
+            "Sur SW4 : Fa0/1-2 → VLAN 30 | Fa0/3-4 → VLAN 40 | port vers SW3 → trunk",
+            "Sur R2 : configure G0/0.30 (10.0.1.254/24) et G0/0.40 (10.0.2.254/24)",
+            "IPs VLAN 30 : 10.0.1.1 à .4, gateway 10.0.1.254",
+            "IPs VLAN 40 : 10.0.2.1 à .4, gateway 10.0.2.254",
+            "Teste la connectivité intra-site Lyon : PC9 ping PC13"
+          ],
+          "ios_commands": [
+            {
+              "device": "R2",
+              "label": "Router-on-a-Stick Lyon",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/0.30",
+                "encapsulation dot1Q 30",
+                "ip address 10.0.1.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0.40",
+                "encapsulation dot1Q 40",
+                "ip address 10.0.2.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0",
+                "no shutdown",
+                "end"
+              ]
+            }
+          ],
+          "help": {
+            "text": "Tu confonds les numéros de VLAN et les sous-réseaux ?",
+            "where": "Rappel : VLAN 30 = réseau 10.0.1.0/24, gateway 10.0.1.254. VLAN 40 = réseau 10.0.2.0/24, gateway 10.0.2.254. Le numéro de VLAN est un identifiant logique — il n'a pas de lien direct avec les adresses IP, c'est toi qui fais le choix de cette correspondance."
+          },
+          "expected_result": [
+            "R2 a les sous-interfaces 10.0.1.254 (VLAN 30) et 10.0.2.254 (VLAN 40)",
+            "PC9 ping PC13 avec succès (VLAN 30, inter-switch Lyon)",
+            "PC9 ping PC14 avec succès (VLAN 30 vers VLAN 40 via R2)"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "À quelle classe appartient le réseau 10.0.1.0 ?",
+            "choices": ["Classe A", "Classe B", "Classe C", "Classe D"],
+            "expected_answer": "Classe A",
+            "hint": "Classe A : premier octet de 1 à 126. Classe B : 128 à 191. Classe C : 192 à 223."
+          }
+        }
+      ]
+    },
+    {
+      "id": "niveau_interconnexion",
+      "title": "Liaison Paris — Lyon",
+      "emoji": "🛤️",
+      "color": "#EF9F27",
+      "missions": [
+        {
+          "id": "PT-M-3",
+          "order": 3,
+          "title": "Lien WAN entre R1 et R2",
+          "type": "construction",
+          "estimated_minutes": 25,
+          "objective": "Connecter les deux routeurs et configurer les IPs du lien WAN.",
+          "context": "Pour relier Paris et Lyon, on connecte R1 et R2 directement avec un câble série (DCE/DTE) ou un câble croisé sur les interfaces GigabitEthernet. Ce lien utilise son propre sous-réseau dédié : 172.16.0.0/30 (seulement 2 adresses utiles — une pour chaque routeur).",
+          "steps": [
+            "Connecte R1 et R2 avec un câble croisé sur GigabitEthernet0/1 de chaque routeur",
+            "Sur R1, configure l'interface Gi0/1 :",
+            "  conf t → interface GigabitEthernet0/1 → ip address 172.16.0.1 255.255.255.252 → no shutdown → end",
+            "Sur R2, configure l'interface Gi0/1 :",
+            "  conf t → interface GigabitEthernet0/1 → ip address 172.16.0.2 255.255.255.252 → no shutdown → end",
+            "Vérifie que les deux interfaces sont 'up/up' avec show ip interface brief",
+            "Teste : R1 ping R2 sur 172.16.0.2 (ping depuis le CLI du routeur)"
+          ],
+          "ios_commands": [
+            {
+              "device": "R1",
+              "label": "Lien WAN côté Paris",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/1",
+                "ip address 172.16.0.1 255.255.255.252",
+                "no shutdown",
+                "end"
+              ]
+            },
+            {
+              "device": "R2",
+              "label": "Lien WAN côté Lyon",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/1",
+                "ip address 172.16.0.2 255.255.255.252",
+                "no shutdown",
+                "end"
+              ]
+            },
+            {
+              "device": "R1",
+              "label": "Test de connectivité WAN",
+              "commands": ["ping 172.16.0.2"]
+            }
+          ],
+          "help": {
+            "text": "Pourquoi un /30 pour le lien WAN ?",
+            "where": "Un /30 donne exactement 2 adresses utiles (172.16.0.1 et 172.16.0.2) — parfait pour un lien point-à-point entre deux routeurs. On n'utilise pas un /24 entier pour ne pas gaspiller des adresses sur un lien qui n'a que 2 équipements."
+          },
+          "expected_result": [
+            "R1 a l'IP 172.16.0.1/30 sur Gi0/1",
+            "R2 a l'IP 172.16.0.2/30 sur Gi0/1",
+            "Les interfaces Gi0/1 des deux routeurs sont en état up/up",
+            "R1 ping R2 sur 172.16.0.2 avec succès"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Combien d'adresses IP utilisables contient un sous-réseau en /30 ?",
+            "expected_answer": "2",
+            "hint": "Formule : 2^(32-préfixe) - 2 adresses réservées (réseau + broadcast). Pour /30 : 2^2 - 2 = 2."
+          }
+        },
+        {
+          "id": "PT-M-4",
+          "order": 4,
+          "title": "Routage statique Paris ↔ Lyon",
+          "type": "construction",
+          "estimated_minutes": 30,
+          "objective": "Configurer les routes statiques sur R1 et R2 pour permettre la communication complète entre les deux sites.",
+          "context": "R1 ne connait que ses propres réseaux (192.168.1.0 et 192.168.2.0). Pour joindre Lyon (10.0.1.0 et 10.0.2.0), il faut lui dire explicitement : 'pour atteindre ces réseaux, envoie via 172.16.0.2'. C'est ça le routage statique — l'administrateur configure manuellement les chemins.",
+          "steps": [
+            "Sur R1, ajoute les routes vers les réseaux de Lyon :",
+            "  conf t",
+            "  ip route 10.0.1.0 255.255.255.0 172.16.0.2",
+            "  ip route 10.0.2.0 255.255.255.0 172.16.0.2",
+            "  end",
+            "Sur R2, ajoute les routes vers les réseaux de Paris :",
+            "  conf t",
+            "  ip route 192.168.1.0 255.255.255.0 172.16.0.1",
+            "  ip route 192.168.2.0 255.255.255.0 172.16.0.1",
+            "  end",
+            "Vérifie les tables de routage : show ip route sur R1 et R2",
+            "Teste depuis PC1 (Paris, 192.168.1.1) : ping 10.0.1.1 (Lyon, VLAN Commercial)"
+          ],
+          "ios_commands": [
+            {
+              "device": "R1",
+              "label": "Routes statiques vers Lyon",
+              "commands": [
+                "conf t",
+                "ip route 10.0.1.0 255.255.255.0 172.16.0.2",
+                "ip route 10.0.2.0 255.255.255.0 172.16.0.2",
+                "end",
+                "show ip route"
+              ]
+            },
+            {
+              "device": "R2",
+              "label": "Routes statiques vers Paris",
+              "commands": [
+                "conf t",
+                "ip route 192.168.1.0 255.255.255.0 172.16.0.1",
+                "ip route 192.168.2.0 255.255.255.0 172.16.0.1",
+                "end",
+                "show ip route"
+              ]
+            }
+          ],
+          "help": {
+            "text": "PC1 ne ping toujours pas un PC de Lyon ?",
+            "where": "Vérifications en cascade : (1) R1 ping R2 ? → lien WAN OK. (2) R1 a bien les routes 10.0.x.x dans 'show ip route' ? (3) R2 a bien les routes 192.168.x.x ? (4) Les PCs ont bien leur gateway configurée ? Le ping inter-site traverse 3 équipements (gateway locale → routeur → routeur distant → gateway distante)."
+          },
+          "expected_result": [
+            "R1 a 4 routes : 2 directement connectées + 2 statiques vers Lyon",
+            "R2 a 4 routes : 2 directement connectées + 2 statiques vers Paris",
+            "PC1 (Paris, RH) ping PC9 (Lyon, Commercial) avec succès",
+            "PC4 (Paris, IT) ping PC12 (Lyon, Direction) avec succès"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Quelle commande affiche la table de routage d'un routeur Cisco ?",
+            "expected_answer": "show ip route",
+            "hint": "Cette commande est indispensable pour diagnostiquer les problèmes de routage — elle montre toutes les routes connues du routeur et leur origine (C=connectée, S=statique)."
+          }
+        },
+        {
+          "id": "PT-M-5",
+          "order": 5,
+          "title": "Dépannage multi-sites",
+          "type": "depannage",
+          "estimated_minutes": 25,
+          "pkt_start_url": "",
+          "objective": "Lyon ne peut pas joindre Paris — trouver et corriger la route statique manquante.",
+          "context": "La topologie Paris-Lyon est montée et configurée, mais les PCs de Lyon ne peuvent pas joindre les PCs de Paris. La communication intra-site fonctionne correctement dans les deux sens. La piste pointe vers le routage.",
+          "steps": [
+            "Charge le fichier .pkt de départ",
+            "Teste depuis PC9 (Lyon) : ping 192.168.1.1 → doit échouer",
+            "Teste depuis PC1 (Paris) : ping 10.0.1.1 → note si ça fonctionne ou non",
+            "Sur R1 et R2, examine les tables de routage : show ip route",
+            "Identifie quel routeur a des routes manquantes",
+            "Ajoute les routes manquantes et reteste"
+          ],
+          "ios_commands": [
+            {
+              "device": "R1 et R2",
+              "label": "Diagnostic routage",
+              "commands": ["show ip route"]
+            }
+          ],
+          "help": {
+            "text": "Comment lire la table de routage ?",
+            "where": "Dans 'show ip route' : les lignes 'C' sont les réseaux directement connectés, les lignes 'S' sont les routes statiques. Si tu vois des réseaux distants sans ligne 'S', c'est qu'il manque une route statique. La syntaxe : ip route [réseau-dest] [masque] [next-hop]."
+          },
+          "expected_result": [
+            "La route manquante a été identifiée sur le bon routeur",
+            "La commande ip route correcte a été ajoutée",
+            "PC9 (Lyon) ping PC1 (Paris) avec succès",
+            "La communication est bidirectionnelle"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quelle était la cause de la panne ?",
+            "choices": [
+              "Une route statique manquante sur R2 vers les réseaux de Paris",
+              "L'interface WAN de R1 était en état administratively down",
+              "Les VLANs de Lyon n'existaient pas sur SW3",
+              "La Default Gateway des PCs de Lyon était incorrecte"
+            ],
+            "expected_answer": "Une route statique manquante sur R2 vers les réseaux de Paris",
+            "hint": "Si Paris peut joindre Lyon mais pas l'inverse, le problème est asymétrique : R2 ne sait pas comment répondre vers les réseaux de Paris."
+          }
+        }
+      ]
+    }
+  ]
+}

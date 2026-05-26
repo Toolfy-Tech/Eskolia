@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -26,6 +27,8 @@ const Map<String, String> _kScenarioAssets = {
   'tp_ps_scripting':      'assets/tp/PS/scenario_ps_scripting.json',
   'tp_pt_fondamentaux':   'assets/tp/PT/scenario_pt_fondamentaux.json',
   'tp_pt_depannage_1':    'assets/tp/PT/scenario_pt_depannage_1.json',
+  'tp_pt_vlans':          'assets/tp/PT/scenario_pt_vlans.json',
+  'tp_pt_multisites':     'assets/tp/PT/scenario_pt_multisites.json',
 };
 
 class TpScenarioScreen extends StatefulWidget {
@@ -665,7 +668,10 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                     ],
                     if (pktUrl != null && pktUrl.isNotEmpty) ...[
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final uri = Uri.tryParse(pktUrl);
+                          if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF22D3EE).withValues(alpha: 0.12),
                           foregroundColor: const Color(0xFF22D3EE),
