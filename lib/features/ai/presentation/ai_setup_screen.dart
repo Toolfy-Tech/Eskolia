@@ -3,9 +3,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/eskolia_layout.dart';
+import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../data/ai_key_repository.dart';
@@ -381,55 +383,64 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: _bg,
       appBar: EskoliaAppBar.standard(context, title: '\u{1F916} Assistant IA'),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator(color: _violet))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(
-                EskoliaLayout.screenPaddingH, 16,
-                EskoliaLayout.screenPaddingH, 60,
-              ),
-              children: [
-                _buildStatusBanner(),
-                Builder(builder: (_) {
-                  final connectedGemini =
-                      _state.isConnected && _state.provider == AiProvider.gemini;
-                  final typingGemini = _detected == AiProvider.gemini &&
-                      _keyController.text.trim().length >= 10;
-                  if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
-                  final apiKey = connectedGemini
-                      ? (_state.apiKey ?? _keyController.text.trim())
-                      : _keyController.text.trim();
-                  return Column(
+      body: Stack(
+        children: [
+          const EskoliaAmbientBackground(),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: _loading
+                ? const Center(child: CircularProgressIndicator(color: _violet))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      EskoliaLayout.screenPaddingH, 16,
+                      EskoliaLayout.screenPaddingH, 60,
+                    ),
                     children: [
-                      const SizedBox(height: 12),
-                      GeminiModelSelector(
-                        key: ValueKey(apiKey),
-                        apiKey: apiKey,
-                        initialModel: _geminiModel,
-                        onChanged: (m) => setState(() => _geminiModel = m),
-                      ),
+                      _buildStatusBanner(),
+                      Builder(builder: (_) {
+                        final connectedGemini =
+                            _state.isConnected && _state.provider == AiProvider.gemini;
+                        final typingGemini = _detected == AiProvider.gemini &&
+                            _keyController.text.trim().length >= 10;
+                        if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
+                        final apiKey = connectedGemini
+                            ? (_state.apiKey ?? _keyController.text.trim())
+                            : _keyController.text.trim();
+                        return Column(
+                          children: [
+                            const SizedBox(height: 12),
+                            GeminiModelSelector(
+                              key: ValueKey(apiKey),
+                              apiKey: apiKey,
+                              initialModel: _geminiModel,
+                              onChanged: (m) => setState(() => _geminiModel = m),
+                            ),
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 16),
+                      _buildKeyInput(),
+                      const SizedBox(height: 14),
+                      if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
+                        const SizedBox(height: 14),
+                        _buildConsentCheckbox(),
+                        const SizedBox(height: 10),
+                      ],
+                      _buildSaveButton(),
+                      if (_state.isConnected) ...[
+                        const SizedBox(height: 10),
+                        _buildDisconnectButton(),
+                      ],
+                      const SizedBox(height: 32),
+                      _buildProviderSection(),
                     ],
-                  );
-                }),
-                const SizedBox(height: 16),
-                _buildKeyInput(),
-                const SizedBox(height: 14),
-                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
-                  const SizedBox(height: 14),
-                  _buildConsentCheckbox(),
-                  const SizedBox(height: 10),
-                ],
-                _buildSaveButton(),
-                if (_state.isConnected) ...[
-                  const SizedBox(height: 10),
-                  _buildDisconnectButton(),
-                ],
-                const SizedBox(height: 32),
-                _buildProviderSection(),
-              ],
-            ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 

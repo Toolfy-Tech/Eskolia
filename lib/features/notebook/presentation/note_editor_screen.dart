@@ -9,6 +9,7 @@ import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
@@ -344,20 +345,15 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
-                  children: [
-                    _buildNotesSection(),
-                    const SizedBox(height: 24),
-                    _buildAiSection(),
-                  ],
-                ),
-              ),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
+              children: [
+                _buildNotesSection(),
+                const SizedBox(height: 24),
+                _buildAiSection(),
+              ],
             ),
           ),
         ],
