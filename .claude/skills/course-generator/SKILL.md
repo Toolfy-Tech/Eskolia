@@ -50,6 +50,7 @@ Le quiz doit être compatible avec le format lu par l'application Flutter. Chaqu
 | `sequence` | Procédure ordonnée | `"options": [liste mélangée]` — `answer` = liste ordonnée |
 | `diagnostic_indices` | Déduction par étapes | `"indices": ["Indice 1", "Indice 2", "Indice 3"]` |
 | `ticket` | Simulation d'incident réel | `"checklist": ["Etape 1", ...]` |
+| `association` | Relier deux colonnes (drag & drop) | `"pairs": [{"left": "...", "right": "..."}, ...]` — `answer` = description textuelle des bonnes paires |
 
 ## 2c. Nombre de questions selon la complexité de la notion
 
