@@ -17,7 +17,14 @@ Ce skill s'active pour la création de modules de cours. Le public cible est "ul
   5. `## 🧠 L'Anti-Sèche` : Récapitulatif strict en 3 à 5 points clés.
 
 # 2. Règles du Quiz (JSON)
-Génère ensuite un bloc JSON valide contenant 3 à 5 questions à choix multiples.
+Avant de générer le quiz, évalue la complexité intrinsèque de la notion selon ces critères :
+- **Simple (3 questions)** : définition unique, concept isolé, pas de sous-cas — ex. "Qu'est-ce qu'un ticket ?"
+- **Moyenne (5 questions)** : plusieurs sous-concepts liés, une procédure à retenir, des distinctions à faire — ex. "Les niveaux de support N1/N2/N3"
+- **Complexe (7 questions)** : concepts imbriqués, règles interdépendantes, erreurs fréquentes, ou notion centrale du module — ex. "Le cycle de vie d'un incident ITIL"
+
+Applique le nombre de questions correspondant au niveau évalué. Indique le niveau choisi dans la clé `difficulty` du JSON (`"Débutant – Simple"`, `"Débutant – Moyenne"`, `"Débutant – Complexe"`).
+
+Génère ensuite un bloc JSON valide contenant le nombre de questions déterminé ci-dessus, à choix multiples.
 - Respecte strictement cette structure par question : `id` (entier), `questionText` (chaîne), `options` (tableau de 4 chaînes), `correctAnswerIndex` (entier, commençant à 0).
 - Inclus obligatoirement ces deux clés d'accompagnement :
   - `hint` : Un indice court pour guider la réflexion.
