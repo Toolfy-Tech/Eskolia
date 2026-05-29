@@ -248,12 +248,27 @@ Identifier la **nature dominante** depuis le titre de la notion. Appliquer la re
 *Reconnaître : "RGPD", "ANSSI", "DEEE", "habilitation", "règles d'hygiène", "obligations"*
 > Ex : 6.7 RGPD, 6.8 ANSSI, 5.5 habilitation électrique BS, 5.6 DEEE
 
+Distinguer deux sous-types :
+
+**E1 — Réglementaire à impact opérationnel** (le technicien peut recevoir un vrai incident lié)
+> Ex : 6.7 RGPD, 6.8 ANSSI
+
 | Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 7–9 | Vrai/faux pour corriger idées reçues, définitions légales, obligations du technicien |
+| `classic` | 6–7 | Vrai/faux pour corriger idées reçues, définitions légales, obligations |
 | `association` | **2** | 1 × règle↔obligation concrète + 1 × cas d'usage↔conformité |
-| `sequence` | 1 si pertinent | Uniquement si une procédure légale existe (ex : déclarer une violation RGPD) |
-| `ticket`, `diagnostic_indices` | Interdit | — |
+| `ticket` | **1** | Incident réel lié à la réglementation (vol de laptop, fuite de données, signalement utilisateur) |
+| `sequence` | 1 si pertinent | Procédure légale ordonnée (ex : déclarer une violation RGPD en 72h) |
+| `diagnostic_indices` | Interdit | — |
+
+**E2 — Réglementaire théorique** (pas d'incident technicien associable naturellement)
+> Ex : 5.5 habilitation électrique BS, 5.6 DEEE
+
+| Type | Quantité | Contenu attendu |
+|---|---|---|
+| `classic` | 7–9 | Vrai/faux, définitions, obligations, risques |
+| `association` | **2** | 1 × règle↔obligation + 1 × situation↔bonne pratique |
+| `ticket`, `sequence`, `diagnostic_indices` | Interdit | — |
 
 ---
 
