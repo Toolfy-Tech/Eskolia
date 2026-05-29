@@ -162,109 +162,120 @@ Le champ `answer` doit décrire les bonnes paires en texte pour la flashcard.
 
 ## 2c. Nombre de questions selon la complexité de la notion
 
-Évaluer la complexité avant de générer :
-
 | Complexité | Questions | Critères |
 |---|---|---|
-| Simple | 3 | Définition unique, concept isolé |
-| Moyenne | 5 | Plusieurs sous-concepts, une procédure à retenir |
-| Complexe | 7 | Concepts imbriqués, règles interdépendantes, notion centrale du module |
+| Standard | **10** | Notion à concept principal unique, définition ou procédure simple |
+| Étendue | **12** | Plusieurs sous-concepts liés, procédure avec variantes |
+| Approfondie | **15** | Concepts imbriqués, dépannage avancé, notion centrale du module |
+
+**Minimum absolu : 10 questions par notion.**
 
 ---
 
 ## 2d. Règles de mélange des types
 
-- **Interdiction** d'enchaîner plus de 2 questions `classic` consécutives sans varier.
-- **`sequence` et `association`** : maximum 1 par fichier de notion (ce sont des types lourds).
-- **`ticket`** : réserver aux notions de support/diagnostic — pas aux notions théoriques.
-- **`diagnostic_indices`** : réserver aux notions de dépannage avec une démarche logique claire.
-- **Minimum 50% de questions `classic`** par fichier — elles fonctionnent dans tous les modes (quiz, flashcard, survival, révision).
+- Pas plus de **3 `classic` consécutifs** — alterner avec un type interactif.
+- `sequence` : **maximum 2** par fichier, sur des procédures distinctes.
+- `association` : **maximum 2** par fichier, sur des axes de regroupement différents.
+- `ticket` : placer **uniquement là où c'est pertinent** (voir recettes Nature ci-dessous) — jamais par défaut.
+- `diagnostic_indices` : réserver aux notions avec une démarche de déduction logique identifiable.
+- **Minimum 40% de `classic`** — garanti de fonctionner dans tous les modes (quiz, flashcard, survival, révision).
 
 ---
 
 ## 2e. Stratégie de sélection des types par nature de notion
 
-Avant de générer, identifier la **nature dominante** de la notion à partir de son titre. Appliquer la recette correspondante.
+Identifier la **nature dominante** depuis le titre de la notion. Appliquer la recette.
 
 ---
 
 ### Nature A — Concepts & Définitions
-*Reconnaître : "Qu'est-ce que", "Introduction à", "Les bases de", "Comprendre"*
+*Reconnaître : "Qu'est-ce que", "Introduction à", "Les bases de", "Comprendre", "Les X de Y"*
 > Ex : 1.1 ITSM, 7.1 OSI/TCP-IP, 8.1 Active Directory, 6.1 menaces
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 60–70% | Définitions, acronymes, vrai/faux pour corriger idées reçues |
-| `association` | 1 (si ≥ 5 questions) | Relier termes ↔ définitions ou concepts ↔ exemples |
-| Autres | Interdit | Pas de ticket, sequence ni diagnostic_indices |
+| `classic` | 6–9 | Définitions, vrai/faux pour corriger idées reçues, acronymes, distinctions entre concepts |
+| `association` | **2** | 1 × termes↔définitions + 1 × concepts↔exemples concrets |
+| `sequence` | 1 si pertinent | Uniquement si les concepts ont un ordre logique (ex : couches OSI, chronologie) |
+| `ticket`, `diagnostic_indices` | Interdit | — |
 
 ---
 
 ### Nature B — Procédures & Étapes
-*Reconnaître : "Installer", "Créer", "Configurer", "Déployer", "Intégrer", "Rédiger"*
-> Ex : 4.2 Installer Windows, 8.4 Intégrer un poste, 5.7 Fiche d'intervention
+*Reconnaître : "Installer", "Créer", "Configurer", "Déployer", "Intégrer", "Rédiger", "Gérer"*
+> Ex : 4.2 Installer Windows, 8.4 Intégrer un poste, 6.5 Stratégie sauvegarde
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 50–60% | Comprendre le pourquoi de chaque étape |
-| `sequence` | 1 obligatoire | La procédure principale mise en ordre |
-| `ticket` | 1 si applicable | Si la procédure est une résolution d'incident |
-| `association` | 1 si applicable | Associer outil ↔ étape de la procédure |
+| `classic` | 5–7 | Comprendre le pourquoi de chaque étape, identifier les erreurs courantes |
+| `sequence` | **2** | 1 × procédure principale + 1 × sous-procédure ou procédure alternative |
+| `association` | **1** | Outil↔étape ou commande↔action |
+| `ticket` | 1 si résolution d'incident | Uniquement si la procédure sert à résoudre un problème (configurer firewall = oui, rédiger compte-rendu = non) |
+| `diagnostic_indices` | Interdit | — |
 
 ---
 
 ### Nature C — Dépannage & Diagnostic
-*Reconnaître : "Diagnostiquer", "Dépanner", "Identifier", "Analyser", "Tests de"*
+*Reconnaître : "Diagnostiquer", "Dépanner", "Identifier une panne", "Tests de", "Analyser"*
 > Ex : 3.3 panne matérielle, 3.5 panne réseau, 7.10 tests connectivité, 8.7 authentification
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 40–50% | Comprendre les causes et symptômes |
-| `diagnostic_indices` | 1–2 obligatoires | Scénario de déduction logique |
-| `ticket` | 1 obligatoire | Simulation d'un incident réel de ce type |
-| `association` | 1 si applicable | Associer symptôme ↔ cause probable |
+| `classic` | 4–5 | Comprendre causes, symptômes, outils utilisés |
+| `diagnostic_indices` | **2–3** | Scénarios de déduction distincts avec symptômes progressifs |
+| `ticket` | **2** | Deux incidents réels différents du même type de panne |
+| `association` | **1** | Symptôme↔cause probable ou outil↔cas d'usage |
+| `sequence` | 1 si pertinent | Étapes de la démarche de diagnostic si ordonnée |
 
 ---
 
 ### Nature D — Outils & Logiciels
-*Reconnaître : "Les outils", "Utiliser", "TeamViewer", "GLPI", "Intune", "Wireshark"*
-> Ex : 1.6 outils ITSM, 2.4 prise en main à distance, 3.2 outils Windows
+*Reconnaître : "Les outils", "Utiliser X", nom d'un outil (GLPI, TeamViewer, Wireshark…)*
+> Ex : 1.6 outils ITSM, 2.4 prise en main à distance, 3.2 outils diagnostic Windows
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 60–70% | Fonctions, usages, différences entre outils |
-| `association` | 1 obligatoire | Outil ↔ usage / fonctionnalité ↔ logiciel |
-| `ticket` | 1 si applicable | Scénario d'utilisation concrète de l'outil |
-| `sequence` | 1 si applicable | Si l'outil a une procédure d'utilisation clé |
+| `classic` | 5–7 | Fonctions, usages, avantages/limites, différences entre outils |
+| `association` | **2** | 1 × outil↔usage principal + 1 × fonctionnalité↔cas concret |
+| `sequence` | **1** | Procédure d'utilisation clé de l'outil principal |
+| `ticket` | 1 si pertinent | Uniquement si l'outil intervient dans la résolution d'un incident réel |
+| `diagnostic_indices` | Interdit | — |
 
 ---
 
-### Nature E — Réglementaire & Sécurité
-*Reconnaître : "RGPD", "ANSSI", "DEEE", "habilitation", "règles", "hygiène"*
-> Ex : 6.7 RGPD, 6.8 ANSSI, 5.5 habilitation électrique, 5.6 DEEE
+### Nature E — Réglementaire & Normatif
+*Reconnaître : "RGPD", "ANSSI", "DEEE", "habilitation", "règles d'hygiène", "obligations"*
+> Ex : 6.7 RGPD, 6.8 ANSSI, 5.5 habilitation électrique BS, 5.6 DEEE
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 100% | Questions vrai/faux pour corriger idées reçues, définitions légales |
-| Autres | Interdit | Les notions réglementaires n'ont pas de procédure interactive ni de diagnostic |
+| `classic` | 7–9 | Vrai/faux pour corriger idées reçues, définitions légales, obligations du technicien |
+| `association` | **2** | 1 × règle↔obligation concrète + 1 × cas d'usage↔conformité |
+| `sequence` | 1 si pertinent | Uniquement si une procédure légale existe (ex : déclarer une violation RGPD) |
+| `ticket`, `diagnostic_indices` | Interdit | — |
 
 ---
 
 ### Nature F — Communication & Relationnel
-*Reconnaître : "Écoute", "Adapter", "Communication", "Accompagner", "Former"*
+*Reconnaître : "Écoute", "Adapter", "Communication", "Accompagner", "Former", "Discours"*
 > Ex : 2.1 techniques communication, 2.2 adapter son discours, 9.1 écoute active
 
-| Type | Proportion | Règle |
+| Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 60–70% | Concepts, bonnes pratiques, réflexes |
-| `ticket` | 1 obligatoire | Scénario de communication avec un utilisateur difficile |
-| `association` | 1 si applicable | Associer profil utilisateur ↔ type de langage adapté |
-| `sequence`, `diagnostic_indices` | Interdit | Pas de procédure séquentielle ni de déduction technique |
+| `classic` | 6–8 | Concepts, bonnes pratiques, réflexes relationnels |
+| `ticket` | **2** si assistance directe, **1** si théorique | Scénarios de communication réels avec utilisateurs difficiles ou profils variés |
+| `association` | **1** | Profil utilisateur↔approche adaptée ou situation↔technique de communication |
+| `sequence` | 1 si pertinent | Uniquement si une procédure de communication existe (ex : étapes de l'écoute active) |
+| `diagnostic_indices` | Interdit | — |
+
+> **Assistance directe** (ticket ×2) : 2.1, 2.2, 2.4, 9.1, 9.2
+> **Théorique** (ticket ×1) : 2.3, 2.5, 2.6, 10.1, 10.2
 
 ---
 
 ### Natures mixtes
-Certaines notions combinent deux natures (ex : "Configurer un switch (VLAN, trunk)" = B + D). Dans ce cas, prendre la recette de la nature **la plus présente dans le contenu du cours généré**, et ajouter 1 élément de la nature secondaire si le budget de questions le permet.
+Certaines notions combinent deux natures (ex : "Configurer un switch" = B + D). Prendre la recette de la nature **dominante** et ajouter 1 élément de la nature secondaire si le budget le permet. Ne jamais dépasser 2 `sequence` ni 2 `association` au total.
 
 ---
 
