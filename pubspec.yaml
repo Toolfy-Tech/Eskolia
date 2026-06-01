@@ -23,13 +23,9 @@ dependencies:
   shared_preferences: ^2.3.5
   dio: ^5.8.0+1
   http_parser: ^4.1.0
-  glassmorphism: ^3.0.0
-  rive: ^0.14.6
   flutter_markdown: ^0.7.7+1
   url_launcher: ^6.3.2
   file_picker: ^8.1.7
-  share_plus: ^10.1.4
-  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
