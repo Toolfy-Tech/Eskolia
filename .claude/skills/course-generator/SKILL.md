@@ -294,7 +294,20 @@ Certaines notions combinent deux natures (ex : "Configurer un switch" = B + D). 
 
 ---
 
-## 2f. Format du fichier JSON final
+## 2f. Préfixe d'ID selon le programme
+
+Le préfixe du champ `id` dépend du programme cible :
+
+| Programme | Préfixe | Exemple |
+|---|---|---|
+| Nexus TIP | `NXS` | `NXS-M01-C01-001` |
+| Optimus | `OPT` | `OPT-M02-C03-001` |
+
+La numérotation du module (`M[XX]`) suit celle du cours source (M01 à M08 pour Optimus, M01 à M10 pour Nexus TIP). Toujours préciser le programme cible dans le prompt de génération.
+
+---
+
+## 2g. Format du fichier JSON final
 
 Tableau JSON à la racine (pas d'objet englobant) :
 
