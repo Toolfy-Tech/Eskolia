@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C07-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle du PSU (Power Supply Unit) dans un PC ?",
+    "answer": "Le PSU convertit le courant secteur (220V alternatif) en courant continu de faible tension utilisable par les composants (12V, 5V, 3.3V). Il distribue l'énergie et protège contre les surtensions et courts-circuits.",
+    "comment": "Un PSU de mauvaise qualité ou sous-dimensionné peut endommager l'ensemble des composants en cas de surtension. C'est un investissement à ne pas négliger lors d'un assemblage."
+  },
+  {
+    "id": "OPT-M02-C07-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que mesure la certification '80 Plus' d'un PSU ?",
+    "answer": "Le rendement énergétique : garantit qu'au moins 80% du courant prélevé sur le secteur est converti en courant utilisable. Le reste est perdu en chaleur. Niveaux : White < Bronze < Silver < Gold < Platinum < Titanium.",
+    "comment": "Un PSU 80 Plus Gold garantit 87-90% de rendement. Moins de chaleur produite = durée de vie plus longue et moins d'électricité gaspillée. En entreprise, Gold ou Platinum sont recommandés."
+  },
+  {
+    "id": "OPT-M02-C07-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la règle des 20-30% lors du dimensionnement d'un PSU ?",
+    "answer": "Choisir un PSU dont la puissance nominale est 20-30% supérieure à la consommation estimée du PC. Ex : PC consommant 333W → PSU 500W minimum. Cela évite de faire fonctionner le PSU à 100% de charge, ce qui réduit son efficacité et sa durée de vie.",
+    "comment": "Les PSU sont les plus efficaces à 50-80% de leur charge nominale. Un PSU de 500W alimentant un PC de 333W fonctionne à 67% de charge, dans sa plage optimale."
+  },
+  {
+    "id": "OPT-M02-C07-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il jamais ouvrir un PSU, même PC éteint et débranché ?",
+    "answer": "Les condensateurs à l'intérieur d'un PSU conservent une charge électrique dangereuse même après débranchement. Cette charge peut provoquer une électrisation grave. Seuls des techniciens spécialisés habilitent peuvent intervenir sur un PSU ouvert.",
+    "comment": "Même règle pour les moniteurs (surtout CRT) et les onduleurs. En cas de PSU défaillant, la seule intervention autorisée pour un technicien informatique standard est le remplacement complet."
+  },
+  {
+    "id": "OPT-M02-C07-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre un PSU modulaire, semi-modulaire et non-modulaire ?",
+    "answer": "Full modulaire : tous les câbles sont détachables (seuls ceux nécessaires sont branchés). Semi-modulaire : câbles vitaux (24 broches, CPU) fixes, reste détachable. Non-modulaire : tous les câbles sont fixes. Le modulaire facilite le cable management et le flux d'air.",
+    "comment": "En pratique, un PSU semi-modulaire est le meilleur compromis coût/flexibilité pour la plupart des assemblages. Le non-modulaire impose de gérer des câbles inutiles à l'intérieur du boîtier."
+  },
+  {
+    "id": "OPT-M02-C07-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un onduleur (UPS) et en quoi complète-t-il la protection du PSU ?",
+    "answer": "UPS (Uninterruptible Power Supply) : appareil avec batterie qui s'intercale entre la prise secteur et l'équipement. Il prend le relais instantanément en cas de coupure secteur et filtre les perturbations électriques. Le PSU protège contre les défauts internes, l'onduleur contre les problèmes du secteur.",
+    "comment": "Le but d'un onduleur n'est pas de faire fonctionner un serveur des heures sans courant, mais de laisser le temps d'un arrêt propre (quelques minutes) pour éviter la corruption de données."
+  },
+  {
+    "id": "OPT-M02-C07-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pour quels équipements un onduleur est-il indispensable en entreprise ?",
+    "answer": "Les équipements critiques : serveurs, NAS/stockage réseau, switches et routeurs, postes de supervision. Une coupure brutale sur un serveur ou NAS peut corrompre des bases de données ou des volumes RAID.",
+    "comment": "Réflexe terrain : la batterie d'un onduleur dure 3-5 ans. Un onduleur avec batterie morte semble fonctionner mais ne protège plus rien. Tester les batteries fait partie de la maintenance préventive annuelle."
+  },
+  {
+    "id": "OPT-M02-C07-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : un PSU de 1000W consomme toujours 1000W sur le secteur, même si le PC en utilise 200W. Justifiez.",
+    "answer": "Faux. Un PSU consomme seulement ce dont le PC a besoin, plus les pertes liées à son rendement. Un PSU 1000W alimentant un PC de 200W consommera environ 220-235W sur le secteur (selon le rendement 80-85%).",
+    "comment": "Un PSU surdimensionné n'est pas dangereux : il fonctionne juste à faible charge, parfois avec un rendement légèrement inférieur. La règle des 20-30% vise l'efficacité, pas la protection."
+  },
+  {
+    "id": "OPT-M02-C07-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque connecteur PSU à sa destination dans le PC :",
+    "pairs": [
+      {"left": "ATX 24 broches", "right": "Alimentation principale de la carte mère"},
+      {"left": "EPS / CPU 8 broches", "right": "Alimentation spécifique du processeur (près du socket)"},
+      {"left": "PCIe 6+2 broches", "right": "Alimentation de la carte graphique"},
+      {"left": "SATA 15 broches (L)", "right": "Alimentation des disques durs et SSD SATA"}
+    ],
+    "answer": "ATX 24 broches = carte mère | EPS 8 broches = CPU | PCIe 6+2 = GPU | SATA 15 broches = HDD/SSD SATA",
+    "comment": "Le connecteur SATA alimentation (15 broches en L) est différent du connecteur SATA données (7 broches en L). Les deux sont nécessaires pour un HDD ou SSD SATA."
+  },
+  {
+    "id": "OPT-M02-C07-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "L'alimentation (PSU)",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les certifications 80 Plus, de la moins efficace à la plus efficace :",
+    "options": ["Gold", "Titanium", "White", "Bronze", "Platinum"],
+    "answer": ["White", "Bronze", "Gold", "Platinum", "Titanium"],
+    "comment": "White (~80%) → Bronze (~82%) → Silver (~85%) → Gold (~87-90%) → Platinum (~92%) → Titanium (~94%). En pratique, Gold est le standard recommandé pour un bon rapport efficacité/prix."
+  }
+]

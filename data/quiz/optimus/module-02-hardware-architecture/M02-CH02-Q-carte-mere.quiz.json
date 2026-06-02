@@ -1,0 +1,121 @@
+[
+  {
+    "id": "OPT-M02-C02-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle fondamental de la carte mère dans un PC ?",
+    "answer": "C'est le composant central qui interconnecte tous les autres composants (CPU, RAM, stockage, GPU). Elle gère les communications via les bus de données, héberge le BIOS/UEFI et fournit les ports externes.",
+    "comment": "La carte mère est souvent comparée au 'squelette' du PC. Elle ne calcule rien elle-même, mais détermine quelles pièces peuvent travailler ensemble."
+  },
+  {
+    "id": "OPT-M02-C02-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le socket d'une carte mère ?",
+    "answer": "Un connecteur spécifique situé sur la carte mère pour accueillir le processeur CPU. Il assure la liaison électrique entre le CPU et les autres composants. Chaque socket est conçu pour une famille précise de processeurs : un CPU Intel ne rentrera jamais dans un socket AMD.",
+    "comment": "Le socket est non-interchangeable. Avant d'acheter un CPU, toujours vérifier que son socket est compatible avec la carte mère. Apparence : plaque carrée recouverte de points de contact."
+  },
+  {
+    "id": "OPT-M02-C02-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le chipset d'une carte mère ?",
+    "answer": "Ensemble de composants électroniques intégrés qui coordonne les flux de données entre le processeur et les périphériques (stockage, USB, réseau). Il détermine les capacités de la carte mère : nombre de ports USB, vitesse de stockage, possibilité d'overclocking.",
+    "comment": "Le chipset est la 'tour de contrôle' de la carte mère. Deux cartes mères avec le même socket peuvent avoir des chipsets très différents et donc des fonctionnalités très différentes."
+  },
+  {
+    "id": "OPT-M02-C02-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre un socket Intel LGA et un socket AMD AM4 (PGA) ?",
+    "answer": "LGA (Land Grid Array) : les broches de contact sont sur la carte mère, le CPU n'a que des plages plates. PGA (Pin Grid Array) : les broches sont sur le CPU lui-même, le socket a des trous d'accueil. AM5 d'AMD a adopté le format LGA comme Intel.",
+    "comment": "Cette distinction est importante en intervention : sur un socket LGA, ne jamais forcer car les broches de la carte mère sont fragiles et coûteuses à remplacer."
+  },
+  {
+    "id": "OPT-M02-C02-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert la pile CMOS sur la carte mère ?",
+    "answer": "Elle maintient la date, l'heure et les paramètres BIOS en mémoire lorsque le PC est éteint et débranché. Sans elle, le BIOS perdrait tous ses réglages à chaque coupure secteur.",
+    "comment": "Pile bouton CR2032, durée de vie 5-10 ans. Symptôme de pile morte : date/heure remise à zéro à chaque démarrage. Retirer la pile quelques secondes = reset BIOS (CMOS clear)."
+  },
+  {
+    "id": "OPT-M02-C02-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'appelle-t-on les 'headers de façade' sur une carte mère ?",
+    "answer": "Des connecteurs sur la carte mère qui reçoivent les câbles du boîtier : bouton power, bouton reset, LEDs d'activité, ports USB façade et prise audio façade.",
+    "comment": "Ces petits connecteurs en broches sont la source d'erreur la plus fréquente lors d'un premier assemblage. La polarité des LEDs est importante et doit être respectée pour qu'elles s'allument."
+  },
+  {
+    "id": "OPT-M02-C02-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : une barrette DDR4 peut s'insérer dans un slot DDR5. Justifiez.",
+    "answer": "Faux. DDR3, DDR4 et DDR5 ont des encoches de détrompeur à des positions différentes et des tensions d'alimentation différentes. Elles sont physiquement incompatibles : impossible à insérer dans le mauvais slot.",
+    "comment": "La position de l'encoche sur la barrette change à chaque génération. C'est volontaire pour éviter les erreurs. On ne peut donc pas 'forcer' une DDR4 dans un slot DDR5."
+  },
+  {
+    "id": "OPT-M02-C02-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence fonctionnelle entre un slot PCIe x1 et un slot PCIe x16 ?",
+    "answer": "Le chiffre indique le nombre de lanes (voies de données). Un slot x1 a 1 lane (~1 Go/s en PCIe 3.0), un slot x16 en a 16 (~16 Go/s). Le x16 est réservé au GPU principal, le x1 aux cartes d'extension légères (réseau, son).",
+    "comment": "Physiquement, le slot x16 est le plus long de la carte mère. Une carte x1 peut s'insérer dans un slot x16 plus grand et fonctionner normalement à la bande passante x1."
+  },
+  {
+    "id": "OPT-M02-C02-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque composant de la carte mère à son rôle principal :",
+    "pairs": [
+      {"left": "Socket", "right": "Accueille et connecte le processeur CPU"},
+      {"left": "Chipset", "right": "Coordonne les flux de données entre CPU et périphériques"},
+      {"left": "Slot M.2", "right": "Connecteur pour SSD sans câble (NVMe ou SATA)"},
+      {"left": "Connecteur 24 broches", "right": "Alimentation principale de la carte mère depuis le PSU"}
+    ],
+    "answer": "Socket = accueille le CPU | Chipset = coordination des flux | Slot M.2 = SSD sans câble | Connecteur 24 broches = alimentation principale PSU",
+    "comment": "Ces quatre composants sont présents sur toutes les cartes mères modernes. Le socket et le chipset définissent les possibilités de la plateforme."
+  },
+  {
+    "id": "OPT-M02-C02-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte mère",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Pour upgrader la carte mère d'un client, remettez dans l'ordre les vérifications de compatibilité à effectuer :",
+    "options": [
+      "Vérifier le type de RAM supporté (DDR4 ou DDR5)",
+      "Vérifier que le socket est compatible avec le CPU existant",
+      "Vérifier le facteur de forme (ATX/Micro-ATX) par rapport au boîtier",
+      "Mettre à jour le BIOS si nécessaire pour la génération CPU",
+      "Vérifier les connecteurs PSU requis (24 broches + EPS CPU)"
+    ],
+    "answer": [
+      "Vérifier que le socket est compatible avec le CPU existant",
+      "Vérifier le type de RAM supporté (DDR4 ou DDR5)",
+      "Vérifier le facteur de forme (ATX/Micro-ATX) par rapport au boîtier",
+      "Vérifier les connecteurs PSU requis (24 broches + EPS CPU)",
+      "Mettre à jour le BIOS si nécessaire pour la génération CPU"
+    ],
+    "comment": "Le socket est la contrainte principale : s'il n'est pas compatible, rien d'autre ne sert. La mise à jour BIOS est souvent la dernière étape, après installation physique."
+  }
+]

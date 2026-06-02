@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C01-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les trois critères principaux pour choisir un boîtier PC ?",
+    "answer": "1. Ergonomie et design (encombrement, esthétique). 2. Compatibilité matérielle (format carte mère, longueur GPU, hauteur ventirad). 3. Flux d'air / Airflow (évacuation de la chaleur).",
+    "comment": "Ces trois critères sont indissociables : un boîtier esthétique mais mal ventilé finira par faire surchauffer les composants."
+  },
+  {
+    "id": "OPT-M02-C01-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "C",
+    "type": "classic",
+    "question": "La norme ATX a été créée par quelle entreprise, et que définit-elle ?",
+    "answer": "Créée par Intel. Elle définit les dimensions standardisées des cartes mères et leur compatibilité avec les boîtiers PC.",
+    "comment": "ATX (Advanced Technology eXtended) est le standard dominant depuis 1995. Sans lui, chaque fabricant aurait ses propres dimensions incompatibles."
+  },
+  {
+    "id": "OPT-M02-C01-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "C",
+    "type": "classic",
+    "question": "Citez les quatre formats principaux de boîtiers PC.",
+    "answer": "Desktop (horizontal), Tour (vertical, le plus commun), Mini-PC (très compact) et Serveur (rackable, pour armoires 19 pouces).",
+    "comment": "Le format Tour est de loin le plus répandu en entreprise. Le format Serveur rackable est conçu pour être monté dans des armoires standardisées."
+  },
+  {
+    "id": "OPT-M02-C01-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le 'cable management' dans un boîtier, et pourquoi est-ce important au-delà de l'esthétique ?",
+    "answer": "Faire passer les câbles derrière la carte mère ou dans des espaces dédiés. Cela améliore la circulation de l'air à l'intérieur du boîtier et réduit les températures.",
+    "comment": "Un boîtier encombré de câbles crée des turbulences et des zones d'air stagnant. Le cable management est une étape à ne pas négliger lors d'un assemblage."
+  },
+  {
+    "id": "OPT-M02-C01-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que l'Airflow d'un boîtier, et de quoi dépend-il ?",
+    "answer": "L'Airflow est la capacité du boîtier à évacuer efficacement la chaleur. Il dépend du nombre, de l'emplacement et du sens des ventilateurs (aspiration/extraction) ainsi que de la libre circulation de l'air à l'intérieur.",
+    "comment": "Un bon airflow maintient les composants au frais et prolonge leur durée de vie. Sans ventilateurs correctement orientés, même un ventirad haut de gamme sera moins efficace."
+  },
+  {
+    "id": "OPT-M02-C01-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la configuration 'push-pull' sur un radiateur ?",
+    "answer": "Des ventilateurs placés des deux côtés d'un radiateur : un côté pousse l'air (push), l'autre l'aspire (pull). Cela améliore le débit d'air à travers le radiateur sans augmenter la vitesse des ventilateurs.",
+    "comment": "Cette configuration est courante sur les radiateurs de watercooling AIO. Elle augmente l'efficacité thermique surtout lorsque le radiateur est épais."
+  },
+  {
+    "id": "OPT-M02-C01-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un client veut monter une carte mère ATX dans un boîtier Micro-ATX. Est-ce possible ?",
+    "answer": "Non. Une carte mère ATX (305×244 mm) est trop grande pour un boîtier Micro-ATX. En revanche, une carte Micro-ATX peut s'installer dans un boîtier ATX (compatibilité ascendante).",
+    "comment": "La règle : le boîtier doit être égal ou plus grand que la carte mère. Un boîtier ATX peut accueillir ATX, Micro-ATX et Mini-ITX, mais pas E-ATX."
+  },
+  {
+    "id": "OPT-M02-C01-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "classic",
+    "question": "Lors du choix d'un boîtier, que faut-il vérifier concernant la carte graphique ?",
+    "answer": "La longueur maximale de carte graphique supportée par le boîtier. Certaines cartes hautes performances mesurent plus de 330 mm et ne rentrent pas dans tous les boîtiers.",
+    "comment": "La fiche technique du boîtier indique toujours la longueur GPU maximale. Vérifier aussi la hauteur du ventirad CPU, car un grand dissipateur peut empiéter sur les slots RAM."
+  },
+  {
+    "id": "OPT-M02-C01-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque format de boîtier à son usage typique :",
+    "pairs": [
+      {"left": "Tour (Tower)", "right": "PC de bureau standard, le plus courant en entreprise"},
+      {"left": "Desktop (horizontal)", "right": "PC à poser à plat sous un moniteur, gain de hauteur"},
+      {"left": "Mini-PC", "right": "PC ultra-compact pour usage bureautique sans encombrement"},
+      {"left": "Serveur rackable", "right": "Montage en armoire 19 pouces pour salles serveurs"}
+    ],
+    "answer": "Tour = PC bureau standard | Desktop = horizontal sous moniteur | Mini-PC = ultra-compact bureautique | Serveur rackable = armoire 19 pouces",
+    "comment": "Le format dicte les contraintes de montage : un boîtier rackable se mesure en Unités (1U, 2U...) alors qu'un boîtier Tour se mesure en hauteur totale."
+  },
+  {
+    "id": "OPT-M02-C01-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les boîtiers",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les formats de carte mère ATX, du plus petit au plus grand :",
+    "options": ["ATX", "E-ATX", "Micro-ATX", "Mini-ITX"],
+    "answer": ["Mini-ITX", "Micro-ATX", "ATX", "E-ATX"],
+    "comment": "Mini-ITX (170×170 mm) → Micro-ATX (244×244 mm) → ATX (305×244 mm) → E-ATX (305×330 mm). Cette hiérarchie détermine la compatibilité avec le boîtier : vérifier toujours que le format de la carte mère est supporté."
+  }
+]
