@@ -213,12 +213,14 @@ class TipQuizCatalog {
     if (paths.length == 1) {
       final p = paths.first;
       if (p == laboSentinelPath) return 'Le Labo';
-      if (p.contains('section-01')) return 'Hardware';
-      if (p.contains('section-02')) return 'Systèmes';
-      if (p.contains('section-03')) return 'Réseaux';
-      if (p.contains('section-04')) return 'Maintenance';
-      if (p.contains('section-05')) return 'Sécurité';
-      if (p.contains('section-06')) return 'IA';
+      if (p.contains('module-01')) return 'Support utilisateur';
+      if (p.contains('module-02')) return 'Hardware';
+      if (p.contains('module-03')) return 'Systèmes';
+      if (p.contains('module-04')) return 'Réseaux';
+      if (p.contains('module-05')) return 'Maintenance';
+      if (p.contains('module-06')) return 'Admin Windows';
+      if (p.contains('module-07')) return 'Cybersécurité';
+      if (p.contains('module-08')) return 'IA';
       if (p.contains('theme1')) return 'Hardware (Terrain)';
       if (p.contains('theme2')) return 'Windows (Terrain)';
       if (p.contains('theme3')) return 'Réseaux (Terrain)';
@@ -238,12 +240,14 @@ class TipQuizCatalog {
   }
 
   static String moduleIdForQuizAssetPath(String path) {
-    if (path.contains('section-01')) return 'optimus_01';
-    if (path.contains('section-02')) return 'optimus_02';
-    if (path.contains('section-03')) return 'optimus_03';
-    if (path.contains('section-04')) return 'optimus_04';
-    if (path.contains('section-05')) return 'optimus_05';
-    if (path.contains('section-06')) return 'optimus_06';
+    if (path.contains('module-01')) return 'optimus_01';
+    if (path.contains('module-02')) return 'optimus_02';
+    if (path.contains('module-03')) return 'optimus_03';
+    if (path.contains('module-04')) return 'optimus_04';
+    if (path.contains('module-05')) return 'optimus_05';
+    if (path.contains('module-06')) return 'optimus_06';
+    if (path.contains('module-07')) return 'optimus_07';
+    if (path.contains('module-08')) return 'optimus_08';
     return 'unknown';
   }
 }
