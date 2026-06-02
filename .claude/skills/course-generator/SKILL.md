@@ -289,6 +289,24 @@ Distinguer deux sous-types :
 
 ---
 
+### Nature G — Gestion d'incidents & ITIL opérationnel
+*Reconnaître : "Cycle de vie d'un ticket", "Priorisation", "SLA", "Escalade", tout chapitre où l'incident est le **sujet pédagogique** (pas juste un exemple)*
+> Ex : M01-C02 cycle de vie, M01-C03 priorisation, M01-C04 SLA
+
+Le ticket n'est pas ici un « bonus illustratif » : c'est le **support d'apprentissage principal**. L'étudiant doit s'entraîner à classer, prioriser, ou vérifier un SLA sur un incident réel.
+
+| Type | Quantité | Contenu attendu |
+|---|---|---|
+| `classic` | 4–6 | Définitions, vrai/faux, distinctions conceptuelles |
+| `ticket` | **2–3** | Scénarios d'incident à qualifier, prioriser, ou évaluer selon le SLA |
+| `association` | **1–2** | Priorité↔critères ou outil↔usage |
+| `sequence` | 1 si pertinent | Cycle de vie d'un ticket dans l'ordre, étapes d'une escalade |
+| `diagnostic_indices` | Interdit | — |
+
+> **Nuance** : Ne pas appliquer Nature G aux chapitres purement théoriques du même module (définition ITIL, veille, confidentialité → Nature A ou E2). G s'applique uniquement là où l'incident est l'objet central de l'exercice, pas juste un contexte.
+
+---
+
 ### Natures mixtes
 Certaines notions combinent deux natures (ex : "Configurer un switch" = B + D). Prendre la recette de la nature **dominante** et ajouter 1 élément de la nature secondaire si le budget le permet. Ne jamais dépasser 2 `sequence` ni 2 `association` au total.
 
