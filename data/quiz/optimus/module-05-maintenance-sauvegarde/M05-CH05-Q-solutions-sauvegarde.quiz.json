@@ -1,0 +1,138 @@
+[
+  {
+    "id": "OPT-M05-C05-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel outil Windows natif permet de sauvegarder des fichiers et dossiers sans installer de logiciel tiers ?",
+    "answer": "La Sauvegarde de fichiers Windows (anciennement Historique des fichiers / Sauvegarde Windows) intégrée au Panneau de configuration ou dans les Paramètres. Elle permet de planifier des sauvegardes vers un lecteur externe ou un partage réseau.",
+    "comment": "L'outil natif convient pour les postes individuels ou les petites structures. Il ne nécessite aucune licence et reste accessible aux non-techniciens. Ses limites : pas de sauvegarde image complète (bare-metal), pas de gestion centralisée multi-postes."
+  },
+  {
+    "id": "OPT-M05-C05-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel logiciel professionnel de sauvegarde est édité par Veeam et cible principalement les environnements virtualisés ?",
+    "answer": "VEEAM Backup & Replication. Il est concu pour sauvegarder des machines virtuelles VMware et Hyper-V, mais supporte aussi les serveurs physiques, les postes Windows/Linux et les applications cloud.",
+    "comment": "VEEAM est un standard de l'industrie pour les sauvegardes d'entreprise. Sa capacite a sauvegarder des VM en production sans interruption (snapshots) et a restaurer une VM en quelques minutes le distingue des outils generiques."
+  },
+  {
+    "id": "OPT-M05-C05-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que Proxmox Backup Server et dans quel contexte est-il utilise ?",
+    "answer": "Proxmox Backup Server est une solution open source de sauvegarde concue pour les environnements Proxmox VE (virtualisation). Elle deduplique les donnees, chiffre les sauvegardes et permet des restaurations incrementales tres rapides.",
+    "comment": "Proxmox Backup Server est gratuit et particulierement adapte aux PME ou laboratoires qui utilisent deja Proxmox VE. Sa deduplication cote client reduit significativement l'espace disque consomme par les sauvegardes incrementales."
+  },
+  {
+    "id": "OPT-M05-C05-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel service Microsoft permet de sauvegarder des donnees vers le cloud Azure ?",
+    "answer": "Azure Backup. Il permet de sauvegarder des machines virtuelles Azure, des serveurs Windows on-premise, des bases de donnees SQL Server et des fichiers, directement vers les coffres Recovery Services dans Azure.",
+    "comment": "Azure Backup s'integre nativement avec l'echelon Azure et propose un modele de facturation a la consommation (pay-as-you-go). Il satisfait le critere 'copie hors site' de la regle 3-2-1 et peut couvrir la copie hors ligne avec les politiques de retention immuables."
+  },
+  {
+    "id": "OPT-M05-C05-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que Windows Server Backup et en quoi differe-t-il de la Sauvegarde de fichiers Windows pour poste client ?",
+    "answer": "Windows Server Backup est un composant optionnel de Windows Server (installe via le Gestionnaire de serveur). Il supporte la sauvegarde bare-metal (image complete du serveur), la sauvegarde de l'etat du systeme (System State), et la restauration BMR permettant de reconstruire un serveur entier sur nouveau materiel.",
+    "comment": "La distinction bare-metal vs sauvegarde de fichiers est fondamentale en contexte serveur. Sauvegarder uniquement les fichiers ne permet pas de reconstruire rapidement un serveur en cas de panne complete du systeme. Windows Server Backup couvre ce cas sans cout de licence supplementaire."
+  },
+  {
+    "id": "OPT-M05-C05-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que WSUS et quel probleme resout-il dans un parc informatique d'entreprise ?",
+    "answer": "WSUS (Windows Server Update Services) est un role Windows Server qui centralise la gestion des mises a jour Microsoft. Un serveur WSUS tele charge les mises a jour depuis Microsoft puis les distribue a tous les postes du parc, avec validation prealable et planification des deploiements.",
+    "comment": "Sans WSUS, chaque poste tele charge individuellement les mises a jour depuis Internet, ce qui consomme de la bande passante et rend impossible le controle qualite. WSUS permet de valider une mise a jour sur un groupe test avant de la deployer a l'ensemble du parc, evitant les regressions en production."
+  },
+  {
+    "id": "OPT-M05-C05-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le Patch Tuesday et pourquoi est-il important pour la planification de maintenance ?",
+    "answer": "Le Patch Tuesday est le deuxieme mardi de chaque mois, date a laquelle Microsoft publie ses mises a jour de securite de maniere groupee et planifiee. Cette regularite permet aux entreprises d'anticiper et de planifier les fenetres de maintenance mensuelles.",
+    "comment": "La publication groupee le deuxieme mardi n'est pas un hasard : cela laisse le lundi pour preparer les systemes et le reste de la semaine pour deployer et surveiller les effets. Les techniciens doivent connaitre ce calendrier pour planifier les redemarrages serveurs et ne pas etre pris au depourvu."
+  },
+  {
+    "id": "OPT-M05-C05-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un client TPE demande une solution de sauvegarde pour 3 postes Windows sans budget serveur. Quelle solution recommandez-vous et pourquoi ?",
+    "answer": "La Sauvegarde de fichiers Windows sur chaque poste vers un disque externe ou un NAS local, combinee avec Azure Backup pour la copie hors site. Cette combinaison est gratuite ou peu couteux, ne necessite pas de serveur dedie, et respecte le critere hors site de la regle 3-2-1.",
+    "comment": "En contexte TPE, la complexite operationnelle est un frein majeur. Proposer VEEAM ou un serveur WSUS serait surdimensionne et impossible a maintenir. La solution doit etre proportionnee au contexte : fiable, simple a configurer et a surveiller sans expertise quotidienne."
+  },
+  {
+    "id": "OPT-M05-C05-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque solution de sauvegarde a son contexte d'utilisation principal :",
+    "pairs": [
+      {"left": "Sauvegarde de fichiers Windows", "right": "Poste individuel ou TPE, sans infrastructure serveur"},
+      {"left": "VEEAM Backup & Replication", "right": "Environnement virtualise VMware/Hyper-V en entreprise"},
+      {"left": "Proxmox Backup Server", "right": "Infrastructure Proxmox VE, solution open source gratuite"},
+      {"left": "Azure Backup", "right": "Copie cloud hors site, serveurs on-premise ou VMs Azure"},
+      {"left": "Windows Server Backup", "right": "Serveur Windows — sauvegarde bare-metal et System State"}
+    ],
+    "answer": "Sauvegarde Windows = TPE/poste | VEEAM = virtualisation entreprise | Proxmox Backup Server = Proxmox VE | Azure Backup = cloud hors site | Windows Server Backup = serveur bare-metal",
+    "comment": "Choisir la bonne solution depend du contexte, pas du budget seul. Un technicien doit savoir qualifier rapidement l'infrastructure client pour recommander l'outil adapte, evitant le sous-dimensionnement (donnees non protegees) comme le sur-dimensionnement (solution trop complexe a maintenir)."
+  },
+  {
+    "id": "OPT-M05-C05-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque element de la gestion des mises a jour a sa definition :",
+    "pairs": [
+      {"left": "WSUS", "right": "Serveur qui centralise et distribue les mises a jour Microsoft au parc"},
+      {"left": "Patch Tuesday", "right": "Deuxieme mardi du mois — publication groupee des MAJ de securite Microsoft"},
+      {"left": "Validation avant deploiement", "right": "Test sur un groupe pilote avant diffusion a tout le parc"},
+      {"left": "Planification des deploiements", "right": "Definition des fenetres de maintenance pour minimiser l'impact production"}
+    ],
+    "answer": "WSUS = centralisation distribution | Patch Tuesday = 2e mardi du mois | Validation = groupe pilote | Planification = fenetres de maintenance",
+    "comment": "WSUS et le Patch Tuesday sont lies : WSUS tele charge les paquets publies le Patch Tuesday, puis les administres valident et planifient leur deploiement. Ce workflow evite les mises a jour sauvages et les redemarrages inopines en heures de production."
+  },
+  {
+    "id": "OPT-M05-C05-011",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Solutions de sauvegarde",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre logique les etapes de deploiement d'une mise a jour via WSUS dans une entreprise :",
+    "options": [
+      "Deployer la mise a jour sur l'ensemble du parc apres validation",
+      "Telecharger automatiquement les mises a jour depuis Microsoft vers le serveur WSUS",
+      "Planifier la fenetre de maintenance et les redemarrages",
+      "Valider la mise a jour sur un groupe de postes pilotes",
+      "Approuver les mises a jour pertinentes dans la console WSUS"
+    ],
+    "answer": [
+      "Telecharger automatiquement les mises a jour depuis Microsoft vers le serveur WSUS",
+      "Approuver les mises a jour pertinentes dans la console WSUS",
+      "Valider la mise a jour sur un groupe de postes pilotes",
+      "Planifier la fenetre de maintenance et les redemarrages",
+      "Deployer la mise a jour sur l'ensemble du parc apres validation"
+    ],
+    "comment": "L'ordre reflete la logique de maitrise du risque : tele chargement centralise d'abord, puis validation humaine, puis test controle, puis deploiement massif. Sauter l'etape de validation sur groupe pilote, c'est accepter de decouvrir une regression sur 200 postes en meme temps."
+  }
+]

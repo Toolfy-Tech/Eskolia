@@ -1,0 +1,138 @@
+[
+  {
+    "id": "OPT-M05-C01-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'une sauvegarde (backup) et quel est son objectif fondamental ?",
+    "answer": "Une sauvegarde est une copie de données réalisée en vue de leur restauration en cas de perte, corruption ou destruction des originaux. Elle constitue le filet de sécurité de toute infrastructure informatique.",
+    "comment": "La sauvegarde ne remplace pas les données en production — elle en est la copie de secours. Sans sauvegarde testée, une panne, une erreur humaine ou une cyberattaque peut provoquer une perte définitive et irréversible des données."
+  },
+  {
+    "id": "OPT-M05-C01-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre sauvegarde et archivage ?",
+    "answer": "La sauvegarde est une copie temporaire destinée à la restauration rapide en cas d'incident (données actives). L'archivage est la conservation à long terme de données qui ne sont plus actives mais doivent être conservées (obligations légales, historique).",
+    "comment": "En entreprise, les deux coexistent : les sauvegardes tournent sur des cycles courts (quotidien, hebdomadaire), tandis que les archives peuvent être conservées des années. Confondre les deux expose à des suppressions prématurées ou des espaces saturés."
+  },
+  {
+    "id": "OPT-M05-C01-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un plan de sauvegarde et pourquoi doit-il définir une fréquence ?",
+    "answer": "Un plan de sauvegarde est un document qui définit quelles données sauvegarder, à quelle fréquence, sur quels supports, et comment tester les restaurations. La fréquence détermine la quantité de données maximum perdues en cas d'incident (RPO).",
+    "comment": "Sans fréquence définie, les sauvegardes deviennent erratiques ou oubliées. En entreprise, le plan de sauvegarde est validé par la direction car il traduit directement le risque métier accepté : une sauvegarde hebdomadaire signifie qu'on accepte de perdre jusqu'à 7 jours de données."
+  },
+  {
+    "id": "OPT-M05-C01-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la règle 3-2-1 originale de sauvegarde et que signifie chaque chiffre ?",
+    "answer": "3 copies des données (1 originale + 2 sauvegardes). 2 supports différents (ex. HDD local + cloud) pour éviter qu'une défaillance technique touche toutes les copies. 1 copie hors site (dans un lieu physique différent) pour se protéger des sinistres physiques comme un incendie ou une inondation.",
+    "comment": "La règle 3-2-1 date des années 2000 et reste la base de toute stratégie de sauvegarde. Elle protège contre les trois causes principales de perte : défaillance matérielle, erreur logicielle/humaine, et sinistre physique. Les chiffres supplémentaires (1-0) sont venus compléter la règle face aux nouvelles menaces."
+  },
+  {
+    "id": "OPT-M05-C01-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que signifie le quatrième chiffre '1' dans la règle 3-2-1-1-0 et contre quelle menace protège-t-il ?",
+    "answer": "Le quatrième chiffre '1' signifie 1 copie hors ligne (air-gapped), c'est-à-dire physiquement déconnectée du réseau. Cette copie est immuable et protège spécifiquement contre les ransomwares, qui chiffrent toutes les données accessibles depuis le réseau au moment de l'attaque.",
+    "comment": "Les ransomwares modernes recherchent activement les sauvegardes connectées pour les chiffrer avant que l'attaque ne soit détectée. Une copie hors ligne (bande LTO dans un coffre, disque déconnecté) est la seule protection réellement efficace contre ce scénario."
+  },
+  {
+    "id": "OPT-M05-C01-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que signifie le '0' final dans la règle 3-2-1-1-0 et comment le garantit-on concrètement ?",
+    "answer": "0 signifie zéro échec de restauration : toutes les sauvegardes doivent être régulièrement testées en restaurant effectivement les données. On le garantit par des tests de restauration planifiés (mensuels ou trimestriels) documentés et validés.",
+    "comment": "Une sauvegarde non testée n'est pas une sauvegarde — c'est une fausse sécurité. Il est fréquent de découvrir lors d'un vrai sinistre que les sauvegardes étaient corrompues, incomplètes ou que le processus de restauration ne fonctionnait plus. Le test régulier est la partie la plus négligée et la plus critique."
+  },
+  {
+    "id": "OPT-M05-C01-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien affirme : 'Nos données sont sauvegardées sur deux disques dans la même salle serveur — on respecte la règle 3-2-1.' Est-ce correct ? Justifiez.",
+    "answer": "Non. Deux disques dans la même salle respectent la règle des 2 supports différents mais violent la règle du 1 hors site. Un incendie, une inondation ou un vol dans cette salle détruirait toutes les copies simultanément. Il manque au minimum une copie dans un emplacement physique distinct.",
+    "comment": "La règle 3-2-1 est fréquemment mal appliquée : on pense 'supports différents' mais on oublie la dimension géographique. Le cloud est justement populaire comme troisième copie car il garantit automatiquement l'externalisation sans infrastructure supplémentaire."
+  },
+  {
+    "id": "OPT-M05-C01-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : le cloud seul suffit à respecter la règle 3-2-1-1-0. Justifiez.",
+    "answer": "Faux. Le cloud fournit la copie hors site mais ne satisfait pas à lui seul les quatre critères. Il manque : la diversité de supports (tout est chez le même prestataire), la copie hors ligne (le cloud est connecté par définition), et la multiplication des copies si un seul fournisseur est utilisé.",
+    "comment": "La dépendance à un fournisseur cloud unique crée un Single Point of Failure : panne du prestataire, résiliation de compte, cyberattaque sur l'infrastructure cloud, ou simple problème de connectivité réseau peut bloquer toute restauration. La règle 3-2-1-1-0 impose explicitement la diversification."
+  },
+  {
+    "id": "OPT-M05-C01-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque chiffre de la règle 3-2-1-1-0 à sa signification et à la menace qu'il couvre :",
+    "pairs": [
+      {"left": "3 copies", "right": "Redondance totale — protège contre la défaillance d'un support unique"},
+      {"left": "2 supports différents", "right": "Diversité technique — protège contre la défaillance d'une technologie"},
+      {"left": "1 hors site", "right": "Distance géographique — protège contre les sinistres physiques (incendie, inondation)"},
+      {"left": "1 hors ligne", "right": "Air gap réseau — protège contre les ransomwares et cyberattaques"},
+      {"left": "0 échec", "right": "Tests de restauration — garantit que la sauvegarde est réellement utilisable"}
+    ],
+    "answer": "3 copies = redondance | 2 supports = diversité technique | 1 hors site = sinistres physiques | 1 hors ligne = ransomwares | 0 échec = restaurations testées",
+    "comment": "Chaque chiffre de la règle répond à une catégorie de risque distincte. Comprendre le 'pourquoi' de chaque critère permet de l'adapter intelligemment à son contexte — une PME sans budget cloud peut respecter la règle avec une bande LTO stockée chez un dirigeant."
+  },
+  {
+    "id": "OPT-M05-C01-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque scénario de perte à la protection correspondante dans la règle 3-2-1-1-0 :",
+    "pairs": [
+      {"left": "Disque dur local tombe en panne", "right": "3 copies — une autre copie prend le relais"},
+      {"left": "Ransomware chiffre tous les fichiers réseau", "right": "1 copie hors ligne — non accessible depuis le réseau"},
+      {"left": "Incendie dans la salle serveur", "right": "1 copie hors site — stockée dans un lieu physique différent"},
+      {"left": "Sauvegarde corrompue découverte lors du sinistre", "right": "0 échec — tests réguliers de restauration auraient détecté le problème"}
+    ],
+    "answer": "Panne disque = 3 copies | Ransomware = copie hors ligne | Incendie = copie hors site | Corruption silencieuse = tests de restauration (0 échec)",
+    "comment": "La règle 3-2-1-1-0 est une checklist de résilience multi-risques. En entretien technique, savoir associer chaque chiffre à un scénario concret démontre une compréhension opérationnelle, pas seulement mémorielle."
+  },
+  {
+    "id": "OPT-M05-C01-011",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Définition et règle 3-2-1-1-0",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre logique les étapes d'une procédure de restauration après sinistre :",
+    "options": [
+      "Restaurer les données depuis la sauvegarde la plus récente validée",
+      "Identifier l'étendue des dommages et les données perdues",
+      "Vérifier l'intégrité des données restaurées et tester le fonctionnement",
+      "Déclarer le sinistre et activer le plan de reprise",
+      "Documenter l'incident et mettre à jour le plan de sauvegarde"
+    ],
+    "answer": [
+      "Identifier l'étendue des dommages et les données perdues",
+      "Déclarer le sinistre et activer le plan de reprise",
+      "Restaurer les données depuis la sauvegarde la plus récente validée",
+      "Vérifier l'intégrité des données restaurées et tester le fonctionnement",
+      "Documenter l'incident et mettre à jour le plan de sauvegarde"
+    ],
+    "comment": "L'ordre logique suit le principe : diagnostiquer avant d'agir, agir selon le plan, valider avant de reprendre la production, capitaliser sur l'expérience. Restaurer sans évaluer d'abord l'étendue des dégâts peut écraser des données partiellement récupérables."
+  }
+]

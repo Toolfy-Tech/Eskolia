@@ -1,0 +1,115 @@
+[
+  {
+    "id": "OPT-M05-C02-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les quatre principaux types de supports de sauvegarde utilisés en entreprise ?",
+    "answer": "HDD/SSD (disques durs locaux), Cloud (stockage distant via Internet, ex. Azure Backup), NAS (Network Attached Storage, serveur de fichiers accessible en réseau local), et bande magnétique LTO (Linear Tape-Open).",
+    "comment": "Chaque support répond à un besoin différent : vitesse (HDD/SSD), externalisation automatique (cloud), accessibilité réseau (NAS), conservation long terme à coût réduit (LTO). Une stratégie robuste combine plusieurs types — c'est le principe même de la règle 3-2-1-1-0."
+  },
+  {
+    "id": "OPT-M05-C02-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les avantages et inconvénients du HDD/SSD comme support de sauvegarde ?",
+    "answer": "Avantages : accès rapide en lecture/écriture, faible coût par Go, facile à connecter (USB, SATA). Inconvénients : risque physique (chute, choc pour HDD, usure pour SSD), dépendance à l'environnement local, vulnérable à un sinistre sur site (incendie, vol).",
+    "comment": "Le HDD/SSD local est idéal comme première copie de sauvegarde (restauration rapide) mais insuffisant seul : il reste dans le même espace physique que les données sources. En pratique, un disque externe dédié à la sauvegarde, rangé hors de la machine, améliore déjà la protection."
+  },
+  {
+    "id": "OPT-M05-C02-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le Cloud comme support de sauvegarde et quels sont ses avantages et inconvénients ?",
+    "answer": "Le cloud est un stockage distant hébergé chez un prestataire (Azure, AWS, Google Cloud, OVH...). Avantages : hors site par définition, scalable, pas de matériel à gérer. Inconvénients : dépend de la connexion Internet, coût récurrent, la restauration de gros volumes peut être très lente.",
+    "comment": "La restauration depuis le cloud est souvent le goulet d'étranglement en cas de sinistre : rapatrier des téraoctets de données via une connexion 100 Mbit/s peut prendre des jours. Certaines entreprises pré-positionnent physiquement des disques chez leur prestataire cloud pour ce cas extrême."
+  },
+  {
+    "id": "OPT-M05-C02-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un NAS et quel rôle joue-t-il dans une stratégie de sauvegarde d'entreprise ?",
+    "answer": "Un NAS (Network Attached Storage) est un serveur de fichiers dédié au stockage, accessible depuis le réseau local via des protocoles comme SMB ou NFS. Il centralise les sauvegardes de plusieurs postes/serveurs et permet des accès rapides sans dépendre d'Internet.",
+    "comment": "Le NAS est populaire dans les PME car il offre un bon compromis : capacité élevée, accès réseau rapide, et RAID intégré pour la tolérance aux pannes. Attention : le RAID n'est pas une sauvegarde — il protège contre la panne d'un disque, pas contre la corruption logique, le ransomware ou l'incendie."
+  },
+  {
+    "id": "OPT-M05-C02-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles sont les caractéristiques distinctives de la bande magnétique LTO par rapport aux autres supports ?",
+    "answer": "LTO (Linear Tape-Open) : longévité exceptionnelle (30 ans), capacité massive (plusieurs To par cartouche), coût au Go très bas, lecture/écriture séquentielle uniquement (pas d'accès aléatoire). Utilisé pour les archives long terme et les sauvegardes hors ligne air-gapped.",
+    "comment": "La lecture séquentielle est le principal inconvénient du LTO : on ne peut pas accéder directement à un fichier — il faut parcourir la bande. Cela rend LTO inadapté à la restauration rapide d'un fichier unique, mais parfait pour restaurer un système complet ou archiver des données rarement consultées."
+  },
+  {
+    "id": "OPT-M05-C02-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi le LTO est-il particulièrement adapté comme copie hors ligne dans la règle 3-2-1-1-0 ?",
+    "answer": "La cartouche LTO est physiquement éjectée du lecteur et rangée hors connexion réseau — c'est un air gap naturel. Les ransomwares ne peuvent pas chiffrer une cartouche qui n'est pas dans le lecteur. La longévité (30 ans) et le faible coût au Go en font le support hors ligne de référence en entreprise.",
+    "comment": "Une cartouche LTO stockée dans un coffre-fort ignifugé hors site satisfait simultanément le '1 hors site' ET le '1 hors ligne' de la règle 3-2-1-1-0. C'est pourquoi LTO reste incontournable dans les grandes entreprises malgré l'essor du cloud."
+  },
+  {
+    "id": "OPT-M05-C02-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "A",
+    "type": "classic",
+    "question": "Une PME hésite entre NAS local et cloud pour sa sauvegarde principale. Quels critères doivent guider le choix ?",
+    "answer": "NAS si : connexion Internet limitée, volume de données élevé (restauration rapide nécessaire), budget initial disponible. Cloud si : budget récurrent accepté, équipe IT réduite (pas de maintenance matérielle), externalisation géographique prioritaire. Idéalement, les deux en complément (NAS = sauvegarde locale rapide, cloud = copie hors site).",
+    "comment": "Le choix NAS vs cloud est souvent faux : la meilleure stratégie les combine. NAS pour les restaurations quotidiennes (fichier supprimé accidentellement), cloud pour la reprise après sinistre. Le coût total NAS est fixe ; le cloud monte avec le volume — à arbitrer selon la croissance des données."
+  },
+  {
+    "id": "OPT-M05-C02-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque support de sauvegarde à son inconvénient principal :",
+    "pairs": [
+      {"left": "HDD externe", "right": "Vulnérable aux chocs et aux sinistres physiques sur site"},
+      {"left": "Cloud", "right": "Restauration lente si volume important + dépendance Internet"},
+      {"left": "NAS", "right": "Reste sur le réseau local — accessible par les ransomwares"},
+      {"left": "Bande LTO", "right": "Lecture/écriture séquentielle — accès lent à un fichier individuel"}
+    ],
+    "answer": "HDD = chocs/sinistres | Cloud = lenteur restauration + Internet | NAS = accessible réseau (ransomwares) | LTO = accès séquentiel",
+    "comment": "Connaitre les inconvénients de chaque support permet de les compenser par la combinaison : HDD pour la vitesse, cloud pour l'externalisation, LTO pour l'air gap. Aucun support n'est parfait — c'est la stratégie multi-supports qui crée la résilience."
+  },
+  {
+    "id": "OPT-M05-C02-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque support à son avantage distinctif principal :",
+    "pairs": [
+      {"left": "HDD/SSD local", "right": "Restauration rapide — accès direct sans réseau"},
+      {"left": "Cloud (Azure, AWS...)", "right": "Hors site automatique — protection géographique sans infrastructure supplémentaire"},
+      {"left": "NAS", "right": "Accessible par tous les postes du réseau local simultanément"},
+      {"left": "Bande LTO", "right": "Longévité 30 ans et coût au Go le plus bas pour les grands volumes"}
+    ],
+    "answer": "HDD/SSD = rapidité | Cloud = hors site automatique | NAS = accès réseau partagé | LTO = longévité + faible coût/Go",
+    "comment": "Chaque support occupe une niche précise dans l'architecture de sauvegarde. En entretien technique, être capable d'associer un support à son cas d'usage optimal démontre une compréhension pratique, pas seulement mémorielle des technologies."
+  },
+  {
+    "id": "OPT-M05-C02-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Supports de sauvegarde",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Classez ces supports de sauvegarde du plus rapide au plus lent pour la restauration d'un fichier individuel :",
+    "options": ["Cloud (Internet 100 Mbit/s)", "NAS (réseau local Gigabit)", "Bande LTO (accès séquentiel)", "SSD local (USB 3.0)"],
+    "answer": ["SSD local (USB 3.0)", "NAS (réseau local Gigabit)", "Cloud (Internet 100 Mbit/s)", "Bande LTO (accès séquentiel)"],
+    "comment": "Le SSD local offre des débits de 400+ Mo/s. Le NAS sur Gigabit plafonne à ~125 Mo/s. Le cloud sur 100 Mbit/s donne ~12 Mo/s. La bande LTO nécessite en plus un positionnement mécanique sur la bande avant lecture — pour un fichier unique, c'est la solution la plus lente. Ce classement justifie d'avoir un support local rapide pour les restaurations courantes."
+  }
+]
