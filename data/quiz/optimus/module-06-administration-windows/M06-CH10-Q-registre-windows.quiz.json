@@ -1,0 +1,147 @@
+[
+  {
+    "id": "OPT-M06-C10-001",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le Registre Windows et comment l'ouvrir ?",
+    "answer": "Le Registre est la base de données centrale de configuration de Windows : il stocke les paramètres du système, des logiciels et des utilisateurs. On l'ouvre avec l'éditeur regedit (Win+R → regedit), des droits administrateur étant requis.",
+    "comment": "Le Registre remplace les anciens fichiers .ini éparpillés. Beaucoup de réglages introuvables dans l'interface graphique ne sont accessibles que par regedit, ce qui en fait un outil incontournable en support, mais aussi dangereux entre des mains non averties."
+  },
+  {
+    "id": "OPT-M06-C10-002",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi faut-il toujours sauvegarder avant de modifier le Registre, et comment faire ?",
+    "answer": "Le Registre est extrêmement sensible : une mauvaise modification peut rendre Windows inutilisable. Avant toute modification, on exporte une sauvegarde via Fichier → Exporter, ce qui génère un fichier .reg. Pour restaurer, il suffit de double-cliquer sur ce fichier .reg.",
+    "comment": "Règle d'or : on exporte AVANT de toucher, idéalement la clé concernée plutôt que tout le Registre (restauration plus ciblée). Beaucoup de pannes 'mystérieuses' viennent d'une modification de Registre faite sans filet. Documenter la valeur d'origine avant de la changer."
+  },
+  {
+    "id": "OPT-M06-C10-003",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre les ruches HKLM et HKCU ?",
+    "answer": "HKLM (HKEY_LOCAL_MACHINE) contient la configuration matérielle et logicielle de la machine, valable pour tous les utilisateurs, et nécessite des droits administrateur pour être modifiée. HKCU (HKEY_CURRENT_USER) contient la configuration du seul utilisateur connecté et ne nécessite pas de droits admin.",
+    "comment": "Réflexe : si un réglage doit s'appliquer à TOUS les comptes du poste, c'est HKLM ; s'il ne concerne que l'utilisateur courant, c'est HKCU. Cette distinction explique pourquoi un réglage fait sous un compte n'affecte pas forcément les autres sessions."
+  },
+  {
+    "id": "OPT-M06-C10-004",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi les clés Run sont-elles le premier endroit à vérifier sur un poste suspecté infecté ?",
+    "answer": "Les clés Run (HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run et son équivalent HKCU) listent les programmes lancés à chaque démarrage. Les malwares y inscrivent leur exécutable pour survivre au redémarrage. C'est donc l'endroit prioritaire à inspecter sur un poste suspect.",
+    "comment": "Réflexe anti-malware : vérifier les clés Run de HKLM ET de HKCU, car un malware peut s'installer dans l'une ou l'autre selon ses droits. Supprimer l'entrée Run sans supprimer l'exécutable laisse le fichier sur le disque ; supprimer l'exécutable sans nettoyer la clé Run peut laisser une entrée morte ou une réécriture."
+  },
+  {
+    "id": "OPT-M06-C10-005",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "A",
+    "type": "classic",
+    "question": "Que contrôle la valeur fDenyTSConnections et quelles sont ses deux valeurs possibles ?",
+    "answer": "fDenyTSConnections (dans HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server) contrôle l'activation du Bureau à distance (RDP). 0 = RDP activé, 1 = RDP désactivé.",
+    "comment": "Astuce mémoire : 'Deny' = refuser, donc 1 (vrai) = refuser les connexions = RDP coupé, et 0 = ne pas refuser = RDP ouvert. Cette clé permet d'activer le RDP sur un serveur sans interface graphique, là où l'on ne peut pas cocher la case dans les Propriétés système."
+  },
+  {
+    "id": "OPT-M06-C10-006",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque ruche du Registre à son contenu :",
+    "pairs": [
+      {"left": "HKLM", "right": "Configuration matérielle et logicielle de la machine, pour tous les utilisateurs"},
+      {"left": "HKCU", "right": "Configuration de l'utilisateur actuellement connecté"},
+      {"left": "HKCR", "right": "Associations de fichiers et objets COM (extensions liées aux logiciels)"},
+      {"left": "HKU", "right": "Profils de tous les utilisateurs du poste"},
+      {"left": "HKCC", "right": "Configuration matérielle active au démarrage"}
+    ],
+    "answer": "HKLM = machine, tous utilisateurs | HKCU = utilisateur connecté | HKCR = associations fichiers/COM | HKU = profils de tous les utilisateurs | HKCC = config matérielle active au boot",
+    "comment": "Subtilité : HKCR n'est pas une vraie ruche indépendante, c'est une fusion de HKLM\\SOFTWARE\\Classes (associations globales) et HKCU\\SOFTWARE\\Classes (associations propres à l'utilisateur). HKCU est de même une projection du sous-arbre de l'utilisateur courant présent dans HKU."
+  },
+  {
+    "id": "OPT-M06-C10-007",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque clé Run à sa portée :",
+    "pairs": [
+      {"left": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", "right": "Programmes lancés au démarrage pour TOUS les utilisateurs (admin requis)"},
+      {"left": "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", "right": "Programmes lancés au démarrage pour l'utilisateur courant uniquement"}
+    ],
+    "answer": "HKLM\\...\\Run = tous les utilisateurs, droits admin | HKCU\\...\\Run = utilisateur courant seulement",
+    "comment": "Un malware sans droits admin se logera dans HKCU\\Run (n'affecte que le compte infecté) ; avec droits admin il visera HKLM\\Run (persiste pour tout le monde). Toujours inspecter LES DEUX lors d'un nettoyage, sinon la menace réapparaît au prochain boot."
+  },
+  {
+    "id": "OPT-M06-C10-008",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la procédure sécurisée de modification du Registre :",
+    "options": [
+      "Naviguer jusqu'à la clé concernée",
+      "Modifier la valeur souhaitée",
+      "Ouvrir regedit en tant qu'administrateur",
+      "Restaurer la sauvegarde si un problème survient",
+      "Exporter une sauvegarde de la clé (.reg)",
+      "Tester le comportement après modification"
+    ],
+    "answer": [
+      "Ouvrir regedit en tant qu'administrateur",
+      "Naviguer jusqu'à la clé concernée",
+      "Exporter une sauvegarde de la clé (.reg)",
+      "Modifier la valeur souhaitée",
+      "Tester le comportement après modification",
+      "Restaurer la sauvegarde si un problème survient"
+    ],
+    "comment": "L'étape non négociable est l'export AVANT modification : on sauvegarde la clé une fois qu'on est dessus, pas avant de la trouver. Tester immédiatement après permet de détecter le problème pendant qu'on a encore la sauvegarde sous la main. Restaurer = double-clic sur le .reg exporté."
+  },
+  {
+    "id": "OPT-M06-C10-009",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #610 : 'Après une infection, j'ai supprimé l'exécutable du malware, mais un processus suspect se relance à chaque démarrage du PC.'",
+    "answer": "Le malware a inscrit une entrée dans une clé Run qui pointe vers son exécutable et tente de le relancer au boot. Vérifier et nettoyer les clés Run de HKLM et HKCU, supprimer les entrées suspectes, et confirmer avec un antivirus.",
+    "checklist": [
+      "Ouvrir regedit en administrateur",
+      "Exporter une sauvegarde des clés Run avant toute suppression",
+      "Inspecter HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "Inspecter HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "Identifier l'entrée pointant vers l'exécutable malveillant supprimé",
+      "Supprimer l'entrée Run suspecte",
+      "Lancer une analyse antivirus/antimalware complète pour confirmer le nettoyage",
+      "Redémarrer et vérifier que le processus suspect ne réapparaît plus"
+    ],
+    "comment": "Le piège classique : supprimer le fichier sans nettoyer la clé Run (ou l'inverse). Vérifier les DEUX ruches, car selon ses droits le malware a pu viser HKCU ou HKLM. Penser aussi aux autres points de persistance (tâches planifiées, dossier Démarrage) si le nettoyage des clés Run ne suffit pas."
+  },
+  {
+    "id": "OPT-M06-C10-010",
+    "category": "Administration de Windows",
+    "chapter": "Registre Windows",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #623 : 'Je dois activer le Bureau à distance sur un serveur distant qui n'a pas d'interface graphique, je n'ai accès qu'en ligne de commande.'",
+    "answer": "Activer RDP en passant la valeur fDenyTSConnections à 0 dans HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server, via regedit (ou via PowerShell avec Set-ItemProperty), puis autoriser le port RDP dans le pare-feu.",
+    "checklist": [
+      "Sauvegarder la clé Terminal Server avant modification",
+      "Localiser HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server",
+      "Passer fDenyTSConnections de 1 à 0 (RDP activé)",
+      "Côté PowerShell : Set-ItemProperty avec le chemin et fDenyTSConnections à 0",
+      "Autoriser le Bureau à distance dans le pare-feu Windows (port 3389)",
+      "Vérifier que les comptes autorisés sont dans le groupe Utilisateurs du Bureau à distance",
+      "Tester la connexion RDP depuis un poste distant (mstsc)"
+    ],
+    "comment": "Mémo : fDenyTSConnections = 0 ouvre, = 1 ferme. Modifier la clé seule ne suffit pas : sans règle de pare-feu autorisant le port RDP, la connexion échouera quand même. Sur un serveur sans GUI, regedit reste utilisable, mais PowerShell est souvent plus rapide et scriptable."
+  }
+]

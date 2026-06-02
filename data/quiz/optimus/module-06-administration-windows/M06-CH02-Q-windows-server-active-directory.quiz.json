@@ -1,0 +1,222 @@
+[
+  {
+    "id": "OPT-M06-C02-001",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre Windows Server et Active Directory ?",
+    "answer": "Windows Server est le système d'exploitation optimisé pour les serveurs (la plateforme logicielle). Active Directory (AD) est un rôle que l'on installe par-dessus : c'est un service d'annuaire qui centralise la gestion des utilisateurs, ordinateurs et droits. Analogie : Windows Server est le bâtiment, AD est le service de sécurité qui y travaille.",
+    "comment": "Confusion fréquente en entretien : on n'achète pas 'un Active Directory', on installe le rôle AD DS (Active Directory Domain Services) sur une machine Windows Server. Un même serveur peut héberger d'autres rôles (DNS, DHCP, fichiers), mais en production on dédie un serveur au rôle de Contrôleur de Domaine pour la stabilité."
+  },
+  {
+    "id": "OPT-M06-C02-002",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "C",
+    "type": "classic",
+    "question": "Décrivez la structure hiérarchique d'Active Directory de la plus large à la plus fine, et le rôle du Contrôleur de Domaine.",
+    "answer": "Forêt > Arbre > Domaine > Unité d'Organisation (OU). La Forêt est le conteneur le plus large, l'Arbre regroupe des domaines liés, le Domaine est l'unité administrative principale, l'OU range les objets (Users, Groups, PC, GPO). Le Contrôleur de Domaine (DC) est le serveur qui héberge l'annuaire AD et authentifie les connexions.",
+    "comment": "Les OU ne servent pas qu'à ranger : elles sont l'unité d'application des GPO. Une bonne arborescence d'OU (par site, par service, par type de machine) conditionne toute la stratégie de déploiement. Une OU mal choisie = GPO appliquée au mauvais endroit, source classique d'incident."
+  },
+  {
+    "id": "OPT-M06-C02-003",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "classic",
+    "question": "En quoi consiste la méthode AGDLP pour gérer les permissions ?",
+    "answer": "AGDLP : Account (l'utilisateur) → Global group (GG_) → Domain Local group (GDL_) → Permissions NTFS. On place les utilisateurs dans un groupe global (GG_), ce groupe global dans un groupe de domaine local (GDL_), et c'est le GDL_ qui reçoit les permissions NTFS sur la ressource. On ne met JAMAIS les utilisateurs directement sur les permissions ni dans les GDL.",
+    "comment": "L'intérêt : on gère les personnes dans les GG_ (qui appartient à quel service) et les droits dans les GDL_ (qui a accès à quel dossier), les deux logiques restent indépendantes. Exemple : GG_Compta dans GDL_Compta_RW, et GG_Direction dans GDL_Compta_RO (la direction lit la compta sans la modifier). Ajouter un nouveau service revient à créer un GG_ et l'imbriquer, sans toucher aux ACL des dossiers."
+  },
+  {
+    "id": "OPT-M06-C02-004",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le principe du moindre privilège et comment AGDLP le respecte-t-il ?",
+    "answer": "Le moindre privilège consiste à n'accorder à chaque utilisateur que les droits strictement nécessaires à son travail, ni plus. AGDLP le facilite : en passant par des groupes (GG_ puis GDL_), on attribue des accès en lecture seule (RO) ou lecture/écriture (RW) ciblés, et on évite les droits directs ou en excès difficiles à tracer.",
+    "comment": "Sur le terrain, le pire ennemi du moindre privilège est l'accumulation : on ajoute un droit 'en urgence' et on ne le retire jamais. Auditer régulièrement les appartenances de groupes. Donner un accès RW alors qu'un RO suffit est la cause d'innombrables suppressions accidentelles de fichiers."
+  },
+  {
+    "id": "OPT-M06-C02-005",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment fonctionne l'héritage des GPO dans Active Directory ?",
+    "answer": "Une GPO liée à un niveau supérieur s'applique automatiquement à tous les niveaux inférieurs : une GPO sur le Domaine s'applique à toutes les OU en dessous. L'ordre d'application est Local > Site > Domaine > OU (la plus proche de l'objet l'emporte en cas de conflit).",
+    "comment": "Réflexe diagnostic : si une stratégie inattendue s'applique, remonter la chaîne d'héritage avec gpresult /r. Mécanismes à connaître : 'Bloquer l'héritage' sur une OU et 'Appliquer/Enforced' sur une GPO (qui force malgré un blocage). Un blocage d'héritage oublié explique souvent qu'une GPO de sécurité ne descende pas jusqu'à un poste."
+  },
+  {
+    "id": "OPT-M06-C02-006",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi Active Directory exige-t-il obligatoirement un DNS, et quelle dénomination de domaine Microsoft recommande-t-il ?",
+    "answer": "AD s'appuie entièrement sur le DNS pour localiser les contrôleurs de domaine et les services (via les enregistrements SRV). C'est pourquoi l'installation du rôle AD installe automatiquement le rôle DNS. Microsoft recommande d'utiliser un sous-domaine d'un nom réellement possédé (ex : ad.entreprise.com) plutôt qu'un suffixe non routable comme .local ou .lan.",
+    "comment": "Sans DNS correct, rien ne fonctionne dans AD : un client qui ne résout pas les SRV ne trouve pas son DC et ne peut pas s'authentifier. Les anciens domaines en .local posent aujourd'hui des problèmes d'intégration hybride Microsoft 365 et de certificats publics — d'où la recommandation du sous-domaine réel."
+  },
+  {
+    "id": "OPT-M06-C02-007",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi déploie-t-on au minimum deux contrôleurs de domaine ?",
+    "answer": "Pour la redondance et la haute disponibilité. Si un seul DC fonctionne et tombe en panne, plus aucune authentification n'est possible : personne ne peut se connecter, accéder aux partages ou appliquer ses GPO. Avec au moins deux DC qui répliquent l'annuaire entre eux, le service continue si l'un tombe.",
+    "comment": "Le DC n'est pas qu'une commodité : c'est un point de défaillance unique critique. En PME on voit trop souvent un DC unique. Deux DC permettent aussi les maintenances (patchs, redémarrages) sans interruption. Penser aussi à répartir les rôles FSMO et à sauvegarder l'état système régulièrement."
+  },
+  {
+    "id": "OPT-M06-C02-008",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque terme Active Directory (anglais) à sa définition française :",
+    "pairs": [
+      {"left": "Forest", "right": "Forêt — conteneur le plus large regroupant un ou plusieurs arbres"},
+      {"left": "Tree", "right": "Arbre — ensemble de domaines partageant un espace de noms contigu"},
+      {"left": "Domain Controller", "right": "Contrôleur de Domaine — serveur qui héberge l'annuaire et authentifie"},
+      {"left": "Organizational Unit", "right": "Unité d'Organisation — conteneur d'objets et point d'application des GPO"},
+      {"left": "Trust Relationship", "right": "Approbation — relation de confiance entre deux domaines"},
+      {"left": "Security Group", "right": "Groupe de sécurité — regroupe des comptes pour attribuer des droits"}
+    ],
+    "answer": "Forest=Forêt | Tree=Arbre | Domain Controller=Contrôleur de Domaine | Organizational Unit=Unité d'Organisation | Trust Relationship=Approbation | Security Group=Groupe de sécurité",
+    "comment": "Ne pas confondre Groupe de sécurité (sert à donner des droits/permissions) et Groupe de distribution (sert uniquement aux listes de diffusion mail, ne porte pas de droits). Le Workstation (poste) et la GPO (Stratégie de Groupe) complètent ce vocabulaire de base à maîtriser sur le bout des doigts."
+  },
+  {
+    "id": "OPT-M06-C02-009",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque commande/console d'administration AD à son rôle :",
+    "pairs": [
+      {"left": "dsa.msc", "right": "Utilisateurs et ordinateurs Active Directory : créer/gérer comptes, groupes, OU"},
+      {"left": "gpmc.msc", "right": "Console de gestion des stratégies de groupe : créer et lier les GPO"},
+      {"left": "gpupdate /force", "right": "Forcer l'application immédiate des GPO sur le poste"},
+      {"left": "gpresult /r", "right": "Lister les GPO réellement appliquées à l'utilisateur/poste"},
+      {"left": "dcdiag", "right": "Diagnostiquer la santé d'un contrôleur de domaine"},
+      {"left": "nltest /sc_query", "right": "Vérifier le canal sécurisé entre le poste et le DC"}
+    ],
+    "answer": "dsa.msc=gestion comptes/OU | gpmc.msc=gestion GPO | gpupdate /force=appliquer GPO | gpresult /r=GPO appliquées | dcdiag=santé DC | nltest /sc_query=canal sécurisé poste-DC",
+    "comment": "Réflexe enchaîné : après une modification de GPO, gpupdate /force puis gpresult /r pour confirmer qu'elle est bien appliquée. Si un poste 'perd' le domaine (erreur d'approbation à l'ouverture), nltest /sc_query révèle un canal sécurisé cassé — souvent corrigé par un reset du compte machine plutôt qu'en sortant/rejoignant le domaine."
+  },
+  {
+    "id": "OPT-M06-C02-010",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la chaîne AGDLP pour donner au service Comptabilité un accès en écriture à un dossier partagé :",
+    "options": [
+      "Appliquer les permissions NTFS au groupe de domaine local (GDL_Compta_RW) sur le dossier",
+      "Placer les utilisateurs de la compta dans le groupe global GG_Compta",
+      "Imbriquer le groupe global GG_Compta dans le groupe de domaine local GDL_Compta_RW",
+      "Créer le groupe global GG_Compta (qui contiendra les comptes utilisateurs)",
+      "Créer le groupe de domaine local GDL_Compta_RW (qui portera les droits)"
+    ],
+    "answer": [
+      "Créer le groupe global GG_Compta (qui contiendra les comptes utilisateurs)",
+      "Placer les utilisateurs de la compta dans le groupe global GG_Compta",
+      "Créer le groupe de domaine local GDL_Compta_RW (qui portera les droits)",
+      "Imbriquer le groupe global GG_Compta dans le groupe de domaine local GDL_Compta_RW",
+      "Appliquer les permissions NTFS au groupe de domaine local (GDL_Compta_RW) sur le dossier"
+    ],
+    "comment": "Le piège : appliquer directement les droits NTFS sur GG_Compta court-circuite la logique et casse la souplesse d'AGDLP. C'est toujours le GDL_ qui porte les permissions sur la ressource. Pour donner à la direction un accès lecture seule au même dossier, on crée un GDL_Compta_RO et on y imbrique GG_Direction — sans rien changer aux comptes de la compta."
+  },
+  {
+    "id": "OPT-M06-C02-011",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes de la procédure de départ d'un employé dans Active Directory :",
+    "options": [
+      "Déplacer le compte dans l'OU=Désactivés",
+      "Désactiver le compte utilisateur",
+      "Après 30 jours, supprimer définitivement le compte",
+      "Transférer/archiver les emails et accès aux données",
+      "Révoquer les sessions actives (RDP/VPN)",
+      "Retirer le compte de tous ses groupes de sécurité"
+    ],
+    "answer": [
+      "Désactiver le compte utilisateur",
+      "Révoquer les sessions actives (RDP/VPN)",
+      "Transférer/archiver les emails et accès aux données",
+      "Déplacer le compte dans l'OU=Désactivés",
+      "Retirer le compte de tous ses groupes de sécurité",
+      "Après 30 jours, supprimer définitivement le compte"
+    ],
+    "comment": "On désactive AVANT de supprimer : la suppression immédiate détruit le SID et complique la récupération de données ou le transfert de boîte mail. La désactivation coupe l'accès instantanément tout en préservant l'objet. Révoquer les sessions VPN/RDP est essentiel : un compte désactivé peut garder une session ouverte active jusqu'à expiration du ticket Kerberos."
+  },
+  {
+    "id": "OPT-M06-C02-012",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #511 : 'Mes lecteurs réseau (P:, S:) n'apparaissent plus dans l'explorateur ce matin, alors qu'ils sont mappés par une GPO. Mon collègue de bureau les a, lui.'",
+    "answer": "La GPO de mappage de lecteurs (Config utilisateur > Préférences > Drive Maps) ne s'applique pas à ce poste/utilisateur. Causes probables : le compte ou le poste est dans la mauvaise OU, la GPO n'est pas appliquée (héritage bloqué, filtrage de sécurité, traitement par boucle de rappel), ou un échec de connexion au DC au démarrage.",
+    "checklist": [
+      "Lancer gpresult /r et vérifier si la GPO de mappage figure dans les GPO appliquées",
+      "Si absente : vérifier dans quelle OU se trouve le compte utilisateur (dsa.msc) — comparer avec le collègue",
+      "Vérifier le filtrage de sécurité de la GPO (le groupe de l'utilisateur doit y figurer)",
+      "Vérifier que l'héritage n'est pas bloqué sur l'OU et que la GPO est bien liée",
+      "Confirmer la connectivité au DC : nltest /sc_query et ping du contrôleur",
+      "Lancer gpupdate /force puis reconnexion (logoff/logon) car Drive Maps s'applique à l'ouverture de session"
+    ],
+    "comment": "Particularité des Préférences Drive Maps : elles se rejouent à l'ouverture de session, pas en simple gpupdate — d'où la nécessité d'un logoff/logon pour valider. Si gpresult montre la GPO appliquée mais que le lecteur manque quand même, suspecter un ciblage par élément (item-level targeting) qui exclut l'utilisateur, ou un partage cible inaccessible."
+  },
+  {
+    "id": "OPT-M06-C02-013",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "C",
+    "type": "ticket",
+    "question": "TICKET #530 : 'Un salarié quitte l'entreprise vendredi soir. Que dois-je faire dans l'AD, dans quel ordre, et que ne faut-il SURTOUT pas faire tout de suite ?'",
+    "answer": "Appliquer la procédure de départ : désactiver le compte, révoquer les sessions RDP/VPN, transférer/archiver les emails et données, déplacer le compte dans l'OU=Désactivés, le retirer de ses groupes de sécurité, et ne supprimer définitivement qu'après une période de rétention (≈30 jours). À ne SURTOUT pas faire : supprimer le compte immédiatement.",
+    "checklist": [
+      "Désactiver le compte (clic droit > Désactiver) pour couper l'accès sans rien détruire",
+      "Révoquer les sessions actives RDP et VPN, réinitialiser le mot de passe pour invalider les sessions",
+      "Transférer ou archiver la boîte mail et déléguer/récupérer les accès aux données partagées",
+      "Déplacer le compte dans l'OU=Désactivés pour le sortir des GPO et le repérer facilement",
+      "Retirer le compte de tous ses groupes de sécurité (révoque les accès hérités)",
+      "Planifier la suppression définitive après ~30 jours de rétention"
+    ],
+    "comment": "Le réflexe 'je supprime, c'est plus propre' est une erreur coûteuse : on perd la boîte mail, les droits NTFS attachés au SID et toute possibilité de récupération simple. La désactivation immédiate est sécuritaire ET réversible. Documenter chaque départ dans le ticket : c'est une exigence RGPD/conformité fréquemment auditée."
+  },
+  {
+    "id": "OPT-M06-C02-014",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un nouveau PC refuse de rejoindre le domaine : message d'erreur au moment de la jonction. Quelle est la cause la plus probable ?",
+    "answer": "La configuration DNS du client est incorrecte : le DNS préféré ne pointe pas vers l'IP du contrôleur de domaine (DC). Le client doit utiliser le DNS interne pour résoudre les enregistrements SRV du domaine. Correction : dans ncpa.cpl, définir le DNS préféré sur l'IP du serveur DC, puis relancer la jonction.",
+    "indices": [
+      "Le message d'erreur évoque un domaine introuvable ou un contrôleur de domaine impossible à contacter.",
+      "Un ping vers le nom du contrôleur de domaine échoue (la résolution ne fonctionne pas).",
+      "Dans ncpa.cpl, le DNS préféré du client est réglé sur 8.8.8.8 (Google) au lieu de l'IP du DC."
+    ],
+    "comment": "Erreur n°1 lors d'une jonction : un DNS public (8.8.8.8) ne connaît pas les enregistrements SRV internes du domaine, donc le client ne trouve jamais son DC. Le DNS préféré DOIT être l'IP du serveur AD/DNS interne. Vérifier ensuite que le poste est à l'heure (un décalage horaire >5 min casse Kerberos et bloque aussi la jonction)."
+  },
+  {
+    "id": "OPT-M06-C02-015",
+    "category": "Administration de Windows",
+    "chapter": "Windows Server et Active Directory",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "Une GPO de mappage de lecteurs n'est appliquée sur aucun poste d'un service précis, alors qu'elle est bien créée et activée. Où chercher ?",
+    "answer": "La GPO est liée à la mauvaise OU (ou les postes/utilisateurs ne sont pas dans l'OU ciblée). gpresult /r ne fait pas apparaître la GPO car elle ne couvre pas l'objet. Correction : déplacer les comptes dans la bonne OU ou relier la GPO à l'OU correcte, puis gpupdate /force et reconnexion.",
+    "indices": [
+      "Les utilisateurs concernés n'ont pas leurs lecteurs réseau ; aucune erreur visible, juste une absence.",
+      "gpresult /r exécuté sur un poste ne liste PAS la GPO de mappage parmi les stratégies appliquées.",
+      "En vérifiant dans gpmc.msc, la GPO est liée à une OU qui ne contient pas les comptes de ce service."
+    ],
+    "comment": "Quand une GPO 'n'existe pas' dans gpresult, ce n'est presque jamais un bug : c'est qu'elle ne cible pas l'objet (mauvaise OU, lien manquant, ou filtrage de sécurité excluant le groupe). Distinguer GPO 'Config ordinateur' (s'applique selon l'OU du PC) et 'Config utilisateur' (selon l'OU de l'utilisateur) : un mappage de lecteurs est en Config utilisateur, donc c'est l'OU du compte qui compte, pas celle du poste."
+  }
+]

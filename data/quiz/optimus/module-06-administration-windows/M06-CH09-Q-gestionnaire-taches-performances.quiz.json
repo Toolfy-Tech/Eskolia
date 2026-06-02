@@ -1,0 +1,147 @@
+[
+  {
+    "id": "OPT-M06-C09-001",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel raccourci clavier ouvre directement le Gestionnaire de tâches, et quelle autre méthode existe ?",
+    "answer": "Ctrl+Maj+Échap ouvre directement le Gestionnaire de tâches. Autre méthode : clic droit sur la barre des tâches puis Gestionnaire des tâches. (Ctrl+Alt+Suppr passe d'abord par un menu intermédiaire.)",
+    "comment": "Ctrl+Maj+Échap est le réflexe à automatiser : il ouvre l'outil instantanément sans passer par l'écran de sécurité de Ctrl+Alt+Suppr, ce qui fait gagner du temps quand un PC rame et qu'il faut tuer un processus vite."
+  },
+  {
+    "id": "OPT-M06-C09-002",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre le Gestionnaire de tâches (taskmgr) et le Moniteur de ressources (resmon) ?",
+    "answer": "taskmgr offre une vue globale et rapide (quel processus consomme CPU/RAM, courbes temps réel). resmon est un outil d'investigation précise : il montre exactement quels fichiers sont ouverts par quel processus et quelle IP est contactée par quelle application. resmon s'ouvre via la commande resmon.",
+    "comment": "Réflexe terrain : taskmgr pour repérer vite le coupable, resmon quand on veut savoir CE QUE fait précisément ce coupable (fichier verrouillé, connexion réseau suspecte). On lance souvent resmon depuis l'onglet Performances du Gestionnaire."
+  },
+  {
+    "id": "OPT-M06-C09-003",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que se passe-t-il quand la RAM dépasse durablement 90 % d'utilisation ?",
+    "answer": "Windows déclenche la pagination disque : il utilise le disque comme RAM de remplacement (fichier d'échange). Comme un disque est bien plus lent que la RAM, le système devient très lent et saccadé. C'est un seuil critique à traiter.",
+    "comment": "Sur un PC qui rame avec RAM saturée, la vraie solution est souvent d'ajouter de la RAM, pas de tuer des processus en boucle. Si la RAM est saturée alors qu'aucune app lourde ne tourne, suspecter une fuite mémoire ou un malware."
+  },
+  {
+    "id": "OPT-M06-C09-004",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "classic",
+    "question": "Un disque dur (HDD) affiche 100 % d'activité en continu dans le Gestionnaire. Quelles sont les deux causes classiques à suspecter ?",
+    "answer": "Deux causes classiques : un disque mourant (secteurs défectueux, le disque rame pour lire/écrire) ou un malware (activité disque anormale et continue). Réflexe : Gestionnaire → Performances → Disque → identifier le processus responsable.",
+    "comment": "Le 100 % disque continu est un symptôme à ne jamais ignorer. Croiser avec un test SMART (CrystalDiskInfo) pour le matériel et avec resmon pour voir quel processus écrit. Sur un SSD le 100 % continu est encore plus alarmant car normalement il encaisse vite."
+  },
+  {
+    "id": "OPT-M06-C09-005",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert l'onglet Démarrage du Gestionnaire de tâches ?",
+    "answer": "Il liste les programmes qui se lancent automatiquement au démarrage de Windows et permet de les activer ou désactiver. Il affiche aussi leur impact estimé sur le temps de boot. C'est l'outil pour traiter un PC lent à l'allumage.",
+    "comment": "Réflexe contre un PC lent au démarrage : désactiver les programmes inutiles au boot (mises à jour de logiciels, agents, lanceurs). Désactiver ne désinstalle pas l'application, le programme reste lançable manuellement. Méfiance avant de désactiver un éditeur inconnu : vérifier qu'il ne s'agit pas d'un composant système."
+  },
+  {
+    "id": "OPT-M06-C09-006",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque onglet du Gestionnaire de tâches à son usage terrain :",
+    "pairs": [
+      {"left": "Processus", "right": "Identifier le programme qui consomme le CPU/RAM et tuer un processus bloqué"},
+      {"left": "Performances", "right": "Vue graphique temps réel du CPU, de la RAM, du disque et du réseau"},
+      {"left": "Démarrage", "right": "Gérer les programmes lancés au boot pour traiter un démarrage lent"},
+      {"left": "Utilisateurs", "right": "Voir les sessions actives et déconnecter un utilisateur fantôme"},
+      {"left": "Détails", "right": "Voir le PID et régler la priorité d'un processus (niveau avancé)"}
+    ],
+    "answer": "Processus = tuer un programme bloqué | Performances = courbes temps réel | Démarrage = programmes au boot | Utilisateurs = sessions actives | Détails = PID et priorité",
+    "comment": "L'onglet Détails est le plus technique : c'est là qu'on récupère le PID pour relier une connexion réseau (vue dans netstat) à un exécutable précis. L'onglet Utilisateurs est précieux sur un poste partagé où une session oubliée consomme des ressources."
+  },
+  {
+    "id": "OPT-M06-C09-007",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque ressource à son seuil critique (valeur à partir de laquelle il faut agir) :",
+    "pairs": [
+      {"left": "CPU", "right": "Critique au-delà de 80 % en continu"},
+      {"left": "RAM", "right": "Critique au-delà de 90 % (pagination disque)"},
+      {"left": "Disque", "right": "Critique au-delà de 80 % en continu"}
+    ],
+    "answer": "CPU critique >80 % continu | RAM critique >90 % | Disque critique >80 % continu",
+    "comment": "Repères terrain complets : CPU normal <30 %, à surveiller 30-70 % ; RAM normal <70 %, à surveiller 70-85 % ; disque normal <20 %, à surveiller 20-50 %. Un pic ponctuel n'est pas un problème, c'est la SATURATION CONTINUE qui compte."
+  },
+  {
+    "id": "OPT-M06-C09-008",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la démarche de diagnostic d'un PC lent :",
+    "options": [
+      "Si comportement suspect, ouvrir le Moniteur de ressources (resmon)",
+      "Ouvrir le Gestionnaire de tâches (Ctrl+Maj+Échap)",
+      "Cibler le processus responsable (fichier ouvert, connexion réseau)",
+      "Aller dans l'onglet Performances",
+      "Identifier la ressource saturée (CPU, RAM, disque ou réseau)",
+      "Décider de l'action : tuer, désinstaller ou réinstaller le processus"
+    ],
+    "answer": [
+      "Ouvrir le Gestionnaire de tâches (Ctrl+Maj+Échap)",
+      "Aller dans l'onglet Performances",
+      "Identifier la ressource saturée (CPU, RAM, disque ou réseau)",
+      "Si comportement suspect, ouvrir le Moniteur de ressources (resmon)",
+      "Cibler le processus responsable (fichier ouvert, connexion réseau)",
+      "Décider de l'action : tuer, désinstaller ou réinstaller le processus"
+    ],
+    "comment": "La logique : d'abord identifier QUELLE ressource sature (vue globale), puis seulement QUEL processus en est responsable (vue précise resmon). Inverser fait perdre du temps. On ne tue/désinstalle qu'une fois le coupable identifié avec certitude."
+  },
+  {
+    "id": "OPT-M06-C09-009",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #502 : 'Mon PC est devenu très lent, tout met une éternité à répondre.' Au Gestionnaire de tâches, le disque est à 100 %.",
+    "answer": "Passer par l'onglet Performances pour confirmer la saturation disque, puis identifier le processus responsable dans l'onglet Processus, et utiliser resmon pour voir précisément ce qu'il lit/écrit avant de décider de l'action.",
+    "checklist": [
+      "Ouvrir le Gestionnaire de tâches (Ctrl+Maj+Échap)",
+      "Aller dans Performances → Disque pour confirmer le 100 % continu",
+      "Dans Processus, trier par Disque et repérer le processus qui sature",
+      "Ouvrir resmon pour voir quels fichiers et quelles connexions sont en jeu",
+      "Distinguer cause logicielle (malware, mise à jour, indexation) d'une cause matérielle (disque mourant)",
+      "Lancer un test SMART (CrystalDiskInfo) si le disque est suspecté défaillant",
+      "Décider : tuer/désactiver le processus, nettoyer le malware, ou planifier un remplacement de disque"
+    ],
+    "comment": "Piège : conclure trop vite au disque mort. Une indexation Windows, une mise à jour ou un antivirus en plein scan peuvent saturer le disque temporairement. resmon permet de trancher entre activité légitime et anomalie. Sauvegarder les données AVANT toute manipulation si un disque mourant est suspecté."
+  },
+  {
+    "id": "OPT-M06-C09-010",
+    "category": "Administration de Windows",
+    "chapter": "Gestionnaire de tâches et performances",
+    "tier": "C",
+    "type": "ticket",
+    "question": "TICKET #517 : 'Chaque matin, mes applications mettent très longtemps à se lancer après l'allumage du PC, puis ça finit par aller mieux.'",
+    "answer": "Symptôme typique d'une surcharge au démarrage : trop de programmes se lancent au boot. Ouvrir l'onglet Démarrage du Gestionnaire de tâches et désactiver les programmes inutiles ayant un impact élevé.",
+    "checklist": [
+      "Ouvrir le Gestionnaire de tâches → onglet Démarrage",
+      "Trier par impact sur le démarrage (élevé/moyen/faible)",
+      "Identifier les programmes au boot non essentiels (lanceurs, agents de mise à jour)",
+      "Désactiver les programmes inutiles (clic droit → Désactiver)",
+      "Conserver les composants système et l'antivirus",
+      "Redémarrer et vérifier l'amélioration du temps de réactivité",
+      "Si le problème persiste, vérifier la santé du disque et la quantité de RAM"
+    ],
+    "comment": "Désactiver dans cet onglet ne désinstalle rien : le programme reste lançable à la demande. Le lenteur 'qui finit par s'améliorer' trahit un boot saturé pendant lequel Windows charge tout en même temps. Si rien dans Démarrage n'explique la lenteur, suspecter un disque lent ou trop peu de RAM."
+  }
+]
