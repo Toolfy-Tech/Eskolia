@@ -6,8 +6,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Combien de phases compte une intervention d'assistance et quelle est la première ?",
-    "answer": "7 phases. La première est l'accueil et l'écoute : recevoir la demande et mettre l'utilisateur en confiance.",
-    "comment": "Les 7 phases : accueil/écoute → questionnement/reformulation → qualification → diagnostic → résolution ou escalade → vérification → traçabilité. Cet ordre s'applique que ce soit en présentiel ou à distance."
+    "answer": "7 phases : accueil/écoute → questionnement/reformulation → qualification → diagnostic → résolution ou escalade → vérification → traçabilité. La première est l'accueil et l'écoute.",
+    "comment": "Pourquoi commencer par l'accueil et non par le diagnostic ? Parce qu'un utilisateur tendu ou presse livre une description partielle ('ca marche pas'), et un mauvais materiau de depart fausse tout le reste de la chaine. Mettre en confiance n'est pas de la politesse decorative : c'est ce qui ouvre la phase de questionnement et fait remonter le bon symptome. Le piege classique du debutant est de sauter directement au diagnostic des qu'il croit reconnaitre la panne, et de passer a cote du vrai probleme faute d'avoir ecoute."
   },
   {
     "id": "OPT-M01-C06-002",

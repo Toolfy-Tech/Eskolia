@@ -6,8 +6,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Combien d'étapes compte le cycle de vie d'un ticket, et quelle est la première ?",
-    "answer": "7 étapes. La première est la Détection / Signalement : l'utilisateur contacte le support pour signaler son problème.",
-    "comment": "Sans signalement, rien ne peut démarrer. Le cycle complet : Détection → Enregistrement → Qualification → Priorisation → Diagnostic → Résolution/Escalade → Clôture."
+    "answer": "7 étapes : Détection/Signalement → Enregistrement → Qualification → Priorisation → Diagnostic → Résolution ou Escalade → Clôture. La première est la Détection / Signalement.",
+    "comment": "Detail souvent neglige : la detection peut venir de l'utilisateur (il appelle) mais aussi d'une supervision automatique (une alerte serveur ouvre le ticket avant que quiconque s'en plaigne). Dans les deux cas, l'enregistrement vient juste apres et n'est pas la meme chose : detecter, c'est savoir qu'il y a un souci ; enregistrer, c'est en creer la trace exploitable. Un probleme connu de tout le service mais jamais enregistre n'existe pas pour le SLA ni pour les statistiques."
   },
   {
     "id": "OPT-M01-C02-002",
@@ -58,7 +58,7 @@
     "question": "Remettez dans l'ordre les 7 étapes du cycle de vie d'un ticket :",
     "options": ["Clôture", "Priorisation", "Résolution ou Escalade", "Enregistrement", "Diagnostic", "Détection / Signalement", "Qualification"],
     "answer": ["Détection / Signalement", "Enregistrement", "Qualification", "Priorisation", "Diagnostic", "Résolution ou Escalade", "Clôture"],
-    "comment": "Cet ordre est fondamental : on ne peut pas diagnostiquer avant de qualifier, ni résoudre avant de diagnostiquer. Chaque étape conditionne la suivante."
+    "comment": "Chaque étape produit ce dont la suivante a besoin pour exister : sans enregistrement, rien à qualifier ; sans qualification, on ne sait pas quoi prioriser ; sans diagnostic, on résout au hasard. Les deux inversions classiques sont de prioriser avant de qualifier (on classe en urgent un ticket qu'on n'a pas compris) et de clôturer avant la validation utilisateur. Ce n'est pas une routine administrative : sauter un maillon casse la chaîne d'information, pas seulement l'ordre."
   },
   {
     "id": "OPT-M01-C02-007",
@@ -73,7 +73,7 @@
       {"left": "Clôture", "right": "Validation par l'utilisateur que le service est rétabli"}
     ],
     "answer": "Enregistrement = création du ticket | Qualification = catégorisation | Clôture = validation utilisateur",
-    "comment": "Chaque étape a un livrable concret. L'enregistrement produit le ticket, la qualification produit une catégorie, la clôture produit une confirmation."
+    "comment": "Raisonner en livrables permet de détecter une étape bâclée : un ticket sans catégorie = qualification sautée ; une clôture sans confirmation = étape finale escamotée. Si une étape ne produit pas son livrable, elle n'a pas vraiment eu lieu, même si le ticket avance."
   },
   {
     "id": "OPT-M01-C02-008",
@@ -90,7 +90,7 @@
       "Renseigner le numéro d'inventaire de l'équipement",
       "Qualifier (incident ou demande ?) et prioriser avant toute action"
     ],
-    "comment": "Un ticket mal renseigné ralentit toute l'équipe. La qualité du ticket est une responsabilité professionnelle — pas juste une formalité administrative."
+    "comment": "Le réflexe à éviter : commencer à dépanner au hasard sur la base de 'PC KO' pour gagner du temps. C'est l'inverse — sans symptôme précis on teste à l'aveugle et on en perd. Recueillir l'info avant d'agir n'est pas une perte de temps, c'est ce qui rend l'action efficace."
   },
   {
     "id": "OPT-M01-C02-009",
@@ -101,13 +101,13 @@
     "question": "TICKET #03 : Vous avez résolu un incident réseau pour un utilisateur. Vous avez vérifié de votre côté que la connexion est rétablie. Pouvez-vous clôturer le ticket ?",
     "answer": "Non. Il faut d'abord obtenir la confirmation de l'utilisateur que tout fonctionne de son côté.",
     "checklist": [
-      "Contacter l'utilisateur et lui demander de tester son accès",
-      "Attendre sa confirmation explicite ('oui, ça fonctionne')",
-      "Documenter les actions réalisées dans le ticket",
-      "Clôturer uniquement après validation utilisateur",
-      "Indiquer le motif de résolution dans le ticket pour l'historique"
+      "Documenter immédiatement les actions réalisées tant qu'elles sont fraîches",
+      "Contacter l'utilisateur et lui demander de tester son accès dans ses conditions réelles",
+      "Attendre une confirmation explicite ('oui, ça fonctionne'), pas un silence ni un 'ça doit aller'",
+      "Indiquer le motif de résolution dans le ticket pour l'historique",
+      "Clôturer uniquement après cette validation utilisateur"
     ],
-    "comment": "Vérifier côté technicien ne suffit pas — l'utilisateur peut avoir un problème résiduel côté applicatif ou cache. La confirmation utilisateur est obligatoire avant clôture."
+    "comment": "Rétabli côté technicien et rétabli côté utilisateur ne sont pas la même chose : le réseau peut répondre à votre ping alors que son application reste bloquée sur un cache, un profil ou un droit local. Le piège est aussi de se contenter d'un 'oui' poli arraché à quelqu'un qui n'a pas retesté — demandez une vérification réelle, pas un assentiment. C'est ce test concret, pas votre certitude, qui autorise la clôture."
   },
   {
     "id": "OPT-M01-C02-010",
@@ -124,6 +124,6 @@
       "Si SLA dépassé, alerter le responsable selon la procédure interne",
       "Mettre à jour la priorité si la situation a évolué, puis traiter ou escalader"
     ],
-    "comment": "Un ticket sans suivi est un ticket mal géré. La traçabilité est une obligation professionnelle — elle protège l'utilisateur, le technicien et l'entreprise."
+    "comment": "Le piège du tier A ici : croire que l'urgence est de résoudre vite. La vraie première action est de reprendre contact — l'utilisateur a peut-être contourné le problème seul, ou au contraire est bloqué depuis 3 jours sans le redire. On ne peut ni reprioriser ni rattraper un éventuel SLA sans connaître l'état réel. Agir sans ce contact, c'est risquer de traiter en urgence un ticket déjà obsolète."
   }
 ]

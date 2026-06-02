@@ -46,8 +46,8 @@
     "tier": "B",
     "type": "classic",
     "question": "Qu'est-ce qu'un port RJ-45 et quelles sont ses vitesses caractéristiques ?",
-    "answer": "RJ-45 est le connecteur Ethernet filaire avec 8 broches. Vitesses : 100 Mb/s (Fast Ethernet), 1 Gb/s (Gigabit, standard actuel), 2.5/10 Gb/s (haute performance). Toujours préférer l'Ethernet au Wi-Fi pour la stabilité et la latence.",
-    "comment": "En entreprise, tout équipement fixe (PC bureau, imprimante, switch) doit être câblé en Ethernet. Le Wi-Fi est réservé aux équipements mobiles."
+    "answer": "RJ-45 est le connecteur Ethernet filaire à 8 broches. Vitesses : 100 Mb/s (Fast Ethernet), 1 Gb/s (Gigabit, standard actuel), 2.5/5/10 Gb/s (multi-gigabit). La vitesse réelle dépend du maillon le plus faible : carte réseau, port du switch ET catégorie de câble (Cat 5e pour 1 Gb/s, Cat 6/6a pour 10 Gb/s).",
+    "comment": "Erreur de diagnostic classique : une liaison qui plafonne à 100 Mb/s alors que tout est annoncé Gigabit vient souvent d'un câble abîmé ou d'une seule paire coupée dans le RJ-45. Tester avec un autre câble certifié avant de suspecter la carte réseau."
   },
   {
     "id": "OPT-M02-C08-006",

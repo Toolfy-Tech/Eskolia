@@ -26,8 +26,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Quelle est la différence principale entre GLPI et ServiceNow ?",
-    "answer": "GLPI est open source et gratuit, adapté aux PME/collectivités. ServiceNow est une solution haut de gamme, payante, destinée aux grandes entreprises avec des besoins d'intégration complexes.",
-    "comment": "Le choix d'outil dépend du contexte : une collectivité choisira GLPI, un grand groupe international choisira ServiceNow. Les deux font du ticketing, mais leur échelle et leur coût sont très différents."
+    "answer": "GLPI est open source et gratuit, adapté aux PME/collectivités, avec inventaire de parc intégré. ServiceNow est une plateforme haut de gamme payante, pensée pour les grandes entreprises ayant des besoins d'intégration et d'automatisation complexes (workflows inter-services, gros volumes).",
+    "comment": "Le piege est de raisonner 'plus c'est riche, mieux c'est'. Faux : deployer ServiceNow dans une PME de 30 postes coute cher en licences et en parametrage pour un outil qui restera sous-exploite, tandis que GLPI montrera ses limites d'integration et de support dans un groupe multi-sites a fort volume. Le bon critere n'est jamais la puissance brute de l'outil mais son adequation a l'echelle, au budget et aux besoins d'integration. L'outil suit le besoin, pas l'inverse."
   },
   {
     "id": "OPT-M01-C05-004",
@@ -82,7 +82,7 @@
       {"left": "Jira Service Management", "right": "Orienté DevOps — équipes développement + support"}
     ],
     "answer": "GLPI = open source PME | ServiceNow = haut de gamme grandes entreprises | Jira SM = DevOps",
-    "comment": "Le contexte de l'entreprise détermine le choix d'outil. Connaître le positionnement de chaque solution permet de conseiller et de s'adapter rapidement."
+    "comment": "Le bon critère de choix n'est pas la richesse fonctionnelle mais l'adéquation : déployer ServiceNow dans une PME de 30 postes coûte cher et reste sous-utilisé, tandis que GLPI montre ses limites d'intégration dans un grand groupe multi-sites. L'outil suit l'échelle et les besoins d'intégration, pas l'inverse."
   },
   {
     "id": "OPT-M01-C05-009",
@@ -97,7 +97,7 @@
       {"left": "Historique des tickets par équipement", "right": "Détecter les pannes récurrentes sur un même matériel"}
     ],
     "answer": "Numéro inventaire = identifier l'équipement | Fin garantie = anticiper renouvellement | Historique = détecter pannes récurrentes",
-    "comment": "Ces trois fonctionnalités illustrent pourquoi un inventaire à jour est précieux : il relie le matériel, son historique et ses coûts en un seul endroit."
+    "comment": "Ces trois champs n'ont de valeur que tenus a jour : un inventaire perime est pire qu'absent, car il donne une fausse confiance. Le numero d'inventaire est la clef qui relie tout le reste : sans lui, impossible de raccrocher un ticket a un materiel precis, donc impossible de voir l'historique se constituer ni de reperer qu'un meme poste tombe en panne pour la 4e fois. C'est ce chainage (materiel -> historique -> decision de renouvellement) qui transforme l'inventaire en outil de pilotage, pas en simple liste de materiel."
   },
   {
     "id": "OPT-M01-C05-010",
@@ -142,6 +142,6 @@
       "Si aucune fiche n'existe, investiguer et résoudre",
       "Après résolution, rédiger et publier une fiche pour les prochains techniciens"
     ],
-    "comment": "La base de connaissances est le premier réflexe avant de perdre du temps à réinvestiguer. Un N1 efficace consulte toujours la base avant d'improviser."
+    "comment": "Le piège du débutant est l'inverse : foncer dans le diagnostic par fierté ou réflexe, et réinventer une procédure qui existe déjà. Mais la base n'est utile que si elle est alimentée — d'où le dernier réflexe, souvent oublié : rédiger une fiche quand on a dû investiguer soi-même, pour que le suivant n'ait pas à le refaire."
   }
 ]

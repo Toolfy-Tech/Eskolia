@@ -7,7 +7,7 @@
     "type": "classic",
     "question": "Qu'est-ce qu'un VLAN et quels sont ses 3 bénéfices principaux ?",
     "answer": "Un VLAN (Virtual LAN) est un réseau local logique créé par configuration logicielle sur un switch. 3 bénéfices : Sécurité (isolation par défaut entre VLANs), Réduction des broadcasts (chaque VLAN = son propre domaine), Flexibilité (regroupement logique indépendant du câblage physique).",
-    "comment": "Les VLANs ne coûtent rien en matériel : c'est de la configuration pure. On crée des murs virtuels sans ajouter d'équipements."
+    "comment": "Distinction clé à maîtriser : un VLAN = un domaine de broadcast = (en pratique) un sous-réseau IP. Segmenter en VLANs sans donner un sous-réseau distinct à chacun n'a aucun sens, et inversement deux VLANs qui se parlent passent forcément par un routage L3. À l'échelle : sur un réseau plat de 500 postes, chaque requête ARP ou DHCP est diffusée aux 500 machines ; en découpant en VLANs de 50, on divise ce bruit de broadcast par 10, ce qui soulage CPU et bande passante."
   },
   {
     "id": "OPT-M04-C04-002",
@@ -73,7 +73,7 @@
       {"left": "`show port-security interface`", "right": "État de la sécurité de port (MACs autorisées, violations)"}
     ],
     "answer": "show vlan brief = VLANs/ports | show interfaces trunk = trunks 802.1Q | show mac address-table = MAC/ports | show port-security interface = sécurité port",
-    "comment": "Ces 4 commandes couvrent la vérification complète d'une configuration VLAN. À mémoriser pour l'examen et pour le terrain."
+    "comment": "Ordre logique en dépannage : show vlan brief d'abord (le port est-il dans le bon VLAN ?), puis show interfaces trunk (le VLAN est-il bien transporté entre switches ?). Piège classique du trunk : la liste des VLANs autorisés (switchport trunk allowed vlan) oublie le VLAN concerné — le port access est correct mais le trafic ne traverse pas le lien inter-switch."
   },
   {
     "id": "OPT-M04-C04-008",
@@ -123,21 +123,21 @@
     "chapter": "Organisation avancée — VLANs",
     "tier": "A",
     "type": "sequence",
-    "question": "Remettez dans l'ordre les étapes de calcul du sous-réseau pour créer N sous-réseaux à partir d'un préfixe donné :",
+    "question": "Router-on-a-stick : deux PC de VLANs différents ne communiquent pas alors que le routage inter-VLAN vient d'être monté. Remettez dans l'ordre la démarche de diagnostic, du maillon le plus probable au plus profond :",
     "options": [
-      "Calculer le pas (256 - valeur_octet_masque)",
-      "Identifier le nombre de bits à emprunter (2^n >= N)",
-      "Lister les sous-réseaux avec leurs adresses réseau, 1ère utile, dernière utile, broadcast",
-      "Calculer le nouveau masque (préfixe_initial + bits_empruntés)",
-      "Appliquer l'ET logique pour trouver l'adresse réseau de départ"
+      "Vérifier que le lien switch-routeur est bien un trunk 802.1Q (pas un port access)",
+      "Vérifier que chaque PC pointe vers la bonne passerelle (l'IP de la sous-interface de SON VLAN)",
+      "Confirmer que les deux VLANs sont actifs et que les ports PC sont dans le bon VLAN (show vlan brief)",
+      "Vérifier que chaque sous-interface du routeur a la bonne encapsulation dot1Q <vlan> et une IP de passerelle",
+      "Confirmer que la sous-interface n'est pas administrativement down et tester un ping de passerelle à passerelle"
     ],
     "answer": [
-      "Identifier le nombre de bits à emprunter (2^n >= N)",
-      "Calculer le nouveau masque (préfixe_initial + bits_empruntés)",
-      "Appliquer l'ET logique pour trouver l'adresse réseau de départ",
-      "Calculer le pas (256 - valeur_octet_masque)",
-      "Lister les sous-réseaux avec leurs adresses réseau, 1ère utile, dernière utile, broadcast"
+      "Confirmer que les deux VLANs sont actifs et que les ports PC sont dans le bon VLAN (show vlan brief)",
+      "Vérifier que le lien switch-routeur est bien un trunk 802.1Q (pas un port access)",
+      "Vérifier que chaque sous-interface du routeur a la bonne encapsulation dot1Q <vlan> et une IP de passerelle",
+      "Vérifier que chaque PC pointe vers la bonne passerelle (l'IP de la sous-interface de SON VLAN)",
+      "Confirmer que la sous-interface n'est pas administrativement down et tester un ping de passerelle à passerelle"
     ],
-    "comment": "Cette séquence s'applique à tout exercice de subnetting. Le pas est la clé : il donne l'incrément entre chaque sous-réseau. Ex : masque 240 → pas = 256-240 = 16 → sous-réseaux en .0, .16, .32, .48..."
+    "comment": "La subtilité Tier A : on remonte du switch vers le routeur, puis du routeur vers le poste. L'erreur n°1 du router-on-a-stick est un lien resté en mode access (un seul VLAN passe, l'autre est muet) ; l'erreur n°2 est une passerelle PC qui pointe vers la mauvaise sous-interface. Le ping passerelle-à-passerelle isole le routage (couche 3 routeur) d'un éventuel souci de gateway côté poste."
   }
 ]

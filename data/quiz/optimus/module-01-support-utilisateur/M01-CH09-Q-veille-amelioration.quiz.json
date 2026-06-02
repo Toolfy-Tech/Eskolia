@@ -47,7 +47,7 @@
     "type": "classic",
     "question": "Récapitulatif M01 — Que signifie SPOC et quel rôle joue-t-il ?",
     "answer": "SPOC = Single Point of Contact. C'est le centre de services, point d'entrée unique pour toutes les demandes. Il garantit que rien ne se perd et que tout est tracé.",
-    "comment": "Le SPOC est un principe organisationnel ITIL fondamental. Sans lui, les utilisateurs appellent directement les techniciens, les demandes se perdent et rien n'est priorisé."
+    "comment": "Le SPOC n'est pas qu'un standard téléphonique : c'est ce qui rend possibles la priorisation, le suivi SLA et les statistiques. Sans guichet unique, impossible de savoir combien de tickets sont ouverts ni lequel traiter en premier — le contact direct technicien-utilisateur crée des angles morts invisibles."
   },
   {
     "id": "OPT-M01-C09-006",
@@ -57,7 +57,7 @@
     "type": "classic",
     "question": "Récapitulatif M01 — Quelle est la différence entre GTI et GTR ?",
     "answer": "GTI = Garantie Temps Intervention = délai de prise en charge (le technicien commence à traiter). GTR = Garantie Temps Rétablissement = délai avant que le service soit rétabli pour l'utilisateur.",
-    "comment": "Prise en charge ≠ résolution. C'est une des distinctions les plus importantes du module. En examen, cette confusion est très souvent testée."
+    "comment": "Astuce mnémonique : Intervention = on intervient (on commence), Rétablissement = c'est rétabli (c'est fini). Le GTI protège contre le silence (un ticket qui dort sans réponse), le GTR contre la lenteur (un ticket pris mais jamais résolu) — deux risques différents, donc deux garanties."
   },
   {
     "id": "OPT-M01-C09-007",
@@ -67,7 +67,7 @@
     "type": "classic",
     "question": "Récapitulatif M01 — Citez 4 repères clés à retenir absolument sur ce module.",
     "answer": "1. SPOC = point de contact unique. 2. Priorité = Urgence × Impact. 3. GTI = prise en charge, GTR = rétablissement. 4. N1 → N2 → N3 (escalade). Bonus : GLPI = outil open source tickets + parc. Incident = symptôme, Problème = cause racine.",
-    "comment": "Ces repères sont les fondamentaux du module. Ils reviennent systématiquement dans les QCM d'examen et dans la pratique quotidienne du technicien de proximité."
+    "comment": "Ces repères s'enchaînent dans la vie d'un ticket : il entre par le SPOC, est priorisé par Urgence × Impact, ce qui déclenche un SLA (GTI puis GTR), et circule de N1 vers N2/N3 si besoin. Les voir comme un parcours plutôt qu'une liste à mémoriser aide à comprendre pourquoi chacun existe."
   },
   {
     "id": "OPT-M01-C09-008",
@@ -93,7 +93,7 @@
       {"left": "GLPI", "right": "Outil open source de gestion de tickets ET de parc informatique"}
     ],
     "answer": "Incident = symptôme interruption | Problème = cause racine | GLPI = outil open source tickets+parc",
-    "comment": "Ces trois définitions sont parmi les plus testées en examen. Incident et problème sont souvent confondus — retenir l'analogie symptôme/maladie aide à les distinguer immédiatement."
+    "comment": "Le piege du QCM est le distracteur qui inverse incident et probleme. Test mental fiable pour ne pas se tromper : si c'est visible, ponctuel et que l'utilisateur le subit maintenant, c'est l'incident (le symptome) ; si c'est l'explication de fond qui revient derriere plusieurs incidents, c'est le probleme (la maladie). GLPI relie les deux dans la pratique : son historique de parc est justement ce qui permet de voir qu'une serie d'incidents identiques cache un probleme a investiguer."
   },
   {
     "id": "OPT-M01-C09-010",
@@ -108,6 +108,6 @@
       {"left": "P4 — Basse", "right": "Impact faible + Urgence faible — quand le temps le permet"}
     ],
     "answer": "P1 = impact fort + urgence forte | P3 = impact moyen planifiable | P4 = impact faible urgence faible",
-    "comment": "La matrice de priorité est un outil objectif. P1 = on lâche tout. P4 = souris à remplacer, ça attendra. La priorité ne dépend pas du rang de l'utilisateur mais de l'impact réel sur le service."
+    "comment": "Erreur classique a l'examen : associer P1 a 'urgence forte' tout court. Or P1 exige les DEUX facteurs forts simultanement (impact ET urgence), parce que la priorite est un produit, pas une somme. Une urgence forte seule, avec un impact faible, plafonne en priorite moyenne ou basse. Retenir cela evite le distracteur le plus frequent : le ticket 'qui presse' pour une seule personne n'est jamais un P1, quel que soit le ton de l'appelant."
   }
 ]

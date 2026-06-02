@@ -7,7 +7,7 @@
     "type": "classic",
     "question": "Que signifie SLA et à quoi sert-il ?",
     "answer": "SLA = Service Level Agreement (contrat de niveau de service). Il définit les délais que le service informatique s'engage à respecter pour chaque niveau de priorité.",
-    "comment": "Le SLA est un engagement contractuel. En ESN (Entreprise de Services du Numérique), son non-respect peut entraîner des pénalités financières."
+    "comment": "Point souvent mal compris : le SLA n'est pas une promesse de 'faire vite', c'est un seuil chiffre et opposable, different pour chaque priorite. Sa vraie fonction est de transformer une attente floue ('reparez rapidement') en engagement mesurable ('P1 pris en charge en 15 min'). C'est ce qui rend le support pilotable et auditable : on peut prouver, ticket par ticket, si l'engagement a ete tenu. Sans seuil ecrit, 'rapide' veut dire ce que chacun veut, et aucun litige n'est tranchable."
   },
   {
     "id": "OPT-M01-C04-002",
@@ -46,8 +46,8 @@
     "tier": "B",
     "type": "classic",
     "question": "Que risque une entreprise prestataire (ESN) si elle ne respecte pas les SLA contractuels ?",
-    "answer": "Des pénalités contractuelles financières. Le SLA est un engagement contractuel — son non-respect peut coûter de l'argent et nuire à la relation client.",
-    "comment": "C'est pourquoi le suivi des SLA est crucial dans les ESN. Les outils de ticketing permettent d'alerter automatiquement quand un ticket approche de sa limite SLA."
+    "answer": "Des pénalités contractuelles financières, souvent calculées en pourcentage de la prestation, et un risque pour le renouvellement du contrat. Le SLA est un engagement opposable : son non-respect se chiffre et nuit à la relation client.",
+    "comment": "Consequence terrain pour le technicien : c'est pourquoi les outils declenchent une alerte AVANT l'echeance, pas apres. L'enjeu n'est pas de constater la rupture mais de l'eviter pendant qu'il est encore temps d'agir ou d'escalader. D'ou un reflexe clef : un ticket dont le compteur SLA approche de la limite passe prioritaire sur un ticket plus 'grave' mais encore loin de son echeance. Le SLA reordonne le travail en temps reel, ce n'est pas qu'une affaire de reporting en fin de mois."
   },
   {
     "id": "OPT-M01-C04-006",
@@ -77,7 +77,7 @@
       {"left": "GTR", "right": "Délai avant rétablissement effectif du service"}
     ],
     "answer": "SLA = contrat délais garantis | GTI = délai prise en charge | GTR = délai rétablissement service",
-    "comment": "Ces trois acronymes sont fondamentaux pour tout technicien. Ils seront régulièrement demandés en examen et utilisés au quotidien sur le terrain."
+    "comment": "Hiérarchie à garder en tête : le SLA est le contrat-cadre, GTI et GTR sont deux compteurs distincts qu'il fixe. Les deux compteurs démarrent à l'ouverture du ticket et tournent en parallèle — respecter le GTI ne met pas le GTR en pause, l'horloge de résolution continue."
   },
   {
     "id": "OPT-M01-C04-008",
@@ -105,7 +105,7 @@
       "Évaluer si le GTR (8h depuis l'ouverture) est encore atteignable",
       "Documenter l'incident SLA pour le reporting client"
     ],
-    "comment": "Une rupture de SLA doit être documentée et signalée. L'ignorer aggrave les pénalités potentielles et nuit à la confiance du client."
+    "comment": "Le réflexe contre-productif est de prendre le ticket en silence pour 'rattraper' sans faire de vagues. Une rupture GTI ne disparaît pas parce qu'on agit vite ensuite : elle est déjà enregistrée et comptera dans le reporting. La signaler tout de suite permet de déclencher l'escalade prévue et, surtout, de protéger le GTR qui tourne toujours (8h depuis l'ouverture, pas depuis la prise en charge). Cacher une rupture la transforme en deux ruptures."
   },
   {
     "id": "OPT-M01-C04-010",
@@ -122,6 +122,6 @@
       "Donner une mise à jour sur l'avancement si possible",
       "Rassurer et proposer un contournement temporaire si disponible"
     ],
-    "comment": "La communication sur les SLA fait partie du service. Un utilisateur informé est moins stressé. Expliquer GTI vs GTR évite les malentendus fréquents."
+    "comment": "Le malentendu vient du mot 'pris en charge' que l'utilisateur entend comme 'réglé'. Plutôt que de réciter les sigles GTI/GTR, traduisez : 'votre demande a bien été reçue et attribuée (c'est fait dans les temps), maintenant la résolution est en cours et l'échéance prévue est dans tel délai'. Donner une échéance datée vaut mieux que rassurer dans le vague : un utilisateur tendu se calme avec un repère concret, pas avec un 'on s'en occupe'."
   }
 ]

@@ -7,7 +7,7 @@
     "type": "classic",
     "question": "Quels sont les trois critères principaux pour choisir un boîtier PC ?",
     "answer": "1. Ergonomie et design (encombrement, esthétique). 2. Compatibilité matérielle (format carte mère, longueur GPU, hauteur ventirad). 3. Flux d'air / Airflow (évacuation de la chaleur).",
-    "comment": "Ces trois critères sont indissociables : un boîtier esthétique mais mal ventilé finira par faire surchauffer les composants."
+    "comment": "L'ordre des priorités change selon le contexte : en entreprise la compatibilité (format, longueur GPU) prime, en salle de réunion le design et le silence passent devant. L'airflow ne se sacrifie jamais : un boîtier joli mais étouffé fait throttler les composants."
   },
   {
     "id": "OPT-M02-C01-002",
@@ -55,9 +55,9 @@
     "chapter": "Les boîtiers",
     "tier": "B",
     "type": "classic",
-    "question": "Qu'est-ce que la configuration 'push-pull' sur un radiateur ?",
-    "answer": "Des ventilateurs placés des deux côtés d'un radiateur : un côté pousse l'air (push), l'autre l'aspire (pull). Cela améliore le débit d'air à travers le radiateur sans augmenter la vitesse des ventilateurs.",
-    "comment": "Cette configuration est courante sur les radiateurs de watercooling AIO. Elle augmente l'efficacité thermique surtout lorsque le radiateur est épais."
+    "question": "Que sont les emplacements de ventilateurs (fan mounts) annoncés sur la fiche d'un boîtier, et pourquoi leur nombre et leur taille comptent-ils ?",
+    "answer": "Ce sont les emplacements prévus dans le châssis pour visser des ventilateurs (façade, arrière, haut, parfois bas). La fiche indique le nombre et les tailles supportées (120 mm, 140 mm). Plus il y a d'emplacements, plus on peut équilibrer aspiration et extraction ; un ventilateur de 140 mm déplace plus d'air à vitesse plus basse (donc plus silencieux) qu'un 120 mm.",
+    "comment": "Un boîtier livré avec un seul ventilateur arrière peut accepter d'autres ventilateurs en façade et en haut : c'est ce qu'on regarde pour savoir si l'airflow sera extensible. Vérifier aussi qu'ajouter un ventilateur en haut n'entre pas en conflit avec un ventirad CPU haut de gamme."
   },
   {
     "id": "OPT-M02-C01-007",

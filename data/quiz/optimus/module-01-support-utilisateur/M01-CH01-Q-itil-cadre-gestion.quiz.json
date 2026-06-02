@@ -6,8 +6,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Qu'est-ce qu'ITIL ? Est-ce un logiciel, une norme ou autre chose ?",
-    "answer": "ITIL est un référentiel de bonnes pratiques pour la gestion des services informatiques. Ce n'est ni un logiciel ni une norme obligatoire.",
-    "comment": "ITIL = Information Technology Infrastructure Library. C'est un guide adopté volontairement par les entreprises, pas une certification d'entreprise ni un outil à installer."
+    "answer": "ITIL est un référentiel de bonnes pratiques pour la gestion des services informatiques (Information Technology Infrastructure Library). Ce n'est ni un logiciel à installer, ni une norme certifiante comme l'ISO 20000 : c'est un guide adopté volontairement.",
+    "comment": "La nuance a des conséquences concrètes : on ne peut pas etre 'certifie ITIL' en tant qu'entreprise (seules les personnes passent la certification), et personne ne peut imposer ITIL par obligation legale. Une organisation pioche dans le referentiel ce qui sert son contexte plutot que d'appliquer tout le catalogue. Confondre ITIL avec une norme contraignante fait croire a tort qu'il faut tout implementer pour etre 'conforme'."
   },
   {
     "id": "OPT-M01-C01-002",
@@ -16,8 +16,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Quelle est la version actuelle d'ITIL et qui la publie ?",
-    "answer": "ITIL 4, publié par AXELOS.",
-    "comment": "ITIL 4 est sorti en 2019. AXELOS est l'organisme qui maintient et édite le référentiel."
+    "answer": "ITIL 4, publié par AXELOS (sorti en 2019).",
+    "comment": "ITIL 4 a recentré le référentiel sur la création de valeur et l'agilité, là où ITIL v3 (2007) raisonnait surtout en processus cloisonnés. Retenir le numéro de version compte moins que comprendre ce glissement : on ne gère plus des processus pour eux-mêmes, mais le service rendu de bout en bout."
   },
   {
     "id": "OPT-M01-C01-003",
@@ -27,7 +27,7 @@
     "type": "classic",
     "question": "Quelle est l'idée centrale d'ITIL en une phrase ?",
     "answer": "L'informatique rend un SERVICE aux utilisateurs — l'objectif est de délivrer ce service de façon fiable et efficace.",
-    "comment": "ITIL place l'utilisateur au centre : l'IT n'est pas là pour gérer des machines, mais pour rendre un service. Tout est pensé en termes de valeur rendue, de délais et de qualité."
+    "comment": "Conséquence concrète de cette idée : on mesure le succès du support à l'aune de l'utilisateur (service rétabli, délai tenu), pas de la prouesse technique. Un poste réparé brillamment mais en 3 jours alors qu'un simple contournement suffisait reste un échec de service."
   },
   {
     "id": "OPT-M01-C01-004",
@@ -37,7 +37,7 @@
     "type": "classic",
     "question": "Quels sont les 3 types de sollicitations qu'un centre de services peut recevoir ?",
     "answer": "1. Demande de service (requête normale, sans dysfonctionnement). 2. Incident (interruption non planifiée d'un service). 3. Problème (cause racine d'un ou plusieurs incidents).",
-    "comment": "Ces 3 types se traitent différemment : une demande est planifiable, un incident doit être résolu vite, un problème demande une investigation de fond."
+    "comment": "Le piège est de tout traiter comme un incident. Mal catégoriser fausse toute la suite : une demande de service classée 'incident' déclenche une urgence injustifiée, tandis qu'un incident récurrent jamais requalifié en 'problème' se re-résout indéfiniment sans qu'on en attaque la cause. La catégorie n'est pas une étiquette administrative, elle détermine le circuit de traitement."
   },
   {
     "id": "OPT-M01-C01-005",
@@ -46,8 +46,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Quelle est la différence entre un incident et un problème selon ITIL ?",
-    "answer": "L'incident est le symptôme visible (le service ne fonctionne plus). Le problème est la cause racine qui explique pourquoi l'incident s'est produit.",
-    "comment": "Analogie : l'incident = la fièvre, le problème = l'infection. On traite l'incident pour rétablir le service rapidement ; on résout le problème pour éviter que ça se reproduise."
+    "answer": "L'incident est le symptôme visible et ponctuel (le service ne fonctionne plus, ici et maintenant). Le problème est la cause racine sous-jacente qui explique pourquoi un ou plusieurs incidents se produisent.",
+    "comment": "Analogie utile : l'incident = la fievre, le probleme = l'infection. Mais l'enjeu pratique est le rythme de traitement : l'incident se traite dans l'urgence pour retablir vite (meme par un contournement provisoire), le probleme se traite a froid, en investigation de fond. Confondre les deux mene a deux erreurs opposees : bricoler un contournement sans jamais ouvrir le probleme (l'incident revient indefiniment), ou bloquer le retablissement urgent en cherchant la cause racine alors que l'utilisateur attend."
   },
   {
     "id": "OPT-M01-C01-006",
@@ -57,7 +57,7 @@
     "type": "classic",
     "question": "Que signifie SPOC et à quoi correspond-il concrètement ?",
     "answer": "SPOC = Single Point of Contact. Concrètement, c'est le centre de services : le point d'entrée unique par lequel passent toutes les demandes des utilisateurs.",
-    "comment": "Le SPOC évite que les utilisateurs contactent directement les techniciens ou les équipes spécialisées. Tout passe par un guichet unique pour tracer, prioriser et ne rien perdre."
+    "comment": "Le bénéfice n'est pas le confort mais la mesure : tant que tout passe par un guichet unique, on sait combien de tickets sont ouverts, lesquels traînent et lesquels prioriser. Dès qu'un utilisateur appelle un technicien en direct, ce ticket devient invisible — pas tracé, pas priorisé, pas compté dans le SLA. Le SPOC n'organise pas le flux pour faire joli, il le rend pilotable."
   },
   {
     "id": "OPT-M01-C01-007",
@@ -67,7 +67,7 @@
     "type": "classic",
     "question": "Vrai ou Faux : une demande de service est une interruption non planifiée d'un service.",
     "answer": "Faux. Une demande de service est une requête normale, sans dysfonctionnement (ex : installer un logiciel, créer un compte). L'interruption non planifiée, c'est un incident.",
-    "comment": "Confondre les deux est une erreur fréquente. Une demande de service ne suppose aucune panne — elle peut néanmoins être urgente selon le contexte métier."
+    "comment": "Le critère qui les sépare n'est pas l'urgence mais l'existence d'une panne : l'incident répare quelque chose de cassé, la demande de service livre quelque chose qui marche déjà. C'est ce qui change le circuit de traitement : un incident déclenche un diagnostic, une demande suit un processus d'approbation/exécution. Une demande peut être urgente (créer le compte du nouveau salarié qui arrive demain) sans pour autant devenir un incident."
   },
   {
     "id": "OPT-M01-C01-008",
@@ -107,7 +107,7 @@
       {"left": "N3", "right": "Experts ou éditeurs — incidents complexes hors périmètre N2"}
     ],
     "answer": "N1 = technicien proximité | N2 = spécialistes | N3 = experts/éditeurs",
-    "comment": "Cette hiérarchie garantit que les ressources expertes ne sont mobilisées que pour les cas qui les nécessitent vraiment, libérant N1 pour le volume courant."
+    "comment": "Le filtrage par niveau a une logique economique : l'heure d'un expert N3 ou d'un editeur coute cher et est rare. Faire remonter directement tout en N3 saturerait les experts et ralentirait les cas vraiment complexes. C'est pourquoi le N1 absorbe environ 80% du volume : il n'est pas le maillon faible de la chaine, il en est le filtre qui protege le temps des niveaux superieurs."
   },
   {
     "id": "OPT-M01-C01-011",

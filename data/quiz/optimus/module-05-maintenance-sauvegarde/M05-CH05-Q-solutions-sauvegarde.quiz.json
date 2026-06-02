@@ -7,7 +7,7 @@
     "type": "classic",
     "question": "Quel outil Windows natif permet de sauvegarder des fichiers et dossiers sans installer de logiciel tiers ?",
     "answer": "La Sauvegarde de fichiers Windows (anciennement Historique des fichiers) integree au Panneau de configuration ou dans les Parametres. Elle permet de planifier des sauvegardes vers un lecteur externe ou un partage reseau.",
-    "comment": "L'outil natif convient pour les postes individuels ou les petites structures sans infrastructure serveur. Ses limites : pas de sauvegarde image complete (bare-metal), pas de gestion centralisee multi-postes."
+    "comment": "Piege frequent : l'Historique des fichiers ne sauvegarde par defaut que les bibliotheques (Documents, Images, Bureau, Contacts) et pas l'integralite du disque ni les applications. Un technicien qui s'y fie pour proteger un poste laisse hors couverture tout ce qui est range hors des dossiers utilisateur standard. Pour un poste, c'est un complement, jamais la seule ligne de defense."
   },
   {
     "id": "OPT-M05-C05-002",
@@ -27,7 +27,7 @@
     "type": "classic",
     "question": "Qu'est-ce que Proxmox Backup Server et pour quel type d'infrastructure est-il concu ?",
     "answer": "Proxmox Backup Server est une solution open source gratuite concue pour les environnements Proxmox VE. Elle deduplique les donnees, chiffre les sauvegardes et permet des restaurations incrementales rapides.",
-    "comment": "La deduplication cote client de Proxmox Backup Server reduit fortement l'espace consomme par les sauvegardes incrementales. Solution privilegiee pour les PME et laboratoires deja sous Proxmox VE, car sans cout de licence."
+    "comment": "Point cle souvent mal compris : la deduplication travaille au niveau bloc et entre toutes les sauvegardes, pas seulement au sein d'une VM. Dix VMs basees sur le meme modele Debian ne stockent les blocs systeme communs qu'une seule fois — d'ou des ratios de compression spectaculaires. Revers de la medaille : un datastore Proxmox Backup Server fortement deduplique est fragile, la perte d'un bloc reference partout peut impacter de nombreuses sauvegardes. D'ou la regle : PBS ne dispense pas d'une copie hors site."
   },
   {
     "id": "OPT-M05-C05-004",

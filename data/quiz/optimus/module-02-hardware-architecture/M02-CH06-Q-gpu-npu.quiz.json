@@ -67,7 +67,7 @@
     "type": "classic",
     "question": "Comment visualiser l'activité du NPU sur un PC Windows 11 ?",
     "answer": "Dans le Gestionnaire des tâches de Windows 11, onglet Performance. Si un NPU est présent, une entrée dédiée apparaît et affiche son utilisation en pourcentage en temps réel.",
-    "comment": "Le NPU étant une technologie récente, son monitoring dans Windows 11 a été ajouté progressivement via des mises à jour. Surveiller les pilotes spécifiques NPU est recommandé en maintenance."
+    "comment": "Si l'entrée NPU n'apparaît pas alors que le CPU est censé en avoir un (Intel Core Ultra, Snapdragon X), la cause est presque toujours un pilote NPU manquant ou une version de Windows 11 trop ancienne : mettre à jour avant de conclure à une absence matérielle."
   },
   {
     "id": "OPT-M02-C06-008",
@@ -75,9 +75,9 @@
     "chapter": "La carte graphique (GPU) et NPU",
     "tier": "A",
     "type": "classic",
-    "question": "Vrai ou faux : un PC avec uniquement un GPU intégré Intel UHD peut faire tourner des jeux 3D récents en haute résolution. Justifiez.",
-    "answer": "Faux. Un iGPU est suffisant pour du bureau, de la vidéo et des jeux 2D légers. Pour les jeux 3D récents en haute résolution (1080p+), un GPU dédié avec VRAM dédiée est indispensable.",
-    "comment": "L'iGPU partage la RAM système (moins de bande passante, plus de latence) et n'a pas de VRAM dédiée. Les jeux modernes nécessitent souvent 8-16 Go de VRAM pour les textures haute résolution."
+    "question": "Un client demande un PC pour faire de la retouche photo sur Lightroom et un peu de montage vidéo 1080p, mais ne joue pas. Faut-il forcément un GPU dédié ? Justifiez.",
+    "answer": "Pas forcément. Un iGPU moderne (Intel Arc intégré, AMD Radeon 700M) gère la retouche photo et l'export vidéo 1080p de façon correcte, surtout grâce aux moteurs d'encodage matériel (Quick Sync chez Intel). Un GPU dédié reste utile pour accélérer certains filtres lourds et le rendu 4K, mais il n'est pas indispensable pour cet usage précis : mieux vaut investir cette part de budget dans plus de RAM et un SSD NVMe rapide.",
+    "comment": "Le piège est de croire 'création = GPU dédié obligatoire'. Le bon réflexe est de qualifier l'usage réel : résolution de montage, logiciels, formats. Pour de la 4K, du rendu 3D ou de l'IA générative locale, le dGPU avec sa VRAM redevient incontournable."
   },
   {
     "id": "OPT-M02-C06-009",

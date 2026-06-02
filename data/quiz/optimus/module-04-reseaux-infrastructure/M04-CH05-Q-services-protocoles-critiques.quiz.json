@@ -83,7 +83,7 @@
       {"left": "`netstat -an`", "right": "Lister les ports ouverts et connexions actives"}
     ],
     "answer": "ipconfig /release+/renew = renouveler IP DHCP | arp -a = cache ARP | nslookup = test DNS | netstat -an = ports ouverts",
-    "comment": "Ces commandes couvrent les 4 niveaux du diagnostic réseau : configuration IP (ipconfig), résolution ARP (arp), résolution DNS (nslookup), état des connexions TCP/ports (netstat)."
+    "comment": "Pièges terrain : nslookup interroge directement le DNS et court-circuite le fichier hosts et le cache DNS Windows — un nom peut donc résoudre avec nslookup mais échouer dans le navigateur (vider le cache avec ipconfig /flushdns). Et netstat -an affiche les IP/ports en numérique : ajouter -b (en admin) pour voir quel exécutable détient chaque connexion."
   },
   {
     "id": "OPT-M04-C05-009",
@@ -99,7 +99,7 @@
       {"left": "Deux VLANs ne communiquent pas", "right": "Inter-VLAN requiert un routeur ou switch L3"}
     ],
     "answer": "169.254 = DHCP KO | ping OK/appli KO = vérifier port TCP | pas Internet malgré DNS OK = passerelle absente | VLANs isolés = besoin routage L3",
-    "comment": "Ces 4 erreurs sont les plus fréquentes en intervention réseau. Les connaître par coeur permet de résoudre 80 % des incidents réseau sans escalade."
+    "comment": "Le fil conducteur de ces 4 cas : un ping qui passe ne prouve QUE la couche 3 (IP/route). Il ne dit rien du port applicatif (couche 4), du DHCP, ni de la passerelle pour sortir du sous-réseau. D'où la règle : un test ICMP réussi n'est jamais une preuve que le service fonctionne — toujours tester la couche réellement en cause (telnet IP port, ipconfig, nslookup)."
   },
   {
     "id": "OPT-M04-C05-010",

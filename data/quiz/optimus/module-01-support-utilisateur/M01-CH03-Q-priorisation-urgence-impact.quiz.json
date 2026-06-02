@@ -6,8 +6,8 @@
     "tier": "C",
     "type": "classic",
     "question": "Selon quelle formule calcule-t-on la priorité d'un ticket ?",
-    "answer": "Priorité = Urgence × Impact.",
-    "comment": "On ne traite pas les tickets dans l'ordre d'arrivée mais selon leur priorité. Urgence = délai avant conséquence. Impact = nombre de personnes / criticité métier touchées."
+    "answer": "Priorité = Urgence × Impact. L'urgence mesure le délai avant conséquence ; l'impact mesure le nombre de personnes et/ou la criticité métier touchées.",
+    "comment": "Le mot cle est la multiplication, pas l'addition. Avec une multiplication, un seul facteur faible ecrase le resultat : urgence forte x impact faible reste une priorite basse. C'est ce qui empeche de classer P1 le moindre ticket 'qui presse'. La formule sert justement a sortir de l'ordre d'arrivee et du ressenti : sans elle, on traite le plus bruyant ou le dernier arrive, pas le plus important pour le service."
   },
   {
     "id": "OPT-M01-C03-002",
@@ -27,7 +27,7 @@
     "type": "classic",
     "question": "Que représente l'impact dans le calcul de priorité ?",
     "answer": "L'impact représente le nombre de personnes touchées et/ou la criticité métier affectée par l'incident.",
-    "comment": "Un serveur de production à l'arrêt qui bloque toute une usine = impact fort. Une souris défaillante pour un seul utilisateur = impact faible, même si l'utilisateur est mécontent."
+    "comment": "Attention : l'impact n'est pas qu'une question de nombre. Une seule personne bloquée peut représenter un impact fort si sa fonction est critique (la paie le jour du virement, le serveur de facturation en fin de mois). Compter les têtes ne suffit pas — il faut peser ce que l'activité bloquée représente pour l'entreprise."
   },
   {
     "id": "OPT-M01-C03-004",
@@ -47,7 +47,7 @@
     "type": "classic",
     "question": "Vrai ou Faux : un incident touchant peu de personnes mais avec une urgence forte sera toujours classé P1.",
     "answer": "Faux. Impact faible + urgence forte = P3 Moyenne selon la matrice. P1 nécessite un impact fort ET une urgence forte.",
-    "comment": "Les deux critères se combinent. Même une urgence très forte ne monte pas au P1 si l'impact est faible. C'est la matrice croisée qui donne la priorité finale."
+    "comment": "L'erreur de débutant est de prioriser sur le critère le plus criant — ici l'urgence — alors que la matrice multiplie : un facteur faible plafonne le résultat, comme 1 × 5 reste petit. Conséquence terrain : ce qui fait monter un ticket en P1, ce n'est jamais 'ça presse', c'est 'ça presse ET ça touche beaucoup ou du critique'. Une panique individuelle n'est pas une crise de service."
   },
   {
     "id": "OPT-M01-C03-006",
@@ -107,7 +107,7 @@
       "Traiter A immédiatement, informer le directeur du délai et de la raison",
       "Escalader si nécessaire pour traiter les deux en parallèle"
     ],
-    "comment": "La priorisation est objective — elle ne dépend pas du titre de la personne. Expliquer la priorité au directeur fait partie de la posture professionnelle."
+    "comment": "Le piege est le reflexe hierarchique : 'c'est le directeur, je passe d'abord'. Or la matrice ne connait pas les titres, elle ne pese que l'impact reel sur le service. Un directeur prive d'ecran reste un seul utilisateur, alors que la compta bloquee en fin de mois met en peril une echeance de toute l'entreprise. La competence professionnelle ici est double : tenir la priorisation objective ET savoir l'expliquer au directeur sans se justifier platement, en lui montrant le raisonnement impact/urgence plutot qu'en s'excusant."
   },
   {
     "id": "OPT-M01-C03-010",

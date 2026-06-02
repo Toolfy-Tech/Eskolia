@@ -36,8 +36,8 @@
     "tier": "B",
     "type": "classic",
     "question": "Quelle est la première vérification à faire pour un problème sur un outil SaaS (ex : Microsoft 365) ?",
-    "answer": "Vérifier la licence et la connexion Internet. Un outil SaaS dépend d'une connexion active et d'une licence valide — la majorité des pannes vient de là.",
-    "comment": "SaaS = Software as a Service = application hébergée dans le cloud, accessible via navigateur. Sans connexion ou sans licence valide, l'application ne fonctionne tout simplement pas."
+    "answer": "Vérifier la licence et la connexion Internet. Un outil SaaS (Software as a Service, application hébergée dans le cloud) dépend d'une connexion active et d'une licence valide — la majorité des pannes vient de là, pas du poste.",
+    "comment": "Le reflexe a inverser : sur un logiciel installe en local, on regarde d'abord le poste ; sur un SaaS, le poste n'heberge presque rien, l'application tourne ailleurs. Commencer par reinstaller, vider le cache ou fouiller la machine fait perdre du temps alors que la cause est presque toujours en amont : abonnement expire, droit retire par l'admin, ou simple coupure reseau. Verifier licence + connexion d'abord, c'est aller la ou se trouve reellement 80% des pannes SaaS avant de toucher au poste."
   },
   {
     "id": "OPT-M01-C07-005",
@@ -83,7 +83,7 @@
       {"left": "Personne avec trouble cognitif", "right": "Simplifier les instructions, une étape à la fois, reformuler souvent"}
     ],
     "answer": "Malentendant = articuler/écrire | Malvoyant = décrire à voix haute | Trouble cognitif = simplifier/une étape à la fois",
-    "comment": "L'adaptation est au cœur du métier de technicien de proximité. Chaque profil nécessite une approche différente — la rigidité dans la communication est aussi préjudiciable que le jargon technique."
+    "comment": "Le fil conducteur : compenser le canal défaillant en s'appuyant sur un autre. Le malentendant perd l'audio, on bascule sur l'écrit et le visuel ; le malvoyant perd le visuel, on bascule sur une description verbale précise. Le réflexe à éviter est universel : hausser le ton ou répéter à l'identique ne compense rien."
   },
   {
     "id": "OPT-M01-C07-009",

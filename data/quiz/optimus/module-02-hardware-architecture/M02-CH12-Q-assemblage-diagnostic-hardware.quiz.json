@@ -150,9 +150,9 @@
     "question": "Un PC démarre normalement (bips, ventilateurs), mais l'écran reste noir. Quel est le problème ?",
     "answer": "Le signal vidéo est envoyé sur la mauvaise sortie. Soit le câble est branché sur la carte mère (iGPU désactivé) alors qu'un GPU dédié est installé, soit sur le GPU alors que l'iGPU est sélectionné dans le BIOS.",
     "indices": [
-      "Le PC semble fonctionner normalement (sons de démarrage Windows audibles depuis les haut-parleurs).",
-      "En branchant le câble sur la sortie vidéo du GPU dédié au lieu de la carte mère, l'image apparaît.",
-      "Dans le BIOS, le paramètre 'Primary Display' est réglé sur 'PCIE' mais le câble était branché sur la carte mère."
+      "Le PC semble fonctionner normalement : sons de démarrage Windows audibles, ventilateurs et LEDs actifs, aucun bip d'erreur.",
+      "Le câble vidéo est branché sur le panneau de ports situé à l'horizontale, près des ports USB de la carte mère.",
+      "Une carte graphique dédiée est bien présente dans le slot PCIe x16, avec ses propres sorties vidéo plus bas sur le panneau arrière."
     ],
     "comment": "Erreur très fréquente lors du premier assemblage ou après ajout d'une carte graphique. Toujours brancher le câble vidéo sur le GPU dédié si un GPU PCIe est installé (sauf configuration spéciale)."
   },
