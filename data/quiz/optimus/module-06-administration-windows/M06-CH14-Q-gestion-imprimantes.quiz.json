@@ -1,0 +1,176 @@
+[
+  {
+    "id": "OPT-M06-C14-001",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle du spouleur d'impression (Print Spooler) et que se passe-t-il s'il plante ?",
+    "answer": "Le spouleur met les documents en file d'attente, les traduit dans le langage de l'imprimante et les envoie un par un. S'il plante ou se corrompt, toute impression est paralysée pour l'ensemble des documents et des utilisateurs concernés, même si l'imprimante elle-même fonctionne parfaitement.",
+    "comment": "C'est le service à connaître par cœur en support de proximité, où les imprimantes représentent 20 à 30% des tickets. Le piège mental : le problème est presque toujours côté PC/serveur (le spouleur), pas côté imprimante, d'où l'inutilité de redémarrer la machine physique."
+  },
+  {
+    "id": "OPT-M06-C14-002",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi le port WSD pose-t-il fréquemment des problèmes de fiabilité avec les imprimantes réseau ?",
+    "answer": "Quand on ajoute une imprimante via les Paramètres Windows, le système crée souvent un port WSD (Web Services for Devices) au lieu d'un port TCP/IP standard. WSD est instable : quand l'imprimante passe en veille, Windows perd la connexion et l'affiche Hors connexion, même quand elle fonctionne en réalité.",
+    "comment": "Symptôme typique du WSD : imprimante qui tombe Hors connexion de façon aléatoire, souvent après une période d'inactivité (la nuit, le week-end). La parade durable est de reconfigurer en port TCP/IP standard pointant vers une IP fixe, jamais de laisser Windows choisir WSD."
+  },
+  {
+    "id": "OPT-M06-C14-003",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre PCL et PostScript, et dans quel contexte utiliser chacun ?",
+    "answer": "PCL (Printer Command Language, version courante PCL6) est le standard universel : rapide et excellent pour la bureautique (Word, Excel, PDF texte). PostScript (PS) offre une qualité supérieure pour les graphiques et la colorimétrie, indispensable pour la communication et le marketing (Adobe Illustrator, InDesign).",
+    "comment": "Régle pratique : PCL pour les services administratifs (vitesse, simplicité), PostScript pour les studios graphiques (fidélité des couleurs). Installer un driver PCL chez un graphiste qui imprime depuis Illustrator donnera des rendus colorimétriques décevants : c'est un classique des tickets mal résolus."
+  },
+  {
+    "id": "OPT-M06-C14-004",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un Universal Print Driver (UPD) et quel avantage présente-t-il pour la gestion d'un parc ?",
+    "answer": "Un UPD (HP UPD, Xerox Global) est un pilote générique compatible avec tous les modèles d'imprimantes d'une même marque. Un seul driver léger suffit alors à couvrir tout le parc de cette marque, au lieu d'installer et de maintenir un pilote spécifique par modèle.",
+    "comment": "Gain majeur en déploiement et en maintenance : un seul UPD à pousser par GPO couvre des dizaines de modèles. Cela réduit aussi les conflits de pilotes sur les serveurs d'impression, source fréquente de plantages du spouleur quand chaque modèle a son driver."
+  },
+  {
+    "id": "OPT-M06-C14-005",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi faut-il configurer un Scan to SMB avec un compte de service dédié plutôt qu'avec le compte personnel d'un utilisateur ?",
+    "answer": "Parce que le copieur stocke l'identifiant et le mot de passe pour déposer les scans dans le dossier partagé. Avec un compte personnel, chaque changement de mot de passe de l'utilisateur casse le scan. Un compte de service dédié (ex. svc_scanner) avec un mot de passe qui n'expire pas garantit la continuité.",
+    "comment": "Symptôme révélateur : le scan vers dossier marchait hier et plus aujourd'hui, juste après que l'utilisateur a changé son mot de passe. Le compte de service dédié + droits NTFS Modification sur le dossier + mot de passe non expirant est la configuration robuste à mettre en place dès le départ."
+  },
+  {
+    "id": "OPT-M06-C14-006",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque langage d'impression à ses caractéristiques et son usage :",
+    "pairs": [
+      {"left": "PCL (PCL6)", "right": "Standard universel, rapide, excellent pour la bureautique (Word, Excel, PDF texte)"},
+      {"left": "PostScript (PS)", "right": "Qualité supérieure en graphisme et colorimétrie, indispensable pour Illustrator et InDesign"},
+      {"left": "Universal Print Driver (UPD)", "right": "Pilote générique unique compatible tous les modèles d'une même marque"}
+    ],
+    "answer": "PCL = universel, rapide, bureautique | PostScript = qualité graphique et couleur, marketing | UPD = un seul driver pour tout le parc d'une marque",
+    "comment": "Ne pas confondre langage d'impression (PCL/PostScript, qui décrivent la page) et UPD (un mode de distribution du pilote). Un UPD peut d'ailleurs embarquer un mode PCL ou PostScript : le bon réflexe est de choisir le langage selon l'usage du service, puis le mode de déploiement selon la taille du parc."
+  },
+  {
+    "id": "OPT-M06-C14-007",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque méthode pour trouver l'adresse IP d'une imprimante à sa description :",
+    "pairs": [
+      {"left": "Page de configuration", "right": "Imprimer la page d'infos via un bouton physique sur l'imprimante"},
+      {"left": "Menu réseau du panneau", "right": "Naviguer dans l'écran de l'imprimante jusqu'aux infos TCP/IP"},
+      {"left": "arp -a", "right": "Lister les correspondances IP/MAC du réseau et repérer le préfixe MAC du fabricant"},
+      {"left": "Logiciel constructeur", "right": "Utiliser HP Device Manager ou Xerox CentreWare pour découvrir l'imprimante"}
+    ],
+    "answer": "Page de configuration = bouton physique | Menu réseau = écran panneau TCP/IP | arp -a = table IP/MAC du réseau | Logiciel constructeur = HP Device Manager / Xerox CentreWare",
+    "comment": "arp -a dépanne quand l'imprimante n'a pas d'écran ou est inaccessible : on identifie la machine par le préfixe MAC du fabricant (OUI). La page de configuration reste la méthode la plus fiable car elle donne IP, masque et passerelle d'un coup, directement depuis le matériel."
+  },
+  {
+    "id": "OPT-M06-C14-008",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre le déploiement correct d'une imprimante réseau en entreprise :",
+    "options": [
+      "Choisir et installer le pilote approprié (UPD de la marque)",
+      "Fixer l'IP statique de l'imprimante (interface web ou réservation DHCP)",
+      "Faire une impression de test pour valider le fonctionnement",
+      "Ouvrir le Panneau de configuration et choisir Ajouter une imprimante manuellement",
+      "Déployer l'imprimante sur le parc via GPO (selon l'OU Active Directory)",
+      "Créer un port Standard TCP/IP en saisissant l'IP fixe"
+    ],
+    "answer": [
+      "Fixer l'IP statique de l'imprimante (interface web ou réservation DHCP)",
+      "Ouvrir le Panneau de configuration et choisir Ajouter une imprimante manuellement",
+      "Créer un port Standard TCP/IP en saisissant l'IP fixe",
+      "Choisir et installer le pilote approprié (UPD de la marque)",
+      "Faire une impression de test pour valider le fonctionnement",
+      "Déployer l'imprimante sur le parc via GPO (selon l'OU Active Directory)"
+    ],
+    "comment": "Fixer l'IP en premier est non négociable : sans IP stable, le port TCP/IP pointera un jour dans le vide quand le DHCP réattribuera l'adresse. L'installation manuelle via Standard TCP/IP Port évite le piège du port WSD que Windows créerait automatiquement par les Paramètres."
+  },
+  {
+    "id": "OPT-M06-C14-009",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #810 : 'Un document est bloqué en En cours de suppression depuis 2 heures et plus rien ne s'imprime pour personne.' Comment débloquer la file d'impression ?",
+    "answer": "La file d'impression est corrompue : il faut arrêter le spouleur, vider manuellement le dossier des travaux en attente, puis relancer le spouleur. Un simple redémarrage du service échoue souvent sur une file corrompue, et redémarrer l'imprimante ne sert à rien car le blocage est sur le PC/serveur.",
+    "checklist": [
+      "Arrêter le service : Stop-Service -Name Spooler -Force",
+      "Vider la file corrompue : Remove-Item -Path 'C:\\Windows\\System32\\spool\\PRINTERS\\*' -Force",
+      "Relancer le service : Start-Service -Name Spooler",
+      "Vérifier que la file est vide et que le spouleur est Running",
+      "Faire un test d'impression pour confirmer le déblocage",
+      "Ne PAS redémarrer l'imprimante : le blocage n'est pas matériel"
+    ],
+    "comment": "Le piège classique est de tourner autour de l'imprimante (éteindre/rallumer) alors que le problème est 100% côté machine. Le Restart-Service simple ne suffit pas sur une file corrompue : il faut impérativement vider spool\\PRINTERS pendant que le service est arrêté, sinon les fichiers verrouillés persistent."
+  },
+  {
+    "id": "OPT-M06-C14-010",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #821 : 'Une imprimante réseau apparaît Hors connexion sous Windows alors qu'elle imprime des pages de test depuis son propre panneau et que tout le monde la voit allumée.' Comment résoudre durablement ?",
+    "answer": "L'imprimante a été ajoutée via un port WSD instable, qui perd la connexion (notamment après une veille) et l'affiche Hors connexion à tort. La solution durable est de supprimer ce port et de reconfigurer l'imprimante en port Standard TCP/IP pointant vers une IP fixe.",
+    "checklist": [
+      "Confirmer que l'imprimante fonctionne (page de test depuis son panneau, ping de son IP OK)",
+      "Ouvrir les propriétés de l'imprimante > onglet Ports et constater un port de type WSD",
+      "Fixer l'IP de l'imprimante en statique (interface web ou réservation DHCP)",
+      "Créer un nouveau port Standard TCP/IP avec cette IP fixe",
+      "Basculer l'imprimante sur le nouveau port et supprimer l'ancien port WSD",
+      "Imprimer un document de test depuis le PC pour valider la stabilité"
+    ],
+    "comment": "Le diagnostic se fait à l'onglet Ports : voir WSD au lieu de Standard TCP/IP révèle immédiatement la cause. Reconfigurer en TCP/IP + IP fixe est la seule correction pérenne ; sans IP fixe, le port TCP/IP finirait par pointer vers une autre machine au prochain bail DHCP."
+  },
+  {
+    "id": "OPT-M06-C14-011",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "TICKET #834 : Une imprimante réseau tombe hors ligne de façon aléatoire, principalement le matin en arrivant, puis fonctionne après une intervention. Diagnostiquez la cause.",
+    "answer": "L'imprimante est connectée via un port WSD. La nuit, elle se met en veille ; Windows, qui surveille la connexion via WSD, perd le lien pendant la veille et l'affiche Hors connexion au réveil le matin. La solution durable est de reconfigurer en port Standard TCP/IP vers une IP fixe.",
+    "indices": [
+      "Le problème est surtout présent le matin, à la première utilisation de la journée.",
+      "L'imprimante n'a aucun défaut matériel : pas de bourrage, pas d'erreur sur son écran, elle imprime ses propres pages de test.",
+      "La nuit et le week-end, l'imprimante passe en veille faute d'activité, et c'est au réveil qu'elle apparaît Hors connexion.",
+      "L'onglet Ports des propriétés montre un port WSD : Windows perd la connexion pendant la veille au lieu de la rétablir."
+    ],
+    "comment": "La corrélation avec les périodes d'inactivité (nuit, week-end) est la signature du WSD : il ne survit pas à une mise en veille prolongée. Plutôt que désactiver la veille de l'imprimante (gaspillage d'énergie), reconfigurer en TCP/IP + IP fixe règle le problème à la racine."
+  },
+  {
+    "id": "OPT-M06-C14-012",
+    "category": "Administration de Windows",
+    "chapter": "Gestion et dépannage des imprimantes",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "TICKET #840 : Le Scan to SMB d'un copieur fonctionnait hier mais ne dépose plus aucun fichier dans le dossier partagé aujourd'hui. Diagnostiquez la cause.",
+    "answer": "Le copieur a été configuré avec le compte personnel d'un utilisateur. Cet utilisateur a changé son mot de passe hier ; le copieur tente toujours de s'authentifier avec l'ancien mot de passe et l'accès au partage est refusé. Solution : reconfigurer le profil SMB du copieur avec un compte de service dédié dont le mot de passe n'expire pas.",
+    "indices": [
+      "Rien n'a changé côté réseau ni côté dossier partagé : le partage existe toujours et reste accessible depuis un PC.",
+      "Le copieur affiche une erreur d'authentification ou d'accès refusé au moment du dépôt du scan.",
+      "L'utilisateur dont le compte est saisi dans le profil SMB du copieur a changé son mot de passe la veille.",
+      "Le copieur utilise toujours l'ancien mot de passe : c'est un compte personnel qui avait été configuré au lieu d'un compte de service dédié."
+    ],
+    "comment": "La corrélation panne du jour / changement de mot de passe de la veille pointe directement vers un compte personnel mal utilisé. Réparer en remettant le nouveau mot de passe ne fait que repousser le problème : la vraie correction est de basculer sur un compte de service (svc_scanner) au mot de passe non expirant."
+  }
+]
