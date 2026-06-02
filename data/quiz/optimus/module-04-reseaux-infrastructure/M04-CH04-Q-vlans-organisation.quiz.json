@@ -1,0 +1,143 @@
+[
+  {
+    "id": "OPT-M04-C04-001",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un VLAN et quels sont ses 3 bénéfices principaux ?",
+    "answer": "Un VLAN (Virtual LAN) est un réseau local logique créé par configuration logicielle sur un switch. 3 bénéfices : Sécurité (isolation par défaut entre VLANs), Réduction des broadcasts (chaque VLAN = son propre domaine), Flexibilité (regroupement logique indépendant du câblage physique).",
+    "comment": "Distinction clé à maîtriser : un VLAN = un domaine de broadcast = (en pratique) un sous-réseau IP. Segmenter en VLANs sans donner un sous-réseau distinct à chacun n'a aucun sens, et inversement deux VLANs qui se parlent passent forcément par un routage L3. À l'échelle : sur un réseau plat de 500 postes, chaque requête ARP ou DHCP est diffusée aux 500 machines ; en découpant en VLANs de 50, on divise ce bruit de broadcast par 10, ce qui soulage CPU et bande passante."
+  },
+  {
+    "id": "OPT-M04-C04-002",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un port Access et un port Trunk sur un switch ?",
+    "answer": "Port Access : appartient à un seul VLAN, connecté à un équipement final (PC, serveur). Trafic non taggué. Port Trunk : transporte le trafic de PLUSIEURS VLANs (liens inter-switch). Chaque trame reçoit un tag 802.1Q de 4 octets indiquant son VLAN.",
+    "comment": "Analogie : le trunk est un convoyeur qui achemine des colis (trames) étiquetés (tag VLAN) dans le bon bac (VLAN). Le standard IEEE 802.1Q est universel pour les trunks VLAN."
+  },
+  {
+    "id": "OPT-M04-C04-003",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il jamais laisser des postes en production dans le VLAN 1 sur un switch Cisco ?",
+    "answer": "Le VLAN 1 est le VLAN d'usine sur Cisco : tous les ports y sont par défaut. Un réseau plat avec tout en VLAN 1 = pas d'isolation, un seul gros domaine de broadcast, et tout le monde voit tout le trafic.",
+    "comment": "Dans le cas AéroSud, les 48 ports étaient tous dans le VLAN 1 — ce qui a permis à un stagiaire d'accéder aux fiches de paie. La segmentation VLAN est la première mesure de sécurité réseau."
+  },
+  {
+    "id": "OPT-M04-C04-004",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "B",
+    "type": "classic",
+    "question": "Comment faire communiquer deux VLANs différents ? Pourquoi ne peuvent-ils pas communiquer par défaut ?",
+    "answer": "Par défaut, deux VLANs sont isolés (c'est leur but). Pour les faire communiquer, il faut un équipement de couche 3 : un routeur (méthode Router-on-a-stick) ou un switch L3 avec des interfaces virtuelles (SVI).",
+    "comment": "Métaphore : les VLANs posent les murs, le routage inter-VLAN installe les portes à badge. On contrôle exactement qui peut passer d'un VLAN à l'autre via des règles de routage/pare-feu."
+  },
+  {
+    "id": "OPT-M04-C04-005",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le Port-Security 'sticky' et quel est son mode de violation par défaut ?",
+    "answer": "L'option 'sticky' : le switch apprend automatiquement la première adresse MAC connectée et l'enregistre dans la configuration. Mode de violation par défaut : Shutdown — le port se désactive (err-disable) si une MAC non autorisée se connecte. Réactivation manuelle avec `shutdown` puis `no shutdown`.",
+    "comment": "Port-Security avec sticky est pratique : pas besoin de connaître les MACs à l'avance, le switch les apprend tout seul. Mais attention : en mode Shutdown, un câble branché par erreur sur le mauvais port peut couper un service."
+  },
+  {
+    "id": "OPT-M04-C04-006",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi est-il important de sauvegarder la configuration d'un switch Cisco avec 'copy running-config startup-config' ?",
+    "answer": "La running-config est en RAM (perdue au reboot). La startup-config est en NVRAM (persistante). Sans cette sauvegarde, toute la configuration VLAN est perdue au prochain redémarrage du switch.",
+    "comment": "C'est une erreur classique en production : on configure des VLANs, tout fonctionne, puis le switch redémarre (coupure de courant, MAJ) et tout disparaît. Toujours sauvegarder après chaque modification."
+  },
+  {
+    "id": "OPT-M04-C04-007",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque commande Cisco à ce qu'elle vérifie :",
+    "pairs": [
+      {"left": "`show vlan brief`", "right": "VLANs créés, noms, ports assignés"},
+      {"left": "`show interfaces trunk`", "right": "Ports trunk actifs, encapsulation 802.1Q"},
+      {"left": "`show mac address-table`", "right": "Quelle adresse MAC est sur quel port"},
+      {"left": "`show port-security interface`", "right": "État de la sécurité de port (MACs autorisées, violations)"}
+    ],
+    "answer": "show vlan brief = VLANs/ports | show interfaces trunk = trunks 802.1Q | show mac address-table = MAC/ports | show port-security interface = sécurité port",
+    "comment": "Ordre logique en dépannage : show vlan brief d'abord (le port est-il dans le bon VLAN ?), puis show interfaces trunk (le VLAN est-il bien transporté entre switches ?). Piège classique du trunk : la liste des VLANs autorisés (switchport trunk allowed vlan) oublie le VLAN concerné — le port access est correct mais le trafic ne traverse pas le lien inter-switch."
+  },
+  {
+    "id": "OPT-M04-C04-008",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #315 : 'Depuis ce matin, les caisses du showroom ne peuvent plus imprimer les tickets. Le responsable dit qu'un technicien est intervenu hier soir sur le switch.'",
+    "answer": "Problème de configuration VLAN : le port de l'imprimante a probablement été déplacé dans le mauvais VLAN, ou le trunk inter-switch n'a pas été sauvegardé après modification.",
+    "checklist": [
+      "Se connecter au switch concerné en SSH",
+      "Exécuter `show vlan brief` pour voir dans quel VLAN est le port de l'imprimante",
+      "Vérifier que l'imprimante est bien dans VLAN 50 (SHOWROOM)",
+      "Si port dans VLAN 1 ou mauvais VLAN : `switchport access vlan 50` sur le bon port",
+      "Exécuter `show interfaces trunk` pour vérifier les trunks inter-switch",
+      "Sauvegarder : `copy running-config startup-config`",
+      "Tester l'impression depuis une caisse"
+    ],
+    "comment": "Toute intervention sur un switch doit se terminer par une sauvegarde de config. Une modification non sauvegardée est perdue au prochain reboot — et un switch peut redémarrer suite à une MAJ automatique."
+  },
+  {
+    "id": "OPT-M04-C04-009",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la séquence complète de configuration des VLANs sur un switch Cisco :",
+    "options": [
+      "Sauvegarder la config (copy running-config startup-config)",
+      "Créer les VLANs et leur donner un nom",
+      "Configurer les ports trunk inter-switch",
+      "Vérifier avec show vlan brief et show interfaces trunk",
+      "Assigner les ports aux VLANs en mode Access"
+    ],
+    "answer": [
+      "Créer les VLANs et leur donner un nom",
+      "Assigner les ports aux VLANs en mode Access",
+      "Configurer les ports trunk inter-switch",
+      "Vérifier avec show vlan brief et show interfaces trunk",
+      "Sauvegarder la config (copy running-config startup-config)"
+    ],
+    "comment": "L'ordre est important : créer d'abord les VLANs (sinon on ne peut pas les assigner), puis les ports access, puis les trunks. Toujours vérifier avant de sauvegarder. La sauvegarde est la DERNIÈRE étape."
+  },
+  {
+    "id": "OPT-M04-C04-010",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Organisation avancée — VLANs",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Router-on-a-stick : deux PC de VLANs différents ne communiquent pas alors que le routage inter-VLAN vient d'être monté. Remettez dans l'ordre la démarche de diagnostic, du maillon le plus probable au plus profond :",
+    "options": [
+      "Vérifier que le lien switch-routeur est bien un trunk 802.1Q (pas un port access)",
+      "Vérifier que chaque PC pointe vers la bonne passerelle (l'IP de la sous-interface de SON VLAN)",
+      "Confirmer que les deux VLANs sont actifs et que les ports PC sont dans le bon VLAN (show vlan brief)",
+      "Vérifier que chaque sous-interface du routeur a la bonne encapsulation dot1Q <vlan> et une IP de passerelle",
+      "Confirmer que la sous-interface n'est pas administrativement down et tester un ping de passerelle à passerelle"
+    ],
+    "answer": [
+      "Confirmer que les deux VLANs sont actifs et que les ports PC sont dans le bon VLAN (show vlan brief)",
+      "Vérifier que le lien switch-routeur est bien un trunk 802.1Q (pas un port access)",
+      "Vérifier que chaque sous-interface du routeur a la bonne encapsulation dot1Q <vlan> et une IP de passerelle",
+      "Vérifier que chaque PC pointe vers la bonne passerelle (l'IP de la sous-interface de SON VLAN)",
+      "Confirmer que la sous-interface n'est pas administrativement down et tester un ping de passerelle à passerelle"
+    ],
+    "comment": "La subtilité Tier A : on remonte du switch vers le routeur, puis du routeur vers le poste. L'erreur n°1 du router-on-a-stick est un lien resté en mode access (un seul VLAN passe, l'autre est muet) ; l'erreur n°2 est une passerelle PC qui pointe vers la mauvaise sous-interface. Le ping passerelle-à-passerelle isole le routage (couche 3 routeur) d'un éventuel souci de gateway côté poste."
+  }
+]

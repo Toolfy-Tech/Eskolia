@@ -1,0 +1,144 @@
+[
+  {
+    "id": "OPT-M06-C05-001",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le protocole RDP et sur quel port fonctionne-t-il par défaut ?",
+    "answer": "RDP (Remote Desktop Protocol) permet de prendre le contrôle graphique d'un PC ou d'un serveur Windows à distance, comme si l'on était devant l'écran. Il fonctionne par défaut sur le port 3389 en TCP.",
+    "comment": "RDP donne un contrôle complet de la session graphique, contrairement à une simple connexion en ligne de commande. C'est pratique mais dangereux : le port 3389 est l'un des plus scannés d'Internet par les bots cherchant des serveurs exposés."
+  },
+  {
+    "id": "OPT-M06-C05-002",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle valeur de registre active ou désactive RDP, et où se trouve-t-elle ?",
+    "answer": "La valeur fDenyTSConnections, située dans HKLM\\System\\CurrentControlSet\\Control\\Terminal Server. À 0 le Bureau à distance est activé, à 1 il est désactivé.",
+    "comment": "Attention au sens inversé : fDeny... = 0 veut dire 'ne pas refuser', donc autoriser. Modifier la clé ne suffit pas, il faut aussi ouvrir la règle de pare-feu (Enable-NetFirewallRule -DisplayGroup 'Bureau à distance'), sinon la connexion reste bloquée."
+  },
+  {
+    "id": "OPT-M06-C05-003",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la NLA (Network Level Authentication) et quel est son avantage ?",
+    "answer": "La NLA authentifie l'utilisateur AVANT d'ouvrir la session Windows complète. Sans NLA, la session Windows s'ouvre partiellement avant l'authentification, ce qui expose davantage de surface d'attaque. La NLA réduit donc cette surface et la consommation de ressources serveur.",
+    "comment": "La NLA bloque les attaques exploitant l'écran de connexion avant authentification (failles pré-auth comme BlueKeep). Elle nécessite que le client supporte le protocole CredSSP : un très vieux client peut ne pas se connecter, ce qui est en réalité une bonne chose."
+  },
+  {
+    "id": "OPT-M06-C05-004",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il JAMAIS exposer RDP directement sur Internet ?",
+    "answer": "Parce que RDP exposé est la cible n°1 des ransomwares : un port 3389 ouvert sur Internet est scanné en permanence par les bots et constitue la première porte d'entrée des attaques. Il faut toujours passer par un VPN ou un bastion SSH.",
+    "comment": "Même avec un mot de passe fort, l'exposition directe expose aux failles 0-day du service RDP lui-même et au bruteforce. La règle absolue : aucun 3389 sur Internet. VPN d'abord, RDP ensuite, à l'intérieur du tunnel."
+  },
+  {
+    "id": "OPT-M06-C05-005",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre une connexion RDP normale et le mode mstsc /v:IP /admin (session console) ?",
+    "answer": "Une connexion normale ouvre une session distante classique. Le mode /admin connecte à la session console/administration du serveur (session 0/de la machine physique), utile pour certaines tâches d'administration et pour rejoindre la session déjà active à l'écran plutôt que d'en créer une nouvelle.",
+    "comment": "Le mode /admin est précieux quand un logiciel d'installation ou un service doit tourner dans la session console, ou pour reprendre la main sur la session physiquement ouverte du serveur sans en multiplier les sessions."
+  },
+  {
+    "id": "OPT-M06-C05-006",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque bonne pratique de sécurisation RDP à sa justification :",
+    "pairs": [
+      {"left": "Changer le port 3389", "right": "Réduit les scans automatiques des bots"},
+      {"left": "Activer la NLA", "right": "Authentifie l'utilisateur avant d'ouvrir la session"},
+      {"left": "Passer par un VPN", "right": "Évite toute exposition directe de RDP sur Internet"},
+      {"left": "Limiter via le groupe Utilisateurs du Bureau à distance", "right": "Restreint qui a le droit de se connecter"}
+    ],
+    "answer": "Changer le port = moins de scans bots | NLA = auth avant ouverture de session | VPN = pas d'exposition directe sur Internet | Groupe Utilisateurs du Bureau à distance = restreindre les comptes autorisés",
+    "comment": "Changer le port est de la sécurité par l'obscurité : ça réduit le bruit des scans automatiques mais ne protège pas d'un attaquant ciblé. C'est un complément, jamais une mesure suffisante à elle seule. Le VPN reste la mesure structurante."
+  },
+  {
+    "id": "OPT-M06-C05-007",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque commande mstsc à son usage :",
+    "pairs": [
+      {"left": "mstsc", "right": "Ouvre le client Bureau à distance (fenêtre de connexion)"},
+      {"left": "mstsc /v:192.168.1.10", "right": "Connexion directe à l'adresse indiquée"},
+      {"left": "mstsc /v:192.168.1.10 /admin", "right": "Connexion en mode administration / session console"}
+    ],
+    "answer": "mstsc = ouvre le client RDP | mstsc /v:IP = connexion directe à l'hôte | mstsc /v:IP /admin = mode administration / session console",
+    "comment": "mstsc = Microsoft Terminal Services Client, le nom historique du Bureau à distance. Le paramètre /v: (verbose host) évite de saisir l'adresse à la main, pratique pour des raccourcis de connexion vers des serveurs fréquents."
+  },
+  {
+    "id": "OPT-M06-C05-008",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour sécuriser l'accès RDP d'un serveur destiné à des télétravailleurs :",
+    "options": [
+      "Créer un groupe d'utilisateurs autorisés au Bureau à distance",
+      "Tester la connexion via VPN puis RDP",
+      "Activer le Bureau à distance (RDP) sur le serveur",
+      "Documenter la procédure pour les utilisateurs",
+      "Configurer le VPN d'accès distant",
+      "Activer la NLA (Network Level Authentication)"
+    ],
+    "answer": [
+      "Activer le Bureau à distance (RDP) sur le serveur",
+      "Activer la NLA (Network Level Authentication)",
+      "Créer un groupe d'utilisateurs autorisés au Bureau à distance",
+      "Configurer le VPN d'accès distant",
+      "Tester la connexion via VPN puis RDP",
+      "Documenter la procédure pour les utilisateurs"
+    ],
+    "comment": "Le test (VPN puis RDP) se fait toujours avant la documentation : on ne documente que ce qui a été validé. Et la NLA s'active juste après RDP, avant même de gérer les comptes, pour ne jamais laisser une fenêtre où le service est actif sans cette protection."
+  },
+  {
+    "id": "OPT-M06-C05-009",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #418 : 'Un technicien doit prendre la main à distance sur un serveur situé en salle machine. Le VPN d'accès distant est déjà actif et fonctionnel.'",
+    "answer": "Procédure RDP standard à travers le tunnel VPN déjà en place : vérifier que RDP est activé et autorisé pour le compte, se connecter via mstsc une fois le VPN établi.",
+    "checklist": [
+      "Établir d'abord la connexion VPN vers le réseau de l'entreprise",
+      "Vérifier que RDP est activé sur le serveur (fDenyTSConnections = 0)",
+      "Vérifier que le compte du technicien est dans le groupe Utilisateurs du Bureau à distance",
+      "Confirmer que la NLA est active et que le client supporte CredSSP",
+      "Lancer mstsc /v:IP-du-serveur (port personnalisé si modifié)",
+      "S'authentifier et vérifier l'ouverture de la session distante"
+    ],
+    "comment": "Réflexe : VPN d'abord, RDP ensuite, jamais l'inverse. Le RDP ne traverse le réseau qu'à l'intérieur du tunnel chiffré. Si la connexion échoue, vérifier dans l'ordre : VPN monté, pare-feu, port, appartenance au groupe RDP."
+  },
+  {
+    "id": "OPT-M06-C05-010",
+    "category": "Administration de Windows",
+    "chapter": "Bureau à distance — RDP",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #455 : 'Un client signale que son serveur est lent et a un comportement anormal depuis quelques jours. En enquêtant, vous découvrez que l'admin précédent a activé RDP directement sur Internet (port 3389 ouvert sur la box), sans VPN.'",
+    "answer": "Risque majeur : le serveur est exposé au bruteforce et aux ransomwares via RDP ouvert sur Internet. La lenteur et le comportement anormal peuvent déjà être les signes d'une compromission (cryptominer, exfiltration ou ransomware en cours). Priorité : couper l'exposition puis investiguer une éventuelle intrusion.",
+    "checklist": [
+      "Fermer immédiatement la redirection du port 3389 sur la box/pare-feu (couper l'exposition)",
+      "Vérifier les journaux de sécurité Windows : tentatives de connexion RDP échouées massives et connexions réussies suspectes",
+      "Lister les comptes et sessions actifs, rechercher des comptes inconnus créés récemment",
+      "Vérifier les processus et la charge CPU anormale (cryptominer possible)",
+      "Si compromission confirmée : isoler le serveur du réseau et déclencher la procédure d'incident",
+      "Reconstruire l'accès distant proprement : VPN puis RDP avec NLA et groupe d'utilisateurs limité"
+    ],
+    "comment": "RDP exposé + serveur soudainement lent = présomption forte de compromission, pas une simple panne de perf. Ne pas se contenter de réactiver le VPN : un attaquant déjà entré garde ses accès. Investiguer l'intrusion avant de considérer le serveur comme sain."
+  }
+]

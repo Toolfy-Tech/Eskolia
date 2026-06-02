@@ -1,0 +1,140 @@
+[
+  {
+    "id": "OPT-M01-C01-001",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'ITIL ? Est-ce un logiciel, une norme ou autre chose ?",
+    "answer": "ITIL est un référentiel de bonnes pratiques pour la gestion des services informatiques (Information Technology Infrastructure Library). Ce n'est ni un logiciel à installer, ni une norme certifiante comme l'ISO 20000 : c'est un guide adopté volontairement.",
+    "comment": "La nuance a des conséquences concrètes : on ne peut pas etre 'certifie ITIL' en tant qu'entreprise (seules les personnes passent la certification), et personne ne peut imposer ITIL par obligation legale. Une organisation pioche dans le referentiel ce qui sert son contexte plutot que d'appliquer tout le catalogue. Confondre ITIL avec une norme contraignante fait croire a tort qu'il faut tout implementer pour etre 'conforme'."
+  },
+  {
+    "id": "OPT-M01-C01-002",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la version actuelle d'ITIL et qui la publie ?",
+    "answer": "ITIL 4, publié par AXELOS (sorti en 2019).",
+    "comment": "ITIL 4 a recentré le référentiel sur la création de valeur et l'agilité, là où ITIL v3 (2007) raisonnait surtout en processus cloisonnés. Retenir le numéro de version compte moins que comprendre ce glissement : on ne gère plus des processus pour eux-mêmes, mais le service rendu de bout en bout."
+  },
+  {
+    "id": "OPT-M01-C01-003",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est l'idée centrale d'ITIL en une phrase ?",
+    "answer": "L'informatique rend un SERVICE aux utilisateurs — l'objectif est de délivrer ce service de façon fiable et efficace.",
+    "comment": "Conséquence concrète de cette idée : on mesure le succès du support à l'aune de l'utilisateur (service rétabli, délai tenu), pas de la prouesse technique. Un poste réparé brillamment mais en 3 jours alors qu'un simple contournement suffisait reste un échec de service."
+  },
+  {
+    "id": "OPT-M01-C01-004",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les 3 types de sollicitations qu'un centre de services peut recevoir ?",
+    "answer": "1. Demande de service (requête normale, sans dysfonctionnement). 2. Incident (interruption non planifiée d'un service). 3. Problème (cause racine d'un ou plusieurs incidents).",
+    "comment": "Le piège est de tout traiter comme un incident. Mal catégoriser fausse toute la suite : une demande de service classée 'incident' déclenche une urgence injustifiée, tandis qu'un incident récurrent jamais requalifié en 'problème' se re-résout indéfiniment sans qu'on en attaque la cause. La catégorie n'est pas une étiquette administrative, elle détermine le circuit de traitement."
+  },
+  {
+    "id": "OPT-M01-C01-005",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un incident et un problème selon ITIL ?",
+    "answer": "L'incident est le symptôme visible et ponctuel (le service ne fonctionne plus, ici et maintenant). Le problème est la cause racine sous-jacente qui explique pourquoi un ou plusieurs incidents se produisent.",
+    "comment": "Analogie utile : l'incident = la fievre, le probleme = l'infection. Mais l'enjeu pratique est le rythme de traitement : l'incident se traite dans l'urgence pour retablir vite (meme par un contournement provisoire), le probleme se traite a froid, en investigation de fond. Confondre les deux mene a deux erreurs opposees : bricoler un contournement sans jamais ouvrir le probleme (l'incident revient indefiniment), ou bloquer le retablissement urgent en cherchant la cause racine alors que l'utilisateur attend."
+  },
+  {
+    "id": "OPT-M01-C01-006",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie SPOC et à quoi correspond-il concrètement ?",
+    "answer": "SPOC = Single Point of Contact. Concrètement, c'est le centre de services : le point d'entrée unique par lequel passent toutes les demandes des utilisateurs.",
+    "comment": "Le bénéfice n'est pas le confort mais la mesure : tant que tout passe par un guichet unique, on sait combien de tickets sont ouverts, lesquels traînent et lesquels prioriser. Dès qu'un utilisateur appelle un technicien en direct, ce ticket devient invisible — pas tracé, pas priorisé, pas compté dans le SLA. Le SPOC n'organise pas le flux pour faire joli, il le rend pilotable."
+  },
+  {
+    "id": "OPT-M01-C01-007",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "B",
+    "type": "classic",
+    "question": "Vrai ou Faux : une demande de service est une interruption non planifiée d'un service.",
+    "answer": "Faux. Une demande de service est une requête normale, sans dysfonctionnement (ex : installer un logiciel, créer un compte). L'interruption non planifiée, c'est un incident.",
+    "comment": "Le critère qui les sépare n'est pas l'urgence mais l'existence d'une panne : l'incident répare quelque chose de cassé, la demande de service livre quelque chose qui marche déjà. C'est ce qui change le circuit de traitement : un incident déclenche un diagnostic, une demande suit un processus d'approbation/exécution. Une demande peut être urgente (créer le compte du nouveau salarié qui arrive demain) sans pour autant devenir un incident."
+  },
+  {
+    "id": "OPT-M01-C01-008",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle du niveau N1 dans l'organisation du support IT ?",
+    "answer": "N1 = technicien de proximité. Il reçoit et qualifie les demandes, traite les cas courants (mots de passe, périphériques, questions logicielles), et escalade ce qui dépasse son périmètre vers N2 ou N3.",
+    "comment": "N1 traite environ 80% des tickets. N2 = spécialistes (réseau, sécurité…). N3 = experts ou éditeurs. Plus on monte, plus les incidents sont rares et complexes."
+  },
+  {
+    "id": "OPT-M01-C01-009",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque type de sollicitation ITIL à son exemple concret :",
+    "pairs": [
+      {"left": "Demande de service", "right": "Créer un nouveau compte utilisateur"},
+      {"left": "Incident", "right": "La messagerie de toute l'entreprise est inaccessible"},
+      {"left": "Problème", "right": "Cause racine identifiée derrière 5 pannes VPN répétées"}
+    ],
+    "answer": "Demande de service = créer un compte | Incident = messagerie inaccessible | Problème = cause racine des pannes répétées",
+    "comment": "La demande de service n'implique aucune panne. L'incident est le symptôme visible et urgent. Le problème est l'investigation de fond pour éviter la récurrence."
+  },
+  {
+    "id": "OPT-M01-C01-010",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque niveau de support à sa description :",
+    "pairs": [
+      {"left": "N1", "right": "Technicien de proximité — cas courants et qualification"},
+      {"left": "N2", "right": "Spécialistes techniques (réseau, sécurité, systèmes)"},
+      {"left": "N3", "right": "Experts ou éditeurs — incidents complexes hors périmètre N2"}
+    ],
+    "answer": "N1 = technicien proximité | N2 = spécialistes | N3 = experts/éditeurs",
+    "comment": "Le filtrage par niveau a une logique economique : l'heure d'un expert N3 ou d'un editeur coute cher et est rare. Faire remonter directement tout en N3 saturerait les experts et ralentirait les cas vraiment complexes. C'est pourquoi le N1 absorbe environ 80% du volume : il n'est pas le maillon faible de la chaine, il en est le filtre qui protege le temps des niveaux superieurs."
+  },
+  {
+    "id": "OPT-M01-C01-011",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les niveaux d'escalade du support IT, du premier contacté au dernier :",
+    "options": ["N3 — Experts / Éditeurs", "N2 — Spécialistes techniques", "N1 — Technicien de proximité"],
+    "answer": ["N1 — Technicien de proximité", "N2 — Spécialistes techniques", "N3 — Experts / Éditeurs"],
+    "comment": "L'escalade suit toujours N1 → N2 → N3. On ne contacte jamais un éditeur avant d'avoir qualifié le problème en N1 et tenté une résolution en N2."
+  },
+  {
+    "id": "OPT-M01-C01-012",
+    "category": "Support utilisateur",
+    "chapter": "ITIL — Le cadre de gestion des services",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #01 : Un utilisateur appelle : 'Je n'arrive plus à me connecter à mon outil CRM depuis ce matin.' Ses collègues du même service y accèdent sans problème.",
+    "answer": "Incident individuel — problème probable de compte, droits d'accès ou configuration locale.",
+    "checklist": [
+      "Qualifier : c'est un incident (service dysfonctionnel pour cet utilisateur), pas une demande",
+      "Vérifier que le compte utilisateur est actif et non verrouillé",
+      "Tester avec un autre navigateur ou depuis un autre poste",
+      "Vérifier les droits d'accès dans l'outil CRM",
+      "Si hors périmètre (droits applicatifs métier), escalader vers N2 ou l'équipe CRM"
+    ],
+    "comment": "Quand les collègues accèdent sans problème, l'incident est isolé à l'utilisateur. On cherche d'abord une cause locale avant de suspecter le service global."
+  }
+]

@@ -1,0 +1,147 @@
+[
+  {
+    "id": "OPT-M01-C05-001",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que GLPI et pourquoi est-il répandu dans les PME et collectivités ?",
+    "answer": "GLPI est un outil open source et gratuit qui gère à la fois les tickets d'incident ET l'inventaire du parc informatique. Sa gratuité et ses fonctionnalités complètes le rendent idéal pour les structures avec des budgets limités.",
+    "comment": "GLPI = Gestionnaire Libre de Parc Informatique. Open source = code ouvert, modifiable, pas de licence payante. C'est l'outil de référence dans le secteur public et les PME françaises."
+  },
+  {
+    "id": "OPT-M01-C05-002",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert FusionInventory ou OCS couplé à GLPI ?",
+    "answer": "FusionInventory et OCS sont des agents qui permettent l'inventaire automatique du parc : ils scannent le réseau et remontent les informations de chaque équipement dans GLPI sans intervention manuelle.",
+    "comment": "Sans agent d'inventaire, il faudrait saisir manuellement chaque équipement. Avec FusionInventory/OCS, le parc se met à jour automatiquement dès qu'un poste se connecte au réseau."
+  },
+  {
+    "id": "OPT-M01-C05-003",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence principale entre GLPI et ServiceNow ?",
+    "answer": "GLPI est open source et gratuit, adapté aux PME/collectivités, avec inventaire de parc intégré. ServiceNow est une plateforme haut de gamme payante, pensée pour les grandes entreprises ayant des besoins d'intégration et d'automatisation complexes (workflows inter-services, gros volumes).",
+    "comment": "Le piege est de raisonner 'plus c'est riche, mieux c'est'. Faux : deployer ServiceNow dans une PME de 30 postes coute cher en licences et en parametrage pour un outil qui restera sous-exploite, tandis que GLPI montrera ses limites d'integration et de support dans un groupe multi-sites a fort volume. Le bon critere n'est jamais la puissance brute de l'outil mais son adequation a l'echelle, au budget et aux besoins d'integration. L'outil suit le besoin, pas l'inverse."
+  },
+  {
+    "id": "OPT-M01-C05-004",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel outil de ticketing est particulièrement orienté DevOps et développement logiciel ?",
+    "answer": "Jira Service Management (de la suite Atlassian). Il est conçu pour les équipes qui font du développement et du support en même temps.",
+    "comment": "Jira Service Management est la version ITSM de Jira. Si une entreprise utilise déjà Jira pour le dev, elle intégrera naturellement Jira SM pour le support IT."
+  },
+  {
+    "id": "OPT-M01-C05-005",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi la gestion de parc informatique est-elle utile au-delà du simple inventaire ?",
+    "answer": "Elle permet : d'anticiper les renouvellements (fin de garantie, obsolescence), de vérifier la conformité des licences logicielles, d'associer un ticket à un équipement précis pour l'historique, et de produire des statistiques de pannes par type de matériel.",
+    "comment": "Un parc bien géré évite les mauvaises surprises : un PC hors garantie qui tombe en panne en pleine période critique, ou un audit de licences qui révèle des logiciels non conformes."
+  },
+  {
+    "id": "OPT-M01-C05-006",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert une base de connaissances dans un outil ITSM ?",
+    "answer": "Elle capitalise les procédures de résolution des incidents récurrents. Quand un technicien résout un problème nouveau, il rédige une fiche solution. Les techniciens suivants trouvent la solution directement sans réinventer la roue.",
+    "comment": "La base de connaissances transforme l'expérience individuelle en savoir collectif. Elle réduit les temps de résolution et permet aux N1 de traiter des cas qu'ils n'auraient pas pu résoudre seuls."
+  },
+  {
+    "id": "OPT-M01-C05-007",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "classic",
+    "question": "Zendesk et Freshdesk sont-ils des outils ITSM destinés principalement au support interne d'une entreprise ?",
+    "answer": "Non. Zendesk et Freshdesk sont davantage orientés support client (B2C) — pour gérer les demandes des clients d'un produit ou service. Ils peuvent être utilisés en interne mais ce n'est pas leur cœur de cible.",
+    "comment": "Distinction utile pour l'examen : GLPI/ServiceNow/Jira SM = support IT interne (ITSM). Zendesk/Freshdesk = support client externe (CRM + ticketing). Les frontières s'estompent mais la vocation initiale diffère."
+  },
+  {
+    "id": "OPT-M01-C05-008",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque outil à sa description principale :",
+    "pairs": [
+      {"left": "GLPI", "right": "Open source — tickets + inventaire parc — PME/collectivités"},
+      {"left": "ServiceNow", "right": "Haut de gamme — grandes entreprises — ITSM complet"},
+      {"left": "Jira Service Management", "right": "Orienté DevOps — équipes développement + support"}
+    ],
+    "answer": "GLPI = open source PME | ServiceNow = haut de gamme grandes entreprises | Jira SM = DevOps",
+    "comment": "Le bon critère de choix n'est pas la richesse fonctionnelle mais l'adéquation : déployer ServiceNow dans une PME de 30 postes coûte cher et reste sous-utilisé, tandis que GLPI montre ses limites d'intégration dans un grand groupe multi-sites. L'outil suit l'échelle et les besoins d'intégration, pas l'inverse."
+  },
+  {
+    "id": "OPT-M01-C05-009",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque fonctionnalité à son utilité concrète dans la gestion de parc :",
+    "pairs": [
+      {"left": "Numéro d'inventaire", "right": "Identifier précisément l'équipement concerné par un ticket"},
+      {"left": "Date de fin de garantie", "right": "Anticiper le renouvellement avant une panne hors garantie"},
+      {"left": "Historique des tickets par équipement", "right": "Détecter les pannes récurrentes sur un même matériel"}
+    ],
+    "answer": "Numéro inventaire = identifier l'équipement | Fin garantie = anticiper renouvellement | Historique = détecter pannes récurrentes",
+    "comment": "Ces trois champs n'ont de valeur que tenus a jour : un inventaire perime est pire qu'absent, car il donne une fausse confiance. Le numero d'inventaire est la clef qui relie tout le reste : sans lui, impossible de raccrocher un ticket a un materiel precis, donc impossible de voir l'historique se constituer ni de reperer qu'un meme poste tombe en panne pour la 4e fois. C'est ce chainage (materiel -> historique -> decision de renouvellement) qui transforme l'inventaire en outil de pilotage, pas en simple liste de materiel."
+  },
+  {
+    "id": "OPT-M01-C05-010",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour capitaliser une résolution dans la base de connaissances :",
+    "options": ["Publier la fiche dans la base de connaissances", "Résoudre l'incident", "Rédiger la procédure de résolution (symptôme, cause, solution)", "Recevoir un incident nouveau non documenté"],
+    "answer": ["Recevoir un incident nouveau non documenté", "Résoudre l'incident", "Rédiger la procédure de résolution (symptôme, cause, solution)", "Publier la fiche dans la base de connaissances"],
+    "comment": "La capitalisation se fait après la résolution. L'objectif : la prochaine fois que ce problème survient, un technicien trouve la solution en quelques secondes au lieu de devoir réinvestiguer."
+  },
+  {
+    "id": "OPT-M01-C05-011",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #10 : Vous recevez un ticket pour un PC qui n'arrive plus à se connecter au WiFi. En cherchant dans GLPI, vous voyez que ce même PC a eu 4 tickets WiFi en 3 mois. Que faites-vous ?",
+    "answer": "L'historique révèle une panne récurrente sur cet équipement — il faut escalader vers une investigation de fond (problème ITIL) plutôt que de re-résoudre l'incident.",
+    "checklist": [
+      "Consulter l'historique du parc pour cet équipement dans GLPI",
+      "Identifier le motif récurrent (4 pannes WiFi en 3 mois)",
+      "Traiter l'incident immédiat pour rétablir le service",
+      "Ouvrir un ticket 'Problème' pour investiguer la cause racine (carte WiFi défaillante ? driver ? configuration ?)",
+      "Recommander le remplacement ou la réparation de l'équipement si la cause racine est hardware"
+    ],
+    "comment": "L'historique du parc transforme un incident banal en signal d'alerte. C'est précisément pourquoi la gestion de parc et le ticketing doivent être liés dans le même outil."
+  },
+  {
+    "id": "OPT-M01-C05-012",
+    "category": "Support utilisateur",
+    "chapter": "Outils de ticketing et de gestion de parc",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #11 : Un nouveau technicien N1 doit résoudre un incident 'Imprimante réseau introuvable' qu'il n'a jamais vu. Quelle est la première ressource à consulter ?",
+    "answer": "La base de connaissances de l'outil ITSM (GLPI par exemple). Si l'incident est récurrent, une procédure de résolution y est probablement documentée.",
+    "checklist": [
+      "Ouvrir la base de connaissances dans GLPI (ou l'outil ITSM utilisé)",
+      "Rechercher par mots-clés : 'imprimante réseau' ou 'imprimante introuvable'",
+      "Appliquer la procédure documentée si elle existe",
+      "Si aucune fiche n'existe, investiguer et résoudre",
+      "Après résolution, rédiger et publier une fiche pour les prochains techniciens"
+    ],
+    "comment": "Le piège du débutant est l'inverse : foncer dans le diagnostic par fierté ou réflexe, et réinventer une procédure qui existe déjà. Mais la base n'est utile que si elle est alimentée — d'où le dernier réflexe, souvent oublié : rédiger une fiche quand on a dû investiguer soi-même, pour que le suivant n'ait pas à le refaire."
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "id": "OPT-M05-C06-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie l'acronyme RAID ?",
+    "answer": "RAID signifie Redundant Array of Independent Disks (ensemble redondant de disques independants). Il designe une technique de combinaison de plusieurs disques physiques pour ameliorer la performance, la redondance ou les deux.",
+    "comment": "L'independance des disques est cle : chaque disque est un element distinct, ce qui permet au systeme de continuer a fonctionner si l'un tombe en panne — selon le niveau RAID choisi."
+  },
+  {
+    "id": "OPT-M05-C06-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "C",
+    "type": "classic",
+    "question": "Le RAID remplace-t-il la sauvegarde ? Justifiez.",
+    "answer": "Non. Le RAID protege contre la panne materielle d'un disque, mais pas contre la suppression accidentelle, la corruption de donnees, les ransomwares ou les catastrophes physiques (incendie, vol). La sauvegarde est complementaire et reste indispensable.",
+    "comment": "La confusion RAID = sauvegarde est l'une des erreurs les plus dangereuses en informatique d'entreprise. Un RAID 1 reflète instantanement toute suppression ou corruption sur les deux disques. La sauvegarde, elle, capture un etat passé recuperable."
+  },
+  {
+    "id": "OPT-M05-C06-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "C",
+    "type": "classic",
+    "question": "Decrivez le RAID 0 : nombre minimum de disques, capacite utile, tolerance aux pannes et usage typique.",
+    "answer": "RAID 0 (striping) : minimum 2 disques. Capacite utile = 100% (2x1 To = 2 To). Tolerance aux pannes = zero — si un disque tombe, toutes les donnees sont perdues. Usage typique : montage video, jeux, performances maximales sans besoin de redondance.",
+    "comment": "Mnémotechnique : RAID 0 = zero securite. Le striping repartit les donnees en blocs alternes sur les disques, ce qui accelere les lectures/ecritures — mais une seule panne suffit a tout perdre. A eviter absolument pour des donnees precieuses."
+  },
+  {
+    "id": "OPT-M05-C06-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "C",
+    "type": "classic",
+    "question": "Decrivez le RAID 1 : nombre minimum de disques, capacite utile, tolerance aux pannes et usage typique.",
+    "answer": "RAID 1 (mirroring) : minimum 2 disques. Capacite utile = 50% (2x1 To = 1 To). Tolerance aux pannes = 1 disque. Lecture rapide (lecture sur les deux disques en parallele), ecriture legerement plus lente (miroir). Usage : serveurs critiques, postes comptables.",
+    "comment": "Mnémotechnique : RAID 1 = 1 copie miroir. Le miroir complet garantit une reconstruction immediate apres remplacement du disque defaillant. La perte de 50% de capacite est le prix de cette securite maximale par disque."
+  },
+  {
+    "id": "OPT-M05-C06-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "B",
+    "type": "classic",
+    "question": "Decrivez le RAID 5 : nombre minimum de disques, capacite utile, tolerance aux pannes et usage typique.",
+    "answer": "RAID 5 (donnees + parite distribuee) : minimum 3 disques. Capacite utile = (n-1) disques (3x1 To = 2 To). Tolerance aux pannes = 1 disque. Bonne lecture, ecriture plus lente (calcul de parite). Usage : serveurs de fichiers entreprise.",
+    "comment": "Mnémotechnique : RAID 5 = 5 etoiles des serveurs. La parite distribuee permet de recalculer les donnees d'un disque perdu a partir des autres. Meilleur compromis performance/securite/capacite pour les NAS et serveurs de fichiers."
+  },
+  {
+    "id": "OPT-M05-C06-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles sont les differences cles entre RAID materiel et RAID logiciel ?",
+    "answer": "RAID materiel : carte controleur RAID dedicee avec son propre processeur et memoire, transparent pour l'OS, tres performant, couteux (150 euros a plusieurs milliers). Risque : si la carte tombe en panne, les disques sont illisibles sans carte identique. RAID logiciel : gere par l'OS (diskmgmt.msc sous Windows), gratuit, consomme du CPU, moins performant mais portable.",
+    "comment": "La dependance materielle du RAID hardware est un risque operationnel souvent neglige. Il faut toujours conserver une carte controleur de remplacement identique en stock, ou documenter precisement le modele pour pouvoir en acheter une rapidement en cas de panne."
+  },
+  {
+    "id": "OPT-M05-C06-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "A",
+    "type": "classic",
+    "question": "Pourquoi doit-on configurer le RAID avant d'installer l'OS, et quelle precaution est imperative avant de creer un volume RAID ?",
+    "answer": "Le RAID doit etre configure avant l'installation de l'OS car la creation du volume RAID efface completement les disques. Si l'OS est deja installe sur un disque, configurer le RAID dessus detruirait tout. La precaution imperative : sauvegarder toutes les donnees existantes avant de creer un volume RAID.",
+    "comment": "Cette contrainte d'ordre est souvent decouverte trop tard en entreprise. Planifier le RAID fait partie de la phase de conception de l'infrastructure, pas de la maintenance corrective. Modifier un RAID existant implique presque toujours une reconstruction complete."
+  },
+  {
+    "id": "OPT-M05-C06-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque niveau RAID a ses caracteristiques principales :",
+    "pairs": [
+      {"left": "RAID 0", "right": "Performance maximale, zero tolerance aux pannes, capacite 100%"},
+      {"left": "RAID 1", "right": "Miroir complet, tolere 1 panne, capacite 50%"},
+      {"left": "RAID 5", "right": "Parite distribuee, tolere 1 panne, capacite (n-1) disques"},
+      {"left": "RAID materiel", "right": "Carte controleur dedicee, transparent pour l'OS, risque de dependance materielle"},
+      {"left": "RAID logiciel", "right": "Gere par l'OS via diskmgmt.msc, gratuit, consomme du CPU"}
+    ],
+    "answer": "RAID 0 = performance/zero securite/100% | RAID 1 = miroir/1 panne/50% | RAID 5 = parite/(n-1)/1 panne | RAID materiel = controleur dedie/transparent OS | RAID logiciel = OS/gratuit/CPU",
+    "comment": "Retenir les mnémotechniques : 0 = zero securite, 1 = 1 miroir, 5 = cinq etoiles. Ces raccourcis permettent de repondre instantanement en situation client sans avoir a recalculer la capacite ou la tolerance a chaque fois."
+  },
+  {
+    "id": "OPT-M05-C06-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque scenario d'usage au niveau RAID le plus adapte :",
+    "pairs": [
+      {"left": "Station de montage video necessitant la vitesse maximale, donnees re-generables", "right": "RAID 0 — performance pure, pas de contrainte de securite"},
+      {"left": "Poste de comptabilite avec donnees critiques irreplacables", "right": "RAID 1 — miroir complet, reconstruction simple apres panne"},
+      {"left": "Serveur de fichiers partagés d'une PME, compromis performance/securite/capacite", "right": "RAID 5 — parite distribuee, meilleur ratio capacite/protection"},
+      {"left": "Besoin de proteger contre la suppression accidentelle d'un fichier", "right": "Sauvegarde — le RAID ne protege pas contre la suppression/corruption"}
+    ],
+    "answer": "Montage video = RAID 0 | Comptabilite = RAID 1 | Serveur fichiers PME = RAID 5 | Suppression accidentelle = sauvegarde (pas le RAID)",
+    "comment": "Le dernier cas est un piege classique : aucun niveau RAID ne protege contre la suppression ou la corruption. Le RAID repond a la panne materielle, la sauvegarde repond aux erreurs humaines et logicielles. Les deux sont complementaires."
+  },
+  {
+    "id": "OPT-M05-C06-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre logique les etapes de mise en place d'un RAID 1 sur un nouveau serveur avant installation de l'OS :",
+    "options": [
+      "Installer le systeme d'exploitation sur le volume RAID 1 cree",
+      "Acceder au BIOS/UEFI et activer le mode RAID sur le controleur",
+      "Connecter les deux disques identiques au serveur",
+      "Verifier que les donnees sont bien mirrorees (test de retrait d'un disque)",
+      "Creer le volume RAID 1 dans l'interface de configuration du controleur RAID"
+    ],
+    "answer": [
+      "Connecter les deux disques identiques au serveur",
+      "Acceder au BIOS/UEFI et activer le mode RAID sur le controleur",
+      "Creer le volume RAID 1 dans l'interface de configuration du controleur RAID",
+      "Installer le systeme d'exploitation sur le volume RAID 1 cree",
+      "Verifier que les donnees sont bien mirrorees (test de retrait d'un disque)"
+    ],
+    "comment": "L'ordre est non-negociable : le RAID doit exister avant l'OS. Creer le volume RAID efface les disques — aucune donnee ne doit s'y trouver. La verification finale par retrait simulee d'un disque confirme que la redondance fonctionne reellement avant la mise en production."
+  },
+  {
+    "id": "OPT-M05-C06-011",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre logique les etapes de remplacement d'un disque defaillant dans un RAID 5 en production :",
+    "options": [
+      "Surveiller la reconstruction du RAID et verifier l'integrite une fois terminee",
+      "Identifier le disque defaillant via les alertes du controleur RAID ou les logs systeme",
+      "Retirer le disque defaillant (hot-swap si supporte, sinon eteindre le serveur)",
+      "Verifier dans la console RAID que la reconstruction a bien demarre automatiquement",
+      "Inserer un nouveau disque de capacite identique ou superieure"
+    ],
+    "answer": [
+      "Identifier le disque defaillant via les alertes du controleur RAID ou les logs systeme",
+      "Retirer le disque defaillant (hot-swap si supporte, sinon eteindre le serveur)",
+      "Inserer un nouveau disque de capacite identique ou superieure",
+      "Verifier dans la console RAID que la reconstruction a bien demarre automatiquement",
+      "Surveiller la reconstruction du RAID et verifier l'integrite une fois terminee"
+    ],
+    "comment": "Pendant la reconstruction d'un RAID 5 (rebuild), le systeme est en mode degrade et vulnerable : si un second disque tombe pendant cette periode, toutes les donnees sont perdues. Surveiller activement la reconstruction et eviter toute charge importante sur le systeme pendant cette phase est critique."
+  },
+  {
+    "id": "OPT-M05-C06-012",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "RAID et protection systeme",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #518 : 'Notre serveur de fichiers affiche une alerte rouge dans la console RAID depuis ce matin. Les utilisateurs peuvent toujours acceder aux fichiers normalement. Que se passe-t-il et que doit-on faire ?'",
+    "answer": "Un disque du RAID (probablement RAID 1 ou RAID 5) est defaillant. Le systeme fonctionne en mode degrade : les donnees sont encore accessibles mais la redondance est perdue. Il faut remplacer le disque defaillant rapidement avant qu'un second disque ne tombe.",
+    "checklist": [
+      "Identifier le disque defaillant dans la console RAID (numero de slot, modele, serial)",
+      "Verifier le niveau RAID pour comprendre l'impact (RAID 1 ou RAID 5 = encore 1 disque de marge)",
+      "Commander ou sortir du stock un disque de remplacement de capacite identique ou superieure",
+      "Planifier le remplacement : hot-swap immediat si supporte, sinon fenetre de maintenance",
+      "Remplacer le disque et confirmer que la reconstruction demarre automatiquement",
+      "Surveiller la reconstruction jusqu'a sa completion (peut prendre plusieurs heures)",
+      "Documenter l'incident et planifier le remplacement preventif des autres disques si parc vieillissant"
+    ],
+    "comment": "L'accessibilite des fichiers malgre l'alerte est normale en mode degrade — c'est exactement le role du RAID. Mais chaque heure sans disque de remplacement est une heure de risque maximal. En RAID 5 avec 3 disques, une seconde panne = perte totale des donnees."
+  }
+]

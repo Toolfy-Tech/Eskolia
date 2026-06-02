@@ -1,0 +1,149 @@
+[
+  {
+    "id": "OPT-M06-C12-001",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le Planificateur de tâches Windows et par quelle commande l'ouvre-t-on ?",
+    "answer": "Le Planificateur de tâches (commande taskschd.msc) est l'outil qui exécute automatiquement des programmes, scripts ou commandes selon un déclencheur défini (heure, démarrage, connexion, événement). Il permet d'automatiser des actions répétitives sans intervention humaine.",
+    "comment": "Réflexe : retenir taskschd.msc comme on retient services.msc ou eventvwr.msc. C'est l'outil de référence pour tout ce qui doit tourner seul à heure fixe ou sur événement, depuis la sauvegarde nocturne jusqu'au script de maintenance hebdomadaire."
+  },
+  {
+    "id": "OPT-M06-C12-002",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi faut-il faire tourner une tâche planifiée sous le compte SYSTEM ou un compte de service dédié plutôt que sous un compte utilisateur nominatif ?",
+    "answer": "Parce qu'une tâche liée à un compte utilisateur nominatif cesse de s'exécuter si ce compte est désactivé, supprimé ou voit son mot de passe modifié (départ d'un salarié, par exemple). SYSTEM ou un compte de service dédié reste stable et indépendant des mouvements de personnel.",
+    "comment": "Erreur très fréquente sur le terrain : un admin crée une tâche critique sous son propre compte, puis quitte l'entreprise. Le jour où le compte est désactivé, la sauvegarde s'arrête silencieusement. Le compte de service dédié doit aussi avoir un mot de passe qui n'expire pas."
+  },
+  {
+    "id": "OPT-M06-C12-003",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi le Planificateur de tâches est-il un endroit clé à vérifier sur un poste suspecté infecté ?",
+    "answer": "Parce que les malwares l'utilisent fréquemment pour assurer leur persistance : ils créent une tâche qui les relance à chaque démarrage ou connexion. C'est le 2e endroit à inspecter après la clé Run du registre lorsqu'on analyse un poste compromis.",
+    "comment": "Sur un poste suspect, le binôme à connaître par cœur : clé Run du registre + tâches planifiées. Une tâche au nom anodin (mise à jour, svchost, update) déclenchée au boot et pointant vers un exécutable dans un dossier temporaire ou AppData est un signal fort de compromission."
+  },
+  {
+    "id": "OPT-M06-C12-004",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "classic",
+    "question": "Donnez un exemple concret de tâche déclenchée par un événement Windows et expliquez l'intérêt de ce type de déclencheur.",
+    "answer": "Exemple : déclencher une alerte ou un script dès qu'apparaît l'événement ID 4625 (échec d'ouverture de session). L'intérêt est de réagir non pas à une heure fixe mais à un fait précis du journal d'événements, ce qui permet une réaction immédiate à une condition de sécurité ou de panne.",
+    "comment": "Le déclencheur sur événement transforme le planificateur en outil de surveillance réactive. Couplé à l'ID 4625, il sert à repérer des tentatives de brute force. Penser à le relier à l'Observateur d'événements (eventvwr.msc) où l'on identifie d'abord le bon ID."
+  },
+  {
+    "id": "OPT-M06-C12-005",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert la cmdlet Get-ScheduledTask et comment filtrer les tâches prêtes à s'exécuter ?",
+    "answer": "Get-ScheduledTask liste toutes les tâches planifiées de la machine en PowerShell, sans passer par l'interface graphique. Pour ne garder que celles à l'état prêt : Get-ScheduledTask | Where-Object {$_.State -eq \"Ready\"}.",
+    "comment": "Utile pour auditer rapidement un parc : on peut lancer Get-ScheduledTask sur des machines distantes et comparer les listes pour repérer une tâche qui ne devrait pas exister. Pour le détail d'exécution (dernier lancement, prochain, code de résultat), enchaîner avec Get-ScheduledTaskInfo."
+  },
+  {
+    "id": "OPT-M06-C12-006",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque type de déclencheur à son cas d'usage terrain :",
+    "pairs": [
+      {"left": "Heure précise (ex. 02h00)", "right": "Lancer la sauvegarde nocturne quand personne n'utilise les ressources"},
+      {"left": "Démarrage de Windows", "right": "Exécuter un script de configuration réseau dès l'allumage de la machine"},
+      {"left": "Connexion utilisateur", "right": "Mapper automatiquement les lecteurs réseau à l'ouverture de session"},
+      {"left": "Événement Windows (ID 4625)", "right": "Déclencher une alerte sur échec répété d'ouverture de session"},
+      {"left": "Création de session", "right": "Nettoyer les fichiers temporaires à chaque nouvelle ouverture"}
+    ],
+    "answer": "Heure précise = sauvegarde nocturne | Démarrage Windows = script config réseau | Connexion utilisateur = mapper lecteurs | Événement 4625 = alerte sécurité | Création session = nettoyer fichiers temp",
+    "comment": "Bien distinguer Démarrage de Windows (au boot, avant toute session) et Connexion utilisateur (à l'ouverture de session d'une personne). Le premier sert aux scripts machine, le second aux scripts liés à l'utilisateur (lecteurs, imprimantes)."
+  },
+  {
+    "id": "OPT-M06-C12-007",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "A",
+    "type": "association",
+    "question": "Associez chaque cmdlet PowerShell du planificateur à sa fonction :",
+    "pairs": [
+      {"left": "Register-ScheduledTask", "right": "Créer et enregistrer une nouvelle tâche planifiée"},
+      {"left": "Get-ScheduledTask", "right": "Lister les tâches planifiées existantes"},
+      {"left": "Get-ScheduledTaskInfo", "right": "Afficher les détails d'exécution d'une tâche (dernier/prochain lancement, résultat)"},
+      {"left": "Unregister-ScheduledTask", "right": "Supprimer définitivement une tâche planifiée"}
+    ],
+    "answer": "Register = créer | Get-ScheduledTask = lister | Get-ScheduledTaskInfo = détails d'exécution | Unregister = supprimer",
+    "comment": "Ne pas confondre Get-ScheduledTask (la liste et l'état) et Get-ScheduledTaskInfo (l'historique d'exécution d'UNE tâche précise). Unregister-ScheduledTask -Confirm:$false évite l'invite de confirmation, pratique en script mais à manier avec prudence."
+  },
+  {
+    "id": "OPT-M06-C12-008",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la création d'une tâche planifiée de sauvegarde nocturne :",
+    "options": [
+      "Définir le déclencheur : quotidien à 02h00",
+      "Ouvrir le Planificateur de tâches (taskschd.msc) et créer une nouvelle tâche",
+      "Configurer l'action : exécuter le script PowerShell de sauvegarde",
+      "Tester manuellement la tâche pour valider son bon fonctionnement",
+      "Définir le compte d'exécution sur SYSTEM (pas un compte nominatif)",
+      "Activer la journalisation pour pouvoir suivre les exécutions"
+    ],
+    "answer": [
+      "Ouvrir le Planificateur de tâches (taskschd.msc) et créer une nouvelle tâche",
+      "Définir le déclencheur : quotidien à 02h00",
+      "Configurer l'action : exécuter le script PowerShell de sauvegarde",
+      "Définir le compte d'exécution sur SYSTEM (pas un compte nominatif)",
+      "Activer la journalisation pour pouvoir suivre les exécutions",
+      "Tester manuellement la tâche pour valider son bon fonctionnement"
+    ],
+    "comment": "Le test manuel se fait TOUJOURS en dernier : inutile de tester une tâche dont le compte d'exécution n'est pas encore réglé. Et on ne se contente jamais d'attendre 02h00 du matin pour découvrir un échec : un clic droit puis Exécuter valide immédiatement la chaîne complète."
+  },
+  {
+    "id": "OPT-M06-C12-009",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #604 : 'La sauvegarde nocturne ne s'exécute plus depuis quelques jours. Aucune erreur visible, elle ne se lance simplement plus.' On constate qu'un compte salarié a été désactivé récemment.",
+    "answer": "La tâche tournait probablement sous le compte nominatif du salarié désactivé : sans compte valide, elle ne s'exécute plus. Reconfigurer la tâche pour qu'elle tourne sous SYSTEM (ou un compte de service dédié), puis la tester manuellement.",
+    "checklist": [
+      "Ouvrir taskschd.msc et localiser la tâche de sauvegarde",
+      "Vérifier l'onglet Général : sous quel compte la tâche s'exécute-t-elle ?",
+      "Consulter l'historique de la tâche / Get-ScheduledTaskInfo pour voir le dernier code de résultat",
+      "Corréler la date du dernier succès avec la désactivation du compte salarié",
+      "Modifier le compte d'exécution vers SYSTEM ou un compte de service dédié (RunLevel Highest)",
+      "Tester manuellement (clic droit → Exécuter) sans attendre 02h00",
+      "Vérifier dans l'historique que l'exécution est repassée au vert"
+    ],
+    "comment": "Symptôme caractéristique : une tâche qui s'arrête PILE au moment d'un départ ou d'un changement de mot de passe pointe presque toujours vers un compte nominatif. La leçon : profiter de l'incident pour migrer toutes les tâches critiques vers un compte de service et documenter le mot de passe (qui n'expire pas)."
+  },
+  {
+    "id": "OPT-M06-C12-010",
+    "category": "Administration de Windows",
+    "chapter": "Planificateur de tâches — Task Scheduler",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #611 : 'Un poste se comporte bizarrement, des connexions réseau partent vers des adresses inconnues même après nettoyage antivirus.' Vous suspectez une persistance et inspectez les tâches planifiées.",
+    "answer": "Lister toutes les tâches planifiées avec Get-ScheduledTask, repérer celles au nom suspect ou pointant vers des exécutables anormaux (AppData, Temp), et supprimer les tâches malveillantes confirmées avec Unregister-ScheduledTask.",
+    "checklist": [
+      "Lancer Get-ScheduledTask pour obtenir la liste complète des tâches",
+      "Repérer les tâches au nom inhabituel ou récemment créées",
+      "Pour chaque tâche douteuse, examiner l'action (chemin de l'exécutable, arguments)",
+      "Méfiance sur les chemins dans AppData, Temp ou les dossiers utilisateur",
+      "Croiser avec la clé Run du registre (1er endroit de persistance)",
+      "Get-ScheduledTaskInfo pour voir le déclencheur et le dernier lancement",
+      "Supprimer les tâches malveillantes confirmées : Unregister-ScheduledTask -TaskName \"X\" -Confirm:$false",
+      "Re-scanner et isoler le poste du réseau si l'infection persiste"
+    ],
+    "comment": "Le planificateur étant le 2e nid de persistance après la clé Run, un antivirus qui nettoie l'exécutable mais laisse la tâche en place ne règle rien : la tâche re-télécharge ou relance le malware. Toujours documenter une tâche avant de la supprimer (capture du chemin et des arguments) pour l'analyse."
+  }
+]

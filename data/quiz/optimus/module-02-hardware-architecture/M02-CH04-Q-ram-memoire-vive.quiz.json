@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C04-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que la RAM et pourquoi dit-on qu'elle est 'volatile' ?",
+    "answer": "La RAM (Random Access Memory) est la mémoire de travail du PC : elle stocke temporairement les données des applications en cours d'utilisation. Volatile = son contenu est entièrement effacé à chaque extinction du PC.",
+    "comment": "Contrairement au SSD/HDD, la RAM ne conserve rien à l'arrêt. C'est pourquoi 'sauvegarder' déplace les données de la RAM vers le stockage permanent."
+  },
+  {
+    "id": "OPT-M02-C04-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre SDRAM et SRAM dans un PC ?",
+    "answer": "SDRAM (DDR3/DDR4/DDR5) : barrettes amovibles, mémoire principale du PC, plus lente et moins chère. SRAM : mémoire cache intégrée directement au CPU (L1/L2/L3), beaucoup plus rapide et coûteuse, ne nécessite pas de rafraîchissement.",
+    "comment": "La SRAM est environ 100× plus rapide que la SDRAM mais coûte beaucoup plus cher par Go. C'est pourquoi le cache CPU se mesure en Mo, pas en Go."
+  },
+  {
+    "id": "OPT-M02-C04-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un format DIMM et SO-DIMM ?",
+    "answer": "DIMM (Dual Inline Memory Module) = format standard pour PC de bureau, barrette longue (~133 mm). SO-DIMM (Small Outline DIMM) = format compact pour laptops (~67 mm). Ils sont physiquement incompatibles et ne peuvent pas s'échanger.",
+    "comment": "En intervention, toujours vérifier le format avant de commander une barrette RAM de remplacement. Mettre une barrette DIMM dans un laptop est physiquement impossible."
+  },
+  {
+    "id": "OPT-M02-C04-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le mode 'dual channel' et comment l'activer ?",
+    "answer": "Installer deux barrettes RAM identiques dans les slots de même couleur (ou selon le manuel de la carte mère). La bande passante théorique est doublée. Ex : 2×8 Go en dual channel > 1×16 Go en single channel.",
+    "comment": "Le gain réel varie selon l'usage (jeux, applications gourmandes en mémoire bande passante bénéficient davantage). Pour activer le dual channel, consulter le manuel : souvent les slots 2 et 4 ou 1 et 3."
+  },
+  {
+    "id": "OPT-M02-C04-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert le profil XMP (Intel) ou EXPO (AMD) dans le BIOS ?",
+    "answer": "Ce sont des profils d'overclocking RAM à activer manuellement dans le BIOS. Sans eux, la RAM tourne à sa fréquence JEDEC minimale (ex : 2133 MHz) même si elle est annoncée à 3600 MHz.",
+    "comment": "C'est une erreur très fréquente : la RAM livrée à 3600 MHz tourne par défaut à 2133 MHz jusqu'à activation XMP/EXPO dans le BIOS. Toujours vérifier après assemblage."
+  },
+  {
+    "id": "OPT-M02-C04-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la RAM ECC et pour qui est-elle destinée ?",
+    "answer": "ECC (Error-Correcting Code) : RAM capable de détecter et corriger automatiquement les erreurs mémoire d'un bit. Destinée aux serveurs, stations de travail critiques et environnements nécessitant une fiabilité maximale.",
+    "comment": "La RAM ECC est plus chère et légèrement plus lente. Elle est indispensable sur les serveurs pour éviter les corruptions de données silencieuses. Non compatible avec toutes les cartes mères grand public."
+  },
+  {
+    "id": "OPT-M02-C04-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : une barrette DDR3 et une barrette DDR4 peuvent cohabiter sur la même carte mère. Justifiez.",
+    "answer": "Faux. DDR3, DDR4 et DDR5 ont des encoches à des positions différentes et des tensions d'alimentation différentes (DDR3=1.5V, DDR4=1.2V, DDR5=1.1V). Elles sont physiquement incompatibles et non interchangeables.",
+    "comment": "La carte mère supporte exclusivement une génération de DDR. On ne peut pas mélanger des générations différentes. C'est un point régulièrement testé en certification hardware."
+  },
+  {
+    "id": "OPT-M02-C04-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle capacité de RAM est recommandée en pratique pour un PC Windows 11 bureautique ?",
+    "answer": "8 Go minimum (Microsoft indique 4 Go mais c'est insuffisant en pratique). 16 Go est recommandé pour un usage bureautique confortable avec navigation web, applications Office et visioconférence simultanées.",
+    "comment": "Windows 11 consomme environ 3-4 Go au repos. Avec un navigateur web et quelques onglets ouverts, 8 Go peuvent rapidement être saturés, forçant le système à utiliser le swap sur disque (beaucoup plus lent)."
+  },
+  {
+    "id": "OPT-M02-C04-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque génération de RAM DDR à sa tension d'alimentation caractéristique :",
+    "pairs": [
+      {"left": "DDR3", "right": "1.5V"},
+      {"left": "DDR4", "right": "1.2V"},
+      {"left": "DDR5", "right": "1.1V"},
+      {"left": "LPDDR (mobile)", "right": "1.1V — version basse consommation pour laptops"}
+    ],
+    "answer": "DDR3 = 1.5V | DDR4 = 1.2V | DDR5 = 1.1V | LPDDR = 1.1V mobile",
+    "comment": "La tension diminue à chaque génération, réduisant la consommation et la chaleur. C'est une tendance générale en électronique : plus la gravure est fine, plus la tension peut être basse."
+  },
+  {
+    "id": "OPT-M02-C04-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La mémoire vive (RAM)",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre ces types de mémoire selon leur vitesse d'accès, de la plus rapide à la plus lente :",
+    "options": ["RAM DDR (SDRAM)", "Cache SRAM du CPU (L1/L2/L3)", "SSD NVMe", "Registres du CPU", "HDD mécanique"],
+    "answer": ["Registres du CPU", "Cache SRAM du CPU (L1/L2/L3)", "RAM DDR (SDRAM)", "SSD NVMe", "HDD mécanique"],
+    "comment": "Registres (~0.3 ns) → Cache L1 (~1 ns) → Cache L3 (~10 ns) → RAM DDR (~60 ns) → SSD NVMe (~100 µs) → HDD (~10 ms). La hiérarchie mémoire est conçue pour masquer ces différences de latence."
+  }
+]

@@ -1,0 +1,174 @@
+[
+  {
+    "id": "OPT-M02-C12-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'ESD et pourquoi est-il dangereux pour les composants informatiques ?",
+    "answer": "ESD (Electrostatic Discharge / Décharge électrostatique) : transfert soudain d'électricité statique accumulée sur une personne vers un composant. Peut détruire instantanément et silencieusement des composants comme la RAM, le CPU ou la carte mère, sans laisser de trace visible.",
+    "comment": "Le danger : la décharge est souvent imperceptible pour l'humain (quelques volts) mais peut détruire des composants sensibles à quelques dizaines de volts. Toujours porter un bracelet antistatique ou toucher une partie métallique reliée à la terre avant de manipuler."
+  },
+  {
+    "id": "OPT-M02-C12-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que l'habilitation électrique BS et quand est-elle requise pour un technicien informatique ?",
+    "answer": "L'habilitation BS (Basse tension, interventions élémentaires) est une autorisation délivrée par l'employeur (après formation NF C 18-510) permettant d'effectuer des opérations simples en basse tension : remplacement à l'identique, raccordement sur circuit dédié. Ce n'est pas un diplôme, elle se renouvelle périodiquement.",
+    "comment": "ESD protège le matériel. L'habilitation BS protège la personne. Un technicien informatique peut être amené à travailler sur des équipements alimentés : l'habilitation BS définit les limites légales de son intervention."
+  },
+  {
+    "id": "OPT-M02-C12-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi installe-t-on des entretoises (standoffs) avant de visser la carte mère dans le boîtier ?",
+    "answer": "Les entretoises (petits supports métalliques vissés dans le boîtier) soulèvent la carte mère pour éviter tout contact entre ses circuits imprimés et le fond métallique du boîtier, ce qui provoquerait des courts-circuits.",
+    "comment": "Omettre les entretoises (ou en mettre à de mauvais emplacements) peut détruire la carte mère au premier démarrage. Leur emplacement dépend du format ATX de la carte mère et est marqué dans le boîtier."
+  },
+  {
+    "id": "OPT-M02-C12-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quels sont les principaux outils logiciels de diagnostic hardware et leur usage respectif ?",
+    "answer": "HWiNFO64 : monitoring températures/tensions/vitesses. CPU-Z : infos détaillées CPU, RAM, carte mère. GPU-Z : infos GPU et VRAM. CrystalDiskInfo : santé disques SMART. Memtest86 : test RAM hors OS (bootable, 2+ passes). Prime95 : stress test CPU. FurMark : stress test GPU.",
+    "comment": "Memtest86 est le seul à tester la RAM indépendamment de l'OS, ce qui le rend indispensable pour diagnostiquer une RAM instable causant des BSOD aléatoires. Faire tourner au moins 2 passes complètes."
+  },
+  {
+    "id": "OPT-M02-C12-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : un écran bleu (BSOD) est toujours causé par un problème logiciel ou un pilote. Justifiez.",
+    "answer": "Faux. Un BSOD peut être causé par de la RAM défectueuse, un SSD défaillant, une surchauffe, un pilote corrompu ou un problème d'overclocking instable. Toujours tester la RAM (Memtest86) et les disques (CrystalDiskInfo) avant de supposer une cause logicielle.",
+    "comment": "Le code d'erreur du BSOD (ex : MEMORY_MANAGEMENT, CRITICAL_PROCESS_DIED) oriente le diagnostic. Un BSOD aléatoire sans cause apparente avec différents codes pointe souvent vers la RAM."
+  },
+  {
+    "id": "OPT-M02-C12-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque symptôme de panne à sa cause la plus probable :",
+    "pairs": [
+      {"left": "PC s'éteint aléatoirement sous charge", "right": "Surchauffe CPU/GPU ou PSU sous-dimensionné"},
+      {"left": "Date/heure remise à zéro à chaque démarrage", "right": "Pile CMOS CR2032 morte"},
+      {"left": "Bruits de clic répétés du disque dur", "right": "HDD en fin de vie (head crash imminent)"},
+      {"left": "PC démarre mais aucun affichage sur l'écran", "right": "Mauvaise sortie vidéo active ou GPU mal inséré"}
+    ],
+    "answer": "Extinction sous charge = surchauffe/PSU | Date/heure réinitialisée = pile CMOS morte | Clic HDD = fin de vie | Démarrage sans affichage = sortie vidéo / GPU",
+    "comment": "Les bruits de clic (click of death) d'un HDD signalent une défaillance imminente : sauvegarder immédiatement et remplacer le disque sans attendre. Chaque clic peut être la dernière chance de récupérer les données."
+  },
+  {
+    "id": "OPT-M02-C12-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes d'assemblage d'un PC, du début à la première mise sous tension :",
+    "options": [
+      "Installer la carte graphique dans le slot PCIe x16",
+      "Installer le CPU sur la carte mère (aligner le triangle)",
+      "Brancher tous les câbles (24 broches, CPU, PCIe, SATA, headers façade)",
+      "Appliquer la pâte thermique et fixer le ventirad",
+      "Visser la carte mère sur les entretoises du boîtier",
+      "Installer les barrettes RAM dans les bons slots (dual channel)"
+    ],
+    "answer": [
+      "Installer le CPU sur la carte mère (aligner le triangle)",
+      "Appliquer la pâte thermique et fixer le ventirad",
+      "Installer les barrettes RAM dans les bons slots (dual channel)",
+      "Visser la carte mère sur les entretoises du boîtier",
+      "Installer la carte graphique dans le slot PCIe x16",
+      "Brancher tous les câbles (24 broches, CPU, PCIe, SATA, headers façade)"
+    ],
+    "comment": "L'ordre logique : composants sur la carte mère hors boîtier (CPU, ventirad, RAM) → monter la carte mère → ajouter les extensions (GPU, stockage) → câblage. Brancher les câbles en dernier évite de les gêner pendant le montage."
+  },
+  {
+    "id": "OPT-M02-C12-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #247 : 'Mon PC gaming s'éteint tout seul après 10-15 minutes en jeu. Il redémarre normalement et refonctionne, puis s'éteint à nouveau.'",
+    "answer": "Cause probable : surchauffe du CPU ou du GPU. Le composant atteint sa température limite et déclenche un arrêt de protection.",
+    "checklist": [
+      "Lancer HWMonitor et surveiller les températures CPU et GPU pendant 10 min en jeu",
+      "Vérifier si CPU > 95°C ou GPU > 95°C avant l'extinction",
+      "Ouvrir le boîtier et vérifier que tous les ventilateurs tournent",
+      "Nettoyer les radiateurs CPU et GPU (poussière = isolation thermique)",
+      "Vérifier que le ventirad CPU est bien fixé et que la pâte thermique n'est pas sèche",
+      "Si températures OK, tester le PSU (sous-dimensionnement = coupure sous charge)"
+    ],
+    "comment": "L'arrêt brutal sous charge répétitif est le signe classique de la protection thermique. 80% du temps, un nettoyage des radiateurs résout le problème. Si les températures sont normales, suspecter le PSU."
+  },
+  {
+    "id": "OPT-M02-C12-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #312 : 'PC récupéré d'un collègue parti en retraite. À chaque démarrage, l'heure et la date sont fausses (affiche 01/01/2009). Il faut les corriger manuellement à chaque fois.'",
+    "answer": "Pile CMOS CR2032 morte. La carte mère ne peut plus maintenir ses paramètres BIOS sans alimentation secteur.",
+    "checklist": [
+      "Confirmer le symptôme : date remise à zéro même après correction manuelle",
+      "Éteindre et débrancher le PC du secteur",
+      "Localiser la pile bouton CR2032 sur la carte mère",
+      "Retirer et remplacer la pile CR2032 (pile neuve ~2 euros, vérifier la polarité)",
+      "Rebrancher, démarrer et corriger date/heure dans le BIOS",
+      "Vérifier que la date est conservée après un arrêt complet"
+    ],
+    "comment": "C'est l'un des dépannages les plus simples et les moins coûteux. Durée de vie normale d'une pile CMOS : 5-10 ans. Sur un PC récupéré d'occasion, remplacer la pile en préventif est une bonne pratique."
+  },
+  {
+    "id": "OPT-M02-C12-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un PC ne démarre pas : aucun bip, aucun affichage à l'écran, mais les voyants de la carte mère s'allument brièvement. Quel est le problème ?",
+    "answer": "Câble d'alimentation non branché ou mal branché (câble 24 broches ATX de la carte mère ou câble EPS 8 broches du CPU). Ou RAM mal insérée / non détectée.",
+    "indices": [
+      "Les ventilateurs démarrent une seconde puis tout s'arrête (ou ne démarrent pas du tout).",
+      "Le témoin LED 'CPU' ou 'RAM' de la carte mère reste allumé de façon fixe.",
+      "En retirant et réinsérant une seule barrette RAM, le PC démarre sur la deuxième tentative."
+    ],
+    "comment": "Les LEDs de diagnostic sur les cartes mères modernes indiquent quelle étape du POST a échoué (CPU, DRAM, VGA, BOOT). Les vérifier en premier. Un câble EPS CPU débranché est la cause la plus fréquente de 'PC ne démarre pas' après assemblage."
+  },
+  {
+    "id": "OPT-M02-C12-011",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un PC démarre normalement (bips, ventilateurs), mais l'écran reste noir. Quel est le problème ?",
+    "answer": "Le signal vidéo est envoyé sur la mauvaise sortie. Soit le câble est branché sur la carte mère (iGPU désactivé) alors qu'un GPU dédié est installé, soit sur le GPU alors que l'iGPU est sélectionné dans le BIOS.",
+    "indices": [
+      "Le PC semble fonctionner normalement : sons de démarrage Windows audibles, ventilateurs et LEDs actifs, aucun bip d'erreur.",
+      "Le câble vidéo est branché sur le panneau de ports situé à l'horizontale, près des ports USB de la carte mère.",
+      "Une carte graphique dédiée est bien présente dans le slot PCIe x16, avec ses propres sorties vidéo plus bas sur le panneau arrière."
+    ],
+    "comment": "Erreur très fréquente lors du premier assemblage ou après ajout d'une carte graphique. Toujours brancher le câble vidéo sur le GPU dédié si un GPU PCIe est installé (sauf configuration spéciale)."
+  },
+  {
+    "id": "OPT-M02-C12-012",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Assemblage et dépannage hardware",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "Un SSD M.2 vient d'être installé mais n'apparaît ni dans le BIOS ni dans Windows. Quel est le problème ?",
+    "answer": "Incompatibilité de protocole : le slot M.2 de la carte mère supporte uniquement SATA, mais le SSD est NVMe (ou vice versa). Ou le SSD est mal inséré (vis de fixation oubliée, encoche mal alignée).",
+    "indices": [
+      "Le SSD est physiquement inséré et la vis de fixation est serrée.",
+      "La carte mère dispose de deux slots M.2 : le premier est marqué 'M.2_1 (SATA/NVMe)' et le second 'M.2_2 (NVMe only)'.",
+      "Le SSD est un NVMe PCIe 4.0, mais il a été inséré dans le slot M.2_2 marqué 'PCIe 3.0 NVMe only'."
+    ],
+    "comment": "M.2 est le connecteur physique, pas le protocole. Toujours consulter le manuel de la carte mère pour connaître les protocoles supportés par chaque slot M.2. Un SSD NVMe Gen4 dans un slot PCIe 3.0 fonctionne (avec performances réduites) ; un SSD NVMe dans un slot M.2 SATA only ne fonctionne pas."
+  }
+]

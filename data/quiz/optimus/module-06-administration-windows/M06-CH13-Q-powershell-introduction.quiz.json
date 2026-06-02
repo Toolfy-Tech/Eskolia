@@ -1,0 +1,173 @@
+[
+  {
+    "id": "OPT-M06-C13-001",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence clé entre PowerShell et l'ancien cmd, et pourquoi PowerShell le remplace pour l'administration ?",
+    "answer": "cmd est un interpréteur de commandes basique limité au texte. PowerShell est à la fois un shell et un véritable langage de script qui manipule des objets (pas seulement du texte), pilote tout l'environnement Windows et permet d'agir sur des centaines de machines à la fois. Tout ce qui se fait en interface graphique peut s'y faire, souvent plus vite.",
+    "comment": "Le point décisif : PowerShell manipule des objets structurés, pas des chaînes de texte à parser. C'est ce qui rend Get-Process | Where-Object {...} | Stop-Process possible sans bidouille. cmd reste utile pour quelques commandes héritées, mais l'administration moderne se fait en PowerShell."
+  },
+  {
+    "id": "OPT-M06-C13-002",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment est structurée une cmdlet PowerShell et quels sont les verbes les plus courants ?",
+    "answer": "Une cmdlet suit la structure Verbe-Nom (ex. Get-Process, Stop-Service). Verbes courants : Get (obtenir), Set (modifier), Start/Stop/Restart (démarrer/arrêter/redémarrer), New (créer), Remove (supprimer), Export/Import (exporter/importer).",
+    "comment": "Cette convention Verbe-Nom rend PowerShell prévisible : si Get-Service existe, on devine Start-Service, Stop-Service, Restart-Service sans les chercher. Quand on ignore le nom exact, Get-Command *service* liste toutes les cmdlets disponibles autour d'un mot-clé."
+  },
+  {
+    "id": "OPT-M06-C13-003",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert Get-Help avec le paramètre -Examples ?",
+    "answer": "Get-Help <commande> -Examples affiche des exemples concrets d'utilisation d'une cmdlet, avec la syntaxe réelle et le résultat attendu. C'est le moyen le plus rapide d'apprendre à se servir d'une commande inconnue sans documentation externe.",
+    "comment": "Réflexe d'autonomie : devant une cmdlet inconnue, Get-Help X -Examples donne immédiatement des cas d'usage copiables. Penser à Update-Help une fois pour télécharger l'aide complète, sinon certaines rubriques restent vides."
+  },
+  {
+    "id": "OPT-M06-C13-004",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert Test-NetConnection et qu'apporte-t-il par rapport à un simple ping ?",
+    "answer": "Test-NetConnection teste la connectivité réseau vers une machine, mais surtout vérifie si un port TCP précis est ouvert, par exemple Test-NetConnection -ComputerName google.fr -Port 443. Là où ping ne dit que si l'hôte répond, Test-NetConnection confirme qu'un service précis (web, mail, intranet) est joignable sur son port.",
+    "comment": "Outil diagnostic n°1 quand 'le serveur répond au ping mais l'appli ne marche pas' : le ping passe (couche IP) mais le port du service est fermé ou filtré. Tester le bon port distingue un problème réseau d'un problème de service ou de pare-feu."
+  },
+  {
+    "id": "OPT-M06-C13-005",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que fait Import-Module ActiveDirectory et pourquoi est-ce un prérequis pour automatiser l'AD ?",
+    "answer": "Import-Module ActiveDirectory charge le module PowerShell qui donne accès aux cmdlets de gestion de l'Active Directory (Get-ADUser, New-ADUser, etc.). Sans ce module chargé, ces commandes sont introuvables. C'est la porte d'entrée de toute automatisation AD en PowerShell.",
+    "comment": "Le module est fourni par les RSAT (outils d'administration de serveur distant) sur un poste client, ou nativement sur un contrôleur de domaine. Erreur fréquente : lancer Get-ADUser sur un poste sans RSAT et obtenir 'cmdlet non reconnue', alors que c'est juste le module qui manque."
+  },
+  {
+    "id": "OPT-M06-C13-006",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi PowerShell est-il particulièrement précieux pour gérer l'Active Directory en masse ?",
+    "answer": "Parce qu'une opération qui prendrait des heures en interface graphique (créer 200 comptes, désactiver tous les comptes inactifs, exporter un rapport) se fait en quelques lignes de script appliquées à des centaines d'objets d'un coup. Cinq lignes de PowerShell peuvent créer 200 comptes là où le clic à clic prendrait une journée.",
+    "comment": "Le gain n'est pas que la vitesse : c'est aussi la reproductibilité et l'absence d'erreur humaine. Un script appliqué à 200 comptes applique exactement la même règle à chacun, alors que la saisie manuelle multiplie les fautes de frappe et les oublis."
+  },
+  {
+    "id": "OPT-M06-C13-007",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque cmdlet PowerShell à son usage ou son équivalent classique :",
+    "pairs": [
+      {"left": "Get-EventLog -LogName System -Newest 20", "right": "Consulter les derniers événements d'un journal (équivalent Observateur d'événements)"},
+      {"left": "Test-NetConnection -Port 443", "right": "Vérifier qu'un port TCP précis est ouvert sur un hôte"},
+      {"left": "Get-NetIPConfiguration", "right": "Afficher la configuration IP complète (équivalent ipconfig /all)"},
+      {"left": "Resolve-DnsName google.fr", "right": "Résoudre un nom de domaine en adresse IP (équivalent nslookup)"},
+      {"left": "Get-Service", "right": "Lister les services Windows et leur état (équivalent services.msc)"}
+    ],
+    "answer": "Get-EventLog = journaux d'événements | Test-NetConnection -Port = test de port TCP | Get-NetIPConfiguration = ipconfig /all | Resolve-DnsName = nslookup | Get-Service = services.msc",
+    "comment": "Connaître l'équivalent PowerShell des outils habituels permet de tout faire à distance et en script. La force : ces sorties sont des objets, donc filtrables et exportables (| Where-Object, | Export-Csv) là où les vieux outils ne crachaient que du texte."
+  },
+  {
+    "id": "OPT-M06-C13-008",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque console de gestion (.msc ou exécutable) à son rôle :",
+    "pairs": [
+      {"left": "dsa.msc", "right": "Active Directory Users and Computers (gestion des comptes et ordinateurs)"},
+      {"left": "gpmc.msc", "right": "Console de gestion des stratégies de groupe (GPO)"},
+      {"left": "eventvwr.msc", "right": "Observateur d'événements (journaux système, sécurité, application)"},
+      {"left": "regedit", "right": "Éditeur du Registre Windows"},
+      {"left": "resmon", "right": "Moniteur de ressources (CPU, RAM, disque, réseau en détail)"},
+      {"left": "mstsc", "right": "Connexion Bureau à distance (RDP)"},
+      {"left": "taskschd.msc", "right": "Planificateur de tâches"}
+    ],
+    "answer": "dsa.msc = AD Users & Computers | gpmc.msc = console GPO | eventvwr.msc = Observateur d'événements | regedit = Registre | resmon = Moniteur de ressources | mstsc = RDP | taskschd.msc = Planificateur",
+    "comment": "Ces raccourcis se tapent directement dans Exécuter (Win+R) et font gagner un temps fou face aux menus. resmon va bien plus loin que le Gestionnaire des tâches : il montre quel processus utilise quel fichier ou quelle connexion réseau précise."
+  },
+  {
+    "id": "OPT-M06-C13-009",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre le réflexe de diagnostic d'une panne Windows courante :",
+    "options": [
+      "Lancer resmon pour le détail CPU / RAM / disque / réseau par processus",
+      "Ouvrir eventvwr.msc pour repérer erreurs et avertissements récents",
+      "Décider de l'action corrective (redémarrer un service, tuer un processus, etc.)",
+      "Ouvrir le Gestionnaire des tâches pour voir la charge globale et les processus gourmands",
+      "Identifier le processus ou service responsable du problème"
+    ],
+    "answer": [
+      "Ouvrir eventvwr.msc pour repérer erreurs et avertissements récents",
+      "Ouvrir le Gestionnaire des tâches pour voir la charge globale et les processus gourmands",
+      "Lancer resmon pour le détail CPU / RAM / disque / réseau par processus",
+      "Identifier le processus ou service responsable du problème",
+      "Décider de l'action corrective (redémarrer un service, tuer un processus, etc.)"
+    ],
+    "comment": "Cet enchaînement eventvwr → Gestionnaire des tâches → resmon couvre à lui seul environ 80% des pannes courantes. On va du général (les journaux racontent l'historique) au particulier (resmon isole le coupable exact) avant d'agir, jamais l'inverse."
+  },
+  {
+    "id": "OPT-M06-C13-010",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #720 : 'Plus aucune impression ne part sur le serveur d'impression. On suspecte le spouleur planté. Le serveur est distant, pas d'accès physique ni RDP disponible immédiatement.' Comment redémarrer le service sans interface graphique ?",
+    "answer": "Se connecter en PowerShell distant au serveur, vérifier l'état du service spouleur avec Get-Service spooler, puis le relancer avec Restart-Service -Name spooler (ou Stop-Service puis Start-Service si Restart échoue). Vérifier enfin que le service est repassé à Running.",
+    "checklist": [
+      "Ouvrir une session PowerShell vers le serveur distant (Enter-PSSession ou -ComputerName)",
+      "Get-Service -Name spooler pour confirmer l'état (Stopped ou figé)",
+      "Restart-Service -Name spooler pour le relancer en une commande",
+      "Si Restart échoue : Stop-Service -Name spooler -Force puis Start-Service -Name spooler",
+      "Get-Service -Name spooler pour vérifier le retour à l'état Running",
+      "Faire un test d'impression pour confirmer le déblocage"
+    ],
+    "comment": "PowerShell évite le déplacement et le RDP : tout se pilote à distance en quelques secondes. Sur un spouleur, Restart-Service suffit souvent ; mais si la file est corrompue, il faut Stop-Service -Force, vider le dossier spool\\PRINTERS, puis Start-Service (voir le chapitre imprimantes)."
+  },
+  {
+    "id": "OPT-M06-C13-011",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #735 : Audit de sécurité demandé par la RSSI : 'Fournir la liste de tous les comptes Active Directory désactivés, avec leur date de dernière connexion, dans un fichier exploitable.' Comment produire ce rapport ?",
+    "answer": "Charger le module AD, interroger les comptes désactivés avec Get-ADUser -Filter {Enabled -eq $false} en récupérant les propriétés utiles, sélectionner Name, SamAccountName et LastLogonDate, puis exporter le tout en CSV avec Export-Csv.",
+    "checklist": [
+      "Import-Module ActiveDirectory pour charger les cmdlets AD",
+      "Get-ADUser -Filter {Enabled -eq $false} -Properties * pour cibler les comptes désactivés",
+      "Sélectionner les champs pertinents : Select-Object Name, SamAccountName, LastLogonDate",
+      "Exporter : Export-Csv -Path 'C:\\rapports\\comptes_desactives.csv' -Encoding UTF8",
+      "Ouvrir le CSV pour vérifier l'exhaustivité et la lisibilité (accents corrects grâce à UTF8)",
+      "Transmettre le rapport et planifier éventuellement la commande pour un audit récurrent"
+    ],
+    "comment": "L'encodage UTF8 dans Export-Csv évite les accents cassés dans Excel. Ce rapport sortable en 5 lignes serait infaisable à la main : c'est l'exemple type où PowerShell transforme une corvée d'une journée en script de quelques secondes, rejouable chaque mois via le Planificateur."
+  },
+  {
+    "id": "OPT-M06-C13-012",
+    "category": "Administration de Windows",
+    "chapter": "PowerShell — Introduction",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "TICKET #742 : Un utilisateur ne peut plus accéder à une application intranet métier, alors que l'accès Internet fonctionne normalement. Diagnostiquez la cause à partir des indices.",
+    "answer": "Le port sur lequel écoute le service intranet a changé. Le poste joint bien le serveur au niveau IP (ping OK) et la résolution DNS fonctionne, mais l'application pointe vers l'ancien port désormais fermé. Le service est en réalité passé sur un nouveau port (ex. 8080), qu'il faut reporter dans la configuration de l'application cliente.",
+    "indices": [
+      "L'accès Internet est parfaitement fonctionnel : ce n'est pas une coupure réseau globale.",
+      "ping vers l'adresse IP du serveur intranet répond sans perte : l'hôte est bien joignable et le DNS résout correctement.",
+      "Test-NetConnection -ComputerName serveur -Port 80 expire en timeout, mais le même test sur -Port 8080 répond TcpTestSucceeded : True.",
+      "Le service applicatif a été migré récemment sur un nouveau port (8080) sans que la configuration cliente n'ait été mise à jour."
+    ],
+    "comment": "Cas d'école qui prouve l'intérêt de Test-NetConnection -Port face au simple ping : le ping passe (couche IP saine) et masque le vrai problème, qui est au niveau du port (couche service). Tester plusieurs ports révèle le déplacement du service ; corriger l'URL ou le port côté client résout le ticket."
+  }
+]

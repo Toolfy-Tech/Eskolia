@@ -1,0 +1,126 @@
+[
+  {
+    "id": "OPT-M07-C06-001",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie RGPD et depuis quelle date ce règlement est-il en application ?",
+    "answer": "Règlement Général sur la Protection des Données, règlement européen en application depuis le 25 mai 2018.",
+    "comment": "Le RGPD est un règlement européen : il s'applique directement dans tous les États membres sans transposition nationale, ce qui le distingue d'une directive. Il concerne toute organisation traitant des données de résidents européens, même installée hors de l'UE. Pour un technicien, l'essentiel n'est pas de réciter les articles mais de comprendre que la protection des données personnelles est une obligation légale, pas une simple bonne pratique."
+  },
+  {
+    "id": "OPT-M07-C06-002",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est l'autorité de contrôle du RGPD en France ?",
+    "answer": "La CNIL, Commission Nationale de l'Informatique et des Libertés.",
+    "comment": "La CNIL ne fait pas que sanctionner : elle conseille, publie des guides pratiques et instruit les plaintes des particuliers. C'est aussi elle qui reçoit les notifications de violation de données. En tant que technicien on n'a généralement pas de contact direct avec la CNIL, mais on doit savoir qu'elle existe et que certaines violations doivent lui être notifiées, ce qui justifie de remonter tout incident à sa hiérarchie sans le minimiser."
+  },
+  {
+    "id": "OPT-M07-C06-003",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'une donnée personnelle au sens du RGPD ? Donnez des exemples.",
+    "answer": "Toute information se rapportant à une personne physique identifiable : nom, email, téléphone, adresse, adresse IP, identifiant de connexion, photo, données de santé.",
+    "comment": "Le piège fréquent est de croire que seules les données d'état civil sont concernées. Une adresse IP ou un identifiant de connexion suffisent à rendre une personne identifiable, donc à constituer une donnée personnelle. Cette définition large explique pourquoi des logs techniques, souvent négligés, tombent eux aussi sous le RGPD. Dès qu'une information permet de remonter à un individu, directement ou indirectement, elle est protégée."
+  },
+  {
+    "id": "OPT-M07-C06-004",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que sont les données sensibles et en quoi diffèrent-elles des autres données personnelles ?",
+    "answer": "Ce sont certaines catégories de données personnelles (santé, opinions, biométrie) qui bénéficient d'une protection renforcée.",
+    "comment": "Les données sensibles font l'objet d'un régime plus strict car leur fuite peut entraîner des discriminations graves : santé, origine, opinions politiques ou religieuses, orientation, biométrie. En pratique, un technicien qui croise ce type de données (par exemple dans un service RH ou médical) doit redoubler de prudence et limiter encore davantage tout accès ou copie. La règle de minimisation s'applique avec une rigueur accrue sur ces catégories."
+  },
+  {
+    "id": "OPT-M07-C06-005",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "B",
+    "type": "classic",
+    "question": "En quoi consiste le principe de minimisation des données ?",
+    "answer": "Ne collecter que les données strictement nécessaires à la finalité prévue, sans en accumuler au-delà du besoin réel.",
+    "comment": "La minimisation est souvent la première chose oubliée : par habitude on collecte large, au cas où. Or chaque donnée stockée inutilement est un risque supplémentaire en cas de fuite et une charge de conformité. Pour un technicien, cela se traduit concrètement par le fait de ne pas dupliquer des bases entières pour un test, et de ne pas conserver d'extractions de données sur son propre poste après une intervention."
+  },
+  {
+    "id": "OPT-M07-C06-006",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "A",
+    "type": "classic",
+    "question": "Quels droits le RGPD garantit-il aux personnes sur leurs données personnelles ?",
+    "answer": "Les droits d'accès, de rectification et de suppression (droit à l'oubli).",
+    "comment": "Ces droits transforment la donnée en quelque chose dont la personne reste maîtresse : elle peut demander ce qu'on détient sur elle, corriger une erreur, ou exiger l'effacement. Pour un technicien, une demande de suppression implique un effacement réel et complet, y compris dans les sauvegardes et les copies, pas seulement une suppression d'affichage. C'est pourquoi savoir où vivent réellement les données dans le système est une compétence directement liée à la conformité."
+  },
+  {
+    "id": "OPT-M07-C06-007",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque principe clé du RGPD à sa définition.",
+    "pairs": [
+      {"left": "Minimisation", "right": "Ne collecter que les données strictement nécessaires"},
+      {"left": "Finalité", "right": "N'utiliser les données que pour l'usage prévu"},
+      {"left": "Durée de conservation limitée", "right": "Ne pas garder les données indéfiniment"},
+      {"left": "Sécurité", "right": "Protéger contre l'accès non autorisé, la perte et le vol"},
+      {"left": "Droits des personnes", "right": "Permettre l'accès, la rectification et la suppression"}
+    ],
+    "answer": "Minimisation : ne collecter que les données strictement nécessaires ; finalité : n'utiliser les données que pour l'usage prévu ; durée de conservation limitée : ne pas garder les données indéfiniment ; sécurité : protéger contre l'accès non autorisé, la perte et le vol ; droits des personnes : permettre l'accès, la rectification et la suppression.",
+    "comment": "Ces cinq principes se complètent et se vérifient mutuellement : on ne peut pas respecter la sécurité sans limiter la durée de conservation, ni respecter la finalité sans minimiser. Le piège en évaluation est de confondre minimisation (quantité collectée) et durée de conservation (temps de garde) : ce sont deux principes distincts. Retenir la logique d'ensemble vaut mieux que de mémoriser les intitulés isolément."
+  },
+  {
+    "id": "OPT-M07-C06-008",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation rencontrée par un technicien à l'obligation RGPD correspondante.",
+    "pairs": [
+      {"left": "Disque dur en fin de vie à mettre au rebut", "right": "Effacement sécurisé avant rebut ou réaffectation"},
+      {"left": "Données d'un utilisateur visibles pendant une intervention", "right": "Confidentialité : ne pas consulter ni divulguer hors nécessité"},
+      {"left": "Découverte d'une fuite de données", "right": "Signalement à la hiérarchie et notification CNIL sous 72 h"},
+      {"left": "Envoi d'un fichier contenant des données personnelles", "right": "Utiliser un canal sécurisé, jamais un email non chiffré"}
+    ],
+    "answer": "Un disque en fin de vie impose un effacement sécurisé avant rebut ou réaffectation ; des données visibles pendant une intervention imposent la confidentialité (ne pas consulter ni divulguer hors nécessité) ; la découverte d'une fuite impose un signalement à la hiérarchie et la notification CNIL sous 72 h ; l'envoi d'un fichier de données personnelles impose un canal sécurisé, jamais un email non chiffré.",
+    "comment": "Ces situations sont celles que le technicien rencontre réellement, là où le RGPD cesse d'être théorique. Le réflexe commun à toutes : se demander systématiquement si une donnée personnelle est en jeu avant d'agir. Le cas du disque en fin de vie est le plus sous-estimé, car un simple formatage rapide ne suffit pas à effacer réellement les données et constitue donc une fuite potentielle."
+  },
+  {
+    "id": "OPT-M07-C06-009",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes de réaction face à une violation de données personnelles découverte sur le terrain.",
+    "options": [
+      "Constater la violation et cesser toute action pouvant l'aggraver",
+      "Signaler immédiatement l'incident à sa hiérarchie",
+      "Documenter la nature, l'étendue et les données concernées",
+      "Notifier la CNIL sous 72 heures lorsque le cas l'exige"
+    ],
+    "answer": [
+      "Constater la violation et cesser toute action pouvant l'aggraver",
+      "Signaler immédiatement l'incident à sa hiérarchie",
+      "Documenter la nature, l'étendue et les données concernées",
+      "Notifier la CNIL sous 72 heures lorsque le cas l'exige"
+    ],
+    "comment": "L'erreur classique est de vouloir corriger ou masquer le problème soi-même avant de remonter l'information : on risque de détruire des preuves ou d'aggraver la fuite. Le rôle du technicien s'arrête généralement au signalement et à la documentation ; la notification CNIL relève de la hiérarchie ou du DPO. Le délai de 72 heures court vite, ce qui rend le signalement immédiat décisif : tarder, c'est faire courir un risque juridique à toute l'organisation."
+  },
+  {
+    "id": "OPT-M07-C06-010",
+    "category": "Cybersécurité",
+    "chapter": "RGPD et protection des données personnelles",
+    "tier": "A",
+    "type": "ticket",
+    "question": "Ticket : un utilisateur signale que son ordinateur portable professionnel a été volé hier soir dans sa voiture. Le poste contenait des fichiers clients avec noms, emails et coordonnées. Que faites-vous et quelles obligations RGPD sont en jeu ?",
+    "answer": "Signaler immédiatement la perte du matériel et la violation de données à sa hiérarchie (et au DPO si l'organisation en a un), documenter les données présentes sur le poste, vérifier si le disque était chiffré (BitLocker), et préparer une éventuelle notification à la CNIL sous 72 heures car des données personnelles sont concernées.",
+    "comment": "Le facteur déterminant ici est le chiffrement : si BitLocker était actif, les données volées restent illisibles et l'incident, bien que réel, est considérablement atténué, ce qui peut dispenser d'une notification CNIL. Si le disque n'était pas chiffré, la violation est avérée et la procédure complète s'enclenche. Ce ticket illustre concrètement pourquoi la sécurité physique et le chiffrement vus au chapitre précédent ne sont pas des options : ils déterminent la gravité juridique d'un vol. Le technicien ne décide pas seul de notifier ou non, mais il fournit les éléments factuels (données présentes, état du chiffrement) qui permettront cette décision."
+  }
+]

@@ -1,0 +1,135 @@
+[
+  {
+    "id": "OPT-M06-C04-001",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que WSUS et quel problème résout-il dans un parc informatique ?",
+    "answer": "WSUS (Windows Server Update Services) est un rôle de Windows Server qui centralise la gestion des mises à jour du parc. Un serveur unique récupère les MAJ depuis Microsoft, l'administrateur les valide, puis elles sont distribuées de façon planifiée à tous les postes du domaine.",
+    "comment": "Sans WSUS, chaque PC télécharge ses MAJ directement depuis Microsoft : bande passante saturée, MAJ non contrôlées, parc hétérogène. WSUS résout les trois problèmes d'un coup : un seul téléchargement, validation centralisée, homogénéité."
+  },
+  {
+    "id": "OPT-M06-C04-002",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le Patch Tuesday et pourquoi est-il une référence pour planifier les déploiements WSUS ?",
+    "answer": "Le Patch Tuesday est le 2ème mardi de chaque mois, jour où Microsoft publie ses mises à jour de sécurité régulières. C'est le repère de calendrier utilisé par les administrateurs pour planifier les phases de validation et de déploiement WSUS.",
+    "comment": "Connaître le rythme du Patch Tuesday permet d'anticiper : on prévoit la phase de test pilote dans les jours qui suivent, puis le déploiement global la semaine d'après. Attention aux MAJ hors cycle (out-of-band) publiées en urgence pour des failles critiques."
+  },
+  {
+    "id": "OPT-M06-C04-003",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le Client-Side Targeting dans WSUS ?",
+    "answer": "Le Client-Side Targeting est une option configurée par GPO qui indique au poste de se déclarer lui-même membre d'un groupe WSUS précis (ex : Comptabilité). Cela permet de gérer des groupes recevant des MAJ différentes, notamment des groupes pilotes.",
+    "comment": "L'alternative est le ciblage côté serveur, où l'admin classe manuellement chaque poste dans la console WSUS. Le Client-Side Targeting est plus scalable : on lie une GPO à une OU et tous ses postes rejoignent automatiquement le bon groupe."
+  },
+  {
+    "id": "OPT-M06-C04-004",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi est-il recommandé de tester les mises à jour sur un groupe pilote avant le déploiement global ?",
+    "answer": "Parce qu'une mise à jour mal testée peut casser une application métier. Un groupe pilote de 5 à 10 postes permet de détecter les régressions sur un échantillon limité avant d'exposer tout le parc au risque.",
+    "comment": "Réflexe terrain : le groupe pilote doit refléter la diversité du parc (un poste de chaque service métier sensible). Tester uniquement sur des postes d'admins informatiques ne révèle pas les problèmes des logiciels comptables ou métiers spécifiques."
+  },
+  {
+    "id": "OPT-M06-C04-005",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est le chemin GPO pour pointer les postes vers un serveur WSUS, et que faut-il y renseigner ?",
+    "answer": "Configuration Ordinateur → Modèles d'administration → Composants Windows → Windows Update → 'Spécifier l'emplacement intranet du service de mise à jour Microsoft'. On y renseigne l'adresse du serveur, par exemple http://nom-serveur-wsus:8530.",
+    "comment": "C'est une GPO côté Ordinateur, pas Utilisateur : les MAJ concernent la machine, pas la personne connectée. Après application, un gpupdate /force puis un wuauclt /detectnow accélère la prise en compte sans attendre le cycle de détection automatique."
+  },
+  {
+    "id": "OPT-M06-C04-006",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "classic",
+    "question": "Sur quel port communique par défaut un serveur WSUS ?",
+    "answer": "WSUS écoute sur le port 8530 en HTTP, ou 8531 en HTTPS.",
+    "comment": "Si les postes ne reçoivent rien, vérifier que le pare-feu autorise bien le 8530/8531 entre les clients et le serveur. Erreur classique : confondre avec le 80/443 des serveurs web standards. WSUS utilise des ports dédiés depuis Windows Server 2012."
+  },
+  {
+    "id": "OPT-M06-C04-007",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque terme WSUS à sa définition :",
+    "pairs": [
+      {"left": "Patch Tuesday", "right": "2ème mardi du mois, publication des MAJ de sécurité Microsoft"},
+      {"left": "Client-Side Targeting", "right": "GPO faisant déclarer au poste son appartenance à un groupe WSUS"},
+      {"left": "Groupe pilote", "right": "5-10 postes test recevant les MAJ avant le reste du parc"},
+      {"left": "Approbation", "right": "Validation par l'admin autorisant la distribution d'une MAJ"}
+    ],
+    "answer": "Patch Tuesday = 2ème mardi du mois | Client-Side Targeting = auto-déclaration du poste dans un groupe via GPO | Groupe pilote = échantillon de test 5-10 postes | Approbation = validation admin d'une MAJ",
+    "comment": "L'approbation est l'étape qui distingue WSUS d'un téléchargement direct : rien ne part vers les postes tant que l'admin n'a pas approuvé, même si le serveur a déjà téléchargé la MAJ depuis Microsoft."
+  },
+  {
+    "id": "OPT-M06-C04-008",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque scénario à la situation (avec ou sans WSUS) qu'il décrit :",
+    "pairs": [
+      {"left": "Chaque poste télécharge ses MAJ depuis Internet, la bande passante sature à midi", "right": "Sans WSUS"},
+      {"left": "Une seule machine récupère les MAJ, l'admin les valide puis les distribue", "right": "Avec WSUS"},
+      {"left": "Des postes ont des versions de MAJ différentes, le parc est hétérogène", "right": "Sans WSUS"},
+      {"left": "Un groupe pilote teste une MAJ avant qu'elle ne touche tout le parc", "right": "Avec WSUS"}
+    ],
+    "answer": "Téléchargement individuel saturant la bande passante = Sans WSUS | Machine unique qui valide et distribue = Avec WSUS | Parc hétérogène non contrôlé = Sans WSUS | Test pilote avant déploiement = Avec WSUS",
+    "comment": "Le bénéfice le plus visible pour la direction est l'économie de bande passante (un seul téléchargement au lieu de N). Le bénéfice le plus important pour la sécurité est le contrôle et l'homogénéité des versions."
+  },
+  {
+    "id": "OPT-M06-C04-009",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre le parcours d'une mise à jour, de sa publication par Microsoft jusqu'à son installation sur les postes :",
+    "options": [
+      "Le groupe pilote teste la MAJ pendant quelques jours",
+      "Microsoft publie la mise à jour (Patch Tuesday)",
+      "L'administrateur valide (approuve) la mise à jour",
+      "Déploiement global sur tout le parc",
+      "Le serveur WSUS télécharge la mise à jour depuis Microsoft"
+    ],
+    "answer": [
+      "Microsoft publie la mise à jour (Patch Tuesday)",
+      "Le serveur WSUS télécharge la mise à jour depuis Microsoft",
+      "L'administrateur valide (approuve) la mise à jour",
+      "Le groupe pilote teste la MAJ pendant quelques jours",
+      "Déploiement global sur tout le parc"
+    ],
+    "comment": "Le téléchargement par WSUS est automatique (synchronisation planifiée), mais rien ne part vers les postes sans l'approbation manuelle de l'admin. L'approbation peut d'ailleurs cibler d'abord le seul groupe pilote, puis être étendue au reste après validation."
+  },
+  {
+    "id": "OPT-M06-C04-010",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des mises à jour — WSUS",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #401 : 'Un poste de la comptabilité n'a pas reçu les dernières mises à jour de sécurité depuis 3 semaines, alors que le WSUS fonctionne et que les autres postes sont à jour.'",
+    "answer": "Le poste ne dialogue pas correctement avec le WSUS : GPO non appliquée, mauvais groupe WSUS, ou client Windows Update bloqué. Il faut isoler à quel niveau la chaîne se rompt.",
+    "checklist": [
+      "Sur le poste, lancer gpresult /r et vérifier que la GPO WSUS est bien appliquée",
+      "Vérifier dans la console WSUS dans quel groupe le poste est classé (Client-Side Targeting correct ?)",
+      "Vérifier que les MAJ manquantes ont bien été approuvées pour ce groupe",
+      "Forcer la détection sur le poste : wuauclt /detectnow (ou usoclient StartScan sur Windows récents)",
+      "Consulter les logs Windows Update (Observateur d'événements / WindowsUpdate.log) pour identifier l'erreur",
+      "Vérifier la connectivité réseau vers le serveur WSUS sur le port 8530"
+    ],
+    "comment": "Ordre de diagnostic logique : d'abord la GPO (le poste sait-il où est le WSUS ?), puis le groupe (reçoit-il les bonnes MAJ ?), puis l'approbation (les MAJ sont-elles autorisées ?), enfin le client (peut-il les installer ?). Sauter à wuauclt sans vérifier la GPO fait perdre du temps."
+  }
+]

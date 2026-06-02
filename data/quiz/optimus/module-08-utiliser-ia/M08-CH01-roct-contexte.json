@@ -1,0 +1,125 @@
+[
+  {
+    "id": "OPT-M08-C01-001",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie l'acronyme R.O.C.T. pour structurer un prompt ?",
+    "answer": "Rôle, Objectif, Contexte, Type de réponse (format)",
+    "comment": "Cet acronyme sert d'aide-mémoire pour ne rien oublier au moment de formuler une demande. Le réflexe à acquérir : avant d'envoyer un prompt, se relire mentalement les quatre lettres et vérifier qu'aucune n'est laissée vide."
+  },
+  {
+    "id": "OPT-M08-C01-002",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi un prompt sans contexte donne-t-il souvent une réponse décevante ?",
+    "answer": "Sans contexte, l'IA produit une réponse générique car elle ne connaît ni le niveau, ni la situation, ni le besoin réel de l'utilisateur",
+    "comment": "L'IA ne devine pas votre profil : elle vise la moyenne statistique de ses données. C'est le C de R.O.C.T. qui transforme une explication tout public en une explication taillée pour vous. Le piège classique du débutant est de poser une question trop courte en croyant gagner du temps."
+  },
+  {
+    "id": "OPT-M08-C01-003",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que désigne le R de R.O.C.T. et à quoi sert-il ?",
+    "answer": "Le Rôle : on attribue une casquette à l'IA, par exemple « Agis comme un expert en Python », pour cadrer le ton et le niveau d'expertise de la réponse",
+    "comment": "Donner un rôle oriente le vocabulaire et la posture de la réponse. Un même sujet expliqué « comme un formateur pour débutants » ou « comme un architecte logiciel » ne produira pas du tout la même réponse. C'est le levier le plus rapide pour ajuster le registre."
+  },
+  {
+    "id": "OPT-M08-C01-004",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre le O (Objectif) et le T (Type de réponse) dans R.O.C.T. ?",
+    "answer": "L'Objectif décrit ce que l'on veut obtenir sur le fond (« Explique-moi les boucles while »), le Type décrit la forme attendue (« une définition, un exemple de code et un exercice »)",
+    "comment": "On confond souvent les deux. Astuce pour les distinguer : l'Objectif répond à « quoi ? », le Type répond à « sous quelle forme ? ». Préciser le format évite de recevoir un pavé indigeste quand on voulait une liste, ou l'inverse."
+  },
+  {
+    "id": "OPT-M08-C01-005",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Dans le C de R.O.C.T., quel type d'information faut-il fournir à l'IA ?",
+    "answer": "La situation concrète de l'utilisateur : son niveau, ce qu'il a déjà compris, ce qui le bloque, par exemple « Je suis en 1ère année de BTS SIO et je ne comprends pas la différence avec la boucle for »",
+    "comment": "Le contexte est le cœur de la méthode, d'où l'expression règle d'or. Plus vous décrivez précisément votre point de blocage, plus la réponse vise juste. Mentionner ce que l'on a déjà essayé évite que l'IA répète des évidences déjà connues."
+  },
+  {
+    "id": "OPT-M08-C01-006",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un prompt doit-il obligatoirement respecter l'ordre R puis O puis C puis T pour être efficace ?",
+    "answer": "Non : R.O.C.T. est une grille de vérification des éléments à inclure, pas une syntaxe rigide ; l'important est que les quatre dimensions soient présentes, l'ordre peut varier",
+    "comment": "L'acronyme aide à ne rien oublier, mais l'IA comprend le langage naturel et reconstitue le sens quel que soit l'agencement. Le vrai réflexe avancé est de relire son prompt et de cocher mentalement R, O, C, T plutôt que de réciter l'ordre."
+  },
+  {
+    "id": "OPT-M08-C01-007",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque lettre de R.O.C.T. à sa signification.",
+    "pairs": [
+      {"left": "R", "right": "Rôle donné à l'IA"},
+      {"left": "O", "right": "Objectif : ce que l'on veut obtenir"},
+      {"left": "C", "right": "Contexte : la situation de l'utilisateur"},
+      {"left": "T", "right": "Type de réponse / format attendu"}
+    ],
+    "answer": "R → Rôle donné à l'IA ; O → Objectif visé ; C → Contexte de l'utilisateur ; T → Type / format de réponse.",
+    "comment": "Mémoriser ces quatre correspondances suffit à transformer durablement la qualité de ses prompts. Beaucoup d'utilisateurs n'écrivent spontanément que le O et oublient les trois autres, ce qui explique des réponses jugées à tort décevantes."
+  },
+  {
+    "id": "OPT-M08-C01-008",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque lettre de R.O.C.T. à un exemple concret de formulation.",
+    "pairs": [
+      {"left": "Rôle", "right": "Agis comme un expert en Python"},
+      {"left": "Objectif", "right": "Explique-moi les boucles while"},
+      {"left": "Contexte", "right": "Je suis en 1ère année de BTS SIO et je confonds avec la boucle for"},
+      {"left": "Type", "right": "Donne une définition, un exemple de code et un exercice"}
+    ],
+    "answer": "Rôle → Agis comme un expert en Python ; Objectif → Explique-moi les boucles while ; Contexte → Je suis en 1ère année de BTS SIO et je confonds avec la boucle for ; Type → Donne une définition, un exemple de code et un exercice.",
+    "comment": "Voir les quatre formulations côte à côte montre qu'un bon prompt n'est qu'une phrase enrichie, pas une formule magique. Reconstituées, ces briques forment un prompt complet immédiatement réutilisable comme modèle."
+  },
+  {
+    "id": "OPT-M08-C01-009",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes de construction d'un bon prompt selon la méthode R.O.C.T.",
+    "options": [
+      "Préciser le contexte : sa situation, son niveau, ce qui bloque",
+      "Attribuer un rôle à l'IA",
+      "Indiquer le type de réponse et le format attendus",
+      "Définir l'objectif : ce que l'on veut obtenir"
+    ],
+    "answer": [
+      "Attribuer un rôle à l'IA",
+      "Définir l'objectif : ce que l'on veut obtenir",
+      "Préciser le contexte : sa situation, son niveau, ce qui bloque",
+      "Indiquer le type de réponse et le format attendus"
+    ],
+    "comment": "Suivre l'ordre des lettres est une béquille pédagogique pour les débutants : elle garantit qu'aucune dimension n'est oubliée. Avec l'habitude, ces étapes se fondent en une seule phrase rédigée d'un trait, mais la grille reste un filet de sécurité utile."
+  },
+  {
+    "id": "OPT-M08-C01-010",
+    "category": "Utiliser l'IA",
+    "chapter": "La règle d'or : le contexte (R.O.C.T.)",
+    "tier": "B",
+    "type": "ticket",
+    "question": "Ticket : Un étudiant tape à l'IA « explique les fonctions » et trouve la réponse trop vague et inutilisable. Il vous demande comment obtenir mieux. Comment l'aidez-vous à reformuler avec R.O.C.T. ?",
+    "answer": "Lui faire enrichir son prompt avec les quatre dimensions, par exemple : « Agis comme un formateur (R). Explique-moi les fonctions en Python (O). Je débute en BTS SIO et je ne vois pas l'intérêt par rapport à du code écrit en ligne (C). Donne une définition, un exemple simple et un mini-exercice (T). »",
+    "comment": "Le diagnostic est immédiat : le prompt d'origine n'avait qu'un objectif flou et aucune des trois autres lettres. Le réflexe à transmettre à l'étudiant est de ne jamais reprocher à l'IA une réponse vague avant d'avoir vérifié que sa propre demande était complète."
+  }
+]

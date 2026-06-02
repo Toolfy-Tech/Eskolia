@@ -1,0 +1,148 @@
+[
+  {
+    "id": "OPT-M04-C03-001",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "classic",
+    "question": "Citez les 7 couches du modèle OSI de la plus basse à la plus haute.",
+    "answer": "1-Physique, 2-Liaison des données, 3-Réseau, 4-Transport, 5-Session, 6-Présentation, 7-Application. Moyen mnémotechnique : « Pour le réseau tout se passe automatiquement ».",
+    "comment": "Règle terrain : 50 % des pannes se résolvent en vérifiant la Couche 1 (câble ou alimentation). Toujours commencer par le bas (bottom-up) dans un diagnostic réseau."
+  },
+  {
+    "id": "OPT-M04-C03-002",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre TCP et UDP ? Donnez un exemple d'usage de chacun.",
+    "answer": "TCP = fiable (accusés de réception, ordre garanti, comme une lettre recommandée). Usages : web, téléchargement, RDP. UDP = rapide (pas de vérification, comme un mégaphone). Usages : streaming, jeux en ligne, VoIP.",
+    "comment": "TCP garantit la livraison et l'ordre des paquets au prix d'une latence supérieure. UDP sacrifie la fiabilité pour la vitesse — acceptable quand quelques paquets perdus ne causent pas de problème (ex : un frame de vidéo raté est imperceptible)."
+  },
+  {
+    "id": "OPT-M04-C03-003",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le protocole ARP et quand intervient-il ?",
+    "answer": "ARP (Address Resolution Protocol) résout une adresse IP en adresse MAC sur le réseau local. Il intervient quand une machine connaît l'IP de destination mais pas sa MAC : elle diffuse un ARP Request en broadcast, et la machine concernée répond avec son adresse MAC (ARP Reply).",
+    "comment": "Sans ARP, impossible d'envoyer un paquet sur le LAN même si l'IP est connue. Cache ARP timeout : ~2 min Windows, ~5 min Linux/Cisco. Conflit ARP = deux machines avec la même IP → interruptions aléatoires."
+  },
+  {
+    "id": "OPT-M04-C03-004",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un socket réseau et donnez un exemple concret.",
+    "answer": "Un socket = IP + Port. Il identifie précisément quel service sur quelle machine. Exemple : 192.168.1.10:443 = machine 192.168.1.10, service HTTPS (port 443).",
+    "comment": "Une connexion TCP est en réalité identifiée par une paire de sockets (source + destination), soit 4 valeurs : IP source, port source, IP dest, port dest. C'est ce qui permet à un serveur web d'avoir des centaines de clients sur le même port 443 sans confusion — chaque connexion se distingue par l'IP/port côté client. C'est aussi pourquoi `netstat -an` liste deux colonnes d'adresses (Local et Foreign) : on y lit les deux extrémités du socket."
+  },
+  {
+    "id": "OPT-M04-C03-005",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le handshake TLS et pourquoi est-il important ?",
+    "answer": "Le handshake TLS établit une communication chiffrée en 4 étapes : 1) Le client annonce les algorithmes supportés. 2) Le serveur envoie son certificat. 3) Le client vérifie le certificat auprès d'une CA. 4) Une clé de session est générée → communication chiffrée commence.",
+    "comment": "TLS est le successeur de SSL : c'est SSL (et non TLS) qui a été déprécié, SSLv3 étant interdit en 2015 après l'attaque POODLE. Aujourd'hui on vise TLS 1.2/1.3 ; éviter TLS 1.0/1.1. Le handshake ne transmet jamais la clé de session en clair : elle est dérivée des échanges, si bien qu'un sniffer ne peut pas déchiffrer la suite."
+  },
+  {
+    "id": "OPT-M04-C03-006",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que la « Couche 8 » et pourquoi est-elle importante pour le technicien ?",
+    "answer": "La Couche 8 est l'Interface Chaise-Clavier (ICC) : l'erreur humaine entre l'utilisateur et la machine. Aucun protocole ne peut la corriger. Elle génère statistiquement le plus grand nombre de tickets.",
+    "comment": "Avant tout diagnostic OSI complexe, vérifier l'évidence physique : câble branché ? écran allumé ? Beaucoup de « pannes réseau » sont résolues en 30 secondes par cette vérification."
+  },
+  {
+    "id": "OPT-M04-C03-007",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque port réseau à son protocole et son usage :",
+    "pairs": [
+      {"left": "Port 22", "right": "SSH — administration distante sécurisée"},
+      {"left": "Port 53", "right": "DNS — résolution de noms de domaine"},
+      {"left": "Port 443", "right": "HTTPS — navigation web chiffrée (TLS)"},
+      {"left": "Port 3389", "right": "RDP — bureau à distance Windows"}
+    ],
+    "answer": "22 = SSH | 53 = DNS | 443 = HTTPS | 3389 = RDP",
+    "comment": "Nuance protocole : le DNS (53) bascule de l'UDP vers le TCP pour les réponses volumineuses (>512 octets) et les transferts de zone — un pare-feu qui ne laisse passer que l'UDP/53 provoque des résolutions intermittentes. RDP (3389) ne doit jamais être exposé directement sur Internet (cible n°1 des rançongiciels) : toujours derrière VPN."
+  },
+  {
+    "id": "OPT-M04-C03-008",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la démarche de diagnostic réseau OSI (méthode bottom-up) :",
+    "options": [
+      "Tester les ports applicatifs (telnet IP PORT, netstat)",
+      "Vérifier la couche physique (câble, LED, alimentation)",
+      "Tester l'application directement",
+      "Vérifier les adresses MAC et la table du switch",
+      "Vérifier IP, gateway, routes (ping, show ip route)"
+    ],
+    "answer": [
+      "Vérifier la couche physique (câble, LED, alimentation)",
+      "Vérifier les adresses MAC et la table du switch",
+      "Vérifier IP, gateway, routes (ping, show ip route)",
+      "Tester les ports applicatifs (telnet IP PORT, netstat)",
+      "Tester l'application directement"
+    ],
+    "comment": "Règle d'or : ne jamais sauter une couche. Couche 1 → 2 → 3 → 4 → 5-6-7. Dans le cas Aérotec, l'ERP était inaccessible malgré un ping OK : le problème était au port TCP (couche 4), le service avait changé de port 8080 → 9090."
+  },
+  {
+    "id": "OPT-M04-C03-009",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un utilisateur signale que son poste n'accède plus à l'intranet depuis ce matin, mais il peut ouvrir google.fr. Quel est le problème probable ?",
+    "answer": "Problème de pare-feu ou de port bloqué côté serveur intranet — ou l'application intranet a changé de port / URL.",
+    "indices": [
+      "Le ping vers 8.8.8.8 fonctionne et google.fr s'ouvre normalement.",
+      "Le ping vers l'IP du serveur intranet (10.10.50.10) fonctionne aussi.",
+      "La commande `telnet 10.10.50.10 80` retourne 'Connection refused' mais `telnet 10.10.50.10 8080` se connecte."
+    ],
+    "comment": "Si l'IP répond au ping (couche 3 OK) mais que l'application est inaccessible, le problème est à la couche 4 (port) ou couche 7 (application). Ici le serveur écoute sur 8080 et non 80 — le navigateur essaie le port 80 par défaut."
+  },
+  {
+    "id": "OPT-M04-C03-010",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Deux utilisateurs sur le même switch signalent des coupures réseau aléatoires toutes les 2-3 minutes, affectant uniquement leurs postes. Que chercher en priorité ?",
+    "answer": "Conflit d'adresses IP (ARP conflict) : deux machines avec la même IP → leurs ARP Reply se concurrencent, causant des interruptions aléatoires.",
+    "indices": [
+      "Les autres postes du même réseau fonctionnent normalement.",
+      "Un `ping` vers la passerelle alterne entre succès et timeout.",
+      "La commande `arp -a` sur l'un des postes montre la même adresse MAC pour deux adresses IP différentes."
+    ],
+    "comment": "Le conflit ARP survient quand deux machines ont la même IP (souvent une IP fixe mal attribuée qui tombe aussi dans la plage DHCP). Solution : vérifier et corriger les IP fixes, réduire la plage DHCP."
+  },
+  {
+    "id": "OPT-M04-C03-011",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "OSI, encapsulation et TCP/IP",
+    "tier": "C",
+    "type": "ticket",
+    "question": "TICKET #204 : 'Mon navigateur affiche Votre connexion n'est pas privée sur le site RH interne. Hier ça marchait.'",
+    "answer": "Problème de certificat TLS : expiré, auto-signé non reconnu, ou date/heure du poste incorrecte. Couche 6 (Présentation/TLS).",
+    "checklist": [
+      "Vérifier la date et l'heure du poste utilisateur (une heure incorrecte invalide les certificats)",
+      "Cliquer sur 'Avancé' dans le navigateur pour lire le détail de l'erreur certificat",
+      "Vérifier la date d'expiration du certificat du site",
+      "Si certificat auto-signé interne : vérifier si le certificat racine de l'entreprise est bien installé dans le magasin de confiance du poste",
+      "Escalader à l'équipe réseau/sécurité si le certificat est expiré côté serveur"
+    ],
+    "comment": "L'avertissement 'connexion non privée' est une erreur de couche 6 (TLS/Présentation). Causes fréquentes : certificat expiré, date/heure incorrecte sur le poste, ou certificat interne non distribué via GPO."
+  }
+]

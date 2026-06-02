@@ -1,0 +1,220 @@
+[
+  {
+    "id": "OPT-M06-C03-001",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un master et un clone, et que déploie-t-on réellement à grande échelle ?",
+    "answer": "Un master est une image dépersonnalisée (identité supprimée) prévue pour être déployée sur de nombreuses machines. Un clone est une copie brute secteur par secteur d'un disque, qui reproduit aussi l'identité unique de la machine (SID, nom). Règle : on clone une machine (copie exacte ponctuelle), mais on déploie un master (image générique réutilisable).",
+    "comment": "Le piège terrain : déployer un clone non dépersonnalisé sur 30 postes. Toutes les machines portent alors le même SID et entrent en conflit dès l'intégration au domaine. Clonezilla est l'outil libre de référence pour le clonage secteur par secteur."
+  },
+  {
+    "id": "OPT-M06-C03-002",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un SID et pourquoi le passage par Sysprep /generalize est-il obligatoire avant de capturer un master ?",
+    "answer": "Le SID (Security Identifier) est un identifiant de sécurité unique attribué à chaque machine Windows. Sysprep /generalize supprime ce SID (et d'autres données propres à la machine), pour qu'à chaque déploiement un nouveau SID soit régénéré. Sans cette généralisation, toutes les machines issues du master partagent le même SID.",
+    "comment": "Conséquence d'un SID dupliqué : conflits dans l'Active Directory et problèmes d'authentification (les machines sont vues comme une seule entité de sécurité). C'est invisible tant qu'on reste hors domaine, ce qui rend le bug sournois — il n'apparaît qu'à l'intégration AD."
+  },
+  {
+    "id": "OPT-M06-C03-003",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi le protocole TFTP utilise-t-il UDP (port 69) plutôt que TCP pour le transfert du fichier de boot en PXE ?",
+    "answer": "TFTP fonctionne sur UDP port 69, sans authentification. UDP est choisi parce que TCP est trop lourd pour le firmware réseau minimal de la carte (au stade PXE, la machine n'a pas encore d'OS, juste un micro-code embarqué). TFTP gère lui-même ses propres acquittements (ACK) bloc par bloc pour compenser l'absence de fiabilité d'UDP.",
+    "comment": "Conséquence pratique : si le port UDP 69 est bloqué par un pare-feu, le boot PXE échoue par timeout (PXE-E32/E35) alors que le client a déjà reçu une IP. C'est un point de blocage classique quand WDS et pare-feu cohabitent sur le même serveur."
+  },
+  {
+    "id": "OPT-M06-C03-004",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi servent les options DHCP 66 et 67 dans un boot PXE, et que se passe-t-il si l'une manque ?",
+    "answer": "L'option 66 (Next Server / Boot Server Host Name) fournit l'adresse IP du serveur TFTP (le serveur WDS). L'option 67 (Boot File Name) fournit le chemin/nom du fichier de boot à télécharger. Sans l'option 66, le client ne sait pas à qui s'adresser. Sans l'option 67, il ne sait pas quoi demander. Les deux sont obligatoires.",
+    "comment": "Quand DHCP et WDS sont sur la même machine, WDS peut renseigner ces options lui-même (option 60 PXEClient). Quand ils sont séparés, c'est au serveur DHCP de définir 66 et 67 dans l'étendue. Oublier ces options est la cause n°1 d'un PXE qui obtient une IP mais ne démarre pas."
+  },
+  {
+    "id": "OPT-M06-C03-005",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre un déploiement unicast et multicast, et que requiert le multicast côté réseau ?",
+    "answer": "En unicast, le serveur envoie un flux séparé à chaque client, ce qui sature le réseau quand les postes sont nombreux. En multicast, un seul flux est diffusé et reçu par toutes les machines simultanément, comme une diffusion TV. Le multicast nécessite la prise en charge d'IGMP sur les switchs pour gérer les groupes de diffusion.",
+    "comment": "Sur un parc de 30 postes, le multicast divise drastiquement la charge réseau. Mais si les switchs ne gèrent pas l'IGMP snooping, le trafic multicast se comporte comme du broadcast et inonde tous les ports — l'inverse de l'effet recherché. Toujours valider la config switch avant un déploiement multicast de masse."
+  },
+  {
+    "id": "OPT-M06-C03-006",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est le rôle de WinPE (Windows PE) dans le processus de déploiement, et où s'exécute-t-il ?",
+    "answer": "WinPE est un mini-système d'exploitation Windows allégé, chargé via TFTP (boot.wim) et qui tourne uniquement en RAM. Il sert d'environnement temporaire pour lancer l'installation : partitionner le disque, se connecter au serveur WDS et déployer l'image install.wim. Il embarque DISM, diskpart, wpeinit, wpeutil et un shell CMD minimal. Il n'est jamais installé en permanence sur le disque.",
+    "comment": "Comme WinPE vit en RAM, un redémarrage le fait disparaître sans laisser de trace sur le disque — pratique pour repartir d'un état propre. C'est aussi pour cela que le boot.wim reste léger (~500 Mo) : il ne contient que le strict nécessaire au déploiement, pas un Windows complet."
+  },
+  {
+    "id": "OPT-M06-C03-007",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "A",
+    "type": "classic",
+    "question": "En mode audit (sysprep /audit), dans quel ordre installe-t-on les éléments sur le master, et quelles règles ne jamais enfreindre ?",
+    "answer": "Ordre recommandé : 1) drivers, 2) mises à jour Windows, 3) logiciels métier, 4) antivirus EN DERNIER. L'antivirus est installé en dernier car il peut bloquer ou interférer avec les étapes précédentes. Règles à ne jamais enfreindre : ne jamais créer de compte utilisateur en mode audit, et placer les raccourcis du bureau dans C:\\Users\\Public\\Desktop pour qu'ils apparaissent pour tous les futurs utilisateurs.",
+    "comment": "Le mode audit travaille sous le compte Administrateur intégré, sans passer par l'OOBE. Créer un compte utilisateur à ce stade pollue le master (le compte est capturé dans l'image). L'antivirus en dernier évite qu'il mette en quarantaine un installeur métier ou bloque une MAJ pendant la préparation."
+  },
+  {
+    "id": "OPT-M06-C03-008",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque outil de déploiement ou de support bootable à sa caractéristique principale :",
+    "pairs": [
+      {"left": "Ventoy", "right": "Clé USB multi-ISO par simple glisser-déposer des fichiers"},
+      {"left": "Rufus", "right": "Clé bootable simple et rapide, contourne les restrictions de Windows 11"},
+      {"left": "Easy2Boot", "right": "Multi-ISO supportant plus de formats (ISO/IMG/VHD) que Ventoy, mais plus complexe"},
+      {"left": "WDS", "right": "Service natif Microsoft de déploiement réseau, gère le multicast"},
+      {"left": "FOG Project", "right": "Solution open-source de déploiement, multi-plateformes"},
+      {"left": "DISM", "right": "Outil CLI Windows pour manipuler les images .wim"}
+    ],
+    "answer": "Ventoy = multi-ISO glisser-déposer | Rufus = clé simple, contourne Win11 | Easy2Boot = multi-ISO plus de formats | WDS = natif Microsoft, multicast | FOG = open-source multi-OS | DISM = CLI manipulation .wim",
+    "comment": "Sur le terrain : Ventoy pour la polyvalence quotidienne, Rufus quand il faut contourner les prérequis TPM/Secure Boot de Windows 11, WDS pour un déploiement de masse en domaine, et FOG quand le parc mélange Windows et Linux. DISM est l'outil bas niveau commun à toutes ces approches pour éditer les .wim."
+  },
+  {
+    "id": "OPT-M06-C03-009",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque image (boot.wim et install.wim) à ses caractéristiques : contenu, taille, rôle et mode de chargement.",
+    "pairs": [
+      {"left": "boot.wim — contenu", "right": "Windows PE, environnement minimal qui tourne en RAM"},
+      {"left": "boot.wim — taille / chargement", "right": "~500 Mo, chargé via TFTP, lance le déploiement"},
+      {"left": "install.wim — contenu", "right": "Windows complet, c'est lui qui est déployé sur le poste"},
+      {"left": "install.wim — taille / chargement", "right": "3 à 5 Go, chargé via WDS sur le réseau"}
+    ],
+    "answer": "boot.wim = WinPE en RAM, ~500 Mo, chargé via TFTP, lance le déploiement | install.wim = Windows complet, 3-5 Go, chargé via WDS, déployé sur le poste",
+    "comment": "Confondre les deux mène à des erreurs de config WDS classiques. Retenir la logique : le boot.wim sert à démarrer et orchestrer (léger, TFTP, RAM), l'install.wim est la charge utile finale (lourd, réseau WDS, écrit sur disque). L'image de capture, elle, se crée à partir du boot.wim existant, pas de l'install.wim."
+  },
+  {
+    "id": "OPT-M06-C03-010",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes du cycle de vie d'un master, de l'installation au déploiement :",
+    "options": [
+      "Mode audit (sysprep /audit) : installer drivers, MAJ, logiciels, antivirus en dernier",
+      "Capture de l'image (boot PXE/USB sur la machine éteinte)",
+      "Installation de base de Windows",
+      "Déploiement de l'image sur les postes du parc",
+      "Généralisation : sysprep /generalize /oobe /shutdown (supprime le SID)"
+    ],
+    "answer": [
+      "Installation de base de Windows",
+      "Mode audit (sysprep /audit) : installer drivers, MAJ, logiciels, antivirus en dernier",
+      "Généralisation : sysprep /generalize /oobe /shutdown (supprime le SID)",
+      "Capture de l'image (boot PXE/USB sur la machine éteinte)",
+      "Déploiement de l'image sur les postes du parc"
+    ],
+    "comment": "L'erreur fatale est d'inverser ou d'oublier l'étape de généralisation : capturer avant /generalize fige le SID dans l'image. La capture se fait machine éteinte, via un boot PXE ou USB, car le système capturé ne doit pas tourner pendant qu'on lit son disque."
+  },
+  {
+    "id": "OPT-M06-C03-011",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes complètes d'un boot PXE, du démarrage de la carte réseau jusqu'au déploiement de l'image :",
+    "options": [
+      "DHCPOFFER : le serveur répond avec l'option 66 (IP du serveur TFTP) et l'option 67 (nom du fichier de boot)",
+      "TFTP télécharge boot.wim sur le port UDP 69",
+      "Activation du boot réseau dans le BIOS",
+      "WinPE se charge en RAM",
+      "Broadcast DHCPDISCOVER (IP source 0.0.0.0, option 60 PXEClient)",
+      "install.wim est déployé sur le poste"
+    ],
+    "answer": [
+      "Activation du boot réseau dans le BIOS",
+      "Broadcast DHCPDISCOVER (IP source 0.0.0.0, option 60 PXEClient)",
+      "DHCPOFFER : le serveur répond avec l'option 66 (IP du serveur TFTP) et l'option 67 (nom du fichier de boot)",
+      "TFTP télécharge boot.wim sur le port UDP 69",
+      "WinPE se charge en RAM",
+      "install.wim est déployé sur le poste"
+    ],
+    "comment": "Savoir à quelle étape ça coince oriente le diagnostic : pas d'IP du tout = problème DHCP (DISCOVER/OFFER) ; IP obtenue mais pas de fichier = options 66/67 ou port TFTP 69 bloqué. L'option 60 PXEClient dans le DISCOVER est la signature qui dit au serveur qu'il s'agit d'un client PXE."
+  },
+  {
+    "id": "OPT-M06-C03-012",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un poste configuré pour booter en PXE n'obtient aucune adresse IP : l'écran reste bloqué sur la recherche réseau sans jamais charger de fichier de boot. Où chercher ?",
+    "answer": "Le client n'arrive pas à la phase DHCPOFFER. Vérifier que le service DHCP est démarré, que les options 66 (IP serveur TFTP/WDS) et 67 (nom du fichier de boot) sont bien renseignées dans l'étendue, et que les ports DHCP 67/68 ne sont pas bloqués par un pare-feu ou filtrés entre VLANs.",
+    "indices": [
+      "Le poste tente un boot réseau mais aucune ligne 'DHCP...' n'aboutit, il finit par passer au disque ou à un autre périphérique.",
+      "Sur le serveur, vérifier d'abord que le service DHCP est bien démarré et que l'étendue couvre le sous-réseau du client.",
+      "Dans l'étendue DHCP, contrôler la présence des options 66 et 67 : sans elles, le client ne sait ni à qui parler ni quoi demander.",
+      "Vérifier enfin que les ports UDP 67/68 (DHCP) ne sont pas bloqués par le pare-feu ou par un routage inter-VLAN sans relais DHCP."
+    ],
+    "comment": "Ordre de diagnostic à respecter : service avant config, config avant réseau. Beaucoup de techniciens sautent direct au pare-feu alors que l'étendue DHCP n'avait simplement pas les options 66/67. Si le client et le serveur sont sur des VLANs différents, un relais DHCP (IP helper) est indispensable."
+  },
+  {
+    "id": "OPT-M06-C03-013",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Le poste obtient bien une adresse IP en PXE, mais le téléchargement du fichier de boot échoue. Diagnostiquez et corrigez.",
+    "answer": "Le client a bien franchi l'étape DHCP mais le transfert TFTP échoue : un message PXE-E32 (TFTP timeout) s'affiche, signe que le port UDP 69 est bloqué par le pare-feu du serveur. Solution : créer une règle d'ouverture avec netsh advfirewall firewall add rule name=\"TFTP PXE\" protocol=UDP dir=in localport=69 action=allow.",
+    "indices": [
+      "Le poste affiche une erreur PXE-E32 (ou PXE-E35) après avoir reçu son adresse IP.",
+      "Le code PXE-E32 indique un timeout TFTP : la requête de fichier de boot ne reçoit pas de réponse.",
+      "Vérifier le pare-feu du serveur : netsh advfirewall firewall show rule name=all | findstr TFTP — si aucune règle n'apparaît, le port UDP 69 est fermé.",
+      "Ouvrir le port : netsh advfirewall firewall add rule name=\"TFTP PXE\" protocol=UDP dir=in localport=69 action=allow."
+    ],
+    "comment": "Ne pas confondre PXE-E32/E35 (timeout TFTP, port 69 bloqué) et PXE-E23 (chemin de l'option 67 incorrect) : le premier est un blocage réseau/pare-feu, le second une erreur de configuration du nom de fichier de boot. Le message d'erreur exact oriente directement vers la bonne piste."
+  },
+  {
+    "id": "OPT-M06-C03-014",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Lors de la préparation d'un master, la commande sysprep échoue avec une erreur et la machine ne s'éteint pas comme prévu. Comment trouver et corriger la cause ?",
+    "answer": "La cause n°1 d'échec de Sysprep est la présence de mises à jour Windows en attente (installées ou en cours). Il faut consulter le log C:\\Windows\\System32\\Sysprep\\Panther\\setupact.log pour identifier l'erreur précise, terminer toutes les MAJ Windows (et redémarrer), puis relancer sysprep /generalize /oobe /shutdown.",
+    "indices": [
+      "Sysprep s'arrête sur une erreur générique et la machine reste allumée au lieu de s'éteindre.",
+      "Ouvrir le log détaillé : C:\\Windows\\System32\\Sysprep\\Panther\\setupact.log pour lire la vraie cause de l'échec.",
+      "Le log pointe vers des mises à jour Windows en attente — cause la plus fréquente d'échec de Sysprep.",
+      "Terminer toutes les MAJ, redémarrer pour vider la file d'attente, puis relancer la commande Sysprep."
+    ],
+    "comment": "Réflexe : toujours lire setupact.log au lieu de deviner. Un Windows Update en cours bloque Sysprep car la généralisation ne peut pas s'appliquer sur un système en cours de modification. En mode audit, désactiver temporairement les MAJ pendant la préparation évite ces interruptions imprévues."
+  },
+  {
+    "id": "OPT-M06-C03-015",
+    "category": "Administration de Windows",
+    "chapter": "Le déploiement et Windows Deployment Services",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #389 : 'Les 20 nouvelles machines déployées la semaine dernière fonctionnent toutes individuellement, mais aucune ne parvient à rejoindre le domaine Active Directory — les jointures échouent ou se chevauchent. On dirait que le système les confond entre elles.'",
+    "answer": "Cause probable : le master a été capturé sans généralisation Sysprep (sysprep /generalize oublié). Toutes les machines partagent donc le même SID, ce qui crée des conflits d'identité et empêche la jonction propre au domaine AD.",
+    "checklist": [
+      "Confirmer le symptôme : comparer le SID de plusieurs postes (PsGetSid ou whoami /user sur des comptes locaux) — un SID machine identique partout confirme le diagnostic",
+      "Vérifier que le master d'origine avait bien été généralisé avant capture (sysprep /generalize /oobe /shutdown)",
+      "Ne PAS tenter de simplement renommer les postes : le nom change mais le SID reste dupliqué",
+      "Reprendre le master, le repasser en généralisation Sysprep correcte, puis recapturer une image propre",
+      "Redéployer les postes à partir de l'image corrigée pour régénérer un SID unique à chaque installation",
+      "Pour les postes déjà en service, à défaut de redéploiement, recréer leur identité (réinstallation depuis l'image corrigée) avant jonction au domaine"
+    ],
+    "comment": "Le piège : les machines marchent parfaitement en autonomie, le bug ne se révèle qu'au contact de l'AD. Renommer ne suffit jamais — le SID est l'identité de sécurité réelle, pas le nom. La seule vraie correction passe par un master correctement généralisé puis recapturé : c'est pourquoi /generalize n'est jamais optionnel dans un master destiné au déploiement de masse."
+  }
+]

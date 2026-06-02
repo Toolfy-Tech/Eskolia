@@ -1,0 +1,173 @@
+[
+  {
+    "id": "OPT-M06-C01-001",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que Microsoft Entra ID (anciennement Azure AD) et à quoi sert-il ?",
+    "answer": "Entra ID est l'équivalent d'un annuaire Active Directory hébergé dans le Cloud Microsoft. Il gère les identités et les connexions aux services Microsoft 365 (Outlook, Teams, SharePoint, OneDrive).",
+    "comment": "Piège de vocabulaire : Entra ID n'est PAS un AD local déplacé dans le Cloud. Il n'utilise ni Kerberos ni GPO mais des protocoles web (SAML, OAuth 2.0) et Intune. Confondre les deux mène à chercher un contrôleur de domaine qui n'existe pas."
+  },
+  {
+    "id": "OPT-M06-C01-002",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que la MFA (authentification multifacteur) et pourquoi est-elle indispensable ?",
+    "answer": "La MFA exige un second facteur (Authenticator, SMS, appel, clé de sécurité) en plus du mot de passe. Même si le mot de passe est volé, le pirate ne peut pas se connecter sans ce second facteur.",
+    "comment": "Terrain : privilégier l'app Authenticator (notification push) plutôt que le SMS, vulnérable au SIM-swapping. La MFA bloque l'immense majorité des compromissions de compte, c'est la première contre-mesure à activer après un phishing."
+  },
+  {
+    "id": "OPT-M06-C01-003",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert Microsoft Intune dans un environnement Entra ID ?",
+    "answer": "Intune administre les postes joints à Entra ID : déploiement de logiciels, stratégies de sécurité, chiffrement BitLocker, inventaire, conformité et effacement à distance. Il remplace progressivement les GPO dans le Cloud.",
+    "comment": "Intune est l'équivalent Cloud du couple GPO + outil de déploiement de l'AD local. Sans Intune (licence Business Premium requise), un poste joint à Entra ID n'est pas réellement managé : pas de stratégie de conformité, pas de wipe à distance."
+  },
+  {
+    "id": "OPT-M06-C01-004",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un environnement hybride et qui fait autorité sur les identités ?",
+    "answer": "Un environnement hybride relie l'AD local au Cloud via Entra Connect, qui synchronise les identités toutes les 30 minutes. L'AD local reste « le maître » : on réinitialise un mot de passe sur dsa.msc, puis la modification remonte dans le Cloud.",
+    "comment": "Réflexe hybride : ne JAMAIS modifier un compte synchronisé directement dans le portail Cloud, la prochaine synchro l'écraserait. Pour forcer la remontée sans attendre 30 min : Start-ADSyncSyncCycle -PolicyType Delta sur le serveur Entra Connect."
+  },
+  {
+    "id": "OPT-M06-C01-005",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "classic",
+    "question": "Différenciez la gestion d'un appareil mobile en COPE et en BYOD.",
+    "answer": "COPE : appareil fourni par l'entreprise, qui peut être entièrement effacé (wipe total). BYOD : appareil personnel de l'employé, sur lequel on applique seulement un effacement sélectif (wipe des données professionnelles uniquement).",
+    "comment": "Aspect juridique : sur un appareil BYOD, effacer les photos personnelles de l'utilisateur expose l'entreprise. Le wipe sélectif retire uniquement le conteneur pro. Sur un mobile perdu/volé, l'effacement à distance est la priorité absolue."
+  },
+  {
+    "id": "OPT-M06-C01-006",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment joindre correctement un PC à Microsoft Entra ID, et quel est le piège fréquent ?",
+    "answer": "Aller dans Paramètres > Comptes > Accès professionnel ou scolaire, puis « Joindre cet appareil à Microsoft Entra ID ». Le piège : se contenter d'ajouter une adresse mail professionnelle laisse le PC en compte local, sans gestion Intune.",
+    "comment": "Vérification : un poste réellement joint apparaît dans Entra Admin Center > Appareils avec le type de jointure « Microsoft Entra joined ». Un simple ajout de mail crée un compte « Connecté à » sans aucune administration centralisée derrière."
+  },
+  {
+    "id": "OPT-M06-C01-007",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque portail d'administration Microsoft à son usage principal :",
+    "pairs": [
+      { "left": "Microsoft 365 Admin Center", "right": "Gestion des utilisateurs et des licences" },
+      { "left": "Entra Admin Center", "right": "MFA et accès conditionnel" },
+      { "left": "Intune Admin Center", "right": "Gestion des postes et de la conformité" },
+      { "left": "Exchange Admin Center", "right": "Gestion des boîtes mail" },
+      { "left": "SharePoint Admin Center", "right": "Gestion des sites et du stockage documentaire" }
+    ],
+    "answer": "M365 Admin = utilisateurs/licences | Entra = MFA/accès conditionnel | Intune = postes/conformité | Exchange = boîtes mail | SharePoint = sites documentaires",
+    "comment": "Gain de temps : connaître le bon portail évite d'errer. Une demande de licence se règle dans M365 Admin, un blocage de connexion dans Entra, un poste non conforme dans Intune. Beaucoup de débutants cherchent tout dans M365 Admin et perdent du temps."
+  },
+  {
+    "id": "OPT-M06-C01-008",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque environnement à ses caractéristiques (AD local vs Entra ID) :",
+    "pairs": [
+      { "left": "Emplacement", "right": "Serveur physique DC (AD local) vs Cloud Microsoft (Entra ID)" },
+      { "left": "Gestion des PC", "right": "Jonction domaine + GPO (AD local) vs Jonction Entra ID + Intune MDM (Entra ID)" },
+      { "left": "Authentification", "right": "Kerberos / NTLM (AD local) vs SAML / OAuth 2.0 (Entra ID)" },
+      { "left": "Usage typique", "right": "PME traditionnelles, usines (AD local) vs télétravail, startups (Entra ID)" }
+    ],
+    "answer": "AD local = DC physique + GPO + Kerberos, usines/PME | Entra ID = Cloud + Intune + SAML/OAuth, télétravail/startups",
+    "comment": "Réalité du terrain : la majorité des entreprises sont en hybride et cumulent les deux. Savoir reconnaître quel mécanisme s'applique (GPO ou Intune ? Kerberos ou OAuth ?) oriente directement le bon outil de diagnostic."
+  },
+  {
+    "id": "OPT-M06-C01-009",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 6 réflexes support à vérifier quand un utilisateur M365 a un problème d'accès :",
+    "options": [
+      "Vérifier l'accès conditionnel (Conditional Access)",
+      "Vérifier la licence M365 de l'utilisateur",
+      "Vérifier la conformité du poste dans Intune",
+      "Vérifier le statut MFA",
+      "Vérifier l'état du compte dans l'AD local",
+      "Vérifier la synchronisation Entra Connect"
+    ],
+    "answer": [
+      "Vérifier la licence M365 de l'utilisateur",
+      "Vérifier le statut MFA",
+      "Vérifier la synchronisation Entra Connect",
+      "Vérifier l'accès conditionnel (Conditional Access)",
+      "Vérifier l'état du compte dans l'AD local",
+      "Vérifier la conformité du poste dans Intune"
+    ],
+    "comment": "Logique de la checklist : on part du plus simple et fréquent (licence) vers le plus technique (conformité Intune). 80 % des tickets « je n'ai pas accès » se résolvent dès les deux premiers points sans toucher au technique."
+  },
+  {
+    "id": "OPT-M06-C01-010",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "C",
+    "type": "ticket",
+    "question": "TICKET #311 : 'Bonjour, je n'ai pas l'application Teams alors que mes collègues l'ont. Pouvez-vous me l'installer ?'",
+    "answer": "Avant tout diagnostic technique d'installation, vérifier que l'utilisateur dispose d'une licence M365 incluant Teams (Business Basic et au-dessus). Une absence de licence ou une licence inadaptée explique l'absence du service.",
+    "checklist": [
+      "Ouvrir Microsoft 365 Admin Center et rechercher l'utilisateur",
+      "Vérifier qu'une licence est bien attribuée (Business Basic, Standard ou Premium)",
+      "Vérifier que le service Teams n'est pas désactivé individuellement dans la licence attribuée",
+      "Attribuer ou corriger la licence si nécessaire et attendre la propagation",
+      "Seulement ensuite : diagnostiquer l'installation/connexion du client Teams sur le poste"
+    ],
+    "comment": "Réflexe d'or M365 : toujours vérifier la licence AVANT de plonger dans un diagnostic technique. On peut passer une heure à réinstaller Teams alors que le compte n'a tout simplement aucune licence attribuée. La licence se vérifie en 30 secondes."
+  },
+  {
+    "id": "OPT-M06-C01-011",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #312 : 'Je suis bloqué à la connexion à Outlook, ça me dit que l'accès est refusé alors que mon mot de passe est bon. Mes collègues n'ont aucun souci.'",
+    "answer": "Un blocage sélectif avec un bon mot de passe oriente vers une politique d'accès conditionnel (Conditional Access) dans Entra ID : blocage selon le pays, l'appareil non conforme, l'absence de MFA ou un niveau de risque détecté.",
+    "checklist": [
+      "Confirmer que la licence et le compte sont actifs (écarter les causes simples)",
+      "Ouvrir Entra Admin Center > Protection > Accès conditionnel",
+      "Identifier les politiques s'appliquant à l'utilisateur ou à son groupe",
+      "Utiliser l'outil 'What If' pour simuler la connexion de l'utilisateur et voir quelle politique le bloque",
+      "Vérifier le déclencheur : pays/localisation, conformité du poste Intune, exigence MFA ou risque",
+      "Corriger (poste mis en conformité, exclusion temporaire justifiée, ou réinscription MFA)"
+    ],
+    "comment": "Indice révélateur : si UN seul utilisateur est bloqué avec un mot de passe valide pendant que les autres passent, ce n'est presque jamais le mot de passe. L'outil 'What If' d'Entra est le raccourci pour trouver la politique fautive sans tâtonner."
+  },
+  {
+    "id": "OPT-M06-C01-012",
+    "category": "Administration de Windows",
+    "chapter": "Microsoft 365 et Entra ID",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #313 : 'J'ai changé de téléphone, mon ancien est cassé. Maintenant je ne peux plus valider la MFA et je suis bloqué dehors.'",
+    "answer": "Cas critique de perte du facteur MFA : après vérification d'identité, supprimer les anciennes méthodes d'authentification de l'utilisateur dans Entra ID et exiger un réenregistrement MFA, pour qu'il reconfigure Authenticator sur son nouveau téléphone.",
+    "checklist": [
+      "Vérifier l'identité réelle de l'appelant (question de sécurité, manager) — la demande de reset MFA est le scénario classique d'ingénierie sociale",
+      "Ouvrir Entra Admin Center > Utilisateurs > sélectionner l'utilisateur > Méthodes d'authentification",
+      "Supprimer les anciennes méthodes MFA liées à l'ancien téléphone",
+      "Choisir 'Exiger le réenregistrement de la MFA'",
+      "Demander à l'utilisateur de se reconnecter et de configurer Authenticator sur le nouveau téléphone",
+      "Confirmer que la nouvelle méthode est bien enregistrée et fonctionnelle"
+    ],
+    "comment": "Danger majeur : un reset MFA accordé sans vérifier l'identité = porte ouverte pour un attaquant qui se fait passer pour l'employé. C'est une attaque d'ingénierie sociale classique. La vérification d'identité passe AVANT toute action technique."
+  }
+]

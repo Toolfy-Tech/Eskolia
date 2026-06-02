@@ -1,0 +1,127 @@
+[
+  {
+    "id": "OPT-M01-C04-001",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie SLA et à quoi sert-il ?",
+    "answer": "SLA = Service Level Agreement (contrat de niveau de service). Il définit les délais que le service informatique s'engage à respecter pour chaque niveau de priorité.",
+    "comment": "Point souvent mal compris : le SLA n'est pas une promesse de 'faire vite', c'est un seuil chiffre et opposable, different pour chaque priorite. Sa vraie fonction est de transformer une attente floue ('reparez rapidement') en engagement mesurable ('P1 pris en charge en 15 min'). C'est ce qui rend le support pilotable et auditable : on peut prouver, ticket par ticket, si l'engagement a ete tenu. Sans seuil ecrit, 'rapide' veut dire ce que chacun veut, et aucun litige n'est tranchable."
+  },
+  {
+    "id": "OPT-M01-C04-002",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre GTI et GTR ?",
+    "answer": "GTI = Garantie Temps Intervention = délai avant que le technicien prenne en charge le ticket (premiers contacts). GTR = Garantie Temps Rétablissement = délai avant que le service soit rétabli.",
+    "comment": "Erreur fréquente : confondre prise en charge et résolution. Un ticket peut être pris en charge en 15 min (GTI) mais résolu en 4h (GTR). Ce sont deux engagements distincts."
+  },
+  {
+    "id": "OPT-M01-C04-003",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pour un incident P1, quels sont les délais SLA typiques de prise en charge et de résolution ?",
+    "answer": "P1 : GTI = 15 minutes, GTR = 4 heures.",
+    "comment": "P1 est le plus critique : réponse quasi-immédiate et résolution dans la journée. Ces chiffres varient selon les contrats, mais P1 a toujours les délais les plus courts."
+  },
+  {
+    "id": "OPT-M01-C04-004",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "B",
+    "type": "classic",
+    "question": "Vrai ou Faux : quand un technicien prend en charge un ticket, cela signifie que le problème est résolu.",
+    "answer": "Faux. La prise en charge (GTI) signifie uniquement que le technicien a accusé réception et commence à traiter. La résolution (GTR) est un délai séparé et plus long.",
+    "comment": "C'est une des confusions les plus fréquentes. L'utilisateur pense parfois que 'pris en charge' = 'réglé'. Il faut être clair dans la communication : 'je prends en charge votre ticket, la résolution est prévue dans X heures'."
+  },
+  {
+    "id": "OPT-M01-C04-005",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que risque une entreprise prestataire (ESN) si elle ne respecte pas les SLA contractuels ?",
+    "answer": "Des pénalités contractuelles financières, souvent calculées en pourcentage de la prestation, et un risque pour le renouvellement du contrat. Le SLA est un engagement opposable : son non-respect se chiffre et nuit à la relation client.",
+    "comment": "Consequence terrain pour le technicien : c'est pourquoi les outils declenchent une alerte AVANT l'echeance, pas apres. L'enjeu n'est pas de constater la rupture mais de l'eviter pendant qu'il est encore temps d'agir ou d'escalader. D'ou un reflexe clef : un ticket dont le compteur SLA approche de la limite passe prioritaire sur un ticket plus 'grave' mais encore loin de son echeance. Le SLA reordonne le travail en temps reel, ce n'est pas qu'une affaire de reporting en fin de mois."
+  },
+  {
+    "id": "OPT-M01-C04-006",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque priorité à ses délais SLA typiques (GTI / GTR) :",
+    "pairs": [
+      {"left": "P1 — Critique", "right": "GTI 15 min / GTR 4 h"},
+      {"left": "P2 — Haute", "right": "GTI 1 h / GTR 8 h"},
+      {"left": "P4 — Basse", "right": "GTI 1 jour / GTR 5 jours"}
+    ],
+    "answer": "P1 = 15min/4h | P2 = 1h/8h | P4 = 1jour/5jours",
+    "comment": "Plus la priorité est haute, plus les délais sont courts. P3 se situe entre P2 et P4 (GTI 4h / GTR 2 jours). Ces valeurs sont des exemples — chaque contrat définit ses propres SLA."
+  },
+  {
+    "id": "OPT-M01-C04-007",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque acronyme à sa définition :",
+    "pairs": [
+      {"left": "SLA", "right": "Contrat définissant les délais garantis du service"},
+      {"left": "GTI", "right": "Délai avant prise en charge du ticket par un technicien"},
+      {"left": "GTR", "right": "Délai avant rétablissement effectif du service"}
+    ],
+    "answer": "SLA = contrat délais garantis | GTI = délai prise en charge | GTR = délai rétablissement service",
+    "comment": "Hiérarchie à garder en tête : le SLA est le contrat-cadre, GTI et GTR sont deux compteurs distincts qu'il fixe. Les deux compteurs démarrent à l'ouverture du ticket et tournent en parallèle — respecter le GTI ne met pas le GTR en pause, l'horloge de résolution continue."
+  },
+  {
+    "id": "OPT-M01-C04-008",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre chronologique les jalons du traitement d'un ticket selon le SLA :",
+    "options": ["Service rétabli (GTR atteint)", "Ticket ouvert par l'utilisateur", "Résolution en cours", "Prise en charge par le technicien (GTI atteint)"],
+    "answer": ["Ticket ouvert par l'utilisateur", "Prise en charge par le technicien (GTI atteint)", "Résolution en cours", "Service rétabli (GTR atteint)"],
+    "comment": "Le chrono SLA démarre à l'ouverture du ticket. GTI = premier jalon (accusé de réception actif). GTR = jalon final (service fonctionnel confirmé par l'utilisateur)."
+  },
+  {
+    "id": "OPT-M01-C04-009",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #08 : Un ticket P2 a été ouvert il y a 2 heures. Selon le SLA (GTI = 1h, GTR = 8h), le ticket n'a toujours pas été pris en charge. Que se passe-t-il ?",
+    "answer": "Le GTI est dépassé d'1 heure — le SLA est en rupture pour la prise en charge. Il faut agir immédiatement.",
+    "checklist": [
+      "Constater que le GTI P2 (1h) est dépassé → SLA en rupture",
+      "Prendre en charge le ticket immédiatement et documenter l'heure de prise en charge",
+      "Alerter le responsable selon la procédure d'escalade SLA",
+      "Évaluer si le GTR (8h depuis l'ouverture) est encore atteignable",
+      "Documenter l'incident SLA pour le reporting client"
+    ],
+    "comment": "Le réflexe contre-productif est de prendre le ticket en silence pour 'rattraper' sans faire de vagues. Une rupture GTI ne disparaît pas parce qu'on agit vite ensuite : elle est déjà enregistrée et comptera dans le reporting. La signaler tout de suite permet de déclencher l'escalade prévue et, surtout, de protéger le GTR qui tourne toujours (8h depuis l'ouverture, pas depuis la prise en charge). Cacher une rupture la transforme en deux ruptures."
+  },
+  {
+    "id": "OPT-M01-C04-010",
+    "category": "Support utilisateur",
+    "chapter": "SLA — Les engagements de service",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #09 : Un utilisateur appelle pour savoir où en est son ticket P3, ouvert il y a 3 heures. Il dit : 'On m'a dit que c'était pris en charge, mais mon problème n'est toujours pas résolu.' Comment répondez-vous ?",
+    "answer": "Le GTI P3 est respecté (prise en charge < 4h). Le GTR P3 est de 2 jours — le délai n'est pas dépassé. Il faut expliquer la différence GTI/GTR à l'utilisateur.",
+    "checklist": [
+      "Vérifier dans le ticket que la prise en charge a bien eu lieu dans le délai GTI (4h pour P3)",
+      "Rappeler à l'utilisateur que 'pris en charge' ≠ 'résolu' — ce sont deux étapes distinctes",
+      "Indiquer le délai de résolution prévu (GTR P3 = 2 jours)",
+      "Donner une mise à jour sur l'avancement si possible",
+      "Rassurer et proposer un contournement temporaire si disponible"
+    ],
+    "comment": "Le malentendu vient du mot 'pris en charge' que l'utilisateur entend comme 'réglé'. Plutôt que de réciter les sigles GTI/GTR, traduisez : 'votre demande a bien été reçue et attribuée (c'est fait dans les temps), maintenant la résolution est en cours et l'échéance prévue est dans tel délai'. Donner une échéance datée vaut mieux que rassurer dans le vague : un utilisateur tendu se calme avec un repère concret, pas avec un 'on s'en occupe'."
+  }
+]

@@ -1,0 +1,196 @@
+[
+  {
+    "id": "OPT-M07-C04-001",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'ingénierie sociale (social engineering) ?",
+    "answer": "Une manipulation psychologique visant à obtenir des informations confidentielles ou à pousser la victime à une action compromettante",
+    "comment": "Le point clé : la cible n'est pas la machine mais l'humain. Selon IBM et le Verizon DBIR, entre 74 et 95 % des incidents impliquent une erreur humaine. Aucun pare-feu ne protège contre un employé qui ouvre lui-même la porte de bonne foi."
+  },
+  {
+    "id": "OPT-M07-C04-002",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le phishing et quels indices permettent de le reconnaître ?",
+    "answer": "Un email frauduleux imitant un expéditeur légitime ; indices : domaine proche mais faux, urgence artificielle, URL ne correspondant pas au texte, pièce jointe inattendue",
+    "comment": "Le réflexe le plus fiable est de survoler les liens sans cliquer pour comparer l'URL réelle au texte affiché. Un domaine comme micros0ft.com joue sur l'inattention : le zéro remplace le o. L'urgence sert à court-circuiter cette vérification."
+  },
+  {
+    "id": "OPT-M07-C04-003",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le pretexting ?",
+    "answer": "L'invention d'un scénario fictif crédible pour justifier une demande, par exemple se faire passer pour le support IT afin d'obtenir un mot de passe",
+    "comment": "Contrairement au phishing de masse, le pretexting repose sur un récit construit et souvent personnalisé grâce à l'OSINT. L'attaquant ne demande pas frontalement : il installe d'abord un contexte qui rend sa requête naturelle et attendue."
+  },
+  {
+    "id": "OPT-M07-C04-004",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la fraude au Président (BEC) et quel est son impact connu ?",
+    "answer": "L'usurpation de l'identité d'un dirigeant pour ordonner un virement urgent ; le FBI IC3 chiffre les pertes à 43 milliards de dollars entre 2016 et 2021",
+    "comment": "Le levier est l'autorité combinée à l'urgence et à la confidentialité demandée, qui dissuade la victime de vérifier auprès de tiers. La parade organisationnelle est la double validation systématique des virements, indépendante de l'identité de l'émetteur."
+  },
+  {
+    "id": "OPT-M07-C04-005",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le tailgating (ou piggybacking) ?",
+    "answer": "Suivre physiquement une personne autorisée pour franchir avec elle l'accès à une zone sécurisée",
+    "comment": "C'est de l'ingénierie sociale sans informatique : l'attaquant exploite la politesse (tenir la porte) et la gêne sociale à demander un badge. Un sas anti-retour ou une consigne claire de ne jamais laisser entrer un inconnu suffisent à le neutraliser."
+  },
+  {
+    "id": "OPT-M07-C04-006",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "A",
+    "type": "classic",
+    "question": "À quoi sert l'OSINT dans la préparation d'une attaque d'ingénierie sociale ?",
+    "answer": "À collecter des informations publiques sur la cible (LinkedIn, site de l'entreprise, réseaux sociaux, WHOIS, recherches Google) pour rendre le scénario crédible",
+    "comment": "Une requête ciblée comme filetype:pdf sur Google peut exposer organigrammes ou documents internes oubliés. Côté défense, c'est un argument pour limiter ce que les collaborateurs publient publiquement : chaque détail nourrit un pretexting plus convaincant."
+  },
+  {
+    "id": "OPT-M07-C04-007",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque variante de phishing à sa définition.",
+    "pairs": [
+      {"left": "Spear Phishing", "right": "Attaque ciblée sur une personne précise"},
+      {"left": "Whaling", "right": "Attaque visant spécifiquement les dirigeants"},
+      {"left": "Smishing", "right": "Phishing par SMS"},
+      {"left": "Vishing", "right": "Phishing par téléphone (voix)"},
+      {"left": "Clone Phishing", "right": "Copie d'un email légitime dont le lien a été remplacé"}
+    ],
+    "answer": "Spear Phishing → attaque ciblée sur une personne ; Whaling → attaque visant les dirigeants ; Smishing → phishing par SMS ; Vishing → phishing par téléphone ; Clone Phishing → copie d'un email légitime avec lien remplacé.",
+    "comment": "Le glissement du phishing de masse vers le spear phishing puis le whaling correspond à un ciblage croissant et un retour sur investissement plus élevé pour l'attaquant. Smishing et vishing rappellent que le canal email n'est plus le seul vecteur à surveiller."
+  },
+  {
+    "id": "OPT-M07-C04-008",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque contre-mesure technique à son effet principal.",
+    "pairs": [
+      {"left": "SPF, DKIM, DMARC", "right": "Empêcher l'usurpation de l'adresse d'expéditeur"},
+      {"left": "Filtre anti-phishing", "right": "Bloquer les messages malveillants connus en amont"},
+      {"left": "Désactivation de l'autorun USB (GPO)", "right": "Neutraliser le baiting par clé USB infectée"},
+      {"left": "MFA", "right": "Rendre un mot de passe volé insuffisant pour se connecter"}
+    ],
+    "answer": "SPF/DKIM/DMARC → empêcher l'usurpation d'expéditeur ; filtre anti-phishing → bloquer les messages malveillants en amont ; désactivation autorun USB par GPO → neutraliser le baiting ; MFA → rendre un mot de passe volé inexploitable seul.",
+    "comment": "Ces mesures se cumulent en couches : SPF, DKIM et DMARC travaillent ensemble côté messagerie, le MFA limite les dégâts une fois le mot de passe compromis. Aucune n'est suffisante seule, d'où la nécessité d'une défense en profondeur appuyée sur la formation."
+  },
+  {
+    "id": "OPT-M07-C04-009",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les réflexes à appliquer face à un email demandant un virement urgent au nom du dirigeant.",
+    "options": [
+      "Signaler le message au service informatique / RSSI",
+      "Ne pas cliquer ni répondre dans l'urgence",
+      "Vérifier l'adresse email complète de l'expéditeur",
+      "Rappeler le dirigeant sur son numéro officiel connu pour confirmer",
+      "Appliquer la procédure de double validation avant tout paiement"
+    ],
+    "answer": [
+      "Ne pas cliquer ni répondre dans l'urgence",
+      "Vérifier l'adresse email complète de l'expéditeur",
+      "Rappeler le dirigeant sur son numéro officiel connu pour confirmer",
+      "Appliquer la procédure de double validation avant tout paiement",
+      "Signaler le message au service informatique / RSSI"
+    ],
+    "comment": "Le premier réflexe est de ralentir, car c'est exactement ce que l'urgence artificielle cherche à empêcher. Le rappel se fait sur un numéro déjà connu et non sur celui fourni dans le message, qui pourrait renvoyer vers l'attaquant lui-même."
+  },
+  {
+    "id": "OPT-M07-C04-010",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "ticket",
+    "question": "Ticket : Un utilisateur vous transfère un email de sa banque l'avertissant d'une connexion suspecte et l'invitant à se reconnecter via le lien fourni. Il vous demande si c'est sûr. Que faites-vous ?",
+    "answer": "Ne pas cliquer sur le lien, vérifier l'adresse complète de l'expéditeur et l'URL réelle, et inviter l'utilisateur à se rendre sur le site de la banque par ses propres moyens (favori ou saisie manuelle)",
+    "comment": "Le combo connexion suspecte plus lien à cliquer est un grand classique du phishing : il joue sur la peur pour pousser à agir vite. La règle saine est de ne jamais authentifier via un lien reçu, mais toujours par un accès que l'on initie soi-même."
+  },
+  {
+    "id": "OPT-M07-C04-011",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "ticket",
+    "question": "Ticket : Un collaborateur reçoit un appel d'une personne se présentant comme un technicien de votre prestataire, qui demande ses identifiants pour une maintenance urgente. Il vous appelle pour savoir s'il doit les donner. Quelle est votre consigne ?",
+    "answer": "Ne jamais communiquer ses identifiants par téléphone, raccrocher et rappeler le prestataire sur son numéro officiel pour vérifier la légitimité de la demande",
+    "comment": "C'est un vishing combiné à du pretexting : l'attaquant emprunte une identité crédible et fabrique l'urgence. Aucune maintenance légitime ne requiert le mot de passe de l'utilisateur. Le rappel sur un numéro vérifié casse le scénario monté par l'attaquant."
+  },
+  {
+    "id": "OPT-M07-C04-012",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "A",
+    "type": "ticket",
+    "question": "Ticket : Un employé trouve une clé USB marquée Salaires 2026 sur le parking et compte la brancher sur son poste pour identifier le propriétaire. Que devez-vous lui dire et quelle mesure préventive recommander ?",
+    "answer": "Ne jamais brancher la clé, la remettre au service informatique ; côté prévention, désactiver l'autorun USB par GPO sur le parc",
+    "comment": "C'est du baiting, qui exploite la curiosité via un libellé alléchant. Une étude de l'Université de l'Illinois en 2016 a montré que sur 297 clés abandonnées, 48 % étaient branchées dans les 24 heures. Le facteur humain est ici la vulnérabilité, d'où la double parade humaine et technique."
+  },
+  {
+    "id": "OPT-M07-C04-013",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "C",
+    "type": "diagnostic_indices",
+    "question": "Diagnostic : à partir de ces indices progressifs, identifiez la technique d'attaque employée.",
+    "indices": [
+      "Un email reçu semble venir d'un service connu de l'utilisateur",
+      "Il imite presque parfaitement un message légitime déjà reçu",
+      "Seul le lien à l'intérieur a changé par rapport à l'original",
+      "Le contenu et la mise en forme sont identiques à l'email d'origine"
+    ],
+    "answer": "Clone Phishing",
+    "comment": "L'indice décisif est la reprise quasi à l'identique d'un message légitime avec un lien substitué : c'est la signature du clone phishing, plus crédible qu'un phishing générique car la victime reconnaît un email qu'elle a déjà vu et lui fait confiance."
+  },
+  {
+    "id": "OPT-M07-C04-014",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Diagnostic : à partir de ces indices progressifs, identifiez la technique d'attaque employée.",
+    "indices": [
+      "Un appel téléphonique est reçu sur la ligne d'un comptable",
+      "L'interlocuteur se présente comme le directeur financier en déplacement",
+      "Il invoque une opération confidentielle et un caractère très urgent",
+      "Il demande un virement immédiat vers un nouveau compte fournisseur"
+    ],
+    "answer": "Fraude au Président (BEC) menée par vishing",
+    "comment": "La convergence autorité + urgence + confidentialité est la marque de la fraude au Président. Ici elle passe par la voix (vishing) plutôt que par email. Le caractère confidentiel demandé vise précisément à empêcher la vérification auprès des collègues."
+  },
+  {
+    "id": "OPT-M07-C04-015",
+    "category": "Cybersécurité",
+    "chapter": "Ingénierie sociale (Social Engineering)",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "Diagnostic : à partir de ces indices progressifs, identifiez la technique d'attaque employée.",
+    "indices": [
+      "Une personne inconnue patiente près de l'entrée sécurisée, les bras chargés de cartons",
+      "Elle n'a pas de badge visible et attend qu'un employé ouvre la porte",
+      "Elle remercie chaleureusement la personne qui lui tient la porte",
+      "Une fois à l'intérieur, elle se dirige seule vers une zone réservée"
+    ],
+    "answer": "Tailgating (ou piggybacking)",
+    "comment": "Aucune technologie n'est exploitée ici, seulement la serviabilité et la gêne sociale à refuser. Les cartons sont un accessoire classique qui justifie de ne pas pouvoir badger soi-même. La parade est comportementale autant que physique : sas, badges obligatoires et culture du contrôle."
+  }
+]

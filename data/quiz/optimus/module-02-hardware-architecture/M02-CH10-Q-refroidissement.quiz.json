@@ -1,0 +1,121 @@
+[
+  {
+    "id": "OPT-M02-C10-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le throttling thermique et quand se déclenche-t-il ?",
+    "answer": "Le throttling est la réduction automatique de la fréquence du CPU (ou GPU) pour limiter la chaleur produite. Il se déclenche quand la température dépasse un seuil de sécurité (souvent 90-95°C). Résultat : ralentissement notable des performances.",
+    "comment": "Un PC qui 'ralentit soudainement' en pleine charge (jeu, rendu) peut subir du throttling thermique plutôt qu'avoir un problème logiciel. Vérifier les températures avec HWMonitor est le premier réflexe."
+  },
+  {
+    "id": "OPT-M02-C10-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle de la pâte thermique et quand faut-il la renouveler ?",
+    "answer": "Elle comble les micro-irrégularités de surface entre le CPU (ou GPU) et le dissipateur, empêchant les poches d'air isolantes. Renouvellement recommandé : tous les 3-5 ans sur un laptop, moins souvent sur desktop. Obligatoire si la pâte est sèche ou craquelée.",
+    "comment": "Signe que la pâte doit être renouvelée : températures anormalement élevées sur un PC qui fonctionnait correctement avant. C'est une opération de maintenance préventive simple et peu coûteuse."
+  },
+  {
+    "id": "OPT-M02-C10-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre un watercooling AIO et un custom loop ?",
+    "answer": "AIO (All-In-One) : circuit fermé prêt à l'emploi, facile à installer, entretien minimal, adapté aux PC gaming et workstations. Custom loop : circuit ouvert configurable (réservoir, pompe, waterblocks séparés), très performant mais coûteux et nécessite une maintenance régulière. Niche overclocking extrême.",
+    "comment": "En entreprise, l'AIO est préféré pour sa fiabilité et sa simplicité. Le custom loop est réservé aux passionnés ou aux configurations d'overclocking extrême."
+  },
+  {
+    "id": "OPT-M02-C10-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le refroidissement passif et pour quels cas d'usage est-il adapté ?",
+    "answer": "Le refroidissement passif utilise uniquement un dissipateur (convection naturelle), sans ventilateur. Avantages : complètement silencieux, zéro panne mécanique. Limites : uniquement pour composants basse consommation (mini-PC, NAS, systèmes embarqués, SoC).",
+    "comment": "Le refroidissement passif est idéal pour les environnements sensibles au bruit (salle de réunion, accueil). Un mini-PC passif consomme peu et peut fonctionner des années sans entretien."
+  },
+  {
+    "id": "OPT-M02-C10-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre pression positive et pression négative dans un boîtier, et laquelle recommander ?",
+    "answer": "Pression positive : plus d'entrée d'air que de sortie → l'air entrant filtre la poussière avant d'entrer. Recommandée avec filtres à poussière. Pression négative : plus de sortie que d'entrée → aspire la poussière par tous les interstices du boîtier. Déconseillée.",
+    "comment": "En entreprise, la pression positive réduit drastiquement la fréquence de nettoyage des radiateurs et ventilateurs. Les filtres magnétiques de façade se nettoient facilement en moins d'une minute."
+  },
+  {
+    "id": "OPT-M02-C10-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "C",
+    "type": "classic",
+    "question": "À partir de quelle température un CPU moderne doit-il déclencher une alerte, selon les références du cours ?",
+    "answer": "Au-delà de 95°C pour un CPU moderne en charge. En fonctionnement normal, un CPU se situe entre 70-85°C sous charge et 30-45°C au repos. Certains CPU modernes atteignent 95°C en fonctionnement normal selon les spécifications du fabricant.",
+    "comment": "Ces valeurs sont des repères, pas des absolus : consulter les spécifications du fabricant du CPU. Certains Ryzen et Intel Core Ultra sont conçus pour monter à 95°C et throttlent au-delà."
+  },
+  {
+    "id": "OPT-M02-C10-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le signal PWM dans le contexte du refroidissement PC ?",
+    "answer": "PWM (Pulse Width Modulation) : signal envoyé par la carte mère aux ventilateurs pour réguler leur vitesse de rotation en fonction de la température. Permet de réduire le bruit au repos et d'accélérer les ventilateurs seulement quand c'est nécessaire.",
+    "comment": "Les en-têtes (headers) de ventilateur PWM sur la carte mère ont 4 broches (vs 3 pour les ventilateurs à vitesse fixe). Brancher un ventilateur 3 broches sur un header 4 broches fonctionne, mais sans contrôle de vitesse."
+  },
+  {
+    "id": "OPT-M02-C10-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : les ventilateurs d'aspiration d'air frais doivent être installés en arrière et en haut du boîtier. Justifiez.",
+    "answer": "Faux. Les ventilateurs d'aspiration (intake) doivent être en façade et en bas (là où l'air frais entre). Les ventilateurs d'extraction (exhaust) sont en arrière et en haut, car la chaleur monte naturellement.",
+    "comment": "Règle mnémotechnique : froid entre par l'avant (façade/bas), chaud sort par l'arrière/haut. Respecter le sens des ventilateurs (flèches gravées sur le châssis) est essentiel pour un airflow efficace."
+  },
+  {
+    "id": "OPT-M02-C10-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque outil de diagnostic thermique à son usage principal :",
+    "pairs": [
+      {"left": "HWMonitor", "right": "Températures, vitesses ventilateurs, tensions de tous les composants"},
+      {"left": "MSI Afterburner", "right": "Monitoring GPU en temps réel (températures, VRAM, fréquences)"},
+      {"left": "CrystalDiskInfo", "right": "Température SSD/HDD et santé via données SMART"},
+      {"left": "BIOS/UEFI", "right": "Températures CPU et vitesses ventilateurs avant démarrage de l'OS"}
+    ],
+    "answer": "HWMonitor = tous composants | MSI Afterburner = GPU | CrystalDiskInfo = disques SMART | BIOS = pré-OS",
+    "comment": "En intervention thermique, le workflow est : HWMonitor pour identifier le composant chaud → MSI Afterburner si c'est le GPU → CrystalDiskInfo si le SSD est suspect → BIOS pour vérifier sans OS."
+  },
+  {
+    "id": "OPT-M02-C10-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Refroidissement",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Un PC s'éteint seul après quelques minutes en charge. Remettez dans l'ordre les étapes de diagnostic thermique :",
+    "options": [
+      "Renouveler la pâte thermique si sèche ou craquelée",
+      "Vérifier les températures avec HWMonitor sous charge",
+      "Identifier le composant qui dépasse le seuil d'alerte (CPU, GPU, SSD)",
+      "Nettoyer les filtres et radiateurs (poussière = isolation thermique)",
+      "Vérifier que les ventilateurs tournent et que l'airflow est correct"
+    ],
+    "answer": [
+      "Vérifier les températures avec HWMonitor sous charge",
+      "Identifier le composant qui dépasse le seuil d'alerte (CPU, GPU, SSD)",
+      "Vérifier que les ventilateurs tournent et que l'airflow est correct",
+      "Nettoyer les filtres et radiateurs (poussière = isolation thermique)",
+      "Renouveler la pâte thermique si sèche ou craquelée"
+    ],
+    "comment": "Toujours commencer par mesurer (HWMonitor) avant d'intervenir. Le nettoyage de la poussière résout 80% des problèmes thermiques sur PC en parc. La pâte thermique est la dernière étape car elle demande le démontage du ventirad."
+  }
+]

@@ -1,0 +1,151 @@
+[
+  {
+    "id": "OPT-M08-C03-001",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'appelle-t-on une hallucination de l'IA ?",
+    "answer": "C'est quand l'IA affirme une chose fausse avec assurance, comme si elle était vraie.",
+    "comment": "Le terme est trompeur : l'IA ne ment pas et ne doute pas. Elle génère le texte le plus probable, qui peut être faux. Le réflexe terrain : plus la réponse est précise (nom de fonction, version, date), plus elle mérite vérification."
+  },
+  {
+    "id": "OPT-M08-C03-002",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "C",
+    "type": "classic",
+    "question": "Sur quel type de sujet l'IA est-elle la plus susceptible d'halluciner ?",
+    "answer": "Sur les bibliothèques récentes et les faits très précis (versions, options de commande, dates).",
+    "comment": "Les données d'entraînement ont une date de coupure : tout ce qui est sorti après est inconnu ou approximatif. L'IA comblera le vide en inventant une syntaxe plausible plutôt qu'en disant ne pas savoir."
+  },
+  {
+    "id": "OPT-M08-C03-003",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il pas se contenter de copier-coller le code généré par une IA sans le comprendre ?",
+    "answer": "Parce qu'un code qu'on ne comprend pas est un code qu'on ne peut ni maintenir ni déboguer.",
+    "comment": "Le jour où ce code plante en production, c'est vous qui devez le réparer, pas l'IA. Utilisez l'IA pour comprendre le pourquoi du code, comme un tuteur, et non comme un distributeur de solutions toutes faites."
+  },
+  {
+    "id": "OPT-M08-C03-004",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelles informations ne doit-on jamais transmettre à une IA en ligne ?",
+    "answer": "Les mots de passe réels, les clés d'API, les données personnelles et toute donnée sensible.",
+    "comment": "Ces informations peuvent être stockées sur les serveurs du fournisseur et réutilisées pour l'entraînement. En entreprise, coller un identifiant client ou une clé d'API dans un chatbot public peut constituer une fuite de données et une faute professionnelle."
+  },
+  {
+    "id": "OPT-M08-C03-005",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi l'assurance avec laquelle l'IA formule une réponse n'est-elle pas un gage de fiabilité ?",
+    "answer": "Parce que l'IA formule une bonne et une mauvaise réponse avec exactement le même ton assuré : elle ne sait pas qu'elle se trompe.",
+    "comment": "Un humain hésite, nuance, dit qu'il n'est pas sûr. L'IA non : le ton confiant fait baisser notre vigilance alors qu'il ne reflète aucune certitude réelle. C'est ce qui rend l'hallucination dangereuse."
+  },
+  {
+    "id": "OPT-M08-C03-006",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "B",
+    "type": "classic",
+    "question": "L'IA vous donne une commande pour configurer un serveur en production. Quel est le bon réflexe avant de l'exécuter ?",
+    "answer": "Vérifier la commande dans la documentation officielle et comprendre ce que fait chaque option avant de l'exécuter.",
+    "comment": "Une commande mal comprise peut effacer des données ou casser un service. La doc officielle est la source de vérité ; l'IA n'est qu'un point de départ pour orienter la recherche, jamais le mot final."
+  },
+  {
+    "id": "OPT-M08-C03-007",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "A",
+    "type": "classic",
+    "question": "Comment formuler une demande à l'IA pour réduire le risque de copier-coller aveugle ?",
+    "answer": "Lui demander d'expliquer le raisonnement et le rôle de chaque partie, plutôt que de fournir uniquement un bloc de code final.",
+    "comment": "Demander explique-moi pourquoi ou commente chaque étape transforme l'IA en outil d'apprentissage. On garde alors le contrôle et on monte en compétence au lieu de créer une dette technique qu'on ne pourra pas assumer."
+  },
+  {
+    "id": "OPT-M08-C03-008",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque piège de l'IA à une situation concrète qui l'illustre :",
+    "pairs": [
+      {
+        "left": "Hallucination",
+        "right": "L'IA invente une option de commande qui n'existe pas dans la documentation"
+      },
+      {
+        "left": "Copier-coller aveugle",
+        "right": "On colle un script entier en production sans savoir ce qu'il fait, et il plante"
+      },
+      {
+        "left": "Faille de sécurité",
+        "right": "On colle une clé d'API réelle dans le prompt pour gagner du temps"
+      },
+      {
+        "left": "Excès de confiance",
+        "right": "On accepte une date ou une version précise sans la recouper avec une source"
+      }
+    ],
+    "answer": "Hallucination = option de commande inventée | Copier-coller aveugle = script collé sans comprendre | Faille de sécurité = clé d'API réelle dans le prompt | Excès de confiance = date/version non recoupée",
+    "comment": "Ces quatre situations reviennent quotidiennement. Les reconnaître à temps évite la majorité des incidents liés à un mauvais usage de l'IA."
+  },
+  {
+    "id": "OPT-M08-C03-009",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation à la pratique adaptée (bonne ou mauvaise) :",
+    "pairs": [
+      {
+        "left": "Tester une syntaxe douteuse suggérée par l'IA",
+        "right": "Bonne pratique : la confronter à la doc officielle avant de l'utiliser"
+      },
+      {
+        "left": "Déboguer avec un vrai mot de passe dans le message d'erreur collé",
+        "right": "Mauvaise pratique : anonymiser ou retirer les secrets avant de coller"
+      },
+      {
+        "left": "Comprendre un concept de programmation",
+        "right": "Bonne pratique : demander à l'IA d'expliquer avec un exemple simple"
+      },
+      {
+        "left": "Livrer un code généré sans relecture",
+        "right": "Mauvaise pratique : toujours relire et comprendre avant de livrer"
+      }
+    ],
+    "answer": "Tester syntaxe douteuse = confronter à la doc (bonne) | Mot de passe dans l'erreur = anonymiser (mauvaise à corriger) | Comprendre un concept = demander une explication (bonne) | Livrer sans relecture = relire avant (mauvaise à corriger)",
+    "comment": "La frontière entre bon et mauvais usage tient souvent à un seul réflexe : vérifier, anonymiser ou comprendre avant d'agir."
+  },
+  {
+    "id": "OPT-M08-C03-010",
+    "category": "Utiliser l'IA",
+    "chapter": "Pièges à éviter avec l'IA",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour valider une réponse fournie par une IA avant de l'appliquer :",
+    "options": [
+      "Identifier les affirmations vérifiables (commande, version, fait précis)",
+      "Tester dans un environnement sans risque si possible (bac à sable)",
+      "Lire la réponse et repérer ce qui semble incertain",
+      "Appliquer en production seulement une fois la réponse confirmée",
+      "Confronter chaque affirmation à la documentation officielle"
+    ],
+    "answer": [
+      "Lire la réponse et repérer ce qui semble incertain",
+      "Identifier les affirmations vérifiables (commande, version, fait précis)",
+      "Confronter chaque affirmation à la documentation officielle",
+      "Tester dans un environnement sans risque si possible (bac à sable)",
+      "Appliquer en production seulement une fois la réponse confirmée"
+    ],
+    "comment": "Cette démarche inverse le rapport de confiance : on part du principe que la réponse peut être fausse et on cherche à la valider. La documentation officielle reste l'arbitre final, jamais l'IA elle-même."
+  }
+]

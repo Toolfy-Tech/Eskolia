@@ -1,0 +1,125 @@
+[
+  {
+    "id": "OPT-M04-C01-001",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence fondamentale entre un hub et un switch ?",
+    "answer": "Un hub répète le signal vers TOUS ses ports (couche 1, broadcast physique permanent). Un switch analyse les adresses MAC et envoie la trame uniquement au port destinataire grâce à sa table SAT (couche 2).",
+    "comment": "Le switch dédie la bande passante à chaque paire de communicants, contrairement au hub qui la partage entre tous. C'est pourquoi le hub est obsolète."
+  },
+  {
+    "id": "OPT-M04-C01-002",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que contient une adresse MAC et comment est-elle structurée ?",
+    "answer": "Une adresse MAC est codée en hexadécimal sur 48 bits, écrite en 6 octets (ex : 00:1A:2B:3C:4D:5E). Les 24 premiers bits = OUI (identifiant fabricant attribué par l'IEEE), les 24 suivants = numéro de série unique de la carte.",
+    "comment": "Sur le terrain, l'OUI permet d'identifier le constructeur d'un équipement inconnu vu dans la table MAC du switch (un OUI Cisco vs un OUI imprimante oriente le diagnostic). À savoir aussi : la MAC peut être usurpée (spoofing) ou réécrite logiciellement — elle ne constitue donc pas une preuve d'identité fiable."
+  },
+  {
+    "id": "OPT-M04-C01-003",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que la passerelle (gateway) et quel est le symptôme si elle est mal configurée ?",
+    "answer": "La passerelle est l'adresse IP du routeur côté réseau local. Si elle est mal configurée, le PC peut communiquer avec ses voisins (même VLAN/réseau) mais ne peut jamais sortir sur Internet, même si l'IP et le DNS sont corrects.",
+    "comment": "Symptôme révélateur : le ping vers une IP du même sous-réseau passe, mais le ping vers 8.8.8.8 échoue immédiatement avec « Destination host unreachable » (émis par le PC lui-même, qui ne sait pas où router) et non « Request timed out ». Subtilité : la passerelle doit appartenir au même sous-réseau que le PC, sinon elle est inatteignable — une erreur de masque peut donc rendre une passerelle pourtant correcte injoignable."
+  },
+  {
+    "id": "OPT-M04-C01-004",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre NAT et PAT ?",
+    "answer": "Le NAT traduit une IP privée en IP publique. Le PAT est une version du NAT qui utilise aussi les numéros de port : plusieurs IP privées partagent une seule IP publique grâce aux ports. C'est le PAT qui est utilisé à la maison.",
+    "comment": "PAT = Port Address Translation. C'est le mécanisme réel derrière la « box Internet » : des dizaines d'appareils partagent une seule IP publique via des ports différents."
+  },
+  {
+    "id": "OPT-M04-C01-005",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la règle d'or pour choisir entre Ethernet et Wi-Fi en entreprise ?",
+    "answer": "Tout équipement fixe (PC bureau, serveur, imprimante, caméra fixe, téléphone IP) → câble Ethernet. Tout ce qui se déplace (laptops, smartphones, IoT mobiles) → Wi-Fi.",
+    "comment": "La vraie raison technique n'est pas le débit crête (le Wi-Fi récent affiche des chiffres flatteurs) mais le médium partagé : le Wi-Fi est un demi-duplex à collisions (CSMA/CA), où tous les clients d'une cellule se partagent le temps d'antenne — un seul gros transfert pénalise les voisins. L'Ethernet commuté donne à chaque port son propre canal full-duplex dédié. D'où la règle terrain : VoIP et serveurs en filaire, car ils tolèrent mal la gigue et la contention radio."
+  },
+  {
+    "id": "OPT-M04-C01-006",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quels sont les 3 canaux non-chevauchants en Wi-Fi 2,4 GHz ? Pourquoi est-ce important ?",
+    "answer": "Les 3 canaux non-chevauchants en 2,4 GHz sont le 1, le 6 et le 11. Deux points d'accès voisins sur le même canal se perturbent mutuellement — c'est la principale cause de Wi-Fi lent en immeuble.",
+    "comment": "En environnement dense (open space, immeuble), il vaut mieux basculer sur du 5 GHz qui dispose de 25 canaux non-chevauchants et de moins d'interférences."
+  },
+  {
+    "id": "OPT-M04-C01-007",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le PoE et quelle condition doit être remplie pour qu'il fonctionne ?",
+    "answer": "Le PoE (Power over Ethernet) alimente électriquement un équipement réseau via le câble Ethernet, sans prise secteur séparée. Pour que ça fonctionne : le switch DOIT être un switch PoE ET l'équipement doit être compatible PoE.",
+    "comment": "Un équipement non-PoE branché sur un port PoE ne sera pas endommagé : le switch détecte la compatibilité avant d'envoyer le courant. Standards : 802.3af (15,4 W), 802.3at (30 W), 802.3bt (60–90 W)."
+  },
+  {
+    "id": "OPT-M04-C01-008",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "B",
+    "type": "classic",
+    "question": "Convertissez le nombre décimal 222 en binaire (8 bits).",
+    "answer": "222 en binaire = 1101 1110. Vérification : 128 + 64 + 16 + 8 + 4 + 2 = 222.",
+    "comment": "Méthode : divisions successives par 2 (lire les restes de bas en haut). Méthode alternative : soustraire les puissances de 2 en partant de 128. Décimal pair → finit par 0 ; impair → finit par 1."
+  },
+  {
+    "id": "OPT-M04-C01-009",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque équipement réseau à sa couche OSI et son rôle principal :",
+    "pairs": [
+      {"left": "Hub", "right": "Couche 1 — répète le signal vers tous les ports"},
+      {"left": "Switch", "right": "Couche 2 — achemine les trames par adresse MAC"},
+      {"left": "Routeur", "right": "Couche 3 — route les paquets par adresse IP"},
+      {"left": "Point d'accès Wi-Fi", "right": "Couche 2 — crée une cellule sans fil (SSID)"}
+    ],
+    "answer": "Hub = Couche 1 | Switch = Couche 2 (MAC) | Routeur = Couche 3 (IP) | AP Wi-Fi = Couche 2 (cellule sans fil)",
+    "comment": "Piège courant : le point d'accès Wi-Fi opère en couche 2, pas en couche 3 — il ne route pas, il ponte la radio vers le filaire (c'est la box/routeur derrière lui qui route). Autre nuance : un switch L3 (multicouche) cumule les couches 2 et 3, d'où la confusion fréquente avec un routeur."
+  },
+  {
+    "id": "OPT-M04-C01-010",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque standard Wi-Fi à sa caractéristique principale :",
+    "pairs": [
+      {"left": "WEP", "right": "Chiffrement cassé — à bannir absolument"},
+      {"left": "WPA2", "right": "AES-CCMP + PSK — standard actuel en entreprise"},
+      {"left": "WPA3", "right": "SAE — résiste au brute-force offline"},
+      {"left": "802.1X (Enterprise)", "right": "Authentification par identifiant AD via RADIUS"}
+    ],
+    "answer": "WEP = cassé (bannir) | WPA2 = standard actuel (AES) | WPA3 = recommandé (SAE) | 802.1X = authentification individuelle AD",
+    "comment": "En entreprise avec AD, WPA2/WPA3 Enterprise (802.1X + RADIUS) est la seule vraie solution : chaque utilisateur a ses propres identifiants, révocables individuellement."
+  },
+  {
+    "id": "OPT-M04-C01-011",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Composants du réseau et binaire",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les typologies de réseau, de la plus petite à la plus grande portée :",
+    "options": ["WAN", "LAN", "PAN", "MAN"],
+    "answer": ["PAN", "LAN", "MAN", "WAN"],
+    "comment": "PAN (1-10 m, Bluetooth) → LAN (100 m - 1 km, Ethernet/Wi-Fi) → MAN (10-50 km, fibre optique) → WAN (illimité, Internet). Retenir : Personal → Local → Metropolitan → Wide."
+  }
+]
