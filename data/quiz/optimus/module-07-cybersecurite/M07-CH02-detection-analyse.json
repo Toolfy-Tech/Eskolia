@@ -1,0 +1,137 @@
+[
+  {
+    "id": "OPT-M07-C02-001",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert le service VirusTotal (virustotal.com) ?",
+    "answer": "À soumettre un fichier (ou une URL) pour l'analyser simultanément avec plusieurs moteurs antivirus",
+    "comment": "Piège de confidentialité : tout fichier envoyé à VirusTotal est partagé avec la communauté et les éditeurs. Ne jamais y déposer un document interne sensible — utiliser plutôt le hash du fichier pour une recherche sans téléversement."
+  },
+  {
+    "id": "OPT-M07-C02-002",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "C",
+    "type": "classic",
+    "question": "Sur quel principe repose la détection par base de signatures d'un antivirus ?",
+    "answer": "Il compare les fichiers à une base d'empreintes de malwares déjà connus",
+    "comment": "Limite majeure : un malware inédit ou simplement modifié (repacké) n'a pas encore de signature et passe sous le radar. C'est précisément ce que l'analyse comportementale vient compléter."
+  },
+  {
+    "id": "OPT-M07-C02-003",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que l'analyse comportementale (heuristique) et quel est son principal inconvénient ?",
+    "answer": "Elle surveille les actions suspectes d'un programme en cours d'exécution ; son principal inconvénient est le risque de faux positifs",
+    "comment": "Un faux positif peut bloquer un logiciel métier parfaitement légitime. Réflexe : avant de mettre en liste blanche un fichier signalé, vérifier sa provenance et son hash plutôt que de désactiver la protection d'un clic."
+  },
+  {
+    "id": "OPT-M07-C02-004",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi un redémarrage est-il souvent nécessaire après que l'antivirus a traité une menace ?",
+    "answer": "Parce que le malware peut être chargé en mémoire vive (RAM) et n'être réellement éliminé qu'au redémarrage",
+    "comment": "Un processus malveillant actif peut se ré-écrire sur le disque tant qu'il tourne. Certains nettoyages s'exécutent d'ailleurs au boot, avant le chargement complet de l'OS, pour atteindre des composants autrement verrouillés."
+  },
+  {
+    "id": "OPT-M07-C02-005",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "C",
+    "type": "diagnostic_indices",
+    "question": "Diagnostic : Un poste présente les indices suivants. Quel type de problème de détection devez-vous suspecter ?",
+    "indices": [
+      "L'antivirus signale un fichier comme menace",
+      "Le fichier est un outil métier installé depuis la source officielle",
+      "Le hash du fichier correspond à celui de l'éditeur légitime",
+      "Aucun autre moteur sur VirusTotal ne le détecte"
+    ],
+    "answer": "Un faux positif de l'analyse heuristique",
+    "comment": "La convergence d'indices est la clé : un seul moteur sur des dizaines qui alerte, un hash conforme à l'éditeur et une source officielle pointent vers un faux positif plutôt qu'une vraie compromission. Documenter ce diagnostic évite de re-traiter le même fichier à chaque scan."
+  },
+  {
+    "id": "OPT-M07-C02-006",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Diagnostic : Un poste présente ces symptômes. Que devez-vous suspecter et quelle action de détection privilégier ?",
+    "indices": [
+      "Le PC est lent et le ventilateur tourne en permanence au repos",
+      "Trafic réseau sortant important sans activité de l'utilisateur",
+      "L'antivirus classique ne remonte rien",
+      "Des processus inconnus disparaissent quand on tente de les lister"
+    ],
+    "answer": "Suspecter un rootkit ou un malware furtif ; privilégier une analyse hors-ligne en démarrant le poste sur un support externe sain",
+    "comment": "Le fait que des processus se dérobent à l'inventaire est la signature d'un masquage actif. Faire confiance à l'OS infecté pour s'auto-diagnostiquer est une erreur : seule une analyse depuis un environnement de confiance donne une vision fiable du disque."
+  },
+  {
+    "id": "OPT-M07-C02-007",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque mécanisme ou outil à sa fonction.",
+    "pairs": [
+      {"left": "Base de signatures", "right": "Comparaison à des empreintes de malwares connus"},
+      {"left": "Analyse heuristique", "right": "Surveillance des comportements suspects à l'exécution"},
+      {"left": "VirusTotal", "right": "Analyse multi-moteurs d'un fichier soumis"},
+      {"left": "Quarantaine", "right": "Isolement d'un fichier suspect sans le supprimer définitivement"}
+    ],
+    "answer": "Base de signatures → comparaison à des empreintes connues ; Analyse heuristique → surveillance des comportements suspects ; VirusTotal → analyse multi-moteurs d'un fichier soumis ; Quarantaine → isolement d'un fichier suspect sans suppression définitive.",
+    "comment": "La quarantaine est préférable à la suppression immédiate car elle permet de restaurer un fichier en cas de faux positif et de conserver un échantillon pour analyse. Signature et heuristique sont complémentaires, pas concurrentes."
+  },
+  {
+    "id": "OPT-M07-C02-008",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 7 réflexes à appliquer lors d'un incident de compromission avérée.",
+    "options": [
+      "Identifier l'étendue de la compromission",
+      "Déconnecter le PC du réseau immédiatement",
+      "Restaurer depuis une sauvegarde saine si nécessaire",
+      "Prévenir le responsable IT / RSSI",
+      "Ne pas éteindre brutalement si une analyse mémoire est prévue",
+      "Vérifier les autres postes",
+      "Réinitialiser les mots de passe potentiellement exposés"
+    ],
+    "answer": [
+      "Déconnecter le PC du réseau immédiatement",
+      "Ne pas éteindre brutalement si une analyse mémoire est prévue",
+      "Prévenir le responsable IT / RSSI",
+      "Identifier l'étendue de la compromission",
+      "Réinitialiser les mots de passe potentiellement exposés",
+      "Vérifier les autres postes",
+      "Restaurer depuis une sauvegarde saine si nécessaire"
+    ],
+    "comment": "L'ordre n'est pas arbitraire : on isole avant tout pour stopper la propagation, mais on préserve la RAM car couper le courant détruit des preuves volatiles (clés de chiffrement, processus en mémoire). La restauration arrive en dernier, une fois la cause maîtrisée, sous peine de ré-infecter la sauvegarde."
+  },
+  {
+    "id": "OPT-M07-C02-009",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "B",
+    "type": "ticket",
+    "question": "Ticket : Un collègue a reçu une pièce jointe douteuse et vous demande s'il peut l'ouvrir pour vérifier qu'elle n'est pas dangereuse. Quelle réponse et quelle méthode d'analyse proposez-vous ?",
+    "answer": "Lui dire de ne surtout pas l'ouvrir, et soumettre le fichier (ou son hash) à VirusTotal pour une analyse multi-moteurs avant toute manipulation",
+    "comment": "Ouvrir pour vérifier est exactement le comportement que l'attaquant espère. Si le fichier est sensible, préférer la recherche par hash afin de ne pas l'exposer publiquement. En cas de doute persistant, l'analyse en environnement isolé (sandbox) reste plus sûre."
+  },
+  {
+    "id": "OPT-M07-C02-010",
+    "category": "Cybersécurité",
+    "chapter": "Détection et analyse",
+    "tier": "A",
+    "type": "ticket",
+    "question": "Ticket : Après une attaque par ransomware, la direction envisage de payer la rançon pour récupérer rapidement les données. Quel est votre conseil en tant que référent sécurité ?",
+    "answer": "Ne jamais payer sans validation de la direction et des autorités compétentes ; privilégier la restauration depuis une sauvegarde saine",
+    "comment": "Payer ne garantit ni la remise d'une clé fonctionnelle ni l'absence de double extorsion (fuite des données déjà exfiltrées). Le dépôt de plainte et la notification aux autorités sont par ailleurs des obligations qui conditionnent souvent la prise en charge par l'assurance cyber."
+  }
+]

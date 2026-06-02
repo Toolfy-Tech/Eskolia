@@ -1,0 +1,125 @@
+[
+  {
+    "id": "OPT-M07-C05-001",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert un antivol Kensington sur un poste de travail ?",
+    "answer": "À attacher physiquement le PC (portable ou fixe) à un point fixe via le port Kensington dédié, à l'aide d'un câble muni d'une serrure.",
+    "comment": "L'antivol Kensington dissuade surtout le vol opportuniste (poste laissé sans surveillance en open space, salle de réunion, accueil). Il ne protège en rien les données : un câble coupé ou arraché ne change rien au contenu du disque. C'est pour cela qu'on ne le présente jamais comme une mesure isolée mais toujours couplé au chiffrement."
+  },
+  {
+    "id": "OPT-M07-C05-002",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel raccourci clavier verrouille immédiatement une session Windows lorsqu'on quitte son poste ?",
+    "answer": "Win + L.",
+    "comment": "Le réflexe Win+L doit devenir automatique avant de quitter son poste, même pour deux minutes. En complément, on configure par GPO un verrouillage automatique après une courte période d'inactivité, car on ne peut pas compter uniquement sur la discipline des utilisateurs. Un poste déverrouillé et abandonné, c'est un accès direct à la session, aux fichiers et aux mots de passe enregistrés dans le navigateur."
+  },
+  {
+    "id": "OPT-M07-C05-003",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "C",
+    "type": "classic",
+    "question": "Où doivent être installés les serveurs, switchs et équipements réseau pour assurer leur sécurité physique ?",
+    "answer": "Dans une baie ou armoire verrouillée, située dans un local technique à accès restreint.",
+    "comment": "Le local technique ne se résume pas à une porte fermée : on contrôle qui possède la clé ou le badge, et idéalement on journalise les accès. Un switch accessible physiquement peut être réinitialisé, débranché, ou recevoir un équipement pirate sur un port libre. La baie verrouillée empêche aussi les manipulations accidentelles par du personnel non habilité (ménage, maintenance bâtiment)."
+  },
+  {
+    "id": "OPT-M07-C05-004",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "B",
+    "type": "classic",
+    "question": "Comment empêcher par configuration qu'un poste démarre sur une clé USB ou un support externe ?",
+    "answer": "En bloquant le boot sur support externe dans le BIOS, et en protégeant l'accès au BIOS par un mot de passe.",
+    "comment": "Sans cette mesure, un attaquant ayant un accès physique peut booter sur un système live et lire l'intégralité d'un disque non chiffré, contournant totalement la session Windows. Protéger le BIOS par mot de passe est indispensable : sinon n'importe qui peut réactiver le boot externe en deux clics. C'est aussi la raison pour laquelle BitLocker reste nécessaire même avec le boot verrouillé."
+  },
+  {
+    "id": "OPT-M07-C05-005",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "B",
+    "type": "classic",
+    "question": "Par quel moyen peut-on désactiver les ports USB sur un parc de postes de manière centralisée ?",
+    "answer": "Par GPO (stratégie de groupe), qui permet de désactiver ou restreindre l'usage des ports USB sur l'ensemble des postes du domaine.",
+    "comment": "La désactivation des ports USB répond à deux menaces : l'exfiltration de données vers une clé personnelle et l'introduction de malware via un support inconnu. En pratique on applique rarement un blocage total : on autorise souvent les périphériques d'entrée (clavier, souris) tout en bloquant le stockage de masse. La GPO permet ce réglage fin et s'applique automatiquement à chaque démarrage."
+  },
+  {
+    "id": "OPT-M07-C05-006",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi le verrouillage physique d'un portable ne suffit-il pas et doit-il être combiné au chiffrement ?",
+    "answer": "Parce que le verrouillage physique ne fait que dissuader le vol, alors que le chiffrement (BitLocker) garantit que les données restent illisibles si le matériel est malgré tout volé.",
+    "comment": "Les deux couches répondent à des moments différents de l'attaque : la sécurité physique agit avant le vol (dissuasion), le chiffrement agit après (les données volées sont inexploitables). Raisonner uniquement physique laisse les données nues face à un vol réussi ; raisonner uniquement chiffrement n'empêche pas la perte du matériel ni l'accès à une session restée ouverte. La défense en profondeur consiste justement à empiler ces couches indépendantes."
+  },
+  {
+    "id": "OPT-M07-C05-007",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "A",
+    "type": "classic",
+    "question": "Sur un parc de portables, quelle combinaison de trois mesures forme la base de sécurité minimale ?",
+    "answer": "BitLocker activé, antivol Kensington, et verrouillage de session automatique.",
+    "comment": "Le point clé à retenir : aucune des trois ne suffit seule. BitLocker sans verrouillage de session laisse les données accessibles sur une session ouverte ; le Kensington sans BitLocker ne protège pas un disque volé ; le verrouillage de session sans chiffrement tombe dès qu'on retire le disque. C'est l'exemple type où l'on évalue toujours une posture de sécurité par l'ensemble des couches, pas mesure par mesure."
+  },
+  {
+    "id": "OPT-M07-C05-008",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque mesure de sécurité physique à son rôle principal.",
+    "pairs": [
+      {"left": "Antivol Kensington", "right": "Dissuader le vol opportuniste d'un poste"},
+      {"left": "Baie verrouillée en local technique", "right": "Protéger les serveurs et équipements réseau d'un accès physique"},
+      {"left": "Verrouillage de session (Win+L / GPO)", "right": "Empêcher l'accès à une session laissée sans surveillance"},
+      {"left": "Désactivation des ports USB par GPO", "right": "Bloquer l'exfiltration de données et l'introduction de malware"}
+    ],
+    "answer": "L'antivol Kensington dissuade le vol opportuniste d'un poste ; la baie verrouillée en local technique protège les serveurs et équipements réseau d'un accès physique ; le verrouillage de session empêche l'accès à une session laissée sans surveillance ; la désactivation des ports USB par GPO bloque l'exfiltration de données et l'introduction de malware.",
+    "comment": "Chaque mesure couvre un vecteur d'attaque distinct, ce qui montre qu'aucune n'est redondante. Le piège classique en évaluation est de confondre la cible : le Kensington protège le matériel, pas les données ; la désactivation USB protège les données en mouvement, pas le poste. Savoir relier précisément mesure et menace permet de justifier chaque ligne d'une politique de sécurité."
+  },
+  {
+    "id": "OPT-M07-C05-009",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "A",
+    "type": "association",
+    "question": "Associez chaque situation à risque à la contre-mesure physique la plus adaptée.",
+    "pairs": [
+      {"left": "Portable laissé seul dans une salle de réunion", "right": "Antivol Kensington"},
+      {"left": "Poste déverrouillé pendant une pause", "right": "Verrouillage automatique de session par GPO"},
+      {"left": "Visiteur qui tente de brancher une clé inconnue", "right": "Ports USB désactivés par GPO"},
+      {"left": "Tentative de démarrage sur un système live USB", "right": "Boot externe bloqué et BIOS protégé par mot de passe"}
+    ],
+    "answer": "Un portable laissé seul en salle de réunion appelle l'antivol Kensington ; un poste déverrouillé pendant une pause appelle le verrouillage automatique de session par GPO ; un visiteur branchant une clé inconnue est contré par la désactivation des ports USB ; une tentative de démarrage sur un système live USB est contrée par le blocage du boot externe et un BIOS protégé par mot de passe.",
+    "comment": "L'exercice force à raisonner par scénario plutôt que par catalogue de mesures, ce qui est le bon réflexe terrain : on part de la menace concrète, puis on choisit la couche qui la couvre. Plusieurs situations exigeraient en réalité plusieurs contre-mesures combinées ; ici on cible la plus directe. Le scénario du boot live USB est le plus sournois car il contourne entièrement Windows, d'où l'importance du couple BIOS verrouillé plus chiffrement."
+  },
+  {
+    "id": "OPT-M07-C05-010",
+    "category": "Cybersécurité",
+    "chapter": "Sécurité physique des équipements",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes de sécurisation physique et logique d'un nouveau poste portable avant remise à l'utilisateur.",
+    "options": [
+      "Configurer le BIOS : mot de passe et blocage du boot sur support externe",
+      "Activer le chiffrement BitLocker du disque",
+      "Appliquer les GPO de verrouillage automatique de session et de restriction USB",
+      "Installer l'antivol Kensington et remettre le poste à l'utilisateur"
+    ],
+    "answer": [
+      "Configurer le BIOS : mot de passe et blocage du boot sur support externe",
+      "Activer le chiffrement BitLocker du disque",
+      "Appliquer les GPO de verrouillage automatique de session et de restriction USB",
+      "Installer l'antivol Kensington et remettre le poste à l'utilisateur"
+    ],
+    "comment": "L'ordre n'est pas arbitraire : on verrouille le BIOS et le boot d'abord, car c'est le socle qui empêche de contourner tout le reste. BitLocker vient ensuite pour que le disque soit protégé avant toute donnée utilisateur. Les GPO durcissent la session, puis le Kensington intervient en dernier au moment de la remise physique. Inverser l'ordre, par exemple activer BitLocker avant de verrouiller le boot, laisse une fenêtre où le poste reste contournable."
+  }
+]
