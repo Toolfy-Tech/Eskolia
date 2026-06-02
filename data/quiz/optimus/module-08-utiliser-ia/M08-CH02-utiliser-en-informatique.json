@@ -1,0 +1,125 @@
+[
+  {
+    "id": "OPT-M08-C02-001",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment demander à l'IA de rendre un concept abstrait plus facile à comprendre ?",
+    "answer": "En lui demandant une analogie simple tirée du quotidien, par exemple « Explique la POO avec une analogie simple comme une voiture ou une recette »",
+    "comment": "L'analogie crée un pont entre l'inconnu et le déjà-connu, ce qui ancre durablement la notion. Le réflexe utile est de demander plusieurs analogies différentes : si l'une ne parle pas, une autre déclenchera le déclic."
+  },
+  {
+    "id": "OPT-M08-C02-002",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le Rubber Duck Debugging assisté par l'IA ?",
+    "answer": "Une technique où l'on explique son problème de code à l'IA, comme on le ferait à un canard en plastique, pour comprendre et résoudre soi-même le bug, en demandant à l'IA d'expliquer la cause sans donner la solution directe",
+    "comment": "À l'origine, le canard en plastique est un interlocuteur muet : verbaliser le problème suffit souvent à voir la faille. L'IA enrichit la méthode en posant des questions, mais le but reste de comprendre soi-même, pas de recevoir un correctif tout fait."
+  },
+  {
+    "id": "OPT-M08-C02-003",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment l'IA peut-elle aider à tester un programme qui a besoin de données ?",
+    "answer": "En générant des données de test factices à la demande, par exemple « Génère un JSON de 10 faux utilisateurs avec nom, email et âge »",
+    "comment": "Cela évite de saisir des jeux de données à la main et fournit des cas variés en quelques secondes. Penser à demander aussi des cas limites (champ vide, âge négatif, email mal formé) pour éprouver la robustesse du code, pas seulement le cas idéal."
+  },
+  {
+    "id": "OPT-M08-C02-004",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "B",
+    "type": "classic",
+    "question": "Comment utiliser l'IA pour mieux relire et réviser son propre code plus tard ?",
+    "answer": "En lui demandant d'ajouter des commentaires pédagogiques au script, par exemple « Ajoute des commentaires pour que je puisse le réviser plus tard »",
+    "comment": "Des commentaires bien placés transforment un code en support de révision. Attention toutefois à relire ces commentaires : l'IA peut décrire ce que le code semble faire et non ce qu'il fait réellement si une ligne contient un bug."
+  },
+  {
+    "id": "OPT-M08-C02-005",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi dit-on que l'IA accélère l'apprentissage uniquement si elle est utilisée activement ?",
+    "answer": "Parce qu'elle est utile pour comprendre, pas pour remplacer la compréhension : copier passivement une réponse n'apprend rien, alors que questionner, reformuler et tester fait réellement progresser",
+    "comment": "La frontière est nette : usage actif (je me sers de l'IA pour comprendre) contre usage passif (je lui fais faire le travail à ma place). Le second crée une dépendance qui se paie le jour de l'examen ou en production, quand l'outil n'est plus là pour penser à votre place."
+  },
+  {
+    "id": "OPT-M08-C02-006",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "A",
+    "type": "classic",
+    "question": "Pourquoi demander à l'IA d'expliquer une erreur « sans donner la solution directe » est-il pertinent en apprentissage ?",
+    "answer": "Parce que cela force à mobiliser sa propre réflexion pour trouver la correction : on garde le bénéfice de l'apprentissage tout en étant guidé, plutôt que de recopier un correctif sans le comprendre",
+    "comment": "C'est l'application directe du principe d'usage actif au débogage. Recevoir la cause sans la solution entretient la capacité à résoudre seul de futurs bugs similaires. Cette consigne se place dans le prompt lui-même, car par défaut l'IA tend à livrer le code corrigé."
+  },
+  {
+    "id": "OPT-M08-C02-007",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque cas d'usage de l'IA au type de prompt qui lui correspond.",
+    "pairs": [
+      {"left": "Comprendre un concept abstrait", "right": "Explique la POO avec une analogie simple"},
+      {"left": "Déboguer en comprenant", "right": "Explique pourquoi ce code renvoie une IndexError sans donner la solution"},
+      {"left": "Tester un programme", "right": "Génère un JSON de 10 faux utilisateurs"},
+      {"left": "Réviser son code plus tard", "right": "Ajoute des commentaires pédagogiques à ce script"}
+    ],
+    "answer": "Comprendre un concept abstrait → demander une analogie simple ; déboguer en comprenant → faire expliquer l'erreur sans la solution ; tester un programme → générer des données de test factices ; réviser son code → demander des commentaires pédagogiques.",
+    "comment": "Chaque besoin appelle une formulation différente : il n'existe pas de prompt universel. Reconnaître son besoin réel avant de taper est ce qui distingue un usage outillé et efficace d'un usage approximatif au coup par coup."
+  },
+  {
+    "id": "OPT-M08-C02-008",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque attitude face à l'IA à sa nature (active ou passive).",
+    "pairs": [
+      {"left": "Coller le code corrigé sans le lire", "right": "Usage passif"},
+      {"left": "Demander une explication puis corriger soi-même", "right": "Usage actif"},
+      {"left": "Reformuler la réponse de l'IA avec ses mots", "right": "Usage actif"},
+      {"left": "Rendre un devoir généré sans le comprendre", "right": "Usage passif"}
+    ],
+    "answer": "Coller le code corrigé sans le lire → usage passif ; demander une explication puis corriger soi-même → usage actif ; reformuler la réponse avec ses mots → usage actif ; rendre un devoir généré sans le comprendre → usage passif.",
+    "comment": "Le critère discriminant est simple : y a-t-il eu un effort mental de ma part ? Si l'IA a pensé à ma place, l'usage est passif. Reformuler avec ses propres mots est d'ailleurs un excellent test pour vérifier qu'on a réellement compris."
+  },
+  {
+    "id": "OPT-M08-C02-009",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes d'un Rubber Duck Debugging mené correctement avec l'IA.",
+    "options": [
+      "Tester la piste de correction soi-même et vérifier le résultat",
+      "Décrire précisément le problème et coller le code et l'erreur",
+      "Demander à l'IA d'expliquer la cause sans donner la solution directe",
+      "Lire l'explication et réfléchir à l'origine du bug"
+    ],
+    "answer": [
+      "Décrire précisément le problème et coller le code et l'erreur",
+      "Demander à l'IA d'expliquer la cause sans donner la solution directe",
+      "Lire l'explication et réfléchir à l'origine du bug",
+      "Tester la piste de correction soi-même et vérifier le résultat"
+    ],
+    "comment": "La première étape, verbaliser le problème, est souvent celle qui résout le bug à elle seule, avant même la réponse de l'IA. La dernière, tester soi-même, scelle l'apprentissage : on valide qu'on a compris et pas seulement reçu une réponse."
+  },
+  {
+    "id": "OPT-M08-C02-010",
+    "category": "Utiliser l'IA",
+    "chapter": "Comment utiliser l'IA en informatique ?",
+    "tier": "B",
+    "type": "ticket",
+    "question": "Ticket : Un stagiaire colle systématiquement le code généré par l'IA dans son projet sans le lire, et il est incapable d'expliquer ce qu'il fait quand vous le questionnez. Quel est le problème et quelle approche lui conseillez-vous ?",
+    "answer": "Le problème est un usage passif : l'IA a remplacé sa compréhension au lieu de la soutenir. Lui conseiller de demander à l'IA d'expliquer le code, de le reformuler avec ses propres mots et de la solliciter en mode Rubber Duck plutôt que comme distributeur de solutions",
+    "comment": "Le risque concret est double : un code qu'on ne comprend pas est ingérable en maintenance, et l'apprentissage est nul. Le test révélateur est simple : si le stagiaire ne peut pas expliquer une ligne, c'est qu'il l'a copiée passivement. L'IA doit rester un tuteur, pas un sous-traitant."
+  }
+]

@@ -1,0 +1,159 @@
+[
+  {
+    "id": "OPT-M08-C04-001",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi un technicien informatique doit-il faire de la veille régulière ?",
+    "answer": "Parce que le domaine informatique évolue très vite (cybersécurité, IA, nouveaux OS, nouveaux matériels) et qu'il faut rester à jour.",
+    "comment": "Une compétence non entretenue devient vite obsolète dans ce métier. La veille n'est pas une option : c'est ce qui fait la différence entre un technicien qui suit et un technicien dépassé en deux ou trois ans."
+  },
+  {
+    "id": "OPT-M08-C04-002",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "C",
+    "type": "classic",
+    "question": "Citez des sources de veille fiables pour un technicien.",
+    "answer": "Les sites spécialisés, les forums professionnels et la documentation des éditeurs.",
+    "comment": "La doc éditeur est la source la plus sûre car elle vient directement du concepteur du produit. Les forums apportent le retour de terrain : les problèmes réels que la doc officielle ne mentionne pas toujours."
+  },
+  {
+    "id": "OPT-M08-C04-003",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "C",
+    "type": "classic",
+    "question": "En dehors des sites web, auprès de qui un technicien peut-il s'informer, notamment en cas de problème récurrent ?",
+    "answer": "Auprès de ses pairs (collègues) et de son responsable.",
+    "comment": "Un problème récurrent signalé au responsable peut révéler une cause commune (parc mal configuré, matériel défectueux en série). L'échange entre collègues fait souvent gagner des heures par rapport à une recherche solitaire."
+  },
+  {
+    "id": "OPT-M08-C04-004",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi l'anglais est-il une compétence du métier de technicien ?",
+    "answer": "Parce que la majorité de la documentation technique et des notices constructeur est en anglais.",
+    "comment": "Savoir lire de l'anglais technique ne demande pas d'être bilingue : le vocabulaire est limité et répétitif. Refuser une doc parce qu'elle est en anglais revient à se priver de la plupart des sources fiables."
+  },
+  {
+    "id": "OPT-M08-C04-005",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel réflexe simple mène souvent directement à la solution face à un message d'erreur ?",
+    "answer": "Copier le message d'erreur tel quel dans un moteur de recherche.",
+    "comment": "Un message d'erreur est quasi unique : d'autres l'ont déjà rencontré et documenté. Coller le texte exact (sans le reformuler) mène souvent à la doc officielle, à Stack Overflow ou à un GitHub Issues décrivant la solution."
+  },
+  {
+    "id": "OPT-M08-C04-006",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "B",
+    "type": "classic",
+    "question": "Comment l'IA s'inscrit-elle dans la démarche de montée en compétence continue ?",
+    "answer": "Elle peut expliquer un message d'erreur en anglais, traduire une doc ou résumer un changelog, à condition de vérifier ce qu'elle dit.",
+    "comment": "L'IA est un outil parmi d'autres, pas un remplacement de la veille. Elle accélère la compréhension, mais la vérification dans la source officielle reste indispensable : elle peut résumer de travers ou traduire un terme technique à contresens."
+  },
+  {
+    "id": "OPT-M08-C04-007",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque source de veille au type de contenu qu'elle fournit le mieux :",
+    "pairs": [
+      {
+        "left": "Documentation éditeur",
+        "right": "Référence officielle et fiable sur un produit précis"
+      },
+      {
+        "left": "Forum professionnel",
+        "right": "Retours de terrain et solutions à des problèmes réels"
+      },
+      {
+        "left": "Site spécialisé / actualité tech",
+        "right": "Veille sur les nouveautés et tendances du secteur"
+      },
+      {
+        "left": "Échange avec ses pairs",
+        "right": "Aide concrète et rapide sur un cas rencontré au quotidien"
+      }
+    ],
+    "answer": "Doc éditeur = référence officielle fiable | Forum pro = retours de terrain | Site spécialisé = veille nouveautés | Pairs = aide rapide sur un cas concret",
+    "comment": "Aucune source ne suffit seule : la doc donne la théorie, les forums et les pairs donnent le réel. Croiser les sources est la clé d'une veille efficace."
+  },
+  {
+    "id": "OPT-M08-C04-008",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque outil à son usage dans la montée en compétence :",
+    "pairs": [
+      {
+        "left": "Moteur de recherche",
+        "right": "Retrouver un message d'erreur exact déjà résolu par d'autres"
+      },
+      {
+        "left": "IA conversationnelle",
+        "right": "Expliquer un concept ou traduire une doc technique en anglais"
+      },
+      {
+        "left": "Documentation officielle",
+        "right": "Vérifier et confirmer l'information avant de l'appliquer"
+      },
+      {
+        "left": "Forum / Stack Overflow",
+        "right": "Comparer plusieurs solutions et voir celle qui a fonctionné"
+      }
+    ],
+    "answer": "Moteur de recherche = retrouver une erreur exacte | IA = expliquer/traduire | Doc officielle = vérifier avant d'appliquer | Forum/Stack Overflow = comparer les solutions",
+    "comment": "Ces outils se complètent dans une chaîne logique : on cherche, on comprend, puis on vérifie. L'IA accélère l'étape du milieu mais ne remplace ni la recherche ni la vérification."
+  },
+  {
+    "id": "OPT-M08-C04-009",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la démarche de résolution d'un problème inconnu à partir d'un message d'erreur :",
+    "options": [
+      "Confirmer la solution dans la documentation officielle",
+      "Copier le message d'erreur exact dans un moteur de recherche",
+      "Appliquer le correctif et vérifier que le problème est résolu",
+      "Repérer et noter le message d'erreur précis",
+      "Comparer les pistes trouvées (forums, doc, IA) et choisir la plus fiable"
+    ],
+    "answer": [
+      "Repérer et noter le message d'erreur précis",
+      "Copier le message d'erreur exact dans un moteur de recherche",
+      "Comparer les pistes trouvées (forums, doc, IA) et choisir la plus fiable",
+      "Confirmer la solution dans la documentation officielle",
+      "Appliquer le correctif et vérifier que le problème est résolu"
+    ],
+    "comment": "L'ordre compte : chercher avant d'appliquer évite d'aggraver le problème. La vérification dans la doc officielle vient juste avant l'action, pour ne pas appliquer une solution de forum obsolète ou inadaptée à votre version."
+  },
+  {
+    "id": "OPT-M08-C04-010",
+    "category": "Utiliser l'IA",
+    "chapter": "Veille, apprentissage continu et anglais",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #312 : 'En installant un pilote, j'obtiens le message Error 0x80070103: a more recent driver is already installed. Je ne comprends pas l'anglais et je ne sais pas quoi faire.'",
+    "answer": "Démarche : copier le message d'erreur exact dans un moteur de recherche, faire traduire et expliquer par l'IA si besoin, puis confirmer la marche à suivre dans la documentation officielle de l'éditeur avant d'agir.",
+    "checklist": [
+      "Noter le message et le code d'erreur exacts (Error 0x80070103)",
+      "Coller le message tel quel dans un moteur de recherche",
+      "Si l'anglais bloque, demander à l'IA d'expliquer le message et son contexte",
+      "Recouper la solution avec la documentation officielle de l'éditeur du pilote",
+      "Vérifier la version du pilote déjà installée avant d'en forcer une autre",
+      "Appliquer la solution confirmée, puis vérifier que le matériel fonctionne"
+    ],
+    "comment": "Ce message indique qu'un pilote plus récent est déjà présent : souvent il n'y a rien à corriger. L'enjeu pédagogique est la démarche : ne pas se bloquer sur l'anglais, chercher, comprendre via l'IA, puis vérifier avant d'agir. L'anglais technique s'apprend justement en traitant ce genre de cas."
+  }
+]
