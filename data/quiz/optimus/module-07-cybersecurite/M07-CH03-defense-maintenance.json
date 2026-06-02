@@ -5,9 +5,9 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "C",
     "type": "classic",
-    "question": "Quelle est la règle d'or de configuration d'un pare-feu et comment l'ouvrir sous Windows ?",
-    "answer": "Règle d'or : tout bloquer par défaut et n'autoriser que le strict nécessaire (par exemple le port 443 pour HTTPS). On crée des règles aussi bien entrantes que sortantes. Le pare-feu avancé s'ouvre via Win+R puis wf.msc.",
-    "comment": "On parle de stratégie deny-by-default (liste blanche), plus sûre que l'allow-by-default. Beaucoup de techniciens oublient les règles sortantes : c'est pourtant elles qui empêchent un malware déjà présent d'exfiltrer des données ou de contacter son serveur de commande."
+    "question": "Quelle est la règle d'or de configuration d'un pare-feu ?",
+    "answer": "Tout bloquer par défaut et n'autoriser que le strict nécessaire (par exemple le port 443 pour HTTPS)",
+    "comment": "Cette logique de liste blanche (deny all, allow some) est l'inverse de la tentation courante d'ouvrir au coup par coup ce qui pose problème. Penser aux deux sens : une règle entrante propre ne sert à rien si le trafic sortant d'un malware n'est jamais filtré."
   },
   {
     "id": "OPT-M07-C03-002",
@@ -15,9 +15,9 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "C",
     "type": "classic",
-    "question": "Quel est le rôle de Malwarebytes par rapport à un antivirus classique ?",
-    "answer": "Malwarebytes vient compléter l'antivirus plutôt que le remplacer. Il est particulièrement efficace en situation de post-infection, pour nettoyer une machine déjà compromise que l'antivirus n'a pas su bloquer.",
-    "comment": "Antivirus et Malwarebytes ne se concurrencent pas, ils se cumulent : le premier protège en temps réel (signatures), le second excelle dans la détection comportementale et le nettoyage des PUP/adwares. Éviter en revanche deux antivirus temps réel simultanés, qui se neutralisent."
+    "question": "Quelle commande Win+R ouvre le pare-feu Windows avancé permettant de créer des règles entrantes et sortantes ?",
+    "answer": "wf.msc",
+    "comment": "L'interface du Panneau de configuration ne montre qu'une vue simplifiée. wf.msc donne accès aux règles sortantes, souvent négligées, alors que ce sont elles qui peuvent couper la communication d'un poste déjà infecté vers son serveur de commande."
   },
   {
     "id": "OPT-M07-C03-003",
@@ -25,39 +25,39 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "C",
     "type": "classic",
-    "question": "Pourquoi faut-il un mot de passe unique par service, et quelle longueur l'ANSSI recommande-t-elle ?",
-    "answer": "Un mot de passe unique par service car 80 % des compromissions exploitent la réutilisation d'un même mot de passe sur plusieurs sites. L'ANSSI recommande au minimum 12 caractères pour un accès standard et 16 pour un accès sensible.",
-    "comment": "La réutilisation est dangereuse à cause du credential stuffing : une fuite sur un site mineur permet de tester le couple email/mot de passe sur la banque, la messagerie pro, etc. Privilégier la longueur à la complexité : une phrase de passe longue résiste mieux qu'un mot court bardé de caractères spéciaux."
+    "question": "Quel est le rôle de Malwarebytes par rapport à un antivirus classique ?",
+    "answer": "Il complète l'antivirus, en particulier en phase post-infection pour nettoyer ce qui est passé au travers",
+    "comment": "Il ne s'agit pas de le substituer à l'antivirus mais de cumuler deux moteurs de détection différents. Faire tourner deux antivirus résidents en permanence créerait au contraire des conflits ; Malwarebytes se positionne en complément, souvent en analyse à la demande."
   },
   {
     "id": "OPT-M07-C03-004",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "C",
+    "tier": "B",
     "type": "classic",
-    "question": "Pourquoi une phrase de passe comme LeChatBleuDanseSousLaPluie! est-elle plus robuste qu'un mot court avec des caractères spéciaux ?",
-    "answer": "Parce que la robustesse dépend avant tout de la longueur (entropie). Une phrase de passe longue offre énormément de combinaisons possibles tout en restant mémorisable, là où un mot court reste vulnérable au cassage par force brute même bardé de symboles.",
-    "comment": "Un P@ss1! de 5 caractères tombe en quelques secondes ; une phrase de 25 caractères demanderait des siècles. Bonus terrain : une phrase de passe se tape plus vite et se mémorise sans Post-it collé sous le clavier, qui reste le pire ennemi du technicien."
+    "question": "Pourquoi faut-il limiter CCleaner aux fichiers temporaires et ne jamais l'utiliser pour nettoyer le registre ?",
+    "answer": "Le nettoyage du registre apporte un gain négligeable mais peut casser des associations ou des composants Windows et rendre le système instable",
+    "comment": "Le mythe du registre encrassé qui ralentit le PC a la vie dure. Le ratio risque/bénéfice est défavorable : on prend le risque de supprimer une clé légitime pour aucun gain de performance mesurable. Les fichiers temporaires, eux, sont sans danger à purger."
   },
   {
     "id": "OPT-M07-C03-005",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "C",
+    "tier": "B",
     "type": "classic",
-    "question": "À qui peut-on communiquer son mot de passe, et que faut-il retenir de CCleaner ?",
-    "answer": "À personne : ni par email, ni par téléphone, ni à un collègue, ni au support. Pour CCleaner, on se limite au nettoyage des fichiers temporaires et on ne touche jamais au nettoyage du registre.",
-    "comment": "Aucun support légitime ne demandera jamais votre mot de passe : un administrateur n'en a pas besoin pour intervenir. Côté CCleaner, le nettoyage de registre apporte un gain nul et peut casser des associations ou empêcher un logiciel de démarrer : risque sans bénéfice."
+    "question": "Pourquoi une phrase de passe comme LeChatBleuDanseSousLaPluie! est-elle plus robuste qu'un mot court bardé de caractères spéciaux ?",
+    "answer": "Parce que sa longueur fait exploser le nombre de combinaisons possibles, ce qui pèse bien plus contre une attaque par force brute que la complexité d'un mot court",
+    "comment": "L'ANSSI recommande 12 caractères minimum pour un accès standard et 16 pour un accès sensible. Un mot court avec substitutions (P@ssw0rd!) est en réalité connu des dictionnaires d'attaque ; la longueur réelle prime sur la complexité apparente."
   },
   {
     "id": "OPT-M07-C03-006",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "B",
+    "tier": "C",
     "type": "classic",
-    "question": "Quelle est la différence entre un EDR et un XDR ?",
-    "answer": "L'EDR (Endpoint Detection & Response) surveille de façon avancée les comportements suspects sur les postes de travail eux-mêmes. Le XDR (Extended Detection & Response) va plus loin en corrélant les événements entre les postes, les emails, le Cloud et le réseau.",
-    "comment": "L'EDR voit un poste à la fois ; le XDR raconte l'histoire complète d'une attaque en reliant les signaux faibles dispersés (un email piégé, puis un poste qui contacte une IP inconnue, puis un accès Cloud anormal). Le XDR est typiquement piloté depuis un SOC."
+    "question": "Quel pourcentage des compromissions exploite la réutilisation de mots de passe, et quelle règle en découle ?",
+    "answer": "Environ 80 % des compromissions exploitent la réutilisation ; la règle est un mot de passe unique par service",
+    "comment": "Le mécanisme s'appelle le credential stuffing : une fuite sur un site mineur fournit des identifiants rejoués automatiquement sur la messagerie ou la banque. Un seul mot de passe unique par service casse cet effet domino, d'où l'intérêt d'un gestionnaire."
   },
   {
     "id": "OPT-M07-C03-007",
@@ -65,25 +65,25 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "A",
     "type": "classic",
-    "question": "Un VPN rend-il réellement anonyme sur Internet ? Justifiez.",
-    "answer": "Non. Un VPN masque uniquement l'adresse IP, mais le fournisseur de VPN conserve des logs et peut être contraint de les communiquer. De plus, l'empreinte du navigateur (fingerprinting) permet d'identifier l'utilisateur : on n'est jamais vraiment anonyme.",
-    "comment": "Le VPN protège surtout la confidentialité sur un réseau non fiable (Wi-Fi public) et contourne des restrictions géographiques. Pour un vrai besoin d'absence de traces locales, on s'oriente vers Tails OS, chargé en RAM, qui ne laisse rien sur la machine après extinction."
+    "question": "Quelle limite essentielle un VPN ne corrige-t-il pas en matière d'anonymat ?",
+    "answer": "Le VPN masque uniquement l'adresse IP ; le fournisseur conserve des logs et l'empreinte du navigateur permet toujours de pister l'utilisateur",
+    "comment": "Confondre confidentialité et anonymat est un piège classique. Le VPN déplace simplement la confiance vers son opérateur. Pour ne laisser aucune trace locale, un OS chargé en RAM comme Tails est une approche différente, qui n'écrit rien sur la machine."
   },
   {
     "id": "OPT-M07-C03-008",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "B",
+    "tier": "C",
     "type": "association",
-    "question": "Associez chaque outil à sa fonction principale :",
+    "question": "Associez chaque outil à sa fonction principale.",
     "pairs": [
-      {"left": "Process Explorer (Sysinternals)", "right": "Visualiser les processus, y compris cachés"},
-      {"left": "Autoruns (Sysinternals)", "right": "Identifier les programmes suspects au démarrage"},
+      {"left": "Process Explorer", "right": "Visualiser les processus, y compris cachés"},
+      {"left": "Autoruns", "right": "Identifier les programmes suspects lancés au démarrage"},
       {"left": "Haveibeenpwned.com", "right": "Vérifier si une adresse mail a été compromise"},
-      {"left": "Tails OS", "right": "OS chargé en RAM ne laissant aucune trace sur la machine"}
+      {"left": "Tails OS", "right": "OS chargé en RAM qui ne laisse aucune trace sur la machine"}
     ],
-    "answer": "Process Explorer = voir les processus cachés | Autoruns = repérer les programmes lancés au démarrage | Haveibeenpwned.com = vérifier la compromission d'un email | Tails OS = OS en RAM sans trace",
-    "comment": "Process Explorer et Autoruns forment le duo gagnant face à un malware persistant : le premier repère le processus actif, le second sa porte d'entrée au démarrage. Haveibeenpwned est aussi utile en préventif pour décider quels mots de passe changer en priorité."
+    "answer": "Process Explorer → visualiser les processus y compris cachés ; Autoruns → identifier les programmes suspects au démarrage ; Haveibeenpwned.com → vérifier la compromission d'une adresse mail ; Tails OS → OS en RAM sans trace sur la machine.",
+    "comment": "Process Explorer et Autoruns viennent tous deux de la suite Sysinternals de Microsoft et se complètent : l'un montre ce qui tourne maintenant, l'autre ce qui se relancera au prochain boot, là où la persistance d'un malware se cache souvent."
   },
   {
     "id": "OPT-M07-C03-009",
@@ -91,38 +91,38 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "B",
     "type": "association",
-    "question": "Associez chaque commande Win+R ou outil à son usage :",
+    "question": "Associez chaque élément à sa caractéristique ou son usage recommandé.",
     "pairs": [
-      {"left": "wf.msc", "right": "Pare-feu avancé (règles entrantes et sortantes)"},
-      {"left": "optionalfeatures", "right": "Activer la Sandbox Windows"},
-      {"left": "mrt", "right": "Outil de suppression de logiciels malveillants intégré à Windows"},
-      {"left": "Snapshot VM", "right": "Sauvegarder l'état avant une manipulation risquée"}
+      {"left": "Bitwarden", "right": "Gestionnaire open source en Cloud, recommandé particuliers et PME"},
+      {"left": "KeePass", "right": "Gestionnaire local sans Cloud, quand les données ne doivent pas quitter le SI"},
+      {"left": "EDR", "right": "Surveillance avancée des comportements suspects sur le poste"},
+      {"left": "XDR", "right": "Corrélation des événements entre postes, emails, Cloud et réseau"}
     ],
-    "answer": "wf.msc = pare-feu avancé | optionalfeatures = activer la Sandbox Windows | mrt = outil de suppression de malwares intégré | Snapshot VM = point de restauration avant manipulation risquée",
-    "comment": "La Sandbox Windows (activée via optionalfeatures) est idéale pour exécuter un fichier douteux dans un environnement jetable. mrt (Malicious Software Removal Tool) est déjà présent sur Windows : un dépannage rapide sans rien installer."
+    "answer": "Bitwarden → gestionnaire open source en Cloud pour particuliers/PME ; KeePass → gestionnaire local sans Cloud quand les données restent dans le SI ; EDR → surveillance comportementale du poste ; XDR → corrélation multi-sources des événements.",
+    "comment": "Les deux gestionnaires sont recommandés par l'ANSSI ; le choix dépend de la sensibilité des données et de la tolérance au Cloud. De même, le XDR n'est pas un EDR amélioré mais une couche de corrélation au-dessus : l'EDR voit un poste, le XDR relie les signaux faibles entre plusieurs sources."
   },
   {
     "id": "OPT-M07-C03-010",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "B",
+    "tier": "A",
     "type": "sequence",
-    "question": "Remettez dans l'ordre les étapes pour analyser et nettoyer en sécurité un poste suspecté d'être infecté :",
+    "question": "Remettez dans l'ordre les étapes d'une manipulation risquée menée proprement sur une machine virtuelle.",
     "options": [
-      "Lancer un scan complémentaire avec Malwarebytes (post-infection)",
-      "Prendre un snapshot de la VM (ou créer un point de restauration) avant toute manipulation",
-      "Vérifier les programmes lancés au démarrage avec Autoruns",
-      "Identifier le processus malveillant actif avec Process Explorer",
-      "Vérifier sur haveibeenpwned.com si les comptes liés ont fuité"
+      "Analyser le résultat et documenter ce qui a été observé",
+      "Prendre un snapshot de la VM avant toute manipulation",
+      "Restaurer le snapshot pour revenir à l'état initial sain",
+      "Exécuter la manipulation risquée (ouverture de l'échantillon, test)",
+      "Déconnecter la VM du réseau ou l'isoler"
     ],
     "answer": [
-      "Prendre un snapshot de la VM (ou créer un point de restauration) avant toute manipulation",
-      "Identifier le processus malveillant actif avec Process Explorer",
-      "Vérifier les programmes lancés au démarrage avec Autoruns",
-      "Lancer un scan complémentaire avec Malwarebytes (post-infection)",
-      "Vérifier sur haveibeenpwned.com si les comptes liés ont fuité"
+      "Déconnecter la VM du réseau ou l'isoler",
+      "Prendre un snapshot de la VM avant toute manipulation",
+      "Exécuter la manipulation risquée (ouverture de l'échantillon, test)",
+      "Analyser le résultat et documenter ce qui a été observé",
+      "Restaurer le snapshot pour revenir à l'état initial sain"
     ],
-    "comment": "Le snapshot d'abord : c'est le filet de sécurité qui permet de revenir en arrière si une manipulation tourne mal. On observe (Process Explorer, Autoruns) avant d'agir (Malwarebytes), puis on évalue les dégâts collatéraux côté comptes en ligne."
+    "comment": "Le snapshot se prend après isolement mais avant toute action : c'est le filet de sécurité qui rend l'opération réversible. Oublier l'isolement réseau transforme le bac à sable en tremplin pour propager l'infection vers l'hôte ou le LAN."
   },
   {
     "id": "OPT-M07-C03-011",
@@ -130,34 +130,18 @@
     "chapter": "Défense et maintenance du technicien",
     "tier": "B",
     "type": "ticket",
-    "question": "TICKET #501 : 'On me demande de déployer un gestionnaire de mots de passe. La direction exige que les données ne quittent jamais notre système d'information. Que recommander ?'",
-    "answer": "Recommander KeePass : c'est un gestionnaire local, sans Cloud, qui garde la base chiffrée à l'intérieur du SI. Bitwarden (Cloud) serait écarté ici puisque l'exigence est que les données ne sortent pas.",
-    "checklist": [
-      "Confirmer la contrainte : aucune donnée ne doit quitter le SI (exclut les solutions Cloud)",
-      "Choisir KeePass (local, open source, recommandé par l'ANSSI) plutôt que Bitwarden Cloud",
-      "Définir où stocker la base .kdbx (partage chiffré interne, sauvegardé)",
-      "Imposer un mot de passe maître long (phrase de passe) et unique",
-      "Former les utilisateurs : un seul mot de passe maître à retenir, un mot de passe unique par service ensuite",
-      "Mettre en place une sauvegarde régulière de la base KeePass"
-    ],
-    "comment": "Bitwarden reste recommandé pour les particuliers et PME (open source, gratuit, Cloud pratique). Le critère décisif ici est la souveraineté de la donnée : dès que le Cloud est interdit, KeePass devient le bon choix. Les deux sont reconnus par l'ANSSI."
+    "question": "Ticket : Un utilisateur reçoit un appel d'une personne se présentant comme du support et qui lui demande son mot de passe pour résoudre un incident. Que devez-vous lui conseiller comme réflexe permanent ?",
+    "answer": "Ne jamais communiquer son mot de passe à personne, quel que soit le canal (email, téléphone, collègue ou support) : aucun service légitime ne le demande",
+    "comment": "Un vrai support n'a jamais besoin du mot de passe de l'utilisateur pour intervenir. Formuler la règle de façon absolue évite à l'utilisateur d'avoir à juger au cas par cas si l'interlocuteur est légitime, jugement que l'attaquant cherche précisément à fausser."
   },
   {
     "id": "OPT-M07-C03-012",
     "category": "Cybersécurité",
     "chapter": "Défense et maintenance du technicien",
-    "tier": "A",
+    "tier": "B",
     "type": "ticket",
-    "question": "TICKET #518 : 'Un utilisateur signale qu'une application interne ne peut plus accéder à Internet depuis hier, alors que le navigateur fonctionne. Le pare-feu a été reconfiguré récemment.'",
-    "answer": "Le pare-feu, configuré en tout-bloquer-par-défaut, n'a pas de règle sortante autorisant cette application. Le navigateur passe car le port 443 est autorisé, mais l'application utilise un autre port ou n'a pas de règle dédiée.",
-    "checklist": [
-      "Confirmer que seule cette application est bloquée (le reste du réseau fonctionne)",
-      "Ouvrir le pare-feu avancé via Win+R puis wf.msc",
-      "Vérifier les règles sortantes : l'application a-t-elle une règle d'autorisation ?",
-      "Identifier le port/protocole réellement utilisé par l'application",
-      "Créer une règle sortante précise (application ou port) plutôt que tout ouvrir",
-      "Tester l'accès puis documenter la règle ajoutée"
-    ],
-    "comment": "Symptôme typique d'une stratégie deny-by-default bien appliquée : tout ce qui n'est pas explicitement autorisé est bloqué. Le réflexe à éviter est de désactiver le pare-feu pour aller vite : on crée une règle ciblée et on garde la posture restrictive."
+    "question": "Ticket : Sur un poste suspecté d'être infecté, vous voulez lancer un nettoyage avec les outils déjà présents dans Windows avant d'installer quoi que ce soit. Quelle commande Win+R utilisez-vous et pourquoi ce premier réflexe ?",
+    "answer": "mrt, l'outil de suppression de logiciels malveillants intégré à Windows",
+    "comment": "Utiliser un outil déjà présent évite de télécharger un installeur sur une machine peut-être compromise, et fournit un premier diagnostic immédiat. À garder en tête aussi : optionalfeatures pour activer la Sandbox Windows et tester un fichier douteux dans un environnement jetable."
   }
 ]
