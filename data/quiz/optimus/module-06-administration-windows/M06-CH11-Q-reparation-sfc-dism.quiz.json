@@ -1,0 +1,142 @@
+[
+  {
+    "id": "OPT-M06-C11-001",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que SFC (System File Checker) et quelle commande le lance ?",
+    "answer": "SFC est un outil natif de Windows qui analyse les fichiers système et répare ceux qui sont corrompus en les comparant à une copie de référence locale, sans réinstaller Windows. On le lance avec sfc /scannow, en invite de commande administrateur (5 à 15 minutes).",
+    "comment": "SFC s'appuie sur une image de référence présente sur le poste. Si cette image est elle-même corrompue, SFC ne pourra pas réparer et il faudra passer par DISM d'abord. C'est tout l'intérêt de connaître l'ordre des deux outils."
+  },
+  {
+    "id": "OPT-M06-C11-002",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que DISM et dans quel cas l'utilise-t-on ?",
+    "answer": "DISM (Deployment Image Servicing and Management) répare l'image Windows elle-même, c'est-à-dire le magasin de composants (store) qui sert de référence. On l'utilise quand SFC échoue, parce que SFC ne peut rien faire si l'image de référence est corrompue.",
+    "comment": "Distinction clé : SFC répare les fichiers système ; DISM répare la source qui sert à SFC. On ne lance pas DISM en premier par réflexe, mais bien quand SFC signale qu'il a trouvé des corruptions sans pouvoir les réparer."
+  },
+  {
+    "id": "OPT-M06-C11-003",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "A",
+    "type": "classic",
+    "question": "Pourquoi faut-il relancer SFC APRÈS avoir exécuté DISM /RestoreHealth, et non l'inverse ?",
+    "answer": "Parce que SFC utilise l'image locale comme référence pour réparer. Si cette image est corrompue, SFC ne peut pas réparer. DISM /RestoreHealth répare d'abord l'image ; une fois l'image saine, on relance SFC pour qu'il puisse enfin piocher des fichiers corrects et réparer les fichiers système.",
+    "comment": "C'est la logique de chaîne d'approvisionnement : inutile de demander à SFC de réparer s'il copie depuis une source elle-même abîmée. DISM remet la source en état, SFC fait ensuite son travail. Lancer SFC seul en boucle sur une image corrompue ne donnera jamais de résultat."
+  },
+  {
+    "id": "OPT-M06-C11-004",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi DISM /Online /Cleanup-Image /RestoreHealth nécessite-t-il une connexion Internet ?",
+    "answer": "Parce que RestoreHealth télécharge les fichiers sains nécessaires à la réparation de l'image depuis Windows Update (serveurs Microsoft). Sans connexion Internet, la commande ne peut pas récupérer les composants de remplacement et échoue.",
+    "comment": "Sur un poste hors ligne ou un serveur isolé, on contourne en pointant DISM vers une source locale (un fichier install.wim d'un ISO Windows de même version) avec le paramètre /Source. À retenir : CheckHealth et ScanHealth ne réparent pas et n'ont pas besoin d'Internet, seul RestoreHealth télécharge."
+  },
+  {
+    "id": "OPT-M06-C11-005",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi lancer sfc /scannow avant d'envisager une réinstallation de Windows ?",
+    "answer": "Parce que SFC (et DISM en complément) résout environ 30 % des cas de plantages aléatoires, BSOD, erreurs de démarrage ou applications qui crashent, sans réinstaller. C'est rapide, non destructif et conserve les données et la configuration, contrairement à une réinstallation.",
+    "comment": "Réflexe terrain : sur un poste instable, on tente toujours sfc /scannow (puis DISM si besoin) AVANT de parler de réinstallation. Une réinstallation coûte des heures de reconfiguration et de réinstallation des logiciels ; SFC/DISM se lancent en quelques minutes et peuvent tout régler."
+  },
+  {
+    "id": "OPT-M06-C11-006",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque résultat de sfc /scannow à sa signification et à l'action à prendre :",
+    "pairs": [
+      {"left": "Aucune violation d'intégrité trouvée", "right": "Fichiers système sains, aucune action nécessaire"},
+      {"left": "WRP a trouvé des fichiers corrompus et les a réparés", "right": "Réparation réussie, redémarrer et vérifier le comportement"},
+      {"left": "WRP a trouvé des fichiers corrompus mais n'a pas pu tous les réparer", "right": "Image de référence corrompue, lancer DISM /RestoreHealth puis relancer SFC"}
+    ],
+    "answer": "Aucune violation = OK rien à faire | trouvé et réparé = succès | trouvé sans pouvoir réparer = passer à DISM",
+    "comment": "Le message 'trouvé mais n'a pas pu réparer' est le déclencheur exact du passage à DISM : SFC vient de prouver que sa source de référence est inexploitable. Le détail des fichiers concernés se lit dans le journal C:\\Windows\\Logs\\CBS\\CBS.log."
+  },
+  {
+    "id": "OPT-M06-C11-007",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque commande DISM /Online /Cleanup-Image à sa description :",
+    "pairs": [
+      {"left": "/CheckHealth", "right": "Vérification rapide et non destructive de l'état de l'image"},
+      {"left": "/ScanHealth", "right": "Analyse complète de l'image (10-20 min), sans réparation"},
+      {"left": "/RestoreHealth", "right": "Réparation de l'image en téléchargeant les fichiers sains (Internet requis)"}
+    ],
+    "answer": "CheckHealth = vérif rapide | ScanHealth = analyse complète | RestoreHealth = réparation avec téléchargement",
+    "comment": "Seul RestoreHealth répare ET télécharge depuis Windows Update. CheckHealth ne fait que lire un marqueur déjà posé (instantané), ScanHealth examine réellement l'image en profondeur mais ne corrige rien. On monte en puissance selon le besoin sans lancer RestoreHealth inutilement."
+  },
+  {
+    "id": "OPT-M06-C11-008",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre correct la procédure complète de réparation des fichiers système :",
+    "options": [
+      "Lancer DISM /Online /Cleanup-Image /RestoreHealth (si SFC a échoué)",
+      "Lancer sfc /scannow",
+      "Relancer sfc /scannow",
+      "Si des erreurs persistent, réparer via l'ISO Windows (repair install)"
+    ],
+    "answer": [
+      "Lancer sfc /scannow",
+      "Lancer DISM /Online /Cleanup-Image /RestoreHealth (si SFC a échoué)",
+      "Relancer sfc /scannow",
+      "Si des erreurs persistent, réparer via l'ISO Windows (repair install)"
+    ],
+    "comment": "Cet ordre est obligatoire : SFC d'abord (souvent suffisant), DISM seulement s'il échoue (pour réparer l'image source), puis SFC de nouveau pour exploiter l'image réparée, et l'ISO en dernier recours. Sauter DISM quand SFC a échoué fait tourner SFC en rond sur une image abîmée."
+  },
+  {
+    "id": "OPT-M06-C11-009",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les commandes DISM, de la moins lourde à la réparation effective :",
+    "options": [
+      "DISM /Online /Cleanup-Image /RestoreHealth",
+      "DISM /Online /Cleanup-Image /CheckHealth",
+      "DISM /Online /Cleanup-Image /ScanHealth"
+    ],
+    "answer": [
+      "DISM /Online /Cleanup-Image /CheckHealth",
+      "DISM /Online /Cleanup-Image /ScanHealth",
+      "DISM /Online /Cleanup-Image /RestoreHealth"
+    ],
+    "comment": "Montée en charge logique : CheckHealth (instantané, lit un marqueur) → ScanHealth (analyse réelle 10-20 min) → RestoreHealth (répare et télécharge). En pratique, si on sait déjà que l'image est endommagée, on peut aller directement à RestoreHealth, mais l'ordre reste utile pour diagnostiquer par étapes."
+  },
+  {
+    "id": "OPT-M06-C11-010",
+    "category": "Administration de Windows",
+    "chapter": "Réparation Windows — SFC et DISM",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #705 : 'Un poste subit des écrans bleus (BSOD) aléatoires et affiche des erreurs au démarrage. L'utilisateur tient à ses données et à sa configuration.'",
+    "answer": "Tenter une réparation des fichiers système sans réinstaller : sfc /scannow, puis DISM /RestoreHealth si SFC échoue, puis relancer SFC, et n'envisager une réparation par ISO qu'en dernier recours si des erreurs persistent.",
+    "checklist": [
+      "Sauvegarder les données importantes avant toute manipulation",
+      "Ouvrir une invite de commande en administrateur",
+      "Lancer sfc /scannow et lire le résultat",
+      "Si SFC ne peut pas tout réparer, lancer DISM /Online /Cleanup-Image /RestoreHealth (Internet requis)",
+      "Relancer sfc /scannow pour exploiter l'image réparée par DISM",
+      "Consulter C:\\Windows\\Logs\\CBS\\CBS.log pour le détail des fichiers traités",
+      "Si des erreurs subsistent, procéder à une réparation via l'ISO Windows (repair install)",
+      "Vérifier aussi côté matériel (RAM, disque) car des BSOD aléatoires peuvent venir du hardware"
+    ],
+    "comment": "SFC/DISM résout environ 30 % de ces cas sans réinstaller : à tenter systématiquement avant d'évoquer une remise à plat. Attention cependant : des BSOD aléatoires peuvent aussi être matériels (barrette RAM défaillante, disque mourant, surchauffe) ; si SFC/DISM ressortent propres mais que les plantages continuent, basculer sur un diagnostic matériel (memtest, SMART)."
+  }
+]
