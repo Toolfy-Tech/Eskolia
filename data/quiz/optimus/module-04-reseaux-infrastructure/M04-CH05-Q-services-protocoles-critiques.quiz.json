@@ -1,0 +1,145 @@
+[
+  {
+    "id": "OPT-M04-C05-001",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'APIPA et qu'indique une adresse 169.254.x.x ?",
+    "answer": "L'APIPA (Automatic Private IP Addressing) est un mécanisme Windows : quand un PC ne parvient pas à contacter un serveur DHCP, il s'attribue automatiquement une adresse en 169.254.0.0/16. Une telle adresse indique que le DHCP est inaccessible (câble débranché, Wi-Fi déconnecté, service DHCP en panne). Permet la communication locale uniquement, pas d'Internet.",
+    "comment": "Réflexe : si `ipconfig` affiche 169.254.x.x, ne pas chercher un problème logiciel complexe. Vérifier d'abord : câble branché ? Wi-Fi connecté ? Service DHCP du serveur en marche ?"
+  },
+  {
+    "id": "OPT-M04-C05-002",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "classic",
+    "question": "Décrivez le processus DORA du protocole DHCP.",
+    "answer": "D = Discover : le client diffuse une requête UDP pour trouver un serveur DHCP. O = Offer : le serveur propose une IP avec durée de bail. R = Request : le client accepte l'offre. A = Acknowledge : le serveur confirme l'attribution. Ports : 67 (serveur) et 68 (client).",
+    "comment": "DORA est un acronyme à retenir. Le processus utilise UDP (diffusion, pas de connexion préalable) car le client n'a pas encore d'IP et ne peut pas établir une connexion TCP."
+  },
+  {
+    "id": "OPT-M04-C05-003",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un pare-feu Stateless et un pare-feu Stateful ?",
+    "answer": "Stateless : analyse chaque paquet indépendamment, sans mémoire du contexte. Très rapide mais ne voit pas si un paquet fait partie d'une connexion légitime (ex : ACL Cisco classique). Stateful : suit l'état de chaque connexion TCP. Autorise automatiquement les réponses aux connexions initiées de l'intérieur. Plus intelligent, meilleure sécurité (ex : Cisco ASA, pfSense).",
+    "comment": "Analogie : Stateless = vigile qui vérifie chaque carte sans mémoire. Stateful = vigile qui tient un registre des entrées/sorties. En entreprise, on préfère le Stateful pour sa capacité à distinguer le trafic légitime du trafic intrus."
+  },
+  {
+    "id": "OPT-M04-C05-004",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre la DMZ et le NAT/PAT pour exposer un serveur sur Internet ?",
+    "answer": "DMZ : expose le serveur à TOUT Internet sur TOUS les ports (faible sécurité). NAT/PAT : redirige uniquement un port spécifique vers la machine interne (exposition ciblée, meilleure sécurité). Préférer NAT/PAT sauf cas spécifique nécessitant la DMZ (serveur web public, reverse proxy).",
+    "comment": "Placer un serveur en DMZ = ouvrir toutes les portes. Le NAT/PAT ciblé est la bonne pratique : on expose seulement le port 443 pour HTTPS, ou 4444 pour un accès GLPI distant."
+  },
+  {
+    "id": "OPT-M04-C05-005",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi SSH est-il obligatoire en production et Telnet une faute professionnelle ?",
+    "answer": "Telnet (port 23) envoie les mots de passe et toutes les données en clair — n'importe qui sur le réseau peut les intercepter. SSH (port 22) chiffre intégralement la communication. Utiliser Telnet en production expose les credentials d'administration à toute personne qui sniffe le réseau.",
+    "comment": "SSH existe depuis 1995 — il n'y a aucune justification d'utiliser Telnet aujourd'hui. Couplé à un bastion SSH (jump server), SSH sécurise tous les accès d'administration depuis un point unique."
+  },
+  {
+    "id": "OPT-M04-C05-006",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "classic",
+    "question": "Citez la séquence de diagnostic réseau à exécuter dans l'ordre sur un PC Windows qui n'a plus Internet.",
+    "answer": "1) `ping 127.0.0.1` (pile IP locale ?) → 2) `ping <passerelle>` (LAN OK ?) → 3) `ping 8.8.8.8` (Internet OK ?) → 4) `ping google.fr` (DNS OK ?). Si l'étape 3 passe mais pas l'étape 4 : problème DNS uniquement.",
+    "comment": "Cette séquence isole précisément la couche défaillante. Ping loopback OK mais gateway KO = problème réseau local. Gateway OK mais 8.8.8.8 KO = problème routeur/FAI. 8.8.8.8 OK mais google.fr KO = problème DNS."
+  },
+  {
+    "id": "OPT-M04-C05-007",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre VPN nomade et VPN site-à-site ? Lequel configure le technicien de proximité ?",
+    "answer": "VPN nomade (client-à-site) : un poste isolé se connecte au réseau de l'entreprise via Internet. Pour le télétravail et les déplacements. VPN site-à-site : tunnel permanent entre deux réseaux (deux agences). Le technicien configure surtout le VPN nomade côté poste utilisateur.",
+    "comment": "Le VPN nomade est la solution standard du télétravail. Ne jamais exposer RDP directement sur Internet — toujours le faire passer par le VPN. Après connexion, toujours tester l'accès à une ressource interne pour valider."
+  },
+  {
+    "id": "OPT-M04-C05-008",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque commande réseau Windows à son usage :",
+    "pairs": [
+      {"left": "`ipconfig /release` + `/renew`", "right": "Abandonner l'IP actuelle puis en redemander une au serveur DHCP"},
+      {"left": "`arp -a`", "right": "Afficher le cache ARP (table IP ↔ MAC)"},
+      {"left": "`nslookup google.fr`", "right": "Tester la résolution DNS d'un nom de domaine"},
+      {"left": "`netstat -an`", "right": "Lister les ports ouverts et connexions actives"}
+    ],
+    "answer": "ipconfig /release+/renew = renouveler IP DHCP | arp -a = cache ARP | nslookup = test DNS | netstat -an = ports ouverts",
+    "comment": "Ces commandes couvrent les 4 niveaux du diagnostic réseau : configuration IP (ipconfig), résolution ARP (arp), résolution DNS (nslookup), état des connexions TCP/ports (netstat)."
+  },
+  {
+    "id": "OPT-M04-C05-009",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque erreur courante réseau à son diagnostic correct :",
+    "pairs": [
+      {"left": "IP 169.254.x.x", "right": "DHCP inaccessible (pas Internet lent)"},
+      {"left": "Ping OK mais application KO", "right": "Tester le port TCP (couche 4) — pas seulement ICMP"},
+      {"left": "IP + masque + DNS OK mais pas Internet", "right": "Passerelle oubliée ou mal configurée"},
+      {"left": "Deux VLANs ne communiquent pas", "right": "Inter-VLAN requiert un routeur ou switch L3"}
+    ],
+    "answer": "169.254 = DHCP KO | ping OK/appli KO = vérifier port TCP | pas Internet malgré DNS OK = passerelle absente | VLANs isolés = besoin routage L3",
+    "comment": "Ces 4 erreurs sont les plus fréquentes en intervention réseau. Les connaître par coeur permet de résoudre 80 % des incidents réseau sans escalade."
+  },
+  {
+    "id": "OPT-M04-C05-010",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour configurer un client VPN nomade sur un poste Windows :",
+    "options": [
+      "Tester l'accès à une ressource interne (partage, intranet) pour valider",
+      "Récupérer les paramètres VPN auprès de l'administrateur réseau",
+      "Se connecter et valider le MFA si requis",
+      "Installer le client VPN adapté (natif Windows ou logiciel éditeur)",
+      "Saisir les paramètres ou importer le fichier de configuration"
+    ],
+    "answer": [
+      "Récupérer les paramètres VPN auprès de l'administrateur réseau",
+      "Installer le client VPN adapté (natif Windows ou logiciel éditeur)",
+      "Saisir les paramètres ou importer le fichier de configuration",
+      "Se connecter et valider le MFA si requis",
+      "Tester l'accès à une ressource interne (partage, intranet) pour valider"
+    ],
+    "comment": "La dernière étape (test d'accès à une ressource interne) est cruciale et souvent oubliée. Un VPN 'connecté' n'est pas forcément un VPN fonctionnel — des problèmes de route ou de DNS poussé peuvent bloquer l'accès aux serveurs."
+  },
+  {
+    "id": "OPT-M04-C05-011",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Services et protocoles critiques",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #422 : 'Je suis en télétravail, mon VPN se connecte mais je ne vois pas les fichiers partagés du serveur. Hier ça marchait depuis le bureau.'",
+    "answer": "VPN connecté mais accès aux ressources internes KO — problème de route ou DNS poussé par le VPN, ou le partage réseau utilise le nom NetBIOS qui ne résout pas via le DNS VPN.",
+    "checklist": [
+      "Vérifier que le VPN est bien connecté (icône dans la barre système)",
+      "Tenter un ping vers l'IP du serveur de fichiers (ex : ping 10.10.50.5) depuis un cmd",
+      "Si ping IP fonctionne mais \\\\serveur ne répond pas : problème de résolution DNS/NetBIOS",
+      "Essayer d'accéder au partage via l'IP directe : \\\\10.10.50.5\\partage",
+      "Vérifier les DNS poussés par le VPN (ipconfig /all) — le DNS interne doit apparaître",
+      "Si DNS interne absent : demander à l'admin réseau de vérifier la config VPN côté serveur"
+    ],
+    "comment": "Un VPN 'connecté' peut ne pas pousser les bonnes routes ou DNS. `ipconfig /all` après connexion VPN doit montrer le DNS interne de l'entreprise. Si ce n'est pas le cas, le VPN ne redirige pas le trafic interne correctement."
+  }
+]

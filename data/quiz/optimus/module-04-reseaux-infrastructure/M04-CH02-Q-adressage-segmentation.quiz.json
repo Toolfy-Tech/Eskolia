@@ -1,0 +1,121 @@
+[
+  {
+    "id": "OPT-M04-C02-001",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le CIDR et quel problème résout-il par rapport aux classes d'adresses ?",
+    "answer": "Le CIDR (Classless Inter-Domain Routing) remplace le système rigide des classes A/B/C par une approche flexible. Le préfixe (ex : /24) indique le nombre de bits réservés à la partie réseau. Il permet aussi l'agrégation de routes, allégeant les tables de routage mondiales.",
+    "comment": "Les classes A/B/C sont obsolètes depuis 1993. Avec le CIDR, un réseau peut avoir n'importe quelle taille de préfixe, sans être contraint par les limites /8, /16, /24."
+  },
+  {
+    "id": "OPT-M04-C02-002",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pour un réseau 192.168.1.0/24 : quelle est l'adresse de broadcast, la première et la dernière IP utilisable, et le nombre d'hôtes ?",
+    "answer": "Broadcast : 192.168.1.255. Première IP utile : 192.168.1.1. Dernière IP utile : 192.168.1.254. Nombre d'hôtes : 2⁸ - 2 = 254.",
+    "comment": "Règle générale : adresse réseau = première adresse (non assignable), broadcast = dernière adresse (non assignable). Hôtes = 2^(32-préfixe) - 2."
+  },
+  {
+    "id": "OPT-M04-C02-003",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que l'adresse 127.0.0.1 et à quoi sert-elle ?",
+    "answer": "127.0.0.1 est l'adresse loopback/localhost. Elle est réservée pour tester la pile réseau locale sans envoyer de trafic sur le réseau physique.",
+    "comment": "Commande : `ping 127.0.0.1`. Si ce ping fonctionne, la pile IP locale est opérationnelle. C'est la première étape du diagnostic réseau en ordre OSI."
+  },
+  {
+    "id": "OPT-M04-C02-004",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles sont les 3 plages d'adresses IP privées (non routables sur Internet) ?",
+    "answer": "Classe A privée : 10.0.0.0 → 10.255.255.255 (/8). Classe B privée : 172.16.0.0 → 172.31.255.255 (/12). Classe C privée : 192.168.0.0 → 192.168.255.255 (/16).",
+    "comment": "Ces plages sont réservées aux réseaux locaux. Elles ne sont pas routables sur Internet — c'est pour ça que le NAT est nécessaire pour permettre aux machines du LAN d'accéder à Internet."
+  },
+  {
+    "id": "OPT-M04-C02-005",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la Default Route (0.0.0.0/0) dans une table de routage ?",
+    "answer": "La Default Route (0.0.0.0/0) est la route « catch-all » utilisée quand aucune route spécifique ne correspond à l'IP destination. C'est le chemin vers Internet (via le FAI). Sur un PC Windows, c'est la « Default Gateway ».",
+    "comment": "Un routeur cherche toujours la route la plus précise. La Default Route a le préfixe le moins spécifique possible (/0 = 0 bits fixés), donc elle ne s'applique qu'en dernier recours."
+  },
+  {
+    "id": "OPT-M04-C02-006",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "A",
+    "type": "classic",
+    "question": "Pour créer 32 sous-réseaux à partir d'un /15, combien de bits faut-il emprunter et quel est le nouveau masque ?",
+    "answer": "Il faut emprunter 5 bits (2⁵ = 32). Nouveau masque = /15 + 5 = /20 soit 255.255.240.0.",
+    "comment": "Règle : chercher n tel que 2ⁿ ≥ nombre de sous-réseaux voulus. Le pas (incrément) = 256 - valeur_octet_masque. Pour /20 : 256 - 240 = 16, donc on saute de 16 en 16."
+  },
+  {
+    "id": "OPT-M04-C02-007",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "B",
+    "type": "classic",
+    "question": "Citez 3 différences clés entre IPv4 et IPv6.",
+    "answer": "IPv4 = 32 bits (~4,3 milliards d'adresses, épuisées en 2011) / IPv6 = 128 bits (340 sextillions). IPv4 nécessite le NAT (pénurie) / IPv6 non. IPv4 utilise DHCP / IPv6 peut se configurer automatiquement via SLAAC.",
+    "comment": "La coexistence IPv4/IPv6 (mode dual-stack) est la norme sur les équipements récents. Le déploiement d'IPv6 est progressif mais inévitable."
+  },
+  {
+    "id": "OPT-M04-C02-008",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la forme simplifiée de l'adresse IPv6 suivante : 2001:0db8:0000:0000:0000:0000:0000:0001 ?",
+    "answer": "2001:db8::1 — les groupes de zéros consécutifs sont remplacés par :: (une seule fois par adresse) et les zéros de tête de chaque groupe sont supprimés.",
+    "comment": "Règles de simplification IPv6 : 1) supprimer les zéros de tête dans chaque groupe ; 2) remplacer une suite de groupes de zéros consécutifs par :: (une seule fois max)."
+  },
+  {
+    "id": "OPT-M04-C02-009",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque notation CIDR à son masque décimal et son nombre d'hôtes :",
+    "pairs": [
+      {"left": "/8", "right": "255.0.0.0 — 16 777 214 hôtes (classe A)"},
+      {"left": "/16", "right": "255.255.0.0 — 65 534 hôtes (classe B)"},
+      {"left": "/24", "right": "255.255.255.0 — 254 hôtes (classe C standard)"},
+      {"left": "/30", "right": "255.255.255.252 — 2 hôtes (liens point-à-point)"}
+    ],
+    "answer": "/8 = 255.0.0.0 (16M hôtes) | /16 = 255.255.0.0 (65K hôtes) | /24 = 255.255.255.0 (254 hôtes) | /30 = 255.255.255.252 (2 hôtes)",
+    "comment": "Formule : hôtes = 2^(32-préfixe) - 2. Le /30 est utilisé pour les liaisons point-à-point entre routeurs : seulement 2 adresses utiles suffisent."
+  },
+  {
+    "id": "OPT-M04-C02-010",
+    "category": "Réseaux & Infrastructure",
+    "chapter": "Adressage et segmentation réseau",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes du calcul d'un sous-réseau (méthode ET logique) :",
+    "options": [
+      "Calculer le nombre d'hôtes (2^n - 2)",
+      "Convertir l'IP et le masque en binaire",
+      "Appliquer l'ET logique pour trouver l'adresse réseau",
+      "Identifier l'adresse broadcast (bits hôte tous à 1)",
+      "Déterminer la 1ère et la dernière IP utilisable"
+    ],
+    "answer": [
+      "Convertir l'IP et le masque en binaire",
+      "Appliquer l'ET logique pour trouver l'adresse réseau",
+      "Identifier l'adresse broadcast (bits hôte tous à 1)",
+      "Déterminer la 1ère et la dernière IP utilisable",
+      "Calculer le nombre d'hôtes (2^n - 2)"
+    ],
+    "comment": "L'ET logique : 1 ET 1 = 1, tout le reste = 0. On applique bit à bit entre l'IP et le masque. Les bits à 0 dans le masque = partie hôte, libre pour les machines du réseau."
+  }
+]
