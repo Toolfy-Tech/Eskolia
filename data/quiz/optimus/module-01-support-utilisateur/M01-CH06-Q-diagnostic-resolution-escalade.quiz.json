@@ -1,0 +1,157 @@
+[
+  {
+    "id": "OPT-M01-C06-001",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "C",
+    "type": "classic",
+    "question": "Combien de phases compte une intervention d'assistance et quelle est la première ?",
+    "answer": "7 phases : accueil/écoute → questionnement/reformulation → qualification → diagnostic → résolution ou escalade → vérification → traçabilité. La première est l'accueil et l'écoute.",
+    "comment": "Pourquoi commencer par l'accueil et non par le diagnostic ? Parce qu'un utilisateur tendu ou presse livre une description partielle ('ca marche pas'), et un mauvais materiau de depart fausse tout le reste de la chaine. Mettre en confiance n'est pas de la politesse decorative : c'est ce qui ouvre la phase de questionnement et fait remonter le bon symptome. Le piege classique du debutant est de sauter directement au diagnostic des qu'il croit reconnaitre la panne, et de passer a cote du vrai probleme faute d'avoir ecoute."
+  },
+  {
+    "id": "OPT-M01-C06-002",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi ne peut-on jamais prendre la main à distance sur un poste sans accord de l'utilisateur ?",
+    "answer": "C'est une règle déontologique absolue : prendre le contrôle d'un poste sans consentement est une violation de la vie privée et de la confiance. L'accord explicite est obligatoire, et l'utilisateur doit être informé de chaque action en temps réel.",
+    "comment": "Cette règle vaut aussi quand l'utilisateur est absent. Si personne n'est présent pour donner son accord, on ne prend pas la main. La déontologie prime sur l'efficacité."
+  },
+  {
+    "id": "OPT-M01-C06-003",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'une escalade et dans quel cas faut-il y recourir ?",
+    "answer": "L'escalade consiste à transmettre un incident à une équipe de niveau supérieur (N2/N3) quand il dépasse le périmètre de compétence ou les droits du technicien N1.",
+    "comment": "Savoir escalader n'est pas un échec — c'est une compétence. S'acharner au-delà de ses droits (ex : modifier un serveur de production) peut aggraver la situation. Le bon réflexe : résoudre ce qui est dans son périmètre, transmettre proprement le reste."
+  },
+  {
+    "id": "OPT-M01-C06-004",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que doit contenir un rapport de transmission lors d'une escalade ?",
+    "answer": "Ce qui a été constaté (symptômes), les tests déjà réalisés, les hypothèses écartées, l'urgence et l'impact. L'objectif : que l'équipe suivante ne reparte pas de zéro.",
+    "comment": "Un rapport d'escalade incomplet force l'équipe N2 à tout réinvestiguer, perdant un temps précieux. La qualité du rapport est aussi importante que la décision d'escalader."
+  },
+  {
+    "id": "OPT-M01-C06-005",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert une fiche d'intervention après une visite sur site ?",
+    "answer": "Elle documente la date, la durée, l'équipement concerné, les actions menées, les pièces remplacées et le résultat. Elle sert de preuve de service rendu, alimente l'historique du parc, et peut être contractuelle en ESN.",
+    "comment": "Sans fiche d'intervention, il n'y a pas de trace de ce qui a été fait. En cas de litige ou de récurrence du problème, cette traçabilité est indispensable."
+  },
+  {
+    "id": "OPT-M01-C06-006",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 7 phases d'une intervention d'assistance :",
+    "options": ["Vérification", "Qualification", "Accueil et écoute", "Traçabilité", "Diagnostic", "Questionnement et reformulation", "Résolution ou escalade"],
+    "answer": ["Accueil et écoute", "Questionnement et reformulation", "Qualification", "Diagnostic", "Résolution ou escalade", "Vérification", "Traçabilité"],
+    "comment": "Cet ordre est fondamental. On ne diagnostique pas sans avoir qualifié, on ne résout pas sans avoir diagnostiqué, on ne clôture pas sans avoir vérifié avec l'utilisateur."
+  },
+  {
+    "id": "OPT-M01-C06-007",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque outil de prise en main à distance à sa description :",
+    "pairs": [
+      {"left": "TeamViewer / AnyDesk", "right": "Outils tiers multi-plateformes, connexion via Internet sans VPN"},
+      {"left": "RDP (Bureau à distance Windows)", "right": "Protocole natif Windows, nécessite un réseau local ou VPN"},
+      {"left": "Quick Assist", "right": "Outil intégré à Windows 10/11, simple à utiliser pour l'assistance ponctuelle"}
+    ],
+    "answer": "TeamViewer/AnyDesk = tiers multi-plateformes | RDP = natif Windows réseau local | Quick Assist = intégré Windows ponctuel",
+    "comment": "Le choix de l'outil dépend du contexte : TeamViewer/AnyDesk pour un utilisateur à distance sans VPN, RDP pour un poste sur le réseau d'entreprise, Quick Assist pour une assistance rapide entre collègues."
+  },
+  {
+    "id": "OPT-M01-C06-008",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un utilisateur ne peut plus imprimer. Son PC envoie les impressions mais rien ne sort. Quel est le problème ?",
+    "answer": "File d'impression bloquée (spooler d'impression) — les travaux sont en attente mais ne s'exécutent pas.",
+    "indices": [
+      "Les autres utilisateurs du même réseau impriment sans problème sur la même imprimante.",
+      "Dans la file d'impression du PC, il y a 12 travaux 'en attente' qui ne s'effacent pas.",
+      "Redémarrer le service 'Spooler d'impression' dans les services Windows résout le problème."
+    ],
+    "comment": "Le spooler est le service Windows qui gère la file d'impression. Un travail corrompu peut bloquer tous les suivants. Solution : vider la file et redémarrer le service Spooler."
+  },
+  {
+    "id": "OPT-M01-C06-009",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "diagnostic_indices",
+    "question": "Un utilisateur ne peut plus accéder à aucun site web, mais ses collègues accèdent bien à Internet. Quel est le problème ?",
+    "answer": "Problème de configuration réseau local sur ce PC (adresse IP incorrecte, DNS mal configuré ou conflit d'adresse IP).",
+    "indices": [
+      "Ping vers 8.8.8.8 (Google DNS en IP) fonctionne — la connexion réseau est active.",
+      "Ping vers google.fr échoue — la résolution DNS est défaillante.",
+      "La configuration DNS du PC pointe vers une adresse incorrecte (saisie manuelle erronée)."
+    ],
+    "comment": "Si le ping IP fonctionne mais pas le ping nom de domaine, c'est systématiquement un problème DNS. Corriger la configuration DNS (automatique via DHCP ou saisie manuelle correcte) résout le problème."
+  },
+  {
+    "id": "OPT-M01-C06-010",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "A",
+    "type": "diagnostic_indices",
+    "question": "Un utilisateur ne peut plus se connecter à Windows. Le message dit 'Le profil utilisateur ne peut pas être chargé'. Quel est le problème ?",
+    "answer": "Profil utilisateur Windows corrompu — Windows ne peut pas charger le profil de l'utilisateur depuis son dossier C:\\Users\\NomUtilisateur.",
+    "indices": [
+      "L'utilisateur se connecte avec un profil temporaire ('profil temporaire' affiché dans la barre des tâches).",
+      "Le dossier C:\\Users contient un dossier 'NomUtilisateur.bak' — signe d'un profil corrompu.",
+      "La valeur de registre ProfileImagePath pour cet utilisateur pointe vers un dossier inexistant."
+    ],
+    "comment": "Ce problème nécessite souvent une escalade vers N2 (manipulation du registre Windows). Le N1 peut diagnostiquer et documenter, mais la correction du registre dépasse généralement son périmètre."
+  },
+  {
+    "id": "OPT-M01-C06-011",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #12 : Pendant une prise en main à distance, vous devez accéder aux fichiers personnels de l'utilisateur pour diagnostiquer un problème. L'utilisateur est présent. Comment procédez-vous ?",
+    "answer": "Expliquer ce que vous allez faire et pourquoi, obtenir son accord verbal explicite, puis l'informer à chaque action sur ses fichiers.",
+    "checklist": [
+      "Expliquer la raison : 'J'ai besoin d'accéder à votre dossier Documents pour vérifier la configuration de l'application'",
+      "Demander l'accord explicite : 'Est-ce que vous m'autorisez à accéder à ce dossier ?'",
+      "Attendre la confirmation avant toute action",
+      "Annoncer chaque action en temps réel : 'Je vais ouvrir ce fichier de configuration...'",
+      "Ne consulter que ce qui est strictement nécessaire pour le diagnostic"
+    ],
+    "comment": "La règle déontologique s'applique même quand c'est nécessaire et justifié. L'utilisateur doit toujours savoir ce qu'on fait sur son poste. Le consentement n'est pas optionnel."
+  },
+  {
+    "id": "OPT-M01-C06-012",
+    "category": "Support utilisateur",
+    "chapter": "Diagnostic, résolution et escalade",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #13 : Vous diagnostiquez un problème sur un serveur de production. La résolution nécessite une modification de la configuration serveur, mais vous n'avez pas les droits admin serveur. Que faites-vous ?",
+    "answer": "Escalade obligatoire vers N2/N3. Modifier un serveur de production sans droits appropriés est interdit — cela peut aggraver la situation et engage la responsabilité.",
+    "checklist": [
+      "Documenter précisément ce qui a été constaté, les tests effectués et l'hypothèse de résolution",
+      "Identifier clairement que la modification requise dépasse vos droits et votre périmètre",
+      "Escalader vers N2 ou l'administrateur système avec le rapport complet",
+      "Ne pas tenter de contourner les droits (même avec de bonnes intentions)",
+      "Rester disponible pour compléter le rapport si l'équipe N2 a des questions"
+    ],
+    "comment": "Agir sans droits sur un serveur de production peut provoquer une panne majeure ou effacer des données critiques. La règle est claire : périmètre dépassé = escalade, pas d'improvisation."
+  }
+]

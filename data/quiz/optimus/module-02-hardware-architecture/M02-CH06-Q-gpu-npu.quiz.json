@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C06-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre un GPU intégré (iGPU) et un GPU dédié (dGPU) ?",
+    "answer": "iGPU : intégré dans le processeur CPU, utilise la RAM système, performances limitées (bureautique, vidéo). dGPU : carte PCIe indépendante avec VRAM dédiée, indispensable pour le gaming 3D, la conception graphique et l'IA.",
+    "comment": "Un PC sans GPU dédié peut tout à fait faire du bureautique, de la navigation et de la vidéo 1080p. Il ne peut pas faire tourner des jeux 3D modernes ni des logiciels de rendu 3D."
+  },
+  {
+    "id": "OPT-M02-C06-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que la VRAM et en quoi diffère-t-elle de la RAM système ?",
+    "answer": "VRAM (Video RAM) : mémoire dédiée soudée sur le GPU, optimisée pour le transport massif de données d'image et de textures. Technologie GDDR (GDDR5/6/6X/7). Elle est séparée de la RAM DDR du système et inaccessible par le CPU.",
+    "comment": "Manquer de VRAM lors d'un jeu = textures réduites, ralentissements. Une GTX 1060 avec 3 Go de VRAM est insuffisante pour les jeux 4K modernes même si la RAM système est de 32 Go."
+  },
+  {
+    "id": "OPT-M02-C06-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "C",
+    "type": "classic",
+    "question": "Dans quel slot d'extension une carte graphique dédiée s'installe-t-elle ?",
+    "answer": "Dans le slot PCIe x16, le plus grand slot de la carte mère. Ce slot fournit la bande passante maximale nécessaire au GPU (alimentation supplémentaire via connecteurs PCIe 6/8/12 broches du PSU).",
+    "comment": "Toujours vérifier que la carte graphique reçoit tous ses connecteurs d'alimentation PCIe. Un GPU non alimenté correctement provoquera des crashs ou un démarrage refusé."
+  },
+  {
+    "id": "OPT-M02-C06-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi faut-il éviter le connecteur VGA sur un écran moderne, et par quoi le remplacer ?",
+    "answer": "VGA est un signal analogique : il se dégrade avec la longueur du câble, ne supporte pas la haute résolution nativement et ne transporte pas l'audio. Le remplacer par HDMI ou DisplayPort, qui sont numériques et supportent audio + vidéo haute résolution.",
+    "comment": "VGA est encore présent sur certains anciens écrans et projecteurs. En entreprise, remplacer les câbles VGA par HDMI ou DP améliore la qualité d'image immédiatement."
+  },
+  {
+    "id": "OPT-M02-C06-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un NPU et quel est son rôle principal ?",
+    "answer": "NPU (Neural Processing Unit) : unité matérielle spécialisée dans les calculs matriciels liés à l'IA (notamment les réseaux de neurones). Il exécute localement des tâches IA (reconnaissance vocale, amélioration d'image) de manière plus efficace énergétiquement que le CPU ou le GPU.",
+    "comment": "Le NPU est intégré directement dans le processeur central (SoC). Son rôle est de décharger le CPU et GPU pour préserver l'autonomie sur laptops. Il est mesuré en TOPS."
+  },
+  {
+    "id": "OPT-M02-C06-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le TOPS et à quel composant cette unité de mesure s'applique-t-elle ?",
+    "answer": "TOPS = Trillions d'Opérations Par Seconde. C'est l'unité de mesure des performances d'un NPU. Ex : la norme Copilot+ (Microsoft) exige un NPU d'au moins 40 TOPS pour les fonctionnalités d'IA de Windows.",
+    "comment": "Plus le TOPS est élevé, plus le NPU peut traiter rapidement les modèles d'IA locaux. Les NPU actuels (Intel Core Ultra, Qualcomm Snapdragon X) dépassent généralement 40-100 TOPS."
+  },
+  {
+    "id": "OPT-M02-C06-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "B",
+    "type": "classic",
+    "question": "Comment visualiser l'activité du NPU sur un PC Windows 11 ?",
+    "answer": "Dans le Gestionnaire des tâches de Windows 11, onglet Performance. Si un NPU est présent, une entrée dédiée apparaît et affiche son utilisation en pourcentage en temps réel.",
+    "comment": "Si l'entrée NPU n'apparaît pas alors que le CPU est censé en avoir un (Intel Core Ultra, Snapdragon X), la cause est presque toujours un pilote NPU manquant ou une version de Windows 11 trop ancienne : mettre à jour avant de conclure à une absence matérielle."
+  },
+  {
+    "id": "OPT-M02-C06-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un client demande un PC pour faire de la retouche photo sur Lightroom et un peu de montage vidéo 1080p, mais ne joue pas. Faut-il forcément un GPU dédié ? Justifiez.",
+    "answer": "Pas forcément. Un iGPU moderne (Intel Arc intégré, AMD Radeon 700M) gère la retouche photo et l'export vidéo 1080p de façon correcte, surtout grâce aux moteurs d'encodage matériel (Quick Sync chez Intel). Un GPU dédié reste utile pour accélérer certains filtres lourds et le rendu 4K, mais il n'est pas indispensable pour cet usage précis : mieux vaut investir cette part de budget dans plus de RAM et un SSD NVMe rapide.",
+    "comment": "Le piège est de croire 'création = GPU dédié obligatoire'. Le bon réflexe est de qualifier l'usage réel : résolution de montage, logiciels, formats. Pour de la 4K, du rendu 3D ou de l'IA générative locale, le dGPU avec sa VRAM redevient incontournable."
+  },
+  {
+    "id": "OPT-M02-C06-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque connecteur vidéo à sa caractéristique principale :",
+    "pairs": [
+      {"left": "HDMI 2.1", "right": "Jusqu'à 10K, audio intégré — standard TV et moniteurs"},
+      {"left": "DisplayPort 2.1", "right": "Jusqu'à 16K, audio intégré — standard PC gaming haut de gamme"},
+      {"left": "VGA (D-Sub 15)", "right": "Signal analogique, obsolète, dégradation avec la longueur du câble"},
+      {"left": "USB-C / Thunderbolt 4", "right": "Jusqu'à 8K, audio, données, alimentation — standard laptops modernes"}
+    ],
+    "answer": "HDMI 2.1 = 10K TV/moniteurs | DisplayPort 2.1 = 16K PC gaming | VGA = analogique obsolète | USB-C/TB4 = multifonction laptops",
+    "comment": "HDMI est dominant côté grand public et TV. DisplayPort est préféré pour les moniteurs PC haute fréquence (144Hz+). USB-C/Thunderbolt unifie vidéo, données et alimentation en un seul câble."
+  },
+  {
+    "id": "OPT-M02-C06-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "La carte graphique (GPU) et NPU",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre ces connecteurs vidéo, du plus ancien au plus récent :",
+    "options": ["DisplayPort 1.4", "HDMI 2.0", "VGA (D-Sub)", "USB-C / Thunderbolt 4", "DVI-D"],
+    "answer": ["VGA (D-Sub)", "DVI-D", "HDMI 2.0", "DisplayPort 1.4", "USB-C / Thunderbolt 4"],
+    "comment": "VGA (1987) → DVI (1999) → HDMI (2002, HDMI 2.0 en 2013) → DisplayPort (2006, 1.4 en 2016) → USB-C/Thunderbolt 4 (2020). Chaque génération apporte plus de bande passante et de fonctionnalités."
+  }
+]

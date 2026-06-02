@@ -175,8 +175,8 @@ Le champ `answer` doit décrire les bonnes paires en texte pour la flashcard.
 ## 2d. Règles de mélange des types
 
 - Pas plus de **3 `classic` consécutifs** — alterner avec un type interactif.
-- `sequence` : **maximum 2** par fichier, sur des procédures distinctes.
-- `association` : **maximum 2** par fichier, sur des axes de regroupement différents.
+- `sequence` : **minimum 1 obligatoire par fichier**. Pas de maximum — ajouter autant que pertinent. Si le chapitre n'a pas de procédure évidente, créer une séquence sur l'aspect le plus ordonnable (étapes, niveaux, chronologie, priorités).
+- `association` : **minimum 1 obligatoire par fichier**. Pas de maximum — ajouter autant que pertinent.
 - `ticket` : placer **uniquement là où c'est pertinent** (voir recettes Nature ci-dessous) — jamais par défaut.
 - `diagnostic_indices` : réserver aux notions avec une démarche de déduction logique identifiable.
 - **Minimum 40% de `classic`** — garanti de fonctionner dans tous les modes (quiz, flashcard, survival, révision).
@@ -196,8 +196,8 @@ Identifier la **nature dominante** depuis le titre de la notion. Appliquer la re
 | Type | Quantité | Contenu attendu |
 |---|---|---|
 | `classic` | 6–9 | Définitions, vrai/faux pour corriger idées reçues, acronymes, distinctions entre concepts |
-| `association` | **2** | 1 × termes↔définitions + 1 × concepts↔exemples concrets |
-| `sequence` | 1 si pertinent | Uniquement si les concepts ont un ordre logique (ex : couches OSI, chronologie) |
+| `association` | **minimum 1** | 1 × termes↔définitions + 1 × concepts↔exemples concrets |
+| `sequence` | **minimum 1** | Ordre logique des concepts, chronologie, niveaux hiérarchiques, étapes de raisonnement |
 | `ticket`, `diagnostic_indices` | Interdit | — |
 
 ---
@@ -209,8 +209,8 @@ Identifier la **nature dominante** depuis le titre de la notion. Appliquer la re
 | Type | Quantité | Contenu attendu |
 |---|---|---|
 | `classic` | 5–7 | Comprendre le pourquoi de chaque étape, identifier les erreurs courantes |
-| `sequence` | **2** | 1 × procédure principale + 1 × sous-procédure ou procédure alternative |
-| `association` | **1** | Outil↔étape ou commande↔action |
+| `sequence` | **minimum 1** | 1 × procédure principale + 1 × sous-procédure ou alternative si pertinent |
+| `association` | **minimum 1** | Outil↔étape ou commande↔action |
 | `ticket` | 1 si résolution d'incident | Uniquement si la procédure sert à résoudre un problème (configurer firewall = oui, rédiger compte-rendu = non) |
 | `diagnostic_indices` | Interdit | — |
 
@@ -225,8 +225,8 @@ Identifier la **nature dominante** depuis le titre de la notion. Appliquer la re
 | `classic` | 4–5 | Comprendre causes, symptômes, outils utilisés |
 | `diagnostic_indices` | **2–3** | Scénarios de déduction distincts avec symptômes progressifs |
 | `ticket` | **2** | Deux incidents réels différents du même type de panne |
-| `association` | **1** | Symptôme↔cause probable ou outil↔cas d'usage |
-| `sequence` | 1 si pertinent | Étapes de la démarche de diagnostic si ordonnée |
+| `association` | **minimum 1** | Symptôme↔cause probable ou outil↔cas d'usage |
+| `sequence` | **minimum 1** | Étapes de la démarche de diagnostic dans l'ordre |
 
 ---
 
@@ -237,8 +237,8 @@ Identifier la **nature dominante** depuis le titre de la notion. Appliquer la re
 | Type | Quantité | Contenu attendu |
 |---|---|---|
 | `classic` | 5–7 | Fonctions, usages, avantages/limites, différences entre outils |
-| `association` | **2** | 1 × outil↔usage principal + 1 × fonctionnalité↔cas concret |
-| `sequence` | **1** | Procédure d'utilisation clé de l'outil principal |
+| `association` | **minimum 1** | 1 × outil↔usage principal + 1 × fonctionnalité↔cas concret |
+| `sequence` | **minimum 1** | Procédure d'utilisation clé de l'outil principal |
 | `ticket` | 1 si pertinent | Uniquement si l'outil intervient dans la résolution d'un incident réel |
 | `diagnostic_indices` | Interdit | — |
 
@@ -256,9 +256,9 @@ Distinguer deux sous-types :
 | Type | Quantité | Contenu attendu |
 |---|---|---|
 | `classic` | 6–7 | Vrai/faux pour corriger idées reçues, définitions légales, obligations |
-| `association` | **2** | 1 × règle↔obligation concrète + 1 × cas d'usage↔conformité |
+| `association` | **minimum 1** | 1 × règle↔obligation concrète + 1 × cas d'usage↔conformité |
 | `ticket` | **1** | Incident réel lié à la réglementation (vol de laptop, fuite de données, signalement utilisateur) |
-| `sequence` | 1 si pertinent | Procédure légale ordonnée (ex : déclarer une violation RGPD en 72h) |
+| `sequence` | **minimum 1** | Procédure légale ordonnée (ex : déclarer une violation RGPD en 72h, étapes de conformité) |
 | `diagnostic_indices` | Interdit | — |
 
 **E2 — Réglementaire théorique** (pas d'incident technicien associable naturellement)
@@ -266,9 +266,10 @@ Distinguer deux sous-types :
 
 | Type | Quantité | Contenu attendu |
 |---|---|---|
-| `classic` | 7–9 | Vrai/faux, définitions, obligations, risques |
-| `association` | **2** | 1 × règle↔obligation + 1 × situation↔bonne pratique |
-| `ticket`, `sequence`, `diagnostic_indices` | Interdit | — |
+| `classic` | 7–8 | Vrai/faux, définitions, obligations, risques |
+| `association` | **minimum 1** | 1 × règle↔obligation + 1 × situation↔bonne pratique |
+| `sequence` | **minimum 1** | Ordre des étapes réglementaires, hiérarchie des obligations, procédure de mise en conformité |
+| `ticket`, `diagnostic_indices` | Interdit | — |
 
 ---
 
@@ -280,8 +281,8 @@ Distinguer deux sous-types :
 |---|---|---|
 | `classic` | 6–8 | Concepts, bonnes pratiques, réflexes relationnels |
 | `ticket` | **2** si assistance directe, **1** si théorique | Scénarios de communication réels avec utilisateurs difficiles ou profils variés |
-| `association` | **1** | Profil utilisateur↔approche adaptée ou situation↔technique de communication |
-| `sequence` | 1 si pertinent | Uniquement si une procédure de communication existe (ex : étapes de l'écoute active) |
+| `association` | **minimum 1** | Profil utilisateur↔approche adaptée ou situation↔technique de communication |
+| `sequence` | **minimum 1** | Étapes d'une démarche relationnelle, ordre de priorité dans la communication, phases d'une intervention |
 | `diagnostic_indices` | Interdit | — |
 
 > **Assistance directe** (ticket ×2) : 2.1, 2.2, 2.4, 9.1, 9.2
@@ -289,12 +290,43 @@ Distinguer deux sous-types :
 
 ---
 
-### Natures mixtes
-Certaines notions combinent deux natures (ex : "Configurer un switch" = B + D). Prendre la recette de la nature **dominante** et ajouter 1 élément de la nature secondaire si le budget le permet. Ne jamais dépasser 2 `sequence` ni 2 `association` au total.
+### Nature G — Gestion d'incidents & ITIL opérationnel
+*Reconnaître : "Cycle de vie d'un ticket", "Priorisation", "SLA", "Escalade", tout chapitre où l'incident est le **sujet pédagogique** (pas juste un exemple)*
+> Ex : M01-C02 cycle de vie, M01-C03 priorisation, M01-C04 SLA
+
+Le ticket n'est pas ici un « bonus illustratif » : c'est le **support d'apprentissage principal**. L'étudiant doit s'entraîner à classer, prioriser, ou vérifier un SLA sur un incident réel.
+
+| Type | Quantité | Contenu attendu |
+|---|---|---|
+| `classic` | 4–6 | Définitions, vrai/faux, distinctions conceptuelles |
+| `ticket` | **2–3** | Scénarios d'incident à qualifier, prioriser, ou évaluer selon le SLA |
+| `association` | **minimum 1** | Priorité↔critères ou outil↔usage |
+| `sequence` | **minimum 1** | Cycle de vie d'un ticket dans l'ordre, étapes d'une escalade |
+| `diagnostic_indices` | Interdit | — |
+
+> **Nuance** : Ne pas appliquer Nature G aux chapitres purement théoriques du même module (définition ITIL, veille, confidentialité → Nature A ou E2). G s'applique uniquement là où l'incident est l'objet central de l'exercice, pas juste un contexte.
 
 ---
 
-## 2f. Format du fichier JSON final
+### Natures mixtes
+Certaines notions combinent deux natures (ex : "Configurer un switch" = B + D). Prendre la recette de la nature **dominante** et ajouter 1 élément de la nature secondaire si le budget le permet. Respecter dans tous les cas le minimum de 1 `sequence` + 1 `association` par fichier.
+
+---
+
+## 2f. Préfixe d'ID selon le programme
+
+Le préfixe du champ `id` dépend du programme cible :
+
+| Programme | Préfixe | Exemple |
+|---|---|---|
+| Nexus TIP | `NXS` | `NXS-M01-C01-001` |
+| Optimus | `OPT` | `OPT-M02-C03-001` |
+
+La numérotation du module (`M[XX]`) suit celle du cours source (M01 à M08 pour Optimus, M01 à M10 pour Nexus TIP). Toujours préciser le programme cible dans le prompt de génération.
+
+---
+
+## 2g. Format du fichier JSON final
 
 Tableau JSON à la racine (pas d'objet englobant) :
 

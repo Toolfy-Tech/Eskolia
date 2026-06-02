@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C03-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle du CPU dans un ordinateur ?",
+    "answer": "Le CPU (Central Processing Unit) est le cerveau de l'ordinateur. Il interprète et exécute les instructions des programmes selon un cycle perpétuel : Fetch → Decode → Execute → Writeback.",
+    "comment": "Le CPU ne stocke rien de permanent : il travaille en permanence avec la RAM et son propre cache. Sa puissance dépend du nombre de cœurs, de la fréquence et de l'IPC (instructions par cycle)."
+  },
+  {
+    "id": "OPT-M02-C03-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'UAL dans un processeur ?",
+    "answer": "L'UAL (Unité Arithmétique et Logique) est la partie du CPU qui effectue les calculs mathématiques (addition, soustraction, multiplication) et les comparaisons logiques (ET, OU, NON).",
+    "comment": "Toutes les opérations d'un programme se réduisent à des calculs dans l'UAL. L'unité de contrôle orchestre l'ensemble, et les registres stockent les données temporaires ultra-rapides."
+  },
+  {
+    "id": "OPT-M02-C03-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre le nombre de coeurs (cores) et le nombre de threads d'un CPU ?",
+    "answer": "Les coeurs sont des unités physiques indépendantes. Les threads sont des coeurs logiques : avec HyperThreading (Intel) ou SMT (AMD), chaque coeur physique exécute 2 threads simultanément. Ex : 8 coeurs = 16 threads.",
+    "comment": "Les threads améliorent les performances multitâches mais ne doublent pas les performances brutes. Pour des tâches lourdes mono-thread (certains jeux), la fréquence et l'IPC restent plus importants."
+  },
+  {
+    "id": "OPT-M02-C03-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le TDP d'un processeur, et pourquoi est-ce important lors du choix d'un ventirad ?",
+    "answer": "TDP (Thermal Design Power) = quantité maximale de chaleur que le refroidissement doit dissiper pour que le CPU fonctionne à sa fréquence de base. Un ventirad doit toujours avoir un TDP supporté supérieur ou égal à celui du CPU.",
+    "comment": "Ex : CPU 65W TDP → choisir un ventirad prévu pour 65W ou plus. Un ventirad sous-dimensionné provoque du throttling (réduction de fréquence automatique) pour protéger le composant."
+  },
+  {
+    "id": "OPT-M02-C03-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre le cache L1, L2 et L3 d'un CPU ?",
+    "answer": "Ce sont des mémoires SRAM ultra-rapides intégrées au CPU. L1 est le plus petit et le plus rapide (quelques Ko, directement dans chaque coeur). L2 est plus grand (quelques Mo). L3 est partagé entre tous les coeurs (8-64 Mo). L1 < L2 < L3 en taille, L1 > L2 > L3 en vitesse.",
+    "comment": "Le cache réduit les allers-retours vers la RAM, qui est beaucoup plus lente. Plus le cache L3 est grand, moins le CPU doit attendre des données venant de la RAM."
+  },
+  {
+    "id": "OPT-M02-C03-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre un ventirad et un watercooling AIO ?",
+    "answer": "Ventirad : radiateur en aluminium/cuivre + ventilateur. Simple, silencieux, fiable, suffisant pour la majorité des usages. AIO (All-In-One) : radiateur + pompe + ventilateurs en circuit fermé. Plus efficace pour les CPU haute consommation (125W+).",
+    "comment": "En intervention, un AIO a plus de points de défaillance (pompe). Un ventirad bien dimensionné est souvent préférable en entreprise pour sa simplicité de maintenance."
+  },
+  {
+    "id": "OPT-M02-C03-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "C",
+    "type": "classic",
+    "question": "À quoi sert la pâte thermique, et que se passe-t-il sans elle ?",
+    "answer": "La pâte thermique comble les micro-irrégularités de surface entre le CPU et le ventirad, empêchant les poches d'air isolantes. Sans elle, la conduction thermique chute et le CPU surchauffe en quelques secondes.",
+    "comment": "Quantité recommandée : une noisette de la taille d'un grain de riz au centre du CPU. Trop peu = mauvaise conduction. Trop = peut déborder sur les composants autour."
+  },
+  {
+    "id": "OPT-M02-C03-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien installe un CPU Intel Core i7 sur une carte mère AMD AM5. Est-ce possible ? Pourquoi ?",
+    "answer": "Non. Les sockets Intel (LGA 1700, LGA 1851) et AMD (AM5) sont incompatibles physiquement et électriquement. Un CPU Intel ne peut fonctionner que sur une carte mère Intel et vice versa.",
+    "comment": "Les sockets sont conçus pour des familles précises de processeurs. Tenter d'insérer un CPU incompatible risque d'endommager les broches du socket (irréversible sur carte mère LGA)."
+  },
+  {
+    "id": "OPT-M02-C03-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque caractéristique CPU à sa définition :",
+    "pairs": [
+      {"left": "Fréquence (GHz)", "right": "Nombre de cycles par seconde — plus élevé = calculs plus rapides"},
+      {"left": "TDP (Watts)", "right": "Chaleur maximale dissipée = consommation indicative"},
+      {"left": "Architecture (nm)", "right": "Finesse de gravure — plus fin = plus de transistors, moins de chaleur"},
+      {"left": "Cache L3", "right": "Mémoire SRAM partagée entre tous les coeurs, réduit les accès RAM"}
+    ],
+    "answer": "GHz = cycles/seconde | TDP = chaleur/consommation | nm = finesse de gravure | Cache L3 = SRAM partagée entre coeurs",
+    "comment": "Ces quatre métriques permettent de comparer des CPU. La fréquence seule ne suffit pas : l'IPC (Instructions Par Cycle) varie selon les générations et peut compenser une fréquence moindre."
+  },
+  {
+    "id": "OPT-M02-C03-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le processeur (CPU)",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 4 étapes du cycle d'exécution d'une instruction par le CPU :",
+    "options": ["Execute (Exécution)", "Writeback (Écriture)", "Fetch (Recherche)", "Decode (Interprétation)"],
+    "answer": ["Fetch (Recherche)", "Decode (Interprétation)", "Execute (Exécution)", "Writeback (Écriture)"],
+    "comment": "Fetch = récupérer l'instruction en mémoire. Decode = décoder l'opération et les opérandes. Execute = réaliser l'opération dans l'UAL. Writeback = enregistrer le résultat en registre ou RAM. Ce cycle se répète des milliards de fois par seconde."
+  }
+]

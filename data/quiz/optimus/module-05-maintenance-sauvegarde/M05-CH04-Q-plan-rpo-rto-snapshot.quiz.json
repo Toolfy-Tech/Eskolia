@@ -1,0 +1,127 @@
+[
+  {
+    "id": "OPT-M05-C04-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence fondamentale entre un PCA/PCI et un PRA/PRI ?",
+    "answer": "PCA/PCI (Plan de Continuité de l'Activité/Informatique) : mise en place de redondances pour éviter toute interruption — l'activité continue même en cas de panne. PRA/PRI (Plan de Reprise de l'Activité/Informatique) : procédures pour restaurer l'activité après un sinistre — il y a une interruption, mais on sait comment en sortir.",
+    "comment": "Le PCA coûte plus cher car il nécessite une infrastructure redondante en permanence (clusters, failover automatique). Le PRA est moins onéreux mais accepte une interruption. En pratique, les entreprises combinent les deux : PCA pour les systèmes critiques, PRA pour les systèmes secondaires."
+  },
+  {
+    "id": "OPT-M05-C04-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le RPO (Recovery Point Objective) et comment se traduit-il concrètement dans un plan de sauvegarde ?",
+    "answer": "Le RPO est la quantité maximale de données qu'une entreprise accepte de perdre, exprimée en durée. Un RPO de 4 heures signifie qu'on tolère de perdre au maximum les 4 dernières heures de travail. Il impose directement la fréquence minimale des sauvegardes.",
+    "comment": "Le RPO est un engagement métier, pas un choix technique : c'est la direction qui décide combien de données perdues sont acceptables. Le technicien traduit ensuite ce RPO en fréquence de sauvegarde. RPO = 24h → sauvegarde quotidienne minimum. RPO = 1h → sauvegarde horaire ou réplication continue."
+  },
+  {
+    "id": "OPT-M05-C04-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le RTO (Recovery Time Objective) et quelle infrastructure il implique selon sa valeur ?",
+    "answer": "Le RTO est la durée maximale acceptable sans production après un sinistre. Un RTO de 2 heures signifie que les systèmes doivent être opérationnels dans les 2 heures suivant l'incident. Un RTO très court (minutes) implique une infrastructure redondante automatisée (PCA). Un RTO plus long (heures/jours) peut se satisfaire d'un PRA.",
+    "comment": "RTO et RPO sont les deux axes du contrat de résilience avec le métier. Un RTO de 0 (zéro interruption) est techniquement atteignable mais très coûteux (actif-actif géo-redondant). En PME, un RTO de 4-8h est souvent le compromis réaliste entre coût et tolérance opérationnelle."
+  },
+  {
+    "id": "OPT-M05-C04-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un snapshot et en quoi diffère-t-il fondamentalement d'une sauvegarde ?",
+    "answer": "Un snapshot est un cliché instantané de l'état d'une machine virtuelle à un instant T. Il copie l'état du système (mémoire, configuration, disques virtuels) mais ne constitue pas une sauvegarde : il réside sur le même hôte physique que la VM, et sa perte entraîne celle des données s'il n'y a pas de sauvegarde séparée.",
+    "comment": "La confusion snapshot/sauvegarde est l'une des erreurs les plus dangereuses en virtualisation. Le snapshot sert uniquement à revenir rapidement sur une manipulation — il ne protège pas contre la panne de l'hôte physique. Un snapshot sur un serveur qui tombe en panne est perdu avec la VM."
+  },
+  {
+    "id": "OPT-M05-C04-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est le réflexe professionnel à adopter avant toute manipulation risquée sur une machine virtuelle ?",
+    "answer": "Prendre un snapshot avant toute manipulation risquée (mise à jour majeure, modification de configuration, installation d'un logiciel inconnu). En cas de problème, la restauration depuis le snapshot est quasi-immédiate — quelques secondes à minutes selon la taille de la VM.",
+    "comment": "Ce réflexe snapshot est l'équivalent du 'Ctrl+Z' en virtualisation. Il est standard dans tout environnement VMware, Hyper-V ou Proxmox. Important : supprimer le snapshot une fois la manipulation validée — les snapshots accumulés ralentissent progressivement la VM et consomment l'espace disque de l'hôte."
+  },
+  {
+    "id": "OPT-M05-C04-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi l'accumulation de snapshots est-elle problématique pour une machine virtuelle ?",
+    "answer": "Chaque snapshot crée un fichier delta qui enregistre toutes les modifications depuis le snapshot. Plus les snapshots s'accumulent, plus la chaîne de deltas est longue et plus chaque opération d'écriture est coûteuse. Résultat : la VM ralentit progressivement et l'espace disque de l'hôte est grignoté sans limite visible.",
+    "comment": "Un hôte avec 20 VMs et 5 snapshots chacune peut se retrouver avec des fichiers delta représentant le double de l'espace des disques VM. La règle pratique : pas plus de 1-2 snapshots simultanés par VM, et les supprimer dans les 48-72h suivant la manipulation validée. Les environnements de production nécessitent une politique automatisée de nettoyage."
+  },
+  {
+    "id": "OPT-M05-C04-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un DSI vous demande : 'Notre RPO est de 1 heure et notre RTO est de 30 minutes. Comment atteindre ces objectifs ?' Décrivez l'architecture nécessaire.",
+    "answer": "RPO 1h : réplication des données toutes les heures (ou réplication quasi-continue). RTO 30 min : infrastructure de basculement pré-configurée (standby chaud ou actif-actif) avec procédures de failover automatisées ou semi-automatiques. En pratique : serveurs en cluster, réplication synchrone ou asynchrone, et tests réguliers de basculement.",
+    "comment": "Des objectifs aussi exigeants (RPO 1h, RTO 30min) excluent les sauvegardes traditionnelles : on entre dans le domaine de la haute disponibilité (HA). Le coût est significativement supérieur à une simple stratégie de sauvegarde — doublement de l'infrastructure, licences cluster, bande passante de réplication. À justifier par l'impact financier d'une heure d'arrêt."
+  },
+  {
+    "id": "OPT-M05-C04-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque terme à sa définition opérationnelle :",
+    "pairs": [
+      {"left": "RPO", "right": "Quantité maximale de données perdues acceptable — détermine la fréquence de sauvegarde"},
+      {"left": "RTO", "right": "Durée maximale d'interruption acceptable — détermine l'infrastructure de reprise"},
+      {"left": "PCA/PCI", "right": "Redondance permanente pour éviter toute interruption — actif en permanence"},
+      {"left": "PRA/PRI", "right": "Procédures de restauration après sinistre — activé uniquement en cas d'incident"}
+    ],
+    "answer": "RPO = perte données max (fréquence) | RTO = durée arrêt max (infrastructure) | PCA = continuité sans interruption | PRA = reprise après interruption",
+    "comment": "RPO et RTO sont les deux paramètres fondamentaux qui pilotent toute la stratégie de sauvegarde et de haute disponibilité. Ils sont définis par le métier (direction, DSI), pas par le technicien. Le rôle du technicien est de proposer une architecture technique qui respecte ces contraintes dans le budget disponible."
+  },
+  {
+    "id": "OPT-M05-C04-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque scénario à l'outil adapté (snapshot ou sauvegarde) :",
+    "pairs": [
+      {"left": "Mise à jour majeure du système d'exploitation d'une VM", "right": "Snapshot avant la mise à jour — retour arrière immédiat si problème"},
+      {"left": "Protection contre la panne physique du serveur hôte", "right": "Sauvegarde externe — le snapshot est perdu avec l'hôte"},
+      {"left": "Restaurer un fichier supprimé accidentellement 3 semaines plus tôt", "right": "Sauvegarde — les snapshots ne couvrent pas une telle durée"},
+      {"left": "Tester une modification de configuration à risque sur une VM de production", "right": "Snapshot — restauration quasi-immédiate si le test échoue"}
+    ],
+    "answer": "MAJ risquée VM = snapshot | Panne hôte physique = sauvegarde externe | Fichier ancien = sauvegarde | Test config risqué = snapshot",
+    "comment": "Le snapshot et la sauvegarde sont complémentaires, pas interchangeables. Le snapshot couvre le court terme et les manipulations locales ; la sauvegarde couvre le long terme et les sinistres externes. Utiliser l'un à la place de l'autre crée une fausse sécurité — une des erreurs les plus communes en environnement virtualisé."
+  },
+  {
+    "id": "OPT-M05-C04-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "PCA/PRA, RPO, RTO et Snapshot",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes d'une intervention de mise à jour majeure sur une VM de production en appliquant les bonnes pratiques :",
+    "options": [
+      "Supprimer le snapshot après validation complète",
+      "Appliquer la mise à jour et tester le fonctionnement",
+      "Prendre un snapshot de la VM avant toute modification",
+      "Restaurer le snapshot si la mise à jour cause des problèmes",
+      "Planifier une fenêtre de maintenance et informer les utilisateurs"
+    ],
+    "answer": [
+      "Planifier une fenêtre de maintenance et informer les utilisateurs",
+      "Prendre un snapshot de la VM avant toute modification",
+      "Appliquer la mise à jour et tester le fonctionnement",
+      "Restaurer le snapshot si la mise à jour cause des problèmes",
+      "Supprimer le snapshot après validation complète"
+    ],
+    "comment": "La fenêtre de maintenance en premier est une exigence organisationnelle, pas technique : intervenir sans prévenir les utilisateurs génère des incidents ouverts inutiles. Le snapshot est pris juste avant l'action risquée (pas des heures avant). La suppression du snapshot en dernier, uniquement après validation, est critique — ne jamais supprimer avant d'avoir validé en production."
+  }
+]

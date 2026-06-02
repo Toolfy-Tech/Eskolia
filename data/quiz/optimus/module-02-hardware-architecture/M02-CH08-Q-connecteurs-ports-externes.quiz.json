@@ -1,0 +1,115 @@
+[
+  {
+    "id": "OPT-M02-C08-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment identifier visuellement un port USB 3.0 sur un PC ?",
+    "answer": "La languette intérieure d'un port USB-A est bleue pour USB 3.0 (5 Gb/s minimum). Noire ou blanche = USB 2.0 (480 Mb/s). Rouge = souvent USB 3.1 Gen2 ou un port de charge rapide.",
+    "comment": "Ce code couleur est une convention respectée par la quasi-totalité des fabricants. En dépannage, brancher un périphérique USB 3.0 sur un port USB 2.0 fonctionne mais divise les débits par 10."
+  },
+  {
+    "id": "OPT-M02-C08-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien voit un port USB Type-C sur un laptop. Peut-il affirmer que c'est un port Thunderbolt 4 à 40 Gb/s ? Justifiez.",
+    "answer": "Non. USB Type-C est une forme de connecteur, pas un standard de débit. Un port USB-C peut être USB 2.0 (480 Mb/s), USB 3.1 (10 Gb/s), USB4 (40 Gb/s) ou Thunderbolt 4 (40 Gb/s). Toujours vérifier la fiche technique ou le logo sur le port.",
+    "comment": "Thunderbolt 4 est toujours USB-C, mais USB-C n'est pas toujours Thunderbolt. Le logo éclair sur le port indique Thunderbolt. L'absence de logo ne garantit rien sur le débit."
+  },
+  {
+    "id": "OPT-M02-C08-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Sur une prise jack 3.5mm en façade d'un PC, que signifient les couleurs verte et rose ?",
+    "answer": "Vert = sortie audio (haut-parleurs, casque). Rose = entrée micro. Bleu = entrée ligne (appareil audio externe). Ce code couleur est standardisé sur les PC de bureau.",
+    "comment": "Sur les laptops et façades modernes, les ports sont souvent combinés en un seul jack TRRS (4 contacts) qui gère casque + micro simultanément. Il faut alors un casque avec connecteur combiné."
+  },
+  {
+    "id": "OPT-M02-C08-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre HDMI et DisplayPort pour un usage PC bureautique/gaming ?",
+    "answer": "HDMI : standard grand public, TV, consoles, support audio. DisplayPort : standard PC gaming, supporte des résolutions et fréquences d'actualisation plus élevées (ex : 240Hz en 1440p), daisy chain de moniteurs. En bureautique, les deux conviennent. En gaming haute fréquence, DisplayPort est privilégié.",
+    "comment": "HDMI 2.1 comble l'écart pour la résolution maximale, mais DisplayPort reste préféré pour les configurations multi-moniteurs sur PC gaming grâce au daisy chain."
+  },
+  {
+    "id": "OPT-M02-C08-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un port RJ-45 et quelles sont ses vitesses caractéristiques ?",
+    "answer": "RJ-45 est le connecteur Ethernet filaire à 8 broches. Vitesses : 100 Mb/s (Fast Ethernet), 1 Gb/s (Gigabit, standard actuel), 2.5/5/10 Gb/s (multi-gigabit). La vitesse réelle dépend du maillon le plus faible : carte réseau, port du switch ET catégorie de câble (Cat 5e pour 1 Gb/s, Cat 6/6a pour 10 Gb/s).",
+    "comment": "Erreur de diagnostic classique : une liaison qui plafonne à 100 Mb/s alors que tout est annoncé Gigabit vient souvent d'un câble abîmé ou d'une seule paire coupée dans le RJ-45. Tester avec un autre câble certifié avant de suspecter la carte réseau."
+  },
+  {
+    "id": "OPT-M02-C08-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est le statut actuel du connecteur Micro-USB et pourquoi le Type-C l'a-t-il remplacé ?",
+    "answer": "Micro-USB est en voie d'obsolescence. USB Type-C l'a remplacé car il est symétrique (pas de sens d'insertion), supporte des débits bien supérieurs, l'alimentation (Power Delivery) et la vidéo. La directive EU impose USB-C sur tous les appareils mobiles vendus en Europe depuis 2024.",
+    "comment": "Le passage au Type-C est réglementaire en Europe : smartphones, laptops, tablettes doivent tous adopter USB-C. En entreprise, cela simplifie la gestion des câbles."
+  },
+  {
+    "id": "OPT-M02-C08-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce qu'un connecteur DVI-D et dans quel contexte peut-on encore le rencontrer ?",
+    "answer": "DVI-D est un connecteur vidéo numérique (Single Link max 1920×1200, Dual Link max 2560×1600). On peut encore le rencontrer sur des écrans professionnels anciens ou des cartes graphiques de génération 2010-2015.",
+    "comment": "DVI est legacy : plus développé activement, mais encore fonctionnel. Un adaptateur DVI-D vers HDMI est une solution simple pour connecter un ancien écran à un PC moderne."
+  },
+  {
+    "id": "OPT-M02-C08-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque standard USB à son débit maximum :",
+    "pairs": [
+      {"left": "USB 2.0", "right": "480 Mb/s (60 Mo/s) — languette noire ou blanche"},
+      {"left": "USB 3.0 / 3.2 Gen1", "right": "5 Gb/s (625 Mo/s) — languette bleue"},
+      {"left": "USB 3.1 Gen2 / 3.2 Gen2", "right": "10 Gb/s (1,25 Go/s) — languette rouge ou bleue"},
+      {"left": "USB4 / Thunderbolt 4", "right": "40 Gb/s — connecteur Type-C uniquement"}
+    ],
+    "answer": "USB 2.0 = 480 Mb/s noir | USB 3.0 = 5 Gb/s bleu | USB 3.1 Gen2 = 10 Gb/s | USB4/TB4 = 40 Gb/s Type-C",
+    "comment": "La nomenclature USB est complexe car elle a changé plusieurs fois. USB 3.0, USB 3.1 Gen1 et USB 3.2 Gen1 désignent tous le même standard à 5 Gb/s avec languette bleue."
+  },
+  {
+    "id": "OPT-M02-C08-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque forme de connecteur USB à son usage principal :",
+    "pairs": [
+      {"left": "Type-A (rectangle plat)", "right": "PC, chargeurs, hubs — côté hôte le plus courant"},
+      {"left": "Type-B (carré coins coupés)", "right": "Imprimantes, scanners, anciens périphériques"},
+      {"left": "Micro-USB (trapèze très plat)", "right": "Anciens smartphones et manettes — en voie d'obsolescence"},
+      {"left": "Type-C (ovale symétrique)", "right": "Standard actuel : smartphones, laptops, moniteurs modernes"}
+    ],
+    "answer": "Type-A = hôte standard | Type-B = imprimantes/périphériques | Micro-USB = anciens appareils | Type-C = standard actuel",
+    "comment": "Type-C est le seul connecteur symétrique : on peut l'insérer dans les deux sens. C'est sa principale qualité. Il unifie progressivement tous les usages (données, vidéo, alimentation)."
+  },
+  {
+    "id": "OPT-M02-C08-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les connecteurs et ports externes",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre ces standards USB du plus lent au plus rapide en débit :",
+    "options": ["USB 3.1 Gen2 (10 Gb/s)", "USB4 / Thunderbolt 4 (40 Gb/s)", "USB 2.0 (480 Mb/s)", "USB 3.0 / 3.2 Gen1 (5 Gb/s)"],
+    "answer": ["USB 2.0 (480 Mb/s)", "USB 3.0 / 3.2 Gen1 (5 Gb/s)", "USB 3.1 Gen2 (10 Gb/s)", "USB4 / Thunderbolt 4 (40 Gb/s)"],
+    "comment": "USB 2.0 (480 Mb/s) → USB 3.0 (5 Gb/s, ×10) → USB 3.1 Gen2 (10 Gb/s, ×2) → USB4/TB4 (40 Gb/s, ×4). Chaque génération a globalement doublé ou décuplé le débit précédent."
+  }
+]

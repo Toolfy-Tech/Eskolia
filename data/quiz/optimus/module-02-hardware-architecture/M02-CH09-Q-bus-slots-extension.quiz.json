@@ -1,0 +1,109 @@
+[
+  {
+    "id": "OPT-M02-C09-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que le bus PCIe et quel est son rôle dans un PC ?",
+    "answer": "PCIe (PCI Express) est le bus d'extension principal des PC modernes. Il connecte les cartes d'extension (GPU, SSD NVMe, cartes réseau) à la carte mère via des lanes (voies) de données parallèles à très haute vitesse.",
+    "comment": "PCIe a remplacé les anciens bus PCI et AGP depuis le milieu des années 2000. Presque toutes les cartes d'extension modernes utilisent PCIe sous différentes formes (x1, x4, x16)."
+  },
+  {
+    "id": "OPT-M02-C09-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "C",
+    "type": "classic",
+    "question": "Dans quel slot PCIe s'installe le GPU principal d'un PC, et pourquoi ?",
+    "answer": "Dans le slot PCIe x16, le plus grand slot de la carte mère. Il dispose de 16 lanes de données, offrant la bande passante maximale nécessaire au GPU (~16 Go/s en PCIe 3.0, ~32 Go/s en PCIe 4.0).",
+    "comment": "Le slot x16 est visuellement identifiable car c'est le plus long slot sur la carte mère. Il se situe généralement en première position (le plus proche du CPU socket)."
+  },
+  {
+    "id": "OPT-M02-C09-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la rétrocompatibilité PCIe et comment s'applique-t-elle concrètement ?",
+    "answer": "Une carte PCIe d'une génération plus récente peut fonctionner dans un slot d'une génération plus ancienne, et vice versa. Ex : GPU PCIe 4.0 dans slot PCIe 3.0 = fonctionne, mais à la bande passante PCIe 3.0. La vitesse est limitée par le composant le plus lent.",
+    "comment": "La rétrocompatibilité PCIe est totale : aucun risque d'endommagement. Seules les performances sont réduites. Utile pour réutiliser du matériel récent sur une ancienne plateforme."
+  },
+  {
+    "id": "OPT-M02-C09-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "A",
+    "type": "classic",
+    "question": "Vrai ou faux : une carte d'extension PCIe x1 ne peut s'insérer que dans un slot PCIe x1. Justifiez.",
+    "answer": "Faux. Une carte x1 peut s'insérer dans un slot plus grand (x4, x8, x16) et fonctionner normalement. Le slot plus grand est juste partiellement inutilisé. La carte fonctionne à la bande passante x1 (sa propre limite).",
+    "comment": "Cette compatibilité ascendante est utile quand tous les petits slots x1 sont occupés. Certains boîtiers permettent même de couper le 'verrou' d'un slot x16 pour y insérer une longue carte x1."
+  },
+  {
+    "id": "OPT-M02-C09-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est le débit par lane en PCIe 4.0, et combien de fois est-ce plus rapide que PCIe 3.0 ?",
+    "answer": "PCIe 4.0 : ~2 Go/s par lane (slot x16 = ~32 Go/s). PCIe 3.0 : ~1 Go/s par lane (slot x16 = ~16 Go/s). PCIe 4.0 est exactement 2× plus rapide que PCIe 3.0 par lane.",
+    "comment": "Chaque génération PCIe double le débit par lane. PCIe 5.0 = ~4 Go/s/lane. Le bénéfice est surtout visible avec les SSD NVMe Gen4/Gen5 ; les GPU actuels ne saturent pas encore un slot x16 PCIe 4.0."
+  },
+  {
+    "id": "OPT-M02-C09-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'ancien bus AGP et par quoi a-t-il été remplacé ?",
+    "answer": "AGP (Accelerated Graphics Port) : slot dédié aux cartes graphiques utilisé de 1997 à 2004. Remplacé par PCIe qui offre des débits bien supérieurs et supporte à la fois les GPU et toutes les autres cartes d'extension.",
+    "comment": "On peut encore rencontrer des cartes mères AGP sur des PC très anciens. En intervention sur un parc ancien, connaître AGP permet d'identifier le matériel et de commander la bonne pièce de remplacement."
+  },
+  {
+    "id": "OPT-M02-C09-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pour quel type de carte d'extension utilise-t-on un slot PCIe x1 ?",
+    "answer": "Cartes réseau supplémentaires, cartes son, cartes d'acquisition vidéo, contrôleurs USB supplémentaires. Ces cartes nécessitent peu de bande passante et s'accommodent parfaitement d'une seule lane.",
+    "comment": "Le slot x1 est le plus petit slot PCIe, mais sa bande passante (1 Go/s en PCIe 3.0) est largement suffisante pour un réseau 10 Gb/s ou une carte son. Les cartes NVMe en adaptateur utilisent plutôt un slot x4."
+  },
+  {
+    "id": "OPT-M02-C09-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que l'ancien bus PCI (distinct de PCIe) et quand peut-on encore le rencontrer ?",
+    "answer": "PCI (Peripheral Component Interconnect) : bus d'extension des PC de 1992 à 2010 (slots blancs, débit max 133 Mo/s partagé). On peut le rencontrer sur des PC industriels anciens ou des machines spécialisées non remplacées.",
+    "comment": "PCI et PCIe sont incompatibles : un slot PCI blanc ne peut pas accueillir une carte PCIe et vice versa, malgré la similarité de nom. Le PCI est un bus partagé (contention), PCIe est point-à-point (pas de contention)."
+  },
+  {
+    "id": "OPT-M02-C09-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque taille de slot PCIe à son usage typique :",
+    "pairs": [
+      {"left": "PCIe x1", "right": "Cartes réseau, cartes son, cartes d'acquisition (1 lane)"},
+      {"left": "PCIe x4", "right": "SSD NVMe en adaptateur, cartes HBA (contrôleurs RAID)"},
+      {"left": "PCIe x8", "right": "Cartes RAID dédiées, GPU secondaires ou eGPU"},
+      {"left": "PCIe x16", "right": "GPU principal — slot le plus long de la carte mère"}
+    ],
+    "answer": "x1 = réseau/son | x4 = SSD NVMe/HBA | x8 = RAID/GPU secondaire | x16 = GPU principal",
+    "comment": "Sur la plupart des cartes mères grand public, on trouve 1 slot x16 (GPU), 1-2 slots x1 (extensions légères) et parfois un slot x4 ou x8 pour les stockages supplémentaires."
+  },
+  {
+    "id": "OPT-M02-C09-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Les bus et slots d'extension",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les versions PCIe par débit croissant de leur slot x16 :",
+    "options": ["PCIe 5.0 (~64 Go/s)", "PCIe 3.0 (~16 Go/s)", "PCIe 6.0 (~128 Go/s)", "PCIe 4.0 (~32 Go/s)"],
+    "answer": ["PCIe 3.0 (~16 Go/s)", "PCIe 4.0 (~32 Go/s)", "PCIe 5.0 (~64 Go/s)", "PCIe 6.0 (~128 Go/s)"],
+    "comment": "Chaque génération PCIe double le débit : 16 → 32 → 64 → 128 Go/s pour un slot x16. PCIe 3.0 reste encore très répandu. PCIe 5.0 est déployé sur les plateformes 2023+. PCIe 6.0 est en cours de déploiement pour les serveurs."
+  }
+]

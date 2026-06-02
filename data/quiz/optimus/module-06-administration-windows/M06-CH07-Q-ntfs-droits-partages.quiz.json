@@ -1,0 +1,143 @@
+[
+  {
+    "id": "OPT-M06-C07-001",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence principale entre les permissions NTFS et les permissions de partage réseau ?",
+    "answer": "Les permissions NTFS s'appliquent à la fois en local ET en réseau et sont très granulaires, tandis que les permissions de partage ne s'appliquent qu'en réseau et restent simples (Lecture / Modification / Contrôle total). NTFS est donc le niveau le plus complet et le plus fin.",
+    "comment": "La règle terrain qui découle de cette différence : on donne Contrôle total au partage, puis on gère TOUT finement via NTFS. Travailler sur deux couches de permissions en parallèle est le meilleur moyen de créer des conflits incompréhensibles. NTFS gagne en richesse et en portée, le partage ne sert qu'à exposer le dossier sur le réseau."
+  },
+  {
+    "id": "OPT-M06-C07-002",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Lorsqu'un utilisateur accède à un dossier partagé par le réseau, que se passe-t-il si les permissions NTFS et les permissions de partage diffèrent ?",
+    "answer": "C'est la permission la plus restrictive qui l'emporte. Windows calcule l'accès effectif en prenant l'intersection des deux : si le partage autorise Modification mais que NTFS n'autorise que Lecture, l'utilisateur n'aura que la Lecture.",
+    "comment": "C'est exactement la cause de tickets du type 'je vois les fichiers mais je ne peux pas les modifier'. Le piège est de regarder un seul onglet et de conclure trop vite. La parade structurelle : Contrôle total au partage, finesse côté NTFS uniquement. Ainsi le partage n'est jamais le facteur limitant et l'accès effectif correspond toujours à ce qui est défini en NTFS."
+  },
+  {
+    "id": "OPT-M06-C07-003",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que signifie le symbole $ à la fin du nom d'un partage, comme Compta$ ?",
+    "answer": "Le $ rend le partage caché : il reste accessible en tapant son chemin complet (\\\\serveur\\Compta$) mais n'apparaît pas dans la liste des partages quand on parcourt le serveur dans l'explorateur réseau.",
+    "comment": "Attention : un partage caché n'est PAS un partage sécurisé. Le $ masque le partage à la navigation, mais il ne remplace en rien les permissions : quiconque connaît le chemin et possède les droits y accède. C'est de la discrétion, pas de la protection. La vraie sécurité reste toujours dans les permissions NTFS appliquées aux groupes."
+  },
+  {
+    "id": "OPT-M06-C07-004",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il jamais accorder le Contrôle total au groupe 'Tout le monde' sur un dossier ?",
+    "answer": "Parce que le Contrôle total inclut le droit de modifier les permissions elles-mêmes : n'importe quel utilisateur pourrait alors changer les droits du dossier, s'octroyer des accès ou en priver les autres. Donner cela à 'Tout le monde' revient à perdre tout contrôle sur la sécurité du dossier.",
+    "comment": "Deux règles d'or vont ensemble : jamais Contrôle total à 'Tout le monde', et toujours raisonner par GROUPES AD plutôt que par utilisateurs individuels. Attribuer des droits utilisateur par utilisateur devient ingérable dès qu'une personne change de poste ou quitte l'entreprise. Le Contrôle total, lui, se réserve aux administrateurs et au propriétaire des données."
+  },
+  {
+    "id": "OPT-M06-C07-005",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quel est l'avantage principal des permissions NTFS par rapport aux permissions de partage ?",
+    "answer": "Les permissions NTFS s'appliquent aussi en LOCAL, pas seulement quand on accède au dossier par le réseau. Un utilisateur connecté physiquement à la machine est donc soumis aux mêmes restrictions, alors que les permissions de partage ne protègent rien en accès local.",
+    "comment": "C'est ce qui fait de NTFS la seule véritable barrière de sécurité d'un dossier : les permissions de partage tombent dès qu'on est devant la machine ou qu'on retire le disque pour le brancher ailleurs. NTFS reste actif en local, mais rappelons que face à un disque physiquement volé, seul BitLocker protège réellement : NTFS peut être contourné par un OS tiers si le disque n'est pas chiffré."
+  },
+  {
+    "id": "OPT-M06-C07-006",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque permission NTFS à ce qu'elle permet de faire :",
+    "pairs": [
+      {"left": "Lecture", "right": "Voir et ouvrir les fichiers"},
+      {"left": "Lecture et exécution", "right": "Voir, ouvrir et lancer des programmes"},
+      {"left": "Modification", "right": "Créer, modifier et supprimer des fichiers"},
+      {"left": "Contrôle total", "right": "Tout faire, y compris modifier les permissions elles-mêmes"}
+    ],
+    "answer": "Lecture = voir/ouvrir | Lecture et exécution = + lancer des programmes | Modification = + créer/modifier/supprimer | Contrôle total = tout + changer les permissions",
+    "comment": "Ces permissions sont cumulatives par niveau : chaque palier contient le précédent. Le saut critique en sécurité est entre Modification et Contrôle total : seul le Contrôle total permet de changer les permissions, c'est-à-dire de redistribuer les droits. Pour 95 % des utilisateurs métier, Modification suffit largement : réserver le Contrôle total ferme la porte aux modifications de droits non maîtrisées."
+  },
+  {
+    "id": "OPT-M06-C07-007",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque type de permission à ses caractéristiques :",
+    "pairs": [
+      {"left": "Portée", "right": "NTFS : local + réseau / Partage : réseau uniquement"},
+      {"left": "Granularité", "right": "NTFS : très fine / Partage : 3 niveaux simples"},
+      {"left": "Onglet où la configurer", "right": "NTFS : onglet Sécurité / Partage : onglet Partage"},
+      {"left": "Recommandation terrain", "right": "Contrôle total au partage, finesse via NTFS uniquement"}
+    ],
+    "answer": "Portée = NTFS local+réseau, partage réseau seul | Granularité = NTFS fine, partage 3 niveaux | Onglet = NTFS Sécurité, partage Partage | Recommandation = Contrôle total au partage, finesse NTFS",
+    "comment": "La confusion entre l'onglet Sécurité (NTFS) et l'onglet Partage est l'erreur de débutant la plus fréquente : on modifie le mauvais onglet et on s'étonne que les droits ne changent pas comme prévu. Mémo : Sécurité = NTFS = la vraie finesse. Quand un accès se comporte bizarrement, toujours vérifier les DEUX onglets avant de conclure, car l'effectif est l'intersection des deux."
+  },
+  {
+    "id": "OPT-M06-C07-008",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour créer un dossier partagé sécurisé selon les bonnes pratiques :",
+    "options": [
+      "Désactiver l'héritage NTFS et convertir en autorisations explicites",
+      "Tester l'accès avec un compte de chaque groupe concerné",
+      "Créer le dossier sur le serveur",
+      "Ajouter les groupes GDL avec les droits NTFS appropriés (Lecture ou Modification)",
+      "Partager le dossier avec Contrôle total pour 'Tout le monde' au niveau partage"
+    ],
+    "answer": [
+      "Créer le dossier sur le serveur",
+      "Partager le dossier avec Contrôle total pour 'Tout le monde' au niveau partage",
+      "Désactiver l'héritage NTFS et convertir en autorisations explicites",
+      "Ajouter les groupes GDL avec les droits NTFS appropriés (Lecture ou Modification)",
+      "Tester l'accès avec un compte de chaque groupe concerné"
+    ],
+    "comment": "Donner Contrôle total à 'Tout le monde' au niveau PARTAGE n'est pas une faille ici, contrairement à ce qu'on croirait : la restriction réelle se fait entièrement en NTFS, et comme la permission la plus restrictive gagne, c'est NTFS qui pilote l'accès. Désactiver l'héritage AVANT d'ajouter les groupes est crucial : sinon les droits hérités du parent restent et brouillent la configuration. Le test final avec un compte par groupe valide ce qui a été pensé en théorie."
+  },
+  {
+    "id": "OPT-M06-C07-009",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #604 : 'Un utilisateur du service Compta se plaint : il peut ouvrir et lire les fichiers du dossier partagé, mais impossible de les enregistrer après modification. On lui a pourtant annoncé un accès en Modification.'",
+    "answer": "Conflit classique entre permissions de partage et NTFS : le partage accorde bien Modification, mais l'onglet Sécurité (NTFS) ne donne que la Lecture. Comme la permission la plus restrictive l'emporte, l'accès effectif est Lecture seule. Il faut ajouter la Modification au niveau NTFS pour le bon groupe.",
+    "checklist": [
+      "Vérifier l'onglet Partage du dossier : confirmer le niveau accordé (probablement Modification ou Contrôle total)",
+      "Vérifier l'onglet Sécurité (NTFS) : repérer que le groupe de l'utilisateur n'a que Lecture",
+      "Confirmer l'appartenance de l'utilisateur au bon groupe GDL",
+      "Vérifier qu'aucun Refus explicite ne s'applique au groupe (le Refus écrase tout)",
+      "Accorder la Modification au groupe au niveau NTFS (onglet Sécurité)",
+      "Faire retester l'enregistrement d'un fichier par l'utilisateur"
+    ],
+    "comment": "Diagnostic réflexe : quand l'accès effectif est inférieur à ce qui est annoncé, penser immédiatement à l'intersection partage/NTFS et regarder les DEUX onglets. Vérifier aussi l'absence de Refus explicite : un Refus, même via un autre groupe d'appartenance, est prioritaire sur toute Autorisation et produit exactement ce symptôme. Corriger côté NTFS et non côté partage, conformément à la règle finesse en NTFS."
+  },
+  {
+    "id": "OPT-M06-C07-010",
+    "category": "Administration de Windows",
+    "chapter": "Gestion des droits et partages (NTFS)",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #618 : 'Un dossier partagé contenant des données RH confidentielles s'avère accessible à des utilisateurs qui ne devraient pas y avoir droit. Les permissions ont pourtant été restreintes à un groupe RH précis.'",
+    "answer": "Le plus probable : l'héritage NTFS est resté activé sur le dossier, qui hérite donc des permissions plus larges de son dossier parent en plus des droits RH ajoutés. Il faut désactiver l'héritage, convertir en autorisations explicites, puis retirer les groupes indésirables hérités.",
+    "checklist": [
+      "Ouvrir l'onglet Sécurité > Avancé du dossier RH",
+      "Constater que l'héritage est actif et lister les permissions héritées du parent",
+      "Désactiver l'héritage et choisir 'Convertir les autorisations héritées en autorisations explicites'",
+      "Retirer les groupes trop larges hérités (ex : Utilisateurs du domaine, Tout le monde)",
+      "Ne conserver que le groupe RH avec les droits adéquats",
+      "Vérifier l'accès effectif (onglet Avancé > Accès effectif) pour un compte hors RH"
+    ],
+    "comment": "Réflexe sécurité : ajouter un groupe restreint ne SUPPRIME pas les droits hérités du parent, il s'y ajoute. Tant que l'héritage est actif, le dossier reste aussi ouvert que son parent. L'onglet 'Accès effectif' est l'outil de vérification définitif : il simule les droits réels d'un compte donné en tenant compte de toutes les appartenances et des refus. C'est lui qui prouve que la fuite est colmatée."
+  }
+]

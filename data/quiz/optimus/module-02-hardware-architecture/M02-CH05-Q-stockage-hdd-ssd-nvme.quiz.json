@@ -1,0 +1,115 @@
+[
+  {
+    "id": "OPT-M02-C05-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence fondamentale entre un HDD et un SSD ?",
+    "answer": "HDD : stockage magnétique avec plateaux rotatifs et tête de lecture mécanique (80-160 Mo/s, sensible aux chocs). SSD : mémoire flash sans pièce mécanique (500+ Mo/s, résistant aux chocs, silencieux). Les deux sont non volatils : les données persistent à l'extinction.",
+    "comment": "Réflexe terrain : un PC portable qui tombe peut rendre un HDD définitivement illisible si la tête est en train de lire. Un SSD survit beaucoup mieux aux chocs."
+  },
+  {
+    "id": "OPT-M02-C05-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que NVMe et quelle est sa relation avec le connecteur M.2 ?",
+    "answer": "NVMe (Non-Volatile Memory Express) est un protocole de transfert ultra-rapide utilisant le bus PCIe. M.2 est le connecteur physique. Attention : un slot M.2 peut accueillir soit un SSD NVMe (3000-7000+ Mo/s) soit un SSD SATA (~550 Mo/s) — même forme, protocoles différents.",
+    "comment": "Erreur fréquente en intervention : insérer un SSD M.2 NVMe dans un slot M.2 SATA only. Le SSD peut rentrer physiquement mais ne sera pas reconnu. Toujours consulter le manuel de la carte mère."
+  },
+  {
+    "id": "OPT-M02-C05-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce qui distingue un HDD SAS d'un HDD SATA en environnement serveur ?",
+    "answer": "HDD SAS (Serial Attached SCSI) : tourne à 10 000-15 000 tr/min (vs 5400-7200 pour SATA), protocole SCSI robuste, conçu pour fonctionner 24h/24. Dual Port sur SSD SAS : deux chemins de données redondants pour les infrastructures critiques.",
+    "comment": "Le SAS est plus cher et plus fiable que le SATA. Il est réservé aux serveurs nécessitant une haute disponibilité. En PME, le SSD NVMe a largement remplacé le SAS pour le stockage haute performance."
+  },
+  {
+    "id": "OPT-M02-C05-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi ne peut-on pas copier un fichier de 8 Go sur une clé USB neuve ? Quelle est la solution ?",
+    "answer": "Les clés USB sont souvent formatées en FAT32 par défaut, qui impose une limite de 4 Go par fichier. Solution : reformater la clé en exFAT (compatible Windows/Linux/macOS, sans limite pratique) ou NTFS.",
+    "comment": "Erreur classique en support : l'utilisateur voit une clé de 32 Go et ne comprend pas pourquoi son fichier de 8 Go ne se copie pas. La limite n'est pas la capacité totale, mais la taille maximale d'un seul fichier."
+  },
+  {
+    "id": "OPT-M02-C05-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle table de partitions est obligatoire pour un disque de 3 To sous Windows, et pourquoi ?",
+    "answer": "GPT (GUID Partition Table) est obligatoire. MBR (Master Boot Record) ne supporte que des disques jusqu'à 2 To maximum. GPT supporte des disques bien plus grands et jusqu'à 128 partitions (vs 4 en MBR).",
+    "comment": "UEFI + GPT = obligatoire pour Windows 11. BIOS + MBR = systèmes anciens. En entreprise, tout disque de données > 2 To doit être partitionné en GPT, sinon l'espace au-delà de 2 To est inaccessible."
+  },
+  {
+    "id": "OPT-M02-C05-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre NTFS et ext4 ? Dans quel OS chacun est-il natif ?",
+    "answer": "NTFS : natif Windows. Supporte journalisation, permissions NTFS, chiffrement (BitLocker), fichiers volumineux. ext4 : natif Linux. Supporte journalisation, permissions Unix. Les deux sont le standard de leur OS respectif.",
+    "comment": "NTFS peut être lu (mais pas toujours écrit nativement) sous Linux avec pilotes. exFAT est le format universel recommandé pour les supports amovibles échangés entre OS."
+  },
+  {
+    "id": "OPT-M02-C05-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien achète un SSD M.2 NVMe Gen4 pour un PC avec une carte mère en PCIe 3.0. Que va-t-il se passer ?",
+    "answer": "Le SSD fonctionnera mais ses performances seront limitées à la bande passante PCIe 3.0 (~3500 Mo/s max) au lieu de ses 7000 Mo/s théoriques. PCIe est rétrocompatible : la carte la plus récente s'adapte au port le plus lent.",
+    "comment": "Ce n'est pas une erreur : le SSD fonctionne parfaitement, juste à 50% de ses capacités maximales. Pour profiter pleinement du Gen4, il faut une carte mère avec slot M.2 NVMe PCIe 4.0."
+  },
+  {
+    "id": "OPT-M02-C05-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque type de stockage à sa vitesse de lecture approximative :",
+    "pairs": [
+      {"left": "HDD 7200 tr/min", "right": "80 à 160 Mo/s"},
+      {"left": "SSD SATA III", "right": "500 à 560 Mo/s"},
+      {"left": "SSD NVMe PCIe 3.0", "right": "3000 à 3500 Mo/s"},
+      {"left": "SSD NVMe PCIe 4.0", "right": "5000 à 7000 Mo/s"}
+    ],
+    "answer": "HDD = 80-160 Mo/s | SSD SATA = 500-560 Mo/s | NVMe Gen3 = 3000-3500 Mo/s | NVMe Gen4 = 5000-7000 Mo/s",
+    "comment": "Un NVMe Gen4 est environ 12× plus rapide qu'un SSD SATA et 50× plus rapide qu'un HDD. Ces chiffres sont importants pour justifier les choix matériels auprès d'un client."
+  },
+  {
+    "id": "OPT-M02-C05-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque système de fichiers à son OS natif ou son usage principal :",
+    "pairs": [
+      {"left": "NTFS", "right": "Windows — standard avec journalisation et permissions"},
+      {"left": "ext4", "right": "Linux — standard des distributions modernes"},
+      {"left": "APFS", "right": "macOS — optimisé SSD, chiffrement natif, exclusif Apple"},
+      {"left": "exFAT", "right": "Universel — clés USB et cartes SD multi-OS, sans limite de fichier"}
+    ],
+    "answer": "NTFS = Windows | ext4 = Linux | APFS = macOS | exFAT = universel multi-OS",
+    "comment": "En support, la connaissance des systèmes de fichiers est essentielle : une clé exFAT est lisible partout, un disque NTFS peut poser problème sur Mac sans driver tiers."
+  },
+  {
+    "id": "OPT-M02-C05-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le stockage (HDD / SSD / NVMe)",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre ces technologies de stockage, de la plus lente à la plus rapide en lecture séquentielle :",
+    "options": ["SSD NVMe PCIe 4.0", "HDD SATA 7200 tr/min", "SSD SATA III", "SSD NVMe PCIe 3.0", "HDD SAS 15 000 tr/min"],
+    "answer": ["HDD SATA 7200 tr/min", "HDD SAS 15 000 tr/min", "SSD SATA III", "SSD NVMe PCIe 3.0", "SSD NVMe PCIe 4.0"],
+    "comment": "HDD SATA (~160 Mo/s) → HDD SAS (~300 Mo/s) → SSD SATA (~560 Mo/s) → NVMe Gen3 (~3500 Mo/s) → NVMe Gen4 (~7000 Mo/s). La rupture technologique majeure est entre le HDD et le SSD."
+  }
+]

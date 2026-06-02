@@ -1,0 +1,134 @@
+[
+  {
+    "id": "OPT-M02-C11-001",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence fondamentale entre BIOS et UEFI ?",
+    "answer": "BIOS (legacy) : firmware texte uniquement, navigation clavier, supporte uniquement MBR (max 2 To), lent, pas de Secure Boot. UEFI (moderne) : interface graphique, souris supportée, supporte GPT (disques >2 To), Secure Boot, démarrage beaucoup plus rapide.",
+    "comment": "UEFI remplace progressivement le BIOS depuis 2012. Tout PC vendu avec Windows 11 est obligatoirement en UEFI. Un 'BIOS' sur un PC moderne est en réalité un UEFI avec mode legacy possible."
+  },
+  {
+    "id": "OPT-M02-C11-002",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le Secure Boot et dans quel cas peut-il nécessiter d'être désactivé ?",
+    "answer": "Secure Boot : fonctionnalité UEFI qui vérifie la signature numérique du bootloader avant de l'exécuter. Empêche le démarrage de code non signé (malwares bootkit). À désactiver pour booter sur certaines distributions Linux qui ne possèdent pas de clé de signature reconnue par le firmware.",
+    "comment": "La plupart des distributions Linux modernes (Ubuntu, Fedora) supportent Secure Boot via une clé tierce approuvée. Désactiver Secure Boot réduit la sécurité : ne le faire que si nécessaire et documenter."
+  },
+  {
+    "id": "OPT-M02-C11-003",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les symptômes d'une pile CMOS morte sur une carte mère ?",
+    "answer": "La date et l'heure sont remises à zéro (souvent au 1er janvier 2000 ou 2009) à chaque démarrage. Les paramètres BIOS personnalisés sont perdus. Le PC peut aussi afficher un message d'erreur au démarrage ('CMOS checksum error').",
+    "comment": "Pile bouton CR2032, durée de vie 5-10 ans. Remplacement simple (moins de 2 euros) et accessible même pour un débutant. Retirer la pile quelques secondes reset le BIOS (utilisé pour débloquer un BIOS avec mot de passe oublié)."
+  },
+  {
+    "id": "OPT-M02-C11-004",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi faut-il activer la virtualisation (VT-x / AMD-V) dans le BIOS, et pour quels outils ?",
+    "answer": "La virtualisation matérielle (VT-x pour Intel, AMD-V pour AMD) est nécessaire pour exécuter des machines virtuelles avec VMware, VirtualBox ou Hyper-V (Windows). Désactivée par défaut sur certaines cartes mères, elle doit être activée manuellement.",
+    "comment": "Sans VT-x/AMD-V, les hyperviseurs fonctionnent en mode émulation très lent ou refusent de démarrer. C'est le premier paramètre à vérifier avant d'installer VMware Workstation ou VirtualBox."
+  },
+  {
+    "id": "OPT-M02-C11-005",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre le mode AHCI et le mode IDE pour le contrôleur SATA dans le BIOS ?",
+    "answer": "AHCI (Advanced Host Controller Interface) : mode standard et moderne, supporte le NCQ (file d'attente native des commandes) et les fonctionnalités SMART. IDE (Integrated Device Electronics) : mode legacy émulé, moins performant, pour compatibilité avec très anciens systèmes. AHCI doit toujours être sélectionné sur un PC moderne.",
+    "comment": "Changer de AHCI à IDE (ou vice versa) après installation de Windows provoque un BSOD au démarrage. Ce changement doit être fait avant l'installation de l'OS."
+  },
+  {
+    "id": "OPT-M02-C11-006",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que le TPM 2.0 et pourquoi est-il requis pour Windows 11 ?",
+    "answer": "TPM (Trusted Platform Module) : puce de sécurité intégrée à la carte mère qui stocke des clés cryptographiques, gère le chiffrement BitLocker et authentifie l'intégrité du démarrage. Windows 11 l'exige pour renforcer la sécurité de la plateforme.",
+    "comment": "TPM peut être intégré à la carte mère (firmware TPM) ou sous forme de puce physique. Si Windows 11 refuse de s'installer, vérifier que TPM 2.0 est activé dans le BIOS est la première action."
+  },
+  {
+    "id": "OPT-M02-C11-007",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "A",
+    "type": "classic",
+    "question": "Quel est l'inconvénient du mode 'Fast Boot' dans le BIOS, et quand le désactiver ?",
+    "answer": "Fast Boot réduit le temps de démarrage en sautant certains tests POST et en ne détectant pas tous les périphériques USB au boot. Inconvénient : on ne peut plus accéder au BIOS via la touche DEL/F2, et les périphériques USB branchés à froid peuvent ne pas être reconnus au démarrage. Désactiver si vous devez accéder au BIOS ou booter depuis une clé USB.",
+    "comment": "Erreur fréquente : activer Fast Boot puis ne plus pouvoir accéder au BIOS pour modifier l'ordre de boot. Solution : maintenir la touche SHIFT pendant l'extinction de Windows pour forcer un arrêt complet et contourner Fast Boot."
+  },
+  {
+    "id": "OPT-M02-C11-008",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque paramètre BIOS/UEFI à son utilité concrète :",
+    "pairs": [
+      {"left": "Boot Order / Priority", "right": "Définit depuis quel support l'ordinateur démarre (HDD, USB, réseau PXE)"},
+      {"left": "XMP / EXPO", "right": "Active le profil haute fréquence de la RAM (ex : 3600 MHz au lieu de 2133 MHz)"},
+      {"left": "VT-x / AMD-V", "right": "Active la virtualisation matérielle pour VMware, VirtualBox, Hyper-V"},
+      {"left": "TPM 2.0", "right": "Active la puce de sécurité cryptographique, obligatoire pour Windows 11"}
+    ],
+    "answer": "Boot Order = ordre de démarrage | XMP/EXPO = fréquence RAM réelle | VT-x/AMD-V = virtualisation | TPM 2.0 = sécurité cryptographique Windows 11",
+    "comment": "Ces quatre paramètres sont les plus fréquemment vérifiés en support : Boot Order (clé USB non reconnue), XMP/EXPO (RAM lente), VT-x (VM ne démarre pas), TPM (Windows 11 refusé)."
+  },
+  {
+    "id": "OPT-M02-C11-009",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes du démarrage d'un PC, du bouton power jusqu'au bureau Windows :",
+    "options": [
+      "Chargement du bootloader (gestionnaire de démarrage Windows)",
+      "Alimentation des composants et démarrage du firmware UEFI",
+      "POST (Power-On Self Test) : vérification du matériel",
+      "Affichage du bureau Windows",
+      "Chargement du noyau Windows (ntoskrnl)"
+    ],
+    "answer": [
+      "Alimentation des composants et démarrage du firmware UEFI",
+      "POST (Power-On Self Test) : vérification du matériel",
+      "Chargement du bootloader (gestionnaire de démarrage Windows)",
+      "Chargement du noyau Windows (ntoskrnl)",
+      "Affichage du bureau Windows"
+    ],
+    "comment": "L'UEFI s'exécute avant tout OS. Le POST vérifie que tous les composants répondent. Si le POST échoue (bips d'erreur), le système ne va pas plus loin. Le bootloader est le pont entre le firmware et l'OS."
+  },
+  {
+    "id": "OPT-M02-C11-010",
+    "category": "Hardware & architecture des systèmes informatiques",
+    "chapter": "Le BIOS / UEFI",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Pour réinitialiser le BIOS via la pile CMOS, remettez ces étapes dans le bon ordre :",
+    "options": [
+      "Remettre la pile CR2032 en place",
+      "Rebrancher le secteur et démarrer le PC",
+      "Localiser la pile bouton CR2032 sur la carte mère",
+      "Éteindre le PC et débrancher le câble secteur",
+      "Retirer la pile et attendre 10-30 secondes"
+    ],
+    "answer": [
+      "Éteindre le PC et débrancher le câble secteur",
+      "Localiser la pile bouton CR2032 sur la carte mère",
+      "Retirer la pile et attendre 10-30 secondes",
+      "Remettre la pile CR2032 en place",
+      "Rebrancher le secteur et démarrer le PC"
+    ],
+    "comment": "L'attente de 10-30 secondes permet aux condensateurs de se décharger et à la mémoire CMOS de se vider. Après remontage, le BIOS repart sur ses valeurs par défaut. Reconfigurer l'heure, la date et les paramètres nécessaires."
+  }
+]

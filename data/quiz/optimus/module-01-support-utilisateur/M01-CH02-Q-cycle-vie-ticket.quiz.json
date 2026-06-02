@@ -1,0 +1,129 @@
+[
+  {
+    "id": "OPT-M01-C02-001",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "C",
+    "type": "classic",
+    "question": "Combien d'étapes compte le cycle de vie d'un ticket, et quelle est la première ?",
+    "answer": "7 étapes : Détection/Signalement → Enregistrement → Qualification → Priorisation → Diagnostic → Résolution ou Escalade → Clôture. La première est la Détection / Signalement.",
+    "comment": "Detail souvent neglige : la detection peut venir de l'utilisateur (il appelle) mais aussi d'une supervision automatique (une alerte serveur ouvre le ticket avant que quiconque s'en plaigne). Dans les deux cas, l'enregistrement vient juste apres et n'est pas la meme chose : detecter, c'est savoir qu'il y a un souci ; enregistrer, c'est en creer la trace exploitable. Un probleme connu de tout le service mais jamais enregistre n'existe pas pour le SLA ni pour les statistiques."
+  },
+  {
+    "id": "OPT-M01-C02-002",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il jamais clôturer un ticket sans confirmation de l'utilisateur ?",
+    "answer": "Parce que l'utilisateur est le seul à pouvoir confirmer que son problème est réellement résolu. Un ticket clôturé trop vite peut rouvrir et fausse les statistiques du service.",
+    "comment": "Réflexe terrain : toujours demander 'Pouvez-vous tester et confirmer que tout fonctionne ?' avant de clôturer. La clôture unilatérale est une erreur professionnelle."
+  },
+  {
+    "id": "OPT-M01-C02-003",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la différence entre les étapes 'Qualification' et 'Priorisation' dans le cycle d'un ticket ?",
+    "answer": "La qualification détermine la nature de la demande (incident ou demande de service ? quelle catégorie ?). La priorisation détermine son degré d'urgence en croisant urgence et impact.",
+    "comment": "On qualifie d'abord pour savoir ce qu'on a, puis on priorise pour savoir dans quel ordre le traiter. Sans qualification correcte, la priorisation sera fausse."
+  },
+  {
+    "id": "OPT-M01-C02-004",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles informations minimales doit contenir un ticket bien renseigné ?",
+    "answer": "Identité et contact de l'utilisateur, date et heure, description du symptôme (mots de l'utilisateur + reformulation technique), équipement concerné (numéro d'inventaire), catégorie, priorité, historique des actions menées.",
+    "comment": "'Mon PC marche pas' n'est pas une description. 'Au démarrage, écran noir, aucun bip, voyant alimentation allumé' en est une. La qualité du ticket conditionne la rapidité de résolution."
+  },
+  {
+    "id": "OPT-M01-C02-005",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "B",
+    "type": "classic",
+    "question": "Vrai ou Faux : l'étape 'Résolution' est toujours effectuée par le technicien qui a ouvert le ticket.",
+    "answer": "Faux. Si l'incident dépasse le périmètre du technicien, il est escaladé vers N2 ou N3. La résolution peut donc être assurée par une autre équipe.",
+    "comment": "L'étape 6 du cycle est 'Résolution OU Escalade' — les deux sont des issues valides. Escalader n'est pas un échec, c'est la bonne décision quand on atteint sa limite de compétence."
+  },
+  {
+    "id": "OPT-M01-C02-006",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les 7 étapes du cycle de vie d'un ticket :",
+    "options": ["Clôture", "Priorisation", "Résolution ou Escalade", "Enregistrement", "Diagnostic", "Détection / Signalement", "Qualification"],
+    "answer": ["Détection / Signalement", "Enregistrement", "Qualification", "Priorisation", "Diagnostic", "Résolution ou Escalade", "Clôture"],
+    "comment": "Chaque étape produit ce dont la suivante a besoin pour exister : sans enregistrement, rien à qualifier ; sans qualification, on ne sait pas quoi prioriser ; sans diagnostic, on résout au hasard. Les deux inversions classiques sont de prioriser avant de qualifier (on classe en urgent un ticket qu'on n'a pas compris) et de clôturer avant la validation utilisateur. Ce n'est pas une routine administrative : sauter un maillon casse la chaîne d'information, pas seulement l'ordre."
+  },
+  {
+    "id": "OPT-M01-C02-007",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque étape du cycle de vie du ticket à ce qu'elle produit concrètement :",
+    "pairs": [
+      {"left": "Enregistrement", "right": "Création du ticket avec identité, date et description"},
+      {"left": "Qualification", "right": "Catégorisation : incident ou demande de service ?"},
+      {"left": "Clôture", "right": "Validation par l'utilisateur que le service est rétabli"}
+    ],
+    "answer": "Enregistrement = création du ticket | Qualification = catégorisation | Clôture = validation utilisateur",
+    "comment": "Raisonner en livrables permet de détecter une étape bâclée : un ticket sans catégorie = qualification sautée ; une clôture sans confirmation = étape finale escamotée. Si une étape ne produit pas son livrable, elle n'a pas vraiment eu lieu, même si le ticket avance."
+  },
+  {
+    "id": "OPT-M01-C02-008",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #02 : Un collègue vous transmet un ticket avec comme description : 'PC KO'. Aucune autre information. Que faites-vous ?",
+    "answer": "Le ticket est inexploitable tel quel — il faut le compléter avant de pouvoir agir.",
+    "checklist": [
+      "Rappeler ou contacter l'utilisateur pour recueillir une description précise du symptôme",
+      "Demander : que se passe-t-il exactement ? depuis quand ? quel équipement ? message d'erreur ?",
+      "Reformuler techniquement la description en mots de l'utilisateur",
+      "Renseigner le numéro d'inventaire de l'équipement",
+      "Qualifier (incident ou demande ?) et prioriser avant toute action"
+    ],
+    "comment": "Le réflexe à éviter : commencer à dépanner au hasard sur la base de 'PC KO' pour gagner du temps. C'est l'inverse — sans symptôme précis on teste à l'aveugle et on en perd. Recueillir l'info avant d'agir n'est pas une perte de temps, c'est ce qui rend l'action efficace."
+  },
+  {
+    "id": "OPT-M01-C02-009",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #03 : Vous avez résolu un incident réseau pour un utilisateur. Vous avez vérifié de votre côté que la connexion est rétablie. Pouvez-vous clôturer le ticket ?",
+    "answer": "Non. Il faut d'abord obtenir la confirmation de l'utilisateur que tout fonctionne de son côté.",
+    "checklist": [
+      "Documenter immédiatement les actions réalisées tant qu'elles sont fraîches",
+      "Contacter l'utilisateur et lui demander de tester son accès dans ses conditions réelles",
+      "Attendre une confirmation explicite ('oui, ça fonctionne'), pas un silence ni un 'ça doit aller'",
+      "Indiquer le motif de résolution dans le ticket pour l'historique",
+      "Clôturer uniquement après cette validation utilisateur"
+    ],
+    "comment": "Rétabli côté technicien et rétabli côté utilisateur ne sont pas la même chose : le réseau peut répondre à votre ping alors que son application reste bloquée sur un cache, un profil ou un droit local. Le piège est aussi de se contenter d'un 'oui' poli arraché à quelqu'un qui n'a pas retesté — demandez une vérification réelle, pas un assentiment. C'est ce test concret, pas votre certitude, qui autorise la clôture."
+  },
+  {
+    "id": "OPT-M01-C02-010",
+    "category": "Support utilisateur",
+    "chapter": "Le cycle de vie d'un ticket",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #04 : Vous recevez un ticket ouvert il y a 3 jours, sans mise à jour depuis. L'utilisateur n'a pas été recontacté. Quel problème cela pose-t-il et que faire ?",
+    "answer": "Un ticket sans suivi viole la traçabilité et le SLA. Il faut reprendre contact immédiatement et documenter toutes les actions.",
+    "checklist": [
+      "Reprendre contact avec l'utilisateur pour connaître l'état actuel de son problème",
+      "Documenter dans le ticket l'historique de ce qui a été fait (même si peu)",
+      "Vérifier si le SLA est dépassé (délai de résolution selon la priorité)",
+      "Si SLA dépassé, alerter le responsable selon la procédure interne",
+      "Mettre à jour la priorité si la situation a évolué, puis traiter ou escalader"
+    ],
+    "comment": "Le piège du tier A ici : croire que l'urgence est de résoudre vite. La vraie première action est de reprendre contact — l'utilisateur a peut-être contourné le problème seul, ou au contraire est bloqué depuis 3 jours sans le redire. On ne peut ni reprioriser ni rattraper un éventuel SLA sans connaître l'état réel. Agir sans ce contact, c'est risquer de traiter en urgence un ticket déjà obsolète."
+  }
+]

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "OPT-M06-C08-001",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que l'Observateur d'événements et comment l'ouvre-t-on rapidement ?",
+    "answer": "L'Observateur d'événements (eventvwr.msc) est le journal centralisé de Windows. Il enregistre les connexions, erreurs, avertissements, installations et pannes. On l'ouvre via Win+R puis eventvwr.msc.",
+    "comment": "C'est le premier réflexe face à un comportement inexpliqué : avant de spéculer, on va lire ce que la machine a elle-même consigné. Beaucoup de techniciens réinstallent ou redémarrent au hasard alors que la cause est écrite noir sur blanc dans le journal."
+  },
+  {
+    "id": "OPT-M06-C08-002",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les quatre journaux essentiels de l'Observateur d'événements et que contient chacun ?",
+    "answer": "Système (erreurs matérielles, pilotes, services Windows), Application (erreurs des logiciels installés), Sécurité (connexions réussies/échouées, modifications de comptes — audit) et Installation (historique des MAJ et installations).",
+    "comment": "Le piège classique est de chercher une panne matérielle dans le journal Application ou un crash logiciel dans Système. Réflexe : matériel/pilote/service Windows → Système ; logiciel tiers → Application ; tout ce qui touche aux comptes et connexions → Sécurité."
+  },
+  {
+    "id": "OPT-M06-C08-003",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les quatre niveaux d'événements et que signifient-ils ?",
+    "answer": "Information (fonctionnement normal), Avertissement (point potentiel à surveiller), Erreur (un service ou une application a échoué) et Critique (panne grave : crash, perte de données).",
+    "comment": "On ne se noie pas dans les Information : ce sont des centaines d'entrées de routine. Le tri terrain consiste à filtrer Erreur + Critique pour isoler les vrais problèmes. Un Avertissement répété (disque, mémoire) est souvent le signe annonciateur d'une panne à venir."
+  },
+  {
+    "id": "OPT-M06-C08-004",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que signifie l'ID d'événement 4625 et dans quel contexte terrain l'utilise-t-on ?",
+    "answer": "L'ID 4625 (journal Sécurité) correspond à un échec de connexion (mauvais mot de passe par exemple). On l'utilise pour repérer des tentatives de connexion infructueuses, notamment des attaques par force brute ou un compte malmené.",
+    "comment": "Une rafale de 4625 sur un même compte en quelques secondes, c'est la signature d'une attaque automatisée. Si le 4625 est ensuite suivi d'un 4740 (compte verrouillé), la politique de verrouillage a fait son travail. Attention : le journal Sécurité n'enregistre ces IDs que si l'audit est activé."
+  },
+  {
+    "id": "OPT-M06-C08-005",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la différence entre les IDs 41 et 6008 dans le journal Système ?",
+    "answer": "L'ID 41 signale un redémarrage inattendu (crash, coupure de courant) : le système a redémarré sans s'être arrêté proprement. L'ID 6008 indique que l'arrêt précédent a été brutal/imprévu. Les deux sont complémentaires pour confirmer un arrêt anormal.",
+    "comment": "On les croise systématiquement : un 41 seul peut être ambigu, mais 41 + 6008 sur le même créneau horaire confirme sans ambiguïté un arrêt non contrôlé. À opposer au 1074, qui indique un redémarrage planifié et nomme qui/quoi en est responsable."
+  },
+  {
+    "id": "OPT-M06-C08-006",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque ID d'événement à sa signification :",
+    "pairs": [
+      {"left": "4624 (Sécurité)", "right": "Connexion réussie"},
+      {"left": "4625 (Sécurité)", "right": "Échec de connexion (mauvais mot de passe)"},
+      {"left": "4740 (Sécurité)", "right": "Compte verrouillé"},
+      {"left": "4648 (Sécurité)", "right": "Tentative de connexion avec identifiants explicites"},
+      {"left": "41 (Système)", "right": "Redémarrage inattendu (crash, coupure de courant)"},
+      {"left": "6008 (Système)", "right": "Arrêt brutal précédent"},
+      {"left": "1074 (Système)", "right": "Redémarrage planifié (qui a redémarré et pourquoi)"}
+    ],
+    "answer": "4624 = connexion réussie | 4625 = échec de connexion | 4740 = compte verrouillé | 4648 = connexion avec identifiants explicites | 41 = redémarrage inattendu | 6008 = arrêt brutal précédent | 1074 = redémarrage planifié",
+    "comment": "Les IDs en 46xx vivent dans le journal Sécurité (audit), les IDs 41/6008/1074 dans le journal Système. Connaître ce petit lot par cœur fait gagner un temps fou : on filtre directement par numéro au lieu de feuilleter des milliers de lignes."
+  },
+  {
+    "id": "OPT-M06-C08-007",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque journal à son contenu :",
+    "pairs": [
+      {"left": "Système", "right": "Erreurs matérielles, pilotes, services Windows"},
+      {"left": "Application", "right": "Erreurs des logiciels installés"},
+      {"left": "Sécurité", "right": "Connexions réussies/échouées, modifications de comptes (audit)"},
+      {"left": "Installation", "right": "Historique des mises à jour et installations"}
+    ],
+    "answer": "Système = matériel, pilotes, services Windows | Application = logiciels installés | Sécurité = connexions et comptes (audit) | Installation = historique MAJ et installations",
+    "comment": "Le journal Sécurité est le seul qui dépend d'une configuration préalable : sans stratégie d'audit activée (par GPO), il reste quasi vide. Les trois autres se remplissent automatiquement dès l'installation de Windows."
+  },
+  {
+    "id": "OPT-M06-C08-008",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre la procédure d'investigation d'un redémarrage inattendu :",
+    "options": [
+      "Lire le message détaillé de l'événement pour identifier la cause",
+      "Sélectionner le journal Système",
+      "Ouvrir l'Observateur d'événements (eventvwr.msc)",
+      "Chercher les IDs 41 et 6008",
+      "Filtrer le journal actuel"
+    ],
+    "answer": [
+      "Ouvrir l'Observateur d'événements (eventvwr.msc)",
+      "Sélectionner le journal Système",
+      "Filtrer le journal actuel",
+      "Chercher les IDs 41 et 6008",
+      "Lire le message détaillé de l'événement pour identifier la cause"
+    ],
+    "comment": "Le filtrage avant la recherche d'ID n'est pas cosmétique : sans filtre, on scrolle dans des milliers d'entrées Information. En filtrant par niveau Critique/Erreur ou directement par ID, on tombe sur la bonne ligne en quelques secondes."
+  },
+  {
+    "id": "OPT-M06-C08-009",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #501 : 'Un serveur a redémarré de façon inattendue cette nuit. L'administrateur veut connaître la cause de l'arrêt avant la reprise d'activité.'",
+    "answer": "L'incident est forcément consigné dans le journal Système. Il faut ouvrir l'Observateur d'événements, filtrer sur les IDs liés aux arrêts anormaux et lire le détail pour distinguer crash logiciel, coupure électrique ou redémarrage planifié.",
+    "checklist": [
+      "Ouvrir eventvwr.msc sur le serveur",
+      "Sélectionner le journal Système",
+      "Filtrer le journal actuel par IDs 41 et 6008 (et 1074 pour écarter un redémarrage planifié)",
+      "Repérer l'horodatage correspondant à la nuit concernée",
+      "Lire le message détaillé : code BugCheck, coupure d'alimentation, ou auteur d'un redémarrage volontaire",
+      "Recouper avec les Erreurs/Critiques du journal Système juste avant l'arrêt pour trouver le déclencheur"
+    ],
+    "comment": "Le réflexe qui sépare le pro de l'amateur : vérifier d'abord le 1074. S'il existe à la bonne heure, ce n'était pas une panne mais un redémarrage déclenché (MAJ, script, admin). Inutile de chasser une coupure électrique fantôme si Windows s'est arrêté de lui-même."
+  },
+  {
+    "id": "OPT-M06-C08-010",
+    "category": "Administration de Windows",
+    "chapter": "Observateur d'événements",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #502 : 'Le responsable sécurité signale des tentatives de connexion répétées sur un compte utilisateur. Il faut confirmer l'attaque et son ampleur.'",
+    "answer": "Les tentatives de connexion sont tracées dans le journal Sécurité. Il faut filtrer sur les échecs (4625) et vérifier si le compte a fini verrouillé (4740), tout en confirmant que l'audit est bien actif pour ne pas conclure trop vite.",
+    "checklist": [
+      "Vérifier que la stratégie d'audit des connexions est activée (sinon le journal Sécurité sera vide)",
+      "Ouvrir eventvwr.msc et sélectionner le journal Sécurité",
+      "Filtrer par ID 4625 (échecs de connexion) pour mesurer le volume et la fréquence",
+      "Filtrer par ID 4740 pour voir si le compte a été verrouillé",
+      "Relever les horodatages et l'IP/poste source dans le détail des événements",
+      "Vérifier la présence éventuelle de 4624 (connexion réussie) pour savoir si l'attaque a abouti"
+    ],
+    "comment": "Le point qui change tout : la présence d'un 4624 après une rafale de 4625 signifie que l'attaquant a fini par trouver le mot de passe — on passe alors d'un incident à une compromission, avec changement de mot de passe et analyse immédiate. Vérifier l'audit en premier évite de déclarer 'rien à signaler' sur un journal simplement désactivé."
+  }
+]

@@ -1,0 +1,145 @@
+[
+  {
+    "id": "OPT-M06-C06-001",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Qu'est-ce que BitLocker et à quoi sert-il concrètement ?",
+    "answer": "BitLocker est la fonction de chiffrement intégral du disque intégrée à Windows. Tout le contenu du disque est chiffré : en cas de vol du PC ou d'extraction physique du disque, les données restent illisibles sans la clé de déchiffrement.",
+    "comment": "BitLocker protège les données au repos, pas pendant que la session est ouverte : une fois l'utilisateur connecté, le disque est déchiffré à la volée et les données sont accessibles normalement. Sa valeur se révèle uniquement quand la machine est éteinte ou le disque arraché. Ce n'est donc pas un antivirus ni une protection contre un malware qui tourne sur une session active."
+  },
+  {
+    "id": "OPT-M06-C06-002",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel est le rôle du TPM dans le fonctionnement de BitLocker ?",
+    "answer": "Le TPM (Trusted Platform Module) est une puce dédiée qui stocke les clés de chiffrement et vérifie l'intégrité du démarrage de la machine. C'est lui qui permet à BitLocker de déchiffrer le disque automatiquement au boot tant que rien de suspect n'a été modifié dans la chaîne de démarrage.",
+    "comment": "Le TPM 2.0 est présent sur la quasi-totalité des machines depuis 2016. C'est précisément parce qu'il surveille l'intégrité matérielle et du démarrage qu'une simple mise à jour du BIOS peut déclencher la demande de clé de récupération : le TPM détecte un changement et refuse de livrer la clé automatiquement. Sans TPM, BitLocker reste possible mais exige une clé sur clé USB à chaque démarrage, bien moins pratique."
+  },
+  {
+    "id": "OPT-M06-C06-003",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Sur quelles éditions de Windows BitLocker est-il disponible, et sur laquelle ne l'est-il pas ?",
+    "answer": "BitLocker est disponible sur Windows Pro, Entreprise et Éducation. Il n'est PAS disponible sur Windows Home.",
+    "comment": "C'est un piège fréquent en parc mixte : un poste acheté en grande surface arrive souvent en édition Home, sur laquelle on ne pourra pas activer BitLocker. Il faut alors prévoir une montée de licence vers Pro avant tout projet de chiffrement. Windows Home propose un 'chiffrement de l'appareil' limité sur certains modèles, mais ce n'est pas BitLocker et il n'offre pas la gestion centralisée."
+  },
+  {
+    "id": "OPT-M06-C06-004",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Qu'est-ce que la clé de récupération BitLocker et dans quels cas devient-elle indispensable ?",
+    "answer": "La clé de récupération est un code de 48 chiffres généré à l'activation de BitLocker. Elle devient indispensable quand le TPM détecte un changement empêchant le déchiffrement automatique : mise à jour du BIOS, changement de carte mère, oubli du PIN, ou disque rebranché sur une autre machine.",
+    "comment": "Sa sauvegarde est OBLIGATOIRE à l'activation : sans elle, un déclenchement TPM rend les données définitivement inaccessibles, sans aucun recours possible. C'est le point de défaillance critique de tout projet BitLocker. Le réflexe en entreprise est de ne jamais dépendre de l'utilisateur pour conserver ce code : la sauvegarde doit être automatique et centralisée."
+  },
+  {
+    "id": "OPT-M06-C06-005",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "B",
+    "type": "classic",
+    "question": "À quoi sert la commande manage-bde -status ?",
+    "answer": "manage-bde -status (ou manage-bde -status C: pour un volume précis) affiche l'état du chiffrement BitLocker : volume chiffré ou non, pourcentage de chiffrement en cours, méthode de chiffrement utilisée et protecteurs actifs.",
+    "comment": "C'est l'outil de diagnostic en ligne de commande, scriptable et utilisable à distance, là où l'interface graphique n'indique qu'un état sommaire. Le pourcentage de progression est précieux quand on vient d'activer le chiffrement sur un gros disque : tant qu'il n'est pas à 100 %, le poste reste partiellement vulnérable. manage-bde permet aussi de piloter le déverrouillage et la gestion des protecteurs en dépannage."
+  },
+  {
+    "id": "OPT-M06-C06-006",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque emplacement de stockage de la clé de récupération à sa recommandation ou sa raison :",
+    "pairs": [
+      {"left": "Active Directory de l'entreprise", "right": "Recommandé en entreprise : clé centralisée, récupérable par l'IT via dsa.msc"},
+      {"left": "Compte Microsoft", "right": "Adapté aux particuliers : clé liée au compte personnel en ligne"},
+      {"left": "Fichier sur le même PC", "right": "Inutile : si le PC est volé, la clé part avec lui"},
+      {"left": "Impression papier en coffre", "right": "Complément acceptable : sauvegarde hors ligne en secours"}
+    ],
+    "answer": "AD entreprise = recommandé, clé centralisée récupérable par l'IT | Compte Microsoft = pour les particuliers | Fichier sur le même PC = inutile, vol = clé volée aussi | Impression papier en coffre = complément de secours",
+    "comment": "L'erreur classique du débutant est d'enregistrer la clé dans un fichier .txt sur le bureau : cela revient à laisser la clé du coffre scotchée dessus. La logique BitLocker veut que la clé soit toujours stockée AILLEURS que sur la machine protégée. En entreprise, AD est l'emplacement de référence car il survit au vol et reste accessible à l'IT même utilisateur absent."
+  },
+  {
+    "id": "OPT-M06-C06-007",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation à la raison pour laquelle elle déclenche une demande de clé de récupération BitLocker :",
+    "pairs": [
+      {"left": "Mise à jour du BIOS", "right": "Le TPM détecte une modification de la chaîne de démarrage"},
+      {"left": "Changement de carte mère", "right": "Le TPM d'origine est absent, l'intégrité matérielle a changé"},
+      {"left": "Oubli du PIN de démarrage", "right": "Le protecteur de déverrouillage normal ne peut plus être fourni"},
+      {"left": "Disque branché sur une autre machine", "right": "Le disque ne retrouve pas son TPM d'origine pour se déverrouiller"}
+    ],
+    "answer": "MAJ BIOS = le TPM détecte une modification du démarrage | Changement carte mère = TPM d'origine absent | Oubli du PIN = protecteur normal indisponible | Disque sur autre machine = pas de TPM d'origine",
+    "comment": "Toutes ces causes ont un point commun : le TPM constate que la machine n'est plus dans l'état de confiance enregistré, et refuse donc de livrer la clé automatiquement. C'est une protection, pas un bug. Le réflexe est de toujours croiser un déclenchement avec un événement matériel récent (MAJ planifiée la nuit, intervention sur la machine) avant de soupçonner une attaque."
+  },
+  {
+    "id": "OPT-M06-C06-008",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "A",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes pour déployer BitLocker sur un parc via GPO Active Directory :",
+    "options": [
+      "Lancer gpupdate /force sur les postes (ou attendre l'actualisation)",
+      "Configurer la sauvegarde de la clé de récupération dans AD (Composants Windows > BitLocker > Lecteurs OS)",
+      "Vérifier l'état du chiffrement avec manage-bde -status sur un poste",
+      "Créer la GPO dédiée à BitLocker",
+      "Lier la GPO à l'unité d'organisation contenant les postes",
+      "Confirmer la présence de la clé dans dsa.msc (onglet Récupération BitLocker de l'objet ordinateur)"
+    ],
+    "answer": [
+      "Créer la GPO dédiée à BitLocker",
+      "Configurer la sauvegarde de la clé de récupération dans AD (Composants Windows > BitLocker > Lecteurs OS)",
+      "Lier la GPO à l'unité d'organisation contenant les postes",
+      "Lancer gpupdate /force sur les postes (ou attendre l'actualisation)",
+      "Vérifier l'état du chiffrement avec manage-bde -status sur un poste",
+      "Confirmer la présence de la clé dans dsa.msc (onglet Récupération BitLocker de l'objet ordinateur)"
+    ],
+    "comment": "L'ordre est critique : on configure la sauvegarde automatique de la clé dans AD AVANT de lier la GPO et de déclencher le chiffrement. Si on chiffre d'abord et qu'on configure la sauvegarde après, les premiers postes chiffrés n'auront pas remonté leur clé dans AD : un déclenchement TPM sur ces postes-là entraînerait une perte de données. La vérification dans dsa.msc en fin de procédure n'est pas optionnelle, c'est elle qui prouve que le filet de sécurité est en place."
+  },
+  {
+    "id": "OPT-M06-C06-009",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #512 : 'Un utilisateur appelle paniqué : au démarrage, son PC affiche un écran bleu BitLocker qui réclame une clé de récupération de 48 chiffres. Il ne peut plus accéder à Windows.'",
+    "answer": "Le TPM a détecté un changement et bloque le déverrouillage automatique. Il faut récupérer la clé de récupération de ce poste dans Active Directory et la communiquer à l'utilisateur pour qu'il déverrouille la session, puis investiguer ce qui a déclenché le TPM.",
+    "checklist": [
+      "Rassurer l'utilisateur : les données ne sont pas perdues, la clé existe dans AD",
+      "Ouvrir dsa.msc et retrouver l'objet ordinateur correspondant au poste",
+      "Aller dans les Propriétés > onglet Récupération BitLocker de l'objet ordinateur",
+      "Vérifier l'ID de la clé affiché à l'écran du PC et le faire correspondre à la bonne clé dans AD",
+      "Communiquer la clé de 48 chiffres à l'utilisateur pour déverrouiller le démarrage",
+      "Investiguer le déclencheur : MAJ BIOS la nuit précédente, changement de composant, ou modification de l'ordre de boot"
+    ],
+    "comment": "Réflexe : ne jamais traiter ce ticket comme une perte de données, mais comme un déverrouillage de routine. Le piège est de communiquer la mauvaise clé : sur un parc, plusieurs postes peuvent apparaître, d'où l'importance de faire correspondre l'identifiant de clé affiché à l'écran. Une fois l'utilisateur dépanné, l'investigation du déclencheur est obligatoire : une MAJ BIOS planifiée explique le cas, mais un déclenchement inexpliqué peut signaler une intervention non autorisée sur la machine."
+  },
+  {
+    "id": "OPT-M06-C06-010",
+    "category": "Administration de Windows",
+    "chapter": "BitLocker — Chiffrement des postes",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #530 : 'La direction demande de chiffrer les 50 postes portables du domaine avec BitLocker, suite à la perte d'un ordinateur contenant des données sensibles. Vous devez garantir qu'aucune clé ne sera jamais perdue.'",
+    "answer": "Déploiement centralisé par GPO avec sauvegarde automatique de la clé de récupération dans AD. On ne passe jamais poste par poste manuellement : la GPO active BitLocker et force la remontée de la clé dans l'objet ordinateur AD dès l'activation, ce qui garantit qu'aucune clé n'échappe à l'IT.",
+    "checklist": [
+      "Vérifier que les 50 postes sont en édition Pro/Entreprise/Éducation et disposent d'un TPM 2.0",
+      "Créer une GPO dédiée BitLocker dans la console de gestion des stratégies de groupe",
+      "Activer 'Sauvegarder les informations de récupération dans AD' (Composants Windows > BitLocker > Lecteurs du système d'exploitation)",
+      "Exiger que BitLocker ne s'active qu'une fois la clé stockée dans AD (option de la GPO)",
+      "Lier la GPO à l'unité d'organisation contenant les portables",
+      "Déclencher gpupdate /force puis vérifier manage-bde -status et la présence des clés dans dsa.msc"
+    ],
+    "comment": "Réflexe entreprise : le chiffrement sans plan de sauvegarde des clés est plus dangereux que pas de chiffrement du tout, car il peut rendre les données irrécupérables côté légitime. L'option 'ne pas activer BitLocker tant que la clé n'est pas dans AD' est la garantie demandée par la direction : elle empêche toute fenêtre où un poste serait chiffré sans filet. Penser aussi aux postes en édition Home cachés dans le parc : ils devront passer en Pro avant d'entrer dans le périmètre."
+  }
+]

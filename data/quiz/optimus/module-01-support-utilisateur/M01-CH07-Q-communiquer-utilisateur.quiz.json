@@ -1,0 +1,122 @@
+[
+  {
+    "id": "OPT-M01-C07-001",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la règle fondamentale concernant le vocabulaire lors d'une assistance ?",
+    "answer": "L'utilisateur n'a pas à comprendre la technique. C'est au technicien d'adapter son vocabulaire, son élocution et son débit — pas l'inverse.",
+    "comment": "Dire 'votre DNS ne résout pas' à un utilisateur lambda est contre-productif. Dire 'votre ordinateur n'arrive pas à retrouver le site, on va vérifier un réglage' est efficace et respectueux."
+  },
+  {
+    "id": "OPT-M01-C07-002",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi ne faut-il jamais culpabiliser un utilisateur lors d'une intervention ?",
+    "answer": "Un utilisateur culpabilisé signale moins vite ses erreurs futures, ce qui ralentit les diagnostics et augmente les risques. La confiance accélère le partage d'information.",
+    "comment": "'Vous avez encore cliqué sur ce lien ?' est une réaction à bannir. Un utilisateur en confiance dira immédiatement 'j'ai peut-être ouvert une pièce jointe suspecte', ce qui oriente le diagnostic en quelques secondes."
+  },
+  {
+    "id": "OPT-M01-C07-003",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "C",
+    "type": "classic",
+    "question": "Comment adapter sa communication à une personne malvoyante lors d'une assistance à distance ?",
+    "answer": "Décrire à voix haute chaque action effectuée sur l'écran, indiquer les emplacements en termes non visuels ('en bas à gauche', 'troisième élément de la liste'), et utiliser le Narrateur ou la loupe si nécessaire.",
+    "comment": "L'accessibilité n'est pas optionnelle. Le technicien doit s'adapter à l'utilisateur, quelle que soit sa situation. Les outils d'accessibilité Windows (Narrateur, loupe, contraste élevé) sont détaillés dans le module Systèmes."
+  },
+  {
+    "id": "OPT-M01-C07-004",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la première vérification à faire pour un problème sur un outil SaaS (ex : Microsoft 365) ?",
+    "answer": "Vérifier la licence et la connexion Internet. Un outil SaaS (Software as a Service, application hébergée dans le cloud) dépend d'une connexion active et d'une licence valide — la majorité des pannes vient de là, pas du poste.",
+    "comment": "Le reflexe a inverser : sur un logiciel installe en local, on regarde d'abord le poste ; sur un SaaS, le poste n'heberge presque rien, l'application tourne ailleurs. Commencer par reinstaller, vider le cache ou fouiller la machine fait perdre du temps alors que la cause est presque toujours en amont : abonnement expire, droit retire par l'admin, ou simple coupure reseau. Verifier licence + connexion d'abord, c'est aller la ou se trouve reellement 80% des pannes SaaS avant de toucher au poste."
+  },
+  {
+    "id": "OPT-M01-C07-005",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pour un problème sur un logiciel métier (ERP, CRM), quelle est la limite du rôle du technicien de proximité N1 ?",
+    "answer": "Le N1 gère l'accès, l'installation et les pannes courantes. L'expertise fonctionnelle (paramétrage métier, workflows, données) relève de l'éditeur ou d'une équipe dédiée → escalader.",
+    "comment": "Un technicien N1 peut résoudre 'l'appli ne se lance pas' (problème technique). Il ne peut pas résoudre 'ma facture SAP ne s'enregistre pas' (problème fonctionnel métier) sans escalade."
+  },
+  {
+    "id": "OPT-M01-C07-006",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles sont les contraintes spécifiques de la communication par téléphone par rapport au présentiel ?",
+    "answer": "Au téléphone, tout passe par la voix uniquement — pas de visuel partagé, pas de langage non verbal. Les consignes doivent être plus explicites et la compréhension vérifiée plus régulièrement.",
+    "comment": "Au présentiel, un geste ou un regard suffit. Au téléphone, il faut tout verbaliser : 'cliquez sur le bouton bleu en bas à droite qui dit Paramètres'. Vérifier régulièrement : 'vous avez bien trouvé ?'"
+  },
+  {
+    "id": "OPT-M01-C07-007",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes d'une bonne communication lors d'une intervention d'assistance :",
+    "options": ["Vérifier la compréhension de l'utilisateur", "Adapter son vocabulaire au profil de l'interlocuteur", "Accueillir et mettre l'utilisateur en confiance", "Clôturer avec une confirmation que tout est clair"],
+    "answer": ["Accueillir et mettre l'utilisateur en confiance", "Adapter son vocabulaire au profil de l'interlocuteur", "Vérifier la compréhension de l'utilisateur", "Clôturer avec une confirmation que tout est clair"],
+    "comment": "La confiance d'abord, puis l'adaptation du langage, puis les vérifications régulières, puis la confirmation finale. Cette séquence garantit une communication efficace à chaque étape."
+  },
+  {
+    "id": "OPT-M01-C07-008",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation de handicap à l'adaptation de communication appropriée :",
+    "pairs": [
+      {"left": "Personne malentendante", "right": "Ralentir l'élocution, articuler clairement, préférer l'écrit si possible"},
+      {"left": "Personne malvoyante", "right": "Décrire à voix haute chaque action, éviter les références visuelles"},
+      {"left": "Personne avec trouble cognitif", "right": "Simplifier les instructions, une étape à la fois, reformuler souvent"}
+    ],
+    "answer": "Malentendant = articuler/écrire | Malvoyant = décrire à voix haute | Trouble cognitif = simplifier/une étape à la fois",
+    "comment": "Le fil conducteur : compenser le canal défaillant en s'appuyant sur un autre. Le malentendant perd l'audio, on bascule sur l'écrit et le visuel ; le malvoyant perd le visuel, on bascule sur une description verbale précise. Le réflexe à éviter est universel : hausser le ton ou répéter à l'identique ne compense rien."
+  },
+  {
+    "id": "OPT-M01-C07-009",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #14 : Vous assistez par téléphone un utilisateur senior peu à l'aise avec l'informatique pour reconfigurer sa messagerie. Il vous dit : 'Je ne comprends rien, c'est trop compliqué pour moi.' Comment répondez-vous ?",
+    "answer": "Rassurer, simplifier le langage, décomposer en micro-étapes, vérifier la compréhension à chaque pas.",
+    "checklist": [
+      "Rassurer : 'Ne vous inquiétez pas, on va y aller doucement ensemble'",
+      "Éviter tout jargon technique (pas de 'IMAP', 'port 993', 'SSL')",
+      "Décomposer en étapes très courtes : 'D'abord, ouvrez Outlook. Vous voyez l'icône sur votre bureau ?'",
+      "Vérifier à chaque étape : 'C'est bon ? Vous êtes bien sur cet écran ?'",
+      "Aller au rythme de l'utilisateur, jamais au vôtre"
+    ],
+    "comment": "La patience et la pédagogie ne sont pas des options — elles font partie du métier. Un technicien qui fait sentir à l'utilisateur qu'il est 'nul' a échoué dans sa mission."
+  },
+  {
+    "id": "OPT-M01-C07-010",
+    "category": "Support utilisateur",
+    "chapter": "Communiquer avec l'utilisateur",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #15 : Un utilisateur est agressif au téléphone : 'Ça fait 3 jours que mon problème n'est pas résolu, vous êtes tous incompétents !' Comment gérez-vous la situation ?",
+    "answer": "Écouter sans se défendre, reconnaître la frustration, expliquer calmement la situation et les prochaines étapes.",
+    "checklist": [
+      "Laisser l'utilisateur s'exprimer sans l'interrompre",
+      "Reconnaître sa frustration : 'Je comprends que c'est une situation très inconfortable'",
+      "Ne pas se défendre ni attaquer en retour",
+      "Présenter des excuses pour le délai et expliquer la situation",
+      "Proposer des actions concrètes immédiates et donner un délai précis de résolution"
+    ],
+    "comment": "La gestion d'un utilisateur agressif est une compétence professionnelle. La règle : ne jamais répondre à l'agressivité par l'agressivité. La désescalade passe par l'écoute et le concret."
+  }
+]

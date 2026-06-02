@@ -1,0 +1,128 @@
+[
+  {
+    "id": "OPT-M05-C07-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que signifie DEEE et quel est son cadre reglementaire ?",
+    "answer": "DEEE signifie Dechets d'Equipements Electriques et Electroniques. C'est une directive europeenne qui impose de ne pas jeter ces equipements avec les ordures menageres ordinaires et de les orienter vers des filieres de collecte et traitement dedies.",
+    "comment": "La directive DEEE est transposee dans le droit francais. Elle engage la responsabilite des entreprises qui doivent tracer et justifier l'elimination de leur materiel informatique. Jeter un PC a la poubelle ordinaire est une infraction passible de sanctions."
+  },
+  {
+    "id": "OPT-M05-C07-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quel pictogramme identifie un equipement soumis a la reglementation DEEE ?",
+    "answer": "Le pictogramme d'une poubelle sur roulettes barree d'une croix. Ce symbole signifie que l'equipement ne doit pas etre jete avec les ordures menageres et doit etre confie a une filiere de collecte agreee.",
+    "comment": "Ce pictogramme est presente sur quasiment tous les equipements electroniques vendus en Europe depuis 2005. Le reconnaitre immediatement permet d'orienter correctement le materiel en fin de vie, aussi bien pour les techniciens que pour les utilisateurs."
+  },
+  {
+    "id": "OPT-M05-C07-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi un simple formatage ne suffit-il pas pour securiser les donnees d'un disque avant mise au rebut ?",
+    "answer": "Un formatage simple (rapide) n'efface pas physiquement les donnees : il supprime seulement les pointeurs vers les fichiers. Les donnees restent recuperables avec des logiciels specialises. Pour une securisation reelle, il faut utiliser un logiciel d'effacement certifie (ecrasement multiple) ou une destruction physique du disque.",
+    "comment": "Des cas reels de recuperation de donnees confidentielles sur du materiel reconditionne ou recycle illustrent ce risque. Pour des donnees sensibles (donnees personnelles, informations financieres, secrets industriels), la destruction physique du disque est la seule garantie absolue."
+  },
+  {
+    "id": "OPT-M05-C07-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle est la hierarchie recommandee pour la gestion de fin de vie du materiel informatique ?",
+    "answer": "La hierarchie est : 1) Reemploi (reconditionner, donner a des associations, revendre) — 2) Recyclage via filieres agreees — 3) Elimination (destruction physique). Le reemploi est toujours prefere car il prolonge la vie du materiel et evite la production de dechets.",
+    "comment": "Cette hierarchie reflete a la fois un enjeu ecologique (reduire les dechets) et economique (le materiel encore fonctionnel a de la valeur). Les associations comme Emmaüs Connect ou Les Ateliers du Bocage reconditionnent du materiel pour des publics en fracture numerique."
+  },
+  {
+    "id": "OPT-M05-C07-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles sont les trois principales filieres de collecte DEEE disponibles pour une entreprise ?",
+    "answer": "1) Reprise fournisseur : principe du '1 pour 1' — a l'achat d'un materiel neuf, le vendeur est oblige de reprendre gratuitement l'ancien. 2) Dechetterie : point de collecte municipal avec benne DEEE. 3) Eco-organismes agrees (ex. Ecologic, DEEE-Pro) : organismes collectent et traitent les DEEE professionnels.",
+    "comment": "Le principe '1 pour 1' est souvent meconnu mais represente un levier simple et gratuit pour les entreprises qui renouvellent leur parc. Les eco-organismes offrent des solutions pour les volumes importants ou les materiels sans remplacement immediat."
+  },
+  {
+    "id": "OPT-M05-C07-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi est-il important de tracer la sortie de materiel dans l'inventaire de parc ?",
+    "answer": "Tracer la sortie dans l'inventaire garantit que le materiel ne figure plus dans les actifs de l'entreprise, permet de justifier la conformite DEEE en cas de controle, et assure que les licences logicielles associees sont correctement liberees ou transferees.",
+    "comment": "Un inventaire incomplet est un risque juridique (non-conformite DEEE), financier (actifs fantomes dans les comptes), et de securite (materiel dont on ne sait plus ou il est). La tracabilite complete du cycle de vie est une obligation reglementaire et une bonne pratique de gouvernance IT."
+  },
+  {
+    "id": "OPT-M05-C07-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien recoit 15 PC en fin de vie contenant des donnees RH confidentielles. Quelle procedure complete doit-il suivre avant de les remettre a une filiere DEEE ?",
+    "answer": "1) Effacement securise de chaque disque avec un logiciel certifie (ex. DBAN, Blancco) en mode ecrasement multiple (minimum 3 passes), ou destruction physique des disques si l'effacement logiciel n'est pas certifiable. 2) Generer et conserver les certificats d'effacement. 3) Sortir le materiel de l'inventaire. 4) Remettre les equipements a une filiere agreee et obtenir un bordereau de prise en charge.",
+    "comment": "Les donnees RH sont soumises au RGPD : leur divulgation accidentelle via du materiel mal efface peut engager la responsabilite penale de l'entreprise. Le certificat d'effacement est la preuve documentaire que l'entreprise a respecte ses obligations de securite des donnees personnelles."
+  },
+  {
+    "id": "OPT-M05-C07-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque situation de fin de vie au traitement recommande :",
+    "pairs": [
+      {"left": "PC 3 ans encore fonctionnel, remplace par un modele plus recent", "right": "Reemploi — donner a une association ou revendre en interne"},
+      {"left": "Disque dur contenant des fichiers RH confidentiels", "right": "Effacement securise certifie ou destruction physique avant recyclage"},
+      {"left": "Ecran LCD avec dalle fissuree, non reparable", "right": "Recyclage via filiere DEEE agreee (dechetterie ou eco-organisme)"},
+      {"left": "Achat de 10 nouveaux PC aupres d'un fournisseur", "right": "Reprise 1 pour 1 — exiger la reprise des anciens au moment de la livraison"},
+      {"left": "Sortie d'un materiel du parc, quelle que soit la destination", "right": "Mise a jour de l'inventaire pour tracer la sortie et liberer les licences"}
+    ],
+    "answer": "PC fonctionnel = reemploi/don/revente | Disque RH = effacement securise ou destruction | Ecran casse = recyclage DEEE | Achat neuf = reprise 1 pour 1 | Toute sortie = mise a jour inventaire",
+    "comment": "La hierarchie reemploi > recyclage > elimination s'applique materiel par materiel. Un technicien ne doit pas automatiquement envoyer tout le materiel au recyclage : evaluer la reutilisabilite est la premiere etape, autant pour l'environnement que pour des couts potentiellement evites."
+  },
+  {
+    "id": "OPT-M05-C07-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque enjeu de la gestion DEEE a sa nature :",
+    "pairs": [
+      {"left": "Interdiction de jeter en ordures menageres", "right": "Enjeu legal — directive europeenne DEEE transposee en droit francais"},
+      {"left": "Effacement des donnees avant mise au rebut", "right": "Enjeu securite — protection des donnees personnelles et confidentielles (RGPD)"},
+      {"left": "Reemploi et reconditionnement avant recyclage", "right": "Enjeu ecologique — reduction des dechets et prolongation de la duree de vie"},
+      {"left": "Tracabilite de la sortie dans l'inventaire", "right": "Enjeu de gouvernance IT — conformite reglementaire et gestion des actifs"}
+    ],
+    "answer": "Interdiction poubelle = legal/DEEE | Effacement donnees = securite/RGPD | Reemploi = ecologique | Tracabilite inventaire = gouvernance IT",
+    "comment": "La gestion DEEE croise trois disciplines : le droit (conformite reglementaire), la securite informatique (protection des donnees) et la responsabilite environnementale. Un technicien qui comprend ces trois dimensions peut conseiller et alerter efficacement sa direction."
+  },
+  {
+    "id": "OPT-M05-C07-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "DEEE et fin de vie du materiel",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre logique les etapes de traitement d'un PC en fin de vie contenant des donnees d'entreprise :",
+    "options": [
+      "Remettre le materiel a une filiere de collecte DEEE agreee et obtenir un bordereau",
+      "Evaluer si le materiel est encore utilisable (reemploi possible ou recyclage direct)",
+      "Effacer le disque avec un logiciel certifie ou detruire physiquement le disque",
+      "Mettre a jour l'inventaire de parc pour tracer la sortie du materiel",
+      "Recuperer le materiel signale en fin de vie et identifier les donnees qu'il contient"
+    ],
+    "answer": [
+      "Recuperer le materiel signale en fin de vie et identifier les donnees qu'il contient",
+      "Evaluer si le materiel est encore utilisable (reemploi possible ou recyclage direct)",
+      "Effacer le disque avec un logiciel certifie ou detruire physiquement le disque",
+      "Mettre a jour l'inventaire de parc pour tracer la sortie du materiel",
+      "Remettre le materiel a une filiere de collecte DEEE agreee et obtenir un bordereau"
+    ],
+    "comment": "L'effacement securise intervient avant la sortie du materiel, pas apres. La mise a jour de l'inventaire doit elle aussi preceder la remise physique a la filiere — sinon on risque de perdre la trace du materiel sans avoir ferme la boucle administrative. L'ordre protege a la fois les donnees et la conformite."
+  }
+]

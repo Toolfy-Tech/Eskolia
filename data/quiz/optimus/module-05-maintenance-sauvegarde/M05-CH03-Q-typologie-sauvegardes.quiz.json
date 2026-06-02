@@ -1,0 +1,121 @@
+[
+  {
+    "id": "OPT-M05-C03-001",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quels sont les trois types de sauvegardes fondamentaux et leur principe de fonctionnement ?",
+    "answer": "Full (complète) : copie intégrale de toutes les données sélectionnées. Différentielle : copie tout ce qui a changé depuis le dernier Full. Incrémentale : copie uniquement ce qui a changé depuis la sauvegarde précédente (Full ou Incrémentale).",
+    "comment": "Ces trois types forment un triangle espace/temps/complexité. La Full maximise la sécurité et simplifie la restauration mais consomme le plus d'espace et de temps. L'Incrémentale optimise l'espace mais complexifie la restauration. La Différentielle est le compromis intermédiaire."
+  },
+  {
+    "id": "OPT-M05-C03-002",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Combien de sources sont nécessaires pour restaurer après une sauvegarde Full, une sauvegarde Différentielle, et une sauvegarde Incrémentale ?",
+    "answer": "Full : 1 seule source (le dernier Full). Différentielle : 2 sources (le dernier Full + la dernière Différentielle). Incrémentale : N sources (le dernier Full + toutes les Incrémentales depuis ce Full jusqu'à la date voulue).",
+    "comment": "La complexité de restauration est le coût caché des stratégies à faible espace. Plus il y a de sources à réunir, plus le risque qu'une soit manquante ou corrompue augmente — et plus la restauration prend du temps. En cas de sinistre avec stress, la simplicité de la Full est précieuse."
+  },
+  {
+    "id": "OPT-M05-C03-003",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "C",
+    "type": "classic",
+    "question": "Quelle stratégie de sauvegarde consomme le moins d'espace disque et pourquoi ?",
+    "answer": "L'incrémentale consomme le moins d'espace car chaque sauvegarde ne contient que les modifications depuis la sauvegarde précédente. Si peu de données changent chaque jour, les incrémentales quotidiennes sont très légères.",
+    "comment": "Dans un contexte de données peu volatiles (archives, référentiels stables), l'incrémentale est très efficace. En revanche, si les données changent massivement chaque jour, les incrémentales grossissent rapidement et l'avantage sur la différentielle s'amenuise."
+  },
+  {
+    "id": "OPT-M05-C03-004",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Un virus/malware peut rester dormant plusieurs mois avant de se déclencher. Quelle conséquence cela a-t-il sur la politique de conservation des sauvegardes Full ?",
+    "answer": "Il faut conserver les sauvegardes Full sur au minimum 1 an. Un malware dormant depuis 6 mois est déjà inclus dans les sauvegardes récentes. Remonter à une sauvegarde antérieure à l'infection exige d'avoir des Fulls suffisamment anciens disponibles.",
+    "comment": "C'est une des raisons pour lesquelles les cycles de sauvegarde courts ne suffisent pas seuls. Conserver des sauvegardes Full mensuelles ou trimestrielles sur 1 à 3 ans permet de remonter avant la contamination. Cette exigence influe directement sur les coûts de stockage — à intégrer dans le plan de sauvegarde."
+  },
+  {
+    "id": "OPT-M05-C03-005",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle est la stratégie de sauvegarde la plus simple à restaurer et dans quel contexte est-elle particulièrement recommandée ?",
+    "answer": "La sauvegarde Full est la plus simple à restaurer (une seule source). Elle est particulièrement recommandée pour les systèmes critiques où le temps de restauration (RTO) doit être minimal, ou pour les structures avec peu de ressources IT capables de gérer une restauration multi-sources.",
+    "comment": "En cas de sinistre majeur, la pression opérationnelle est forte. Une restauration nécessitant 5 bandes incrémentales numérotées et triées par date introduit un risque d'erreur humaine. La Full offre une restauration sans ambiguïté — ce n'est pas un détail quand c'est 3h du matin et que la production est à l'arrêt."
+  },
+  {
+    "id": "OPT-M05-C03-006",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "B",
+    "type": "classic",
+    "question": "Décrivez un plan de sauvegarde hebdomadaire typique combinant Full et Incrémentale.",
+    "answer": "Full le dimanche soir (ou vendredi). Incrémentales automatiques les autres jours (lundi à samedi ou lundi à jeudi). Pour restaurer au mercredi : utiliser le Full du dimanche + les Incrémentales du lundi et du mardi. Ce schéma limite l'espace tout en garantissant une récupération quotidienne.",
+    "comment": "Ce plan est l'un des plus courants en PME. La Full hebdomadaire sert de point d'ancrage ; les incrémentales quotidiennes minimisent la perte maximale à 24h (RPO = 1 jour). Le point d'attention : si le Full est corrompu, toutes les incrémentales de la semaine sont inutilisables — d'où l'importance du test de restauration régulier."
+  },
+  {
+    "id": "OPT-M05-C03-007",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "A",
+    "type": "classic",
+    "question": "Un technicien affirme que la sauvegarde Différentielle est 'toujours un bon compromis entre Full et Incrémentale'. Quand cette affirmation est-elle fausse ?",
+    "answer": "Fausse si les données changent massivement chaque jour : la Différentielle grossit chaque jour jusqu'au prochain Full, pouvant approcher la taille d'une Full en fin de cycle. Dans ce cas, elle perd son avantage espace sans être plus simple que la Full. L'Incrémentale devient alors plus efficace en espace.",
+    "comment": "La croissance de la Différentielle est linéaire avec les changements cumulés. Si 80 % des données sont modifiées chaque jour (bases de données transactionnelles à fort trafic), une Différentielle du vendredi sera presque aussi volumineuse qu'une Full. Le choix optimal dépend toujours du taux de modification des données — à mesurer, pas à supposer."
+  },
+  {
+    "id": "OPT-M05-C03-008",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "C",
+    "type": "association",
+    "question": "Associez chaque type de sauvegarde à sa caractéristique clé :",
+    "pairs": [
+      {"left": "Full (complète)", "right": "Copie tout — restauration depuis 1 source, espace maximal"},
+      {"left": "Différentielle", "right": "Copie les changements depuis le dernier Full — restauration depuis 2 sources"},
+      {"left": "Incrémentale", "right": "Copie les changements depuis la sauvegarde précédente — restauration depuis N sources, espace minimal"}
+    ],
+    "answer": "Full = tout copier, 1 source | Différentielle = delta depuis Full, 2 sources | Incrémentale = delta depuis précédente, N sources",
+    "comment": "Le nombre de sources de restauration est le critère opérationnel le plus important. En situation de sinistre, chaque source supplémentaire est une étape, un risque de corruption, et du temps. Choisir un type de sauvegarde, c'est arbitrer entre l'espace économisé à l'enregistrement et le temps perdu à la restauration."
+  },
+  {
+    "id": "OPT-M05-C03-009",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les sauvegardes à utiliser pour restaurer un système au jeudi, avec le schéma suivant : Full dimanche, Incrémentales lundi/mardi/mercredi/jeudi :",
+    "options": [
+      "Appliquer l'Incrémentale du mardi",
+      "Appliquer l'Incrémentale du mercredi",
+      "Restaurer le Full du dimanche",
+      "Appliquer l'Incrémentale du jeudi",
+      "Appliquer l'Incrémentale du lundi"
+    ],
+    "answer": [
+      "Restaurer le Full du dimanche",
+      "Appliquer l'Incrémentale du lundi",
+      "Appliquer l'Incrémentale du mardi",
+      "Appliquer l'Incrémentale du mercredi",
+      "Appliquer l'Incrémentale du jeudi"
+    ],
+    "comment": "La restauration incrémentale est strictement chronologique : chaque incrément dépend de l'application correcte du précédent. Sauter une étape ou les appliquer dans le mauvais ordre produit un état incohérent. C'est la contrainte opérationnelle principale de la stratégie incrémentale — documenter et numéroter chaque sauvegarde est indispensable."
+  },
+  {
+    "id": "OPT-M05-C03-010",
+    "category": "Maintenance & Sauvegarde",
+    "chapter": "Types de sauvegardes",
+    "tier": "B",
+    "type": "sequence",
+    "question": "Classez ces trois types de sauvegardes du plus simple au plus complexe à restaurer :",
+    "options": ["Incrémentale", "Différentielle", "Full"],
+    "answer": ["Full", "Différentielle", "Incrémentale"],
+    "comment": "Full = 1 étape, Différentielle = 2 étapes (Full + dernière Diff), Incrémentale = N étapes (Full + toutes les Incrémentales dans l'ordre). La complexité de restauration croît avec la granularité de la sauvegarde. Ce classement est l'inverse du classement par consommation d'espace — les deux critères s'opposent toujours."
+  }
+]
