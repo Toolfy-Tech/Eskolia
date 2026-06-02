@@ -17,7 +17,7 @@
     "type": "classic",
     "question": "Décrivez le processus DORA du protocole DHCP.",
     "answer": "D = Discover : le client diffuse une requête UDP pour trouver un serveur DHCP. O = Offer : le serveur propose une IP avec durée de bail. R = Request : le client accepte l'offre. A = Acknowledge : le serveur confirme l'attribution. Ports : 67 (serveur) et 68 (client).",
-    "comment": "DORA est un acronyme à retenir. Le processus utilise UDP (diffusion, pas de connexion préalable) car le client n'a pas encore d'IP et ne peut pas établir une connexion TCP."
+    "comment": "Subtilité du Request : il est rediffusé en broadcast (et non en unicast au serveur choisi) afin que les AUTRES serveurs DHCP voient l'offre refusée et libèrent l'IP qu'ils avaient réservée. Conséquence terrain majeure : le DHCP fonctionnant par broadcast, il ne franchit pas les routeurs/VLANs. Pour qu'un serveur DHCP central serve plusieurs VLANs, on configure un ip helper-address (DHCP relay) sur l'interface de chaque VLAN — oubli fréquent qui laisse tout un VLAN en APIPA 169.254.x.x."
   },
   {
     "id": "OPT-M04-C05-003",
@@ -37,7 +37,7 @@
     "type": "classic",
     "question": "Quelle est la différence entre la DMZ et le NAT/PAT pour exposer un serveur sur Internet ?",
     "answer": "DMZ : expose le serveur à TOUT Internet sur TOUS les ports (faible sécurité). NAT/PAT : redirige uniquement un port spécifique vers la machine interne (exposition ciblée, meilleure sécurité). Préférer NAT/PAT sauf cas spécifique nécessitant la DMZ (serveur web public, reverse proxy).",
-    "comment": "Placer un serveur en DMZ = ouvrir toutes les portes. Le NAT/PAT ciblé est la bonne pratique : on expose seulement le port 443 pour HTTPS, ou 4444 pour un accès GLPI distant."
+    "comment": "Attention au vocabulaire : la « DMZ » des box grand public (host DMZ) renvoie tout le trafic entrant vers une seule machine — c'est ce mode dangereux que vise la question. La VRAIE DMZ d'entreprise est tout l'inverse : un sous-réseau isolé, encadré par le pare-feu, où l'on place les serveurs exposés (web, mail) pour que, s'ils sont compromis, l'attaquant ne rebondisse pas vers le LAN interne. Donc le bon réflexe reste la redirection de port ciblée, et pour un serveur réellement public, une DMZ segmentée — jamais le host DMZ de la box."
   },
   {
     "id": "OPT-M04-C05-005",
