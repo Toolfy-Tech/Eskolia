@@ -1,0 +1,129 @@
+[
+  {
+    "id": "OPT-M01-C03-001",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "C",
+    "type": "classic",
+    "question": "Selon quelle formule calcule-t-on la priorité d'un ticket ?",
+    "answer": "Priorité = Urgence × Impact.",
+    "comment": "On ne traite pas les tickets dans l'ordre d'arrivée mais selon leur priorité. Urgence = délai avant conséquence. Impact = nombre de personnes / criticité métier touchées."
+  },
+  {
+    "id": "OPT-M01-C03-002",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que représente l'urgence dans le calcul de priorité ?",
+    "answer": "L'urgence représente le délai avant conséquence : à quelle vitesse le problème doit-il être résolu avant que les conséquences deviennent graves ?",
+    "comment": "Urgence ≠ importance ressentie par l'utilisateur. Un utilisateur peut estimer sa demande très urgente alors que l'impact réel est faible. C'est au technicien d'évaluer objectivement."
+  },
+  {
+    "id": "OPT-M01-C03-003",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "C",
+    "type": "classic",
+    "question": "Que représente l'impact dans le calcul de priorité ?",
+    "answer": "L'impact représente le nombre de personnes touchées et/ou la criticité métier affectée par l'incident.",
+    "comment": "Un serveur de production à l'arrêt qui bloque toute une usine = impact fort. Une souris défaillante pour un seul utilisateur = impact faible, même si l'utilisateur est mécontent."
+  },
+  {
+    "id": "OPT-M01-C03-004",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelle priorité attribue-t-on à un serveur de production à l'arrêt qui bloque toute l'usine ?",
+    "answer": "P1 — Critique : impact fort (toute l'usine bloquée) + urgence forte (conséquences immédiates). C'est le cas le plus grave.",
+    "comment": "P1 = on lâche tout. Toutes les ressources disponibles se concentrent sur ce ticket jusqu'à résolution. Le SLA P1 est le plus court (ex : prise en charge en 15 min)."
+  },
+  {
+    "id": "OPT-M01-C03-005",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "B",
+    "type": "classic",
+    "question": "Vrai ou Faux : un incident touchant peu de personnes mais avec une urgence forte sera toujours classé P1.",
+    "answer": "Faux. Impact faible + urgence forte = P3 Moyenne selon la matrice. P1 nécessite un impact fort ET une urgence forte.",
+    "comment": "Les deux critères se combinent. Même une urgence très forte ne monte pas au P1 si l'impact est faible. C'est la matrice croisée qui donne la priorité finale."
+  },
+  {
+    "id": "OPT-M01-C03-006",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Classez ces 4 priorités de la plus haute (la plus critique) à la plus basse :",
+    "options": ["P3 — Moyenne", "P1 — Critique", "P4 — Basse", "P2 — Haute"],
+    "answer": ["P1 — Critique", "P2 — Haute", "P3 — Moyenne", "P4 — Basse"],
+    "comment": "P1 = traiter immédiatement (serveur production en panne). P2 = traiter rapidement (service partiellement dégradé). P3 = planifiable. P4 = quand le temps le permet (souris à remplacer)."
+  },
+  {
+    "id": "OPT-M01-C03-007",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation à sa priorité selon la matrice urgence × impact :",
+    "pairs": [
+      {"left": "Serveur de prod à l'arrêt, toute l'usine bloquée", "right": "P1 — Critique"},
+      {"left": "Imprimante partagée d'un service en panne", "right": "P2 — Haute"},
+      {"left": "Souris défaillante d'un seul utilisateur", "right": "P4 — Basse"}
+    ],
+    "answer": "Serveur prod bloqué = P1 | Imprimante service = P2 | Souris utilisateur = P4",
+    "comment": "La matrice croise systématiquement l'urgence et l'impact. Une imprimante partagée impacte plusieurs personnes (impact moyen) avec conséquences rapides sur le travail (urgence moyenne-haute) → P2."
+  },
+  {
+    "id": "OPT-M01-C03-008",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "B",
+    "type": "ticket",
+    "question": "TICKET #05 : Un commercial appelle : 'Mon logiciel de devis plante au démarrage. J'ai une réunion client dans 30 minutes.' Quelle priorité attribuez-vous ?",
+    "answer": "P2 — Haute : impact moyen (1 personne) mais urgence forte (échéance dans 30 min avec conséquences commerciales directes).",
+    "checklist": [
+      "Évaluer l'urgence : réunion dans 30 min = conséquences rapides si non résolu",
+      "Évaluer l'impact : 1 utilisateur concerné = impact moyen/faible en nombre, mais criticité métier élevée",
+      "Croiser : urgence forte + impact moyen → P2 Haute",
+      "Proposer une solution de contournement immédiate (PDF de devis, autre PC)",
+      "Traiter la panne en parallèle pour résoudre définitivement"
+    ],
+    "comment": "L'urgence est forte (échéance imminente à fort enjeu commercial) même si l'impact numérique est faible. Le contexte métier compte dans l'évaluation de l'urgence."
+  },
+  {
+    "id": "OPT-M01-C03-009",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #06 : Vous recevez deux tickets simultanément. Ticket A : panne du logiciel de comptabilité qui bloque 3 personnes en fin de mois. Ticket B : écran noir sur le PC du directeur. Lequel traitez-vous en premier ?",
+    "answer": "Ticket A en premier : impact fort (3 personnes + criticité métier fin de mois) + urgence forte (clôture mensuelle bloquée) = P1. Ticket B : impact faible (1 personne) même si c'est le directeur.",
+    "checklist": [
+      "Évaluer objectivement chaque ticket selon urgence × impact, pas selon la hiérarchie",
+      "Ticket A : 3 personnes bloquées + fin de mois critique → P1",
+      "Ticket B : 1 personne sans PC → P2 ou P3 selon le SLA, même pour le directeur",
+      "Traiter A immédiatement, informer le directeur du délai et de la raison",
+      "Escalader si nécessaire pour traiter les deux en parallèle"
+    ],
+    "comment": "La priorisation est objective — elle ne dépend pas du titre de la personne. Expliquer la priorité au directeur fait partie de la posture professionnelle."
+  },
+  {
+    "id": "OPT-M01-C03-010",
+    "category": "Support utilisateur",
+    "chapter": "Priorisation : urgence × impact",
+    "tier": "A",
+    "type": "ticket",
+    "question": "TICKET #07 : Un utilisateur vous appelle en insistant : 'Mon problème est URGENT, je veux être traité maintenant !' Son souci : une touche de son clavier colle légèrement. Comment gérez-vous ?",
+    "answer": "Priorité P4 — Basse. Impact faible (1 personne, outil fonctionnel) + urgence faible (pas de conséquence immédiate). La priorisation reste objective malgré l'insistance de l'utilisateur.",
+    "checklist": [
+      "Écouter et valider l'inconfort de l'utilisateur sans le négliger",
+      "Évaluer objectivement : impact faible, urgence faible → P4",
+      "Expliquer calmement la priorisation et le délai prévu",
+      "Proposer un contournement temporaire si possible (clavier de remplacement)",
+      "Enregistrer le ticket avec la priorité correcte et planifier l'intervention"
+    ],
+    "comment": "La priorisation est un outil objectif, pas une négociation. La diplomatie consiste à expliquer la décision avec bienveillance, pas à la modifier sous pression."
+  }
+]

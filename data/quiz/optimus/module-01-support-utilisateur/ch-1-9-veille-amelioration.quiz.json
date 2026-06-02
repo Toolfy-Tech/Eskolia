@@ -1,0 +1,113 @@
+[
+  {
+    "id": "OPT-M01-C09-001",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi la veille technologique est-elle indispensable pour un technicien IT ?",
+    "answer": "Le domaine évolue très vite (cybersécurité, IA, nouveaux OS, nouveaux outils). Sans veille régulière, le technicien se retrouve rapidement dépassé par les nouvelles menaces et technologies.",
+    "comment": "La veille n'est pas optionnelle dans ce métier. Une faille de sécurité découverte hier peut être exploitée aujourd'hui. Un technicien qui ne se tient pas informé est un risque pour son entreprise."
+  },
+  {
+    "id": "OPT-M01-C09-002",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi faut-il faire sa veille technique en anglais ?",
+    "answer": "La majorité de la documentation technique, des notices constructeur, des forums spécialisés et des publications de sécurité sont en anglais. Ne pas lire l'anglais limite fortement l'accès à l'information.",
+    "comment": "Les CVE (failles de sécurité), la documentation officielle Microsoft/Linux, les forums Stack Overflow et les bulletins de sécurité CERT sont majoritairement en anglais. L'anglais technique est une compétence du métier."
+  },
+  {
+    "id": "OPT-M01-C09-003",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "classic",
+    "question": "Sur un forum professionnel, quelle est la bonne pratique au-delà de simplement poser des questions ?",
+    "answer": "Répondre aussi aux questions des autres. Partager ses connaissances contribue à la communauté et renforce sa propre maîtrise des sujets.",
+    "comment": "Expliquer un concept à quelqu'un d'autre est une des meilleures façons de le consolider. Les forums professionnels fonctionnent parce que chacun donne autant qu'il reçoit."
+  },
+  {
+    "id": "OPT-M01-C09-004",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "B",
+    "type": "classic",
+    "question": "Que doit faire un technicien s'il observe un problème récurrent ou un comportement inhabituel sur le parc ?",
+    "answer": "En faire part à son responsable et à l'équipe. Un problème récurrent peut signaler une cause racine sous-jacente ou une menace en cours — l'isoler dans son coin est une erreur.",
+    "comment": "Le rôle du N1 n'est pas seulement de résoudre les incidents, mais aussi de remonter les signaux faibles. Un technicien attentif qui partage ses observations protège l'ensemble du parc."
+  },
+  {
+    "id": "OPT-M01-C09-005",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "classic",
+    "question": "Récapitulatif M01 — Que signifie SPOC et quel rôle joue-t-il ?",
+    "answer": "SPOC = Single Point of Contact. C'est le centre de services, point d'entrée unique pour toutes les demandes. Il garantit que rien ne se perd et que tout est tracé.",
+    "comment": "Le SPOC est un principe organisationnel ITIL fondamental. Sans lui, les utilisateurs appellent directement les techniciens, les demandes se perdent et rien n'est priorisé."
+  },
+  {
+    "id": "OPT-M01-C09-006",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "classic",
+    "question": "Récapitulatif M01 — Quelle est la différence entre GTI et GTR ?",
+    "answer": "GTI = Garantie Temps Intervention = délai de prise en charge (le technicien commence à traiter). GTR = Garantie Temps Rétablissement = délai avant que le service soit rétabli pour l'utilisateur.",
+    "comment": "Prise en charge ≠ résolution. C'est une des distinctions les plus importantes du module. En examen, cette confusion est très souvent testée."
+  },
+  {
+    "id": "OPT-M01-C09-007",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "B",
+    "type": "classic",
+    "question": "Récapitulatif M01 — Citez 4 repères clés à retenir absolument sur ce module.",
+    "answer": "1. SPOC = point de contact unique. 2. Priorité = Urgence × Impact. 3. GTI = prise en charge, GTR = rétablissement. 4. N1 → N2 → N3 (escalade). Bonus : GLPI = outil open source tickets + parc. Incident = symptôme, Problème = cause racine.",
+    "comment": "Ces repères sont les fondamentaux du module. Ils reviennent systématiquement dans les QCM d'examen et dans la pratique quotidienne du technicien de proximité."
+  },
+  {
+    "id": "OPT-M01-C09-008",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Classez ces sources de veille de la plus généraliste à la plus spécialisée :",
+    "options": ["Documentation officielle éditeur (ex : Microsoft Docs)", "Forum professionnel généraliste (ex : IT-Connect)", "Bulletin de sécurité ANSSI / CERT-FR", "Site d'actualité tech grand public (ex : 01net)"],
+    "answer": ["Site d'actualité tech grand public (ex : 01net)", "Forum professionnel généraliste (ex : IT-Connect)", "Documentation officielle éditeur (ex : Microsoft Docs)", "Bulletin de sécurité ANSSI / CERT-FR"],
+    "comment": "Pour un problème courant, un forum suffit. Pour une décision technique, la doc officielle prime. Pour une alerte sécurité, les bulletins ANSSI/CERT-FR sont la référence authoritative."
+  },
+  {
+    "id": "OPT-M01-C09-009",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "B",
+    "type": "association",
+    "question": "Récapitulatif M01 — Associez chaque terme clé à sa définition :",
+    "pairs": [
+      {"left": "Incident", "right": "Interruption non planifiée d'un service — le symptôme"},
+      {"left": "Problème", "right": "Cause racine sous-jacente à un ou plusieurs incidents"},
+      {"left": "GLPI", "right": "Outil open source de gestion de tickets ET de parc informatique"}
+    ],
+    "answer": "Incident = symptôme interruption | Problème = cause racine | GLPI = outil open source tickets+parc",
+    "comment": "Ces trois définitions sont parmi les plus testées en examen. Incident et problème sont souvent confondus — retenir l'analogie symptôme/maladie aide à les distinguer immédiatement."
+  },
+  {
+    "id": "OPT-M01-C09-010",
+    "category": "Support utilisateur",
+    "chapter": "Veille et amélioration continue",
+    "tier": "B",
+    "type": "association",
+    "question": "Récapitulatif M01 — Associez chaque niveau de priorité à sa signification :",
+    "pairs": [
+      {"left": "P1 — Critique", "right": "Impact fort + Urgence forte — traiter immédiatement"},
+      {"left": "P3 — Moyenne", "right": "Impact moyen/faible + Urgence variable — planifiable"},
+      {"left": "P4 — Basse", "right": "Impact faible + Urgence faible — quand le temps le permet"}
+    ],
+    "answer": "P1 = impact fort + urgence forte | P3 = impact moyen planifiable | P4 = impact faible urgence faible",
+    "comment": "La matrice de priorité est un outil objectif. P1 = on lâche tout. P4 = souris à remplacer, ça attendra. La priorité ne dépend pas du rang de l'utilisateur mais de l'impact réel sur le service."
+  }
+]

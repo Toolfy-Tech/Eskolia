@@ -1,0 +1,113 @@
+[
+  {
+    "id": "OPT-M01-C08-001",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "C",
+    "type": "classic",
+    "question": "Pourquoi le technicien est-il particulièrement exposé aux enjeux de confidentialité ?",
+    "answer": "Parce qu'il accède aux postes, fichiers et messageries des utilisateurs dans le cadre de ses interventions — il a donc accès à des données personnelles et professionnelles sensibles.",
+    "comment": "Cet accès privilégié crée une responsabilité particulière. Le technicien voit ce que peu de personnes voient. La confidentialité n'est pas optionnelle — c'est une obligation professionnelle et légale."
+  },
+  {
+    "id": "OPT-M01-C08-002",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "C",
+    "type": "classic",
+    "question": "Vrai ou Faux : un technicien peut consulter les fichiers personnels d'un utilisateur si c'est pour mieux comprendre son problème.",
+    "answer": "Faux. Le technicien ne consulte que ce qui est strictement nécessaire à l'intervention. Consulter des données sans nécessité directe est interdit, même avec de bonnes intentions.",
+    "comment": "Le principe de minimisation : on n'accède qu'à ce qui est indispensable. Ouvrir le dossier Documents entier pour un problème de connexion WiFi n'est pas justifié."
+  },
+  {
+    "id": "OPT-M01-C08-003",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "C",
+    "type": "classic",
+    "question": "Peut-on partager avec un collègue les informations sur les difficultés informatiques d'un utilisateur ?",
+    "answer": "Non. Les informations sur un utilisateur (ses problèmes, ses fichiers, ses habitudes) sont confidentielles et ne doivent pas être divulguées, même en interne, sauf nécessité directe liée à l'intervention.",
+    "comment": "Raconter à la pause café 'tu sais, le directeur a des photos compromettantes sur son PC' est une violation de confidentialité. Tout ce qu'on voit lors d'une intervention reste dans le cadre de l'intervention."
+  },
+  {
+    "id": "OPT-M01-C08-004",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "B",
+    "type": "classic",
+    "question": "Pourquoi faut-il vérifier l'identité d'un demandeur avant de réinitialiser son mot de passe ?",
+    "answer": "Parce que la réinitialisation de mot de passe est un vecteur classique d'ingénierie sociale : un attaquant peut se faire passer pour un utilisateur légitime pour obtenir l'accès à son compte.",
+    "comment": "Un demandeur de réinitialisation de mot de passe peut être : l'utilisateur légitime, ou un attaquant. Sans vérification d'identité, on pourrait donner l'accès à un compte à quelqu'un qui n'y a pas droit."
+  },
+  {
+    "id": "OPT-M01-C08-005",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "B",
+    "type": "classic",
+    "question": "Quelles actions sensibles nécessitent une vérification d'identité systématique ?",
+    "answer": "La réinitialisation de mot de passe et la suppression d'un facteur MFA (double authentification) sont les deux actions les plus sensibles — elles donnent accès à un compte et sont des cibles privilégiées d'ingénierie sociale.",
+    "comment": "Ces deux actions sont des 'clés du royaume' : réussir à les obtenir sans autorisation permet de prendre le contrôle d'un compte. La vérification d'identité est la dernière ligne de défense."
+  },
+  {
+    "id": "OPT-M01-C08-006",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "B",
+    "type": "classic",
+    "question": "Vrai ou Faux : les politiques de confidentialité s'appliquent uniquement aux données des clients de l'entreprise, pas aux données des employés.",
+    "answer": "Faux. Les politiques de confidentialité et le RGPD s'appliquent aussi aux données des employés. Un employé a des droits sur ses données personnelles, même au sein de son entreprise.",
+    "comment": "Le RGPD protège toute personne physique — employés inclus. Les fichiers personnels, les messageries et les profils informatiques des employés sont des données à protéger."
+  },
+  {
+    "id": "OPT-M01-C08-007",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "B",
+    "type": "classic",
+    "question": "Un technicien voit par hasard un document confidentiel de l'entreprise lors d'une intervention. Quelle est la bonne posture ?",
+    "answer": "Ne pas lire le contenu au-delà de ce qui est accidentellement aperçu, ne pas en parler, ne pas le transmettre. Continuer l'intervention en ignorant ce document.",
+    "comment": "La posture professionnelle consiste à agir comme si on n'avait rien vu. Le technicien n'est pas là pour surveiller ou rapporter — il est là pour résoudre un problème technique précis."
+  },
+  {
+    "id": "OPT-M01-C08-008",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "C",
+    "type": "sequence",
+    "question": "Remettez dans l'ordre les étapes correctes pour traiter une demande de réinitialisation de mot de passe :",
+    "options": ["Réinitialiser le mot de passe", "Vérifier l'identité du demandeur", "Demander à l'utilisateur de changer son mot de passe temporaire", "Recevoir la demande de réinitialisation"],
+    "answer": ["Recevoir la demande de réinitialisation", "Vérifier l'identité du demandeur", "Réinitialiser le mot de passe", "Demander à l'utilisateur de changer son mot de passe temporaire"],
+    "comment": "La vérification d'identité est obligatoire avant toute action. Le mot de passe temporaire doit être changé immédiatement par l'utilisateur pour éviter qu'il reste connu du technicien."
+  },
+  {
+    "id": "OPT-M01-C08-009",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "B",
+    "type": "association",
+    "question": "Associez chaque situation à la bonne posture professionnelle :",
+    "pairs": [
+      {"left": "Appel demandant la réinitialisation du MDP du PDG, soi-disant urgent", "right": "Vérifier l'identité selon la procédure habituelle, même pour le PDG"},
+      {"left": "Vous apercevez des données RH sensibles lors d'une intervention", "right": "Ignorer le contenu, poursuivre l'intervention sans en parler"},
+      {"left": "Un collègue vous demande des infos sur les pannes d'un utilisateur", "right": "Refuser de partager sauf nécessité directe liée à une intervention"}
+    ],
+    "answer": "Demande urgente PDG = vérifier identité quand même | Données RH aperçues = ignorer | Collègue curieux = refuser",
+    "comment": "La confidentialité s'applique à tout le monde, sans exception de hiérarchie. L'urgence et l'autorité ne sont pas des raisons valables pour contourner les procédures de sécurité."
+  },
+  {
+    "id": "OPT-M01-C08-010",
+    "category": "Support utilisateur",
+    "chapter": "Confidentialité et posture professionnelle",
+    "tier": "A",
+    "type": "association",
+    "question": "Associez chaque type d'accès à son niveau de risque confidentialité pour le technicien :",
+    "pairs": [
+      {"left": "Accès à la messagerie de l'utilisateur pour tester la synchro", "right": "Risque élevé — voir des emails personnels ou confidentiels"},
+      {"left": "Accès au gestionnaire de périphériques", "right": "Risque faible — informations techniques uniquement"},
+      {"left": "Accès au bureau de l'utilisateur pour un problème d'affichage", "right": "Risque moyen — documents visibles en arrière-plan"}
+    ],
+    "answer": "Messagerie = risque élevé | Gestionnaire périphériques = risque faible | Bureau = risque moyen",
+    "comment": "Évaluer le risque confidentialité avant chaque accès permet d'adopter la posture adaptée : plus le risque est élevé, plus la vigilance et la transparence avec l'utilisateur doivent être grandes."
+  }
+]
