@@ -71,6 +71,7 @@ import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
 import '../../features/notebook/data/note_model.dart';
 import '../../features/lexique/presentation/lexique_screen.dart';
+import '../../features/podcasts/presentation/podcasts_screen.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -339,6 +340,10 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/lexique',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const LexiqueScreen()),
+        ),
+        GoRoute(
+          path: '/podcasts',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const PodcastsScreen()),
         ),
         GoRoute(
           path: '/notebook/edit',

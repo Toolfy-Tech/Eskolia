@@ -26,6 +26,7 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   url_launcher: ^6.3.2
   file_picker: ^8.1.7
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -37,6 +38,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    # Manifeste des podcasts (titres + URLs des releases GitHub).
+    - assets/audio/
     # - data/solo/practical/index.json # Fichier manquant
     # - data/games/true_false.json # Fichier manquant
     # - data/lore/tip_dialogues.json # Fichier manquant

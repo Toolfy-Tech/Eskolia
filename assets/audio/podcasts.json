@@ -1,0 +1,52 @@
+{
+  "podcasts": [
+    {
+      "id": "M01",
+      "title": "L'humain derriere le ticket informatique",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M01_podcast.m4a"
+    },
+    {
+      "id": "M02",
+      "title": "Anatomie physique et maintenance du PC",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M02_podcast.m4a"
+    },
+    {
+      "id": "M03",
+      "title": "Dans le cerveau de Windows et Linux",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M03_podcast.m4a"
+    },
+    {
+      "id": "M04",
+      "title": "L'architecture invisible des reseaux informatiques",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M04_podcast.m4a"
+    },
+    {
+      "id": "M05",
+      "title": "Survivre au crash informatique total",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M05_podcast.m4a"
+    },
+    {
+      "id": "M06",
+      "title": "Deploiement Windows et gestion des identites",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M06_podcast.m4a"
+    },
+    {
+      "id": "M07",
+      "title": "Le cerveau humain, pare-feu le plus vulnerable",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M07_podcast.m4a"
+    },
+    {
+      "id": "M08",
+      "title": "Dompter l'IA avec la methode ROCT",
+      "subtitle": "Analyse approfondie",
+      "url": "https://github.com/Toolfy-Tech/Eskolia/releases/download/Podcast/M08_podcast.m4a"
+    }
+  ]
+}
