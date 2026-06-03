@@ -15,7 +15,7 @@ import '../../../core/constants/eskolia_tokens.dart';
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _violet = EskoliaTokens.violetSoft;
 const Color _slate = EskoliaTokens.textSecondary;
-const Color _pink = Color(0xFFFF6584);
+const Color _pink = EskoliaTokens.pink;
 
 class LaboCreateTipScreen extends StatefulWidget {
   const LaboCreateTipScreen({super.key, this.initialModuleId = ''});

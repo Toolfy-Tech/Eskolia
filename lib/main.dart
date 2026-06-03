@@ -67,7 +67,7 @@ Future<void> main() async {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Card(
-            color: const Color(0xFFB71C1C),
+            color: EskoliaTokens.error,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),

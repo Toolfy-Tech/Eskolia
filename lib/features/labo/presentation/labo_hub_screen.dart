@@ -232,7 +232,7 @@ class LaboHubScreen extends StatelessWidget {
                       FilledButton.icon(
                         onPressed: () => context.push('/labo/create-tip'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF6584),
+                          backgroundColor: EskoliaTokens.pink,
                           foregroundColor: Colors.white,
                         ),
                         icon: const Icon(Icons.lightbulb_outline_rounded, size: 22),

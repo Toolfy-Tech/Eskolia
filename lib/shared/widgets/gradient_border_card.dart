@@ -32,7 +32,7 @@ class GradientBorderCard extends StatelessWidget {
     final colors = gradientColors ??
         const [
           EskoliaTokens.violet,
-          Color(0xFFFF6584),
+          EskoliaTokens.pink,
           EskoliaTokens.success,
         ];
     final r = borderRadius;

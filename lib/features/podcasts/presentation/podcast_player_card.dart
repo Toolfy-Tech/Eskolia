@@ -180,7 +180,7 @@ class PodcastPlayerCard extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               error,
-              style: const TextStyle(color: Color(0xFFFF6584), fontSize: 12),
+              style: const TextStyle(color: EskoliaTokens.pink, fontSize: 12),
             ),
           ],
         ],

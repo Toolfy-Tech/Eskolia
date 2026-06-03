@@ -73,7 +73,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
                 const SizedBox(height: 4),
                 Text(
                   _answer.text.trim(),
-                  style: const TextStyle(color: Color(0xFF43E97B), fontSize: 13),
+                  style: const TextStyle(color: EskoliaTokens.success, fontSize: 13),
                 ),
               ] else ...[
                 ...List.generate(4, (i) {
@@ -84,7 +84,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
                       '${String.fromCharCode(65 + i)}. ${opts[i]}'
                       '${i == _correct ? '  ✓' : ''}',
                       style: TextStyle(
-                        color: i == _correct ? const Color(0xFF43E97B) : Colors.white70,
+                        color: i == _correct ? const EskoliaTokens.success : Colors.white70,
                         fontSize: 13,
                       ),
                     ),

@@ -17,6 +17,7 @@ abstract final class EskoliaTokens {
   static const Color gold       = Color(0xFFF5C842);
   static const Color amber      = Color(0xFFF59E0B);
   static const Color orange     = Color(0xFFFF9800);
+  static const Color pink       = Color(0xFFFF6584);
 
   // ─── STATUTS ─────────────────────────────────────────────────────────────
   static const Color success = Color(0xFF10B981);
