@@ -30,6 +30,7 @@ dependencies:
   file_picker: ^8.1.7
   share_plus: ^10.1.4
   path_provider: ^2.1.5
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +78,8 @@ flutter:
     - assets/tp/PS/
     # Template téléchargeable pour l'import de quiz personnalisé.
     - assets/templates/
+    # Manifeste podcasts (URLs releases GitHub, pas les .m4a).
+    - assets/audio/podcasts.json
     # Visuels DALL-E — logos, fonds, badges, icônes nav.
     - assets/images/logo/
     - assets/images/backgrounds/

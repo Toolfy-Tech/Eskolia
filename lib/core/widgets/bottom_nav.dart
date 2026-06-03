@@ -3,11 +3,14 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants/colors.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
+import '../../features/podcasts/data/podcast_player_service.dart';
+import '../../features/podcasts/presentation/podcast_mini_player.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
 import 'eskolia_tips_banner.dart';
 
@@ -248,16 +251,27 @@ class EskoliaBottomNav extends StatelessWidget {
   }
 }
 
-class MainShell extends StatelessWidget {
+class MainShell extends ConsumerWidget {
   const MainShell({super.key, required this.child});
 
   final Widget child;
 
+  static const double _miniPlayerHeight = 72;
+  static const double _miniPlayerBottomGap = 8;
+
   @override
-  Widget build(BuildContext context) {
-    final state = GoRouterState.of(context);
-    final path = state.uri.path;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final routerState = GoRouterState.of(context);
+    final path = routerState.uri.path;
     final topPad = MediaQuery.of(context).padding.top;
+
+    final hasPodcast = ref.watch(
+      podcastPlayerProvider.select((s) => s.podcast != null),
+    );
+
+    final double miniPlayerReserve = hasPodcast
+        ? _miniPlayerHeight + _miniPlayerBottomGap
+        : 0;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F1A),
@@ -269,7 +283,7 @@ class MainShell extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(
                 top: topPad + kTipsBannerHeight,
-                bottom: kEskoliaBottomNavReserve,
+                bottom: kEskoliaBottomNavReserve + miniPlayerReserve,
               ),
               child: child,
             ),
@@ -280,6 +294,14 @@ class MainShell extends StatelessWidget {
             right: 0,
             child: const EskoliaTipsBanner(),
           ),
+          // Mini-player flottant au-dessus de la barre de navigation
+          if (hasPodcast)
+            Positioned(
+              left: 14,
+              right: 14,
+              bottom: kEskoliaBottomNavReserve + bottomInset,
+              child: const PodcastMiniPlayer(),
+            ),
           Positioned(
             left: 0,
             right: 0,

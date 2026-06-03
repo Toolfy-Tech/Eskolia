@@ -9,10 +9,13 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../podcasts/data/podcast_model.dart';
+import '../../podcasts/presentation/podcast_player_card.dart';
 import '../data/parcours_repository.dart';
 import '../data/tip_progress_repository.dart';
 
 const Color _cyan = Color(0xFF00BCD4);
+const Color _violet = Color(0xFF6C63FF);
 const Color _slate = Color(0xFF94A3B8);
 
 /// Affiche le cours depuis [ModuleModel.lessonAssetPath] (fichier .md rendu en texte riche).
@@ -29,12 +32,30 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   String? _text;
   String? _lessonAssetPath;
   Object? _error;
+  Podcast? _podcast;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _load();
+    _loadPodcast();
+  }
+
+  /// Charge le podcast de la section, seulement en tete de section
+  /// (1er chapitre) pour ne pas le repeter sur chaque chapitre du module.
+  Future<void> _loadPodcast() async {
+    final loc = ParcoursRepository.moduleLocation[widget.moduleId];
+    if (loc == null) return;
+    final section = ParcoursRepository
+        .sectionByCompoundKey['${loc.formationId}::${loc.sectionId}'];
+    final isFirstChapter = section != null &&
+        section.modules.isNotEmpty &&
+        section.modules.first.id == widget.moduleId;
+    if (!isFirstChapter) return;
+    final p = await PodcastCatalog.forSection(loc.sectionId);
+    if (!mounted) return;
+    setState(() => _podcast = p);
   }
 
   Future<void> _load() async {
@@ -168,6 +189,10 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (_podcast != null) ...[
+                  _PodcastIntro(podcast: _podcast!),
+                  const SizedBox(height: 22),
+                ],
                 EskoliaCardContent(
                   padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
                   child: EskoliaLessonMarkdown(
@@ -230,6 +255,49 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Bandeau-conseil + lecteur du podcast de la section, affiche en tete du cours.
+class _PodcastIntro extends StatelessWidget {
+  const _PodcastIntro({required this.podcast});
+
+  final Podcast podcast;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          decoration: BoxDecoration(
+            color: _violet.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _violet.withValues(alpha: 0.30)),
+          ),
+          child: Row(
+            children: [
+              const Text('\u{1F3A7}', style: TextStyle(fontSize: 18)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Ecoute le podcast avant de lire — il vulgarise le cours en profondeur.',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.92),
+                    fontSize: 13,
+                    height: 1.35,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        PodcastPlayerCard(podcast: podcast),
+      ],
     );
   }
 }
