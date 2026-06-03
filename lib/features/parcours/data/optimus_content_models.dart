@@ -123,6 +123,82 @@ abstract final class OptimusLexiqueRepository {
   }
 }
 
+class SupportItem {
+  const SupportItem({
+    required this.chapterSlug,
+    required this.type,
+    required this.title,
+    required this.filename,
+    required this.description,
+    required this.releaseBaseUrl,
+  });
+
+  final String chapterSlug;
+
+  /// 'image' | 'pdf' | 'video'
+  final String type;
+  final String title;
+  final String filename;
+  final String description;
+  final String releaseBaseUrl;
+
+  String get url => '$releaseBaseUrl$filename';
+
+  factory SupportItem.fromJson(Map<dynamic, dynamic> j, String baseUrl) =>
+      SupportItem(
+        chapterSlug: j['chapterSlug'] as String,
+        type: j['type'] as String,
+        title: j['title'] as String,
+        filename: j['filename'] as String,
+        description: j['description'] as String,
+        releaseBaseUrl: baseUrl,
+      );
+}
+
+class ModuleSupports {
+  const ModuleSupports({required this.moduleId, required this.items});
+
+  final String moduleId;
+  final List<SupportItem> items;
+}
+
+abstract final class OptimusSupportsRepository {
+  static const List<String> _moduleIds = [
+    'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08',
+  ];
+
+  static final Map<String, ModuleSupports> _cache = {};
+
+  static Future<ModuleSupports> loadModule(String moduleId) async {
+    if (_cache.containsKey(moduleId)) return _cache[moduleId]!;
+    final raw = await rootBundle
+        .loadString('data/supports/optimus/$moduleId.json');
+    final map = jsonDecode(raw);
+    final empty = ModuleSupports(moduleId: moduleId, items: const []);
+    if (map is! Map) return empty;
+    final baseUrl = map['releaseBaseUrl'] as String? ?? '';
+    final list = map['supports'];
+    if (list is! List) return empty;
+    final items = list
+        .whereType<Map>()
+        .map((j) => SupportItem.fromJson(j, baseUrl))
+        .toList();
+    final result = ModuleSupports(moduleId: moduleId, items: items);
+    _cache[moduleId] = result;
+    return result;
+  }
+
+  static Future<List<SupportItem>> forChapter(
+      String moduleId, String chapterSlug) async {
+    try {
+      final mod = await loadModule(moduleId);
+      return mod.items.where((i) => i.chapterSlug == chapterSlug).toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+}
+
 abstract final class OptimusMediathequeRepository {
   static const List<String> _moduleIds = [
     'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08',

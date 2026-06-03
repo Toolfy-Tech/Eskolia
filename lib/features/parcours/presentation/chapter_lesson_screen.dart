@@ -16,6 +16,7 @@ import '../data/parcours_repository.dart';
 import '../data/tip_progress_repository.dart';
 import 'widgets/lexique_section.dart';
 import 'widgets/mediatheque_section.dart';
+import 'widgets/support_section.dart';
 
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
@@ -38,12 +39,13 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   Podcast? _podcast;
   final ScrollController _scrollController = ScrollController();
 
-  // Lexique / médiathèque
+  // Lexique / médiathèque / supports
   List<LexiqueEntry> _chapterTerms = const [];
   List<LexiqueEntry> _moduleTerms = const [];
   List<MediathequeItem> _chapterResources = const [];
   List<MediathequeItem> _moduleResources = const [];
   List<VeilleItem> _moduleVeille = const [];
+  List<SupportItem> _chapterSupports = const [];
   bool _isLastChapter = false;
 
   /// Extrait le moduleId Optimus (ex. "M01") depuis l'id du module.
@@ -86,6 +88,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
     final chTerms = await OptimusLexiqueRepository.forChapter(secId, slug);
     final chItems =
         await OptimusMediathequeRepository.specificForChapter(secId, slug);
+    final chSupports = await OptimusSupportsRepository.forChapter(secId, slug);
 
     List<LexiqueEntry> modTerms = const [];
     List<MediathequeItem> modItems = const [];
@@ -102,6 +105,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
     setState(() {
       _chapterTerms = chTerms;
       _chapterResources = chItems;
+      _chapterSupports = chSupports;
       _moduleTerms = modTerms;
       _moduleResources = modItems;
       _moduleVeille = modVeille;
@@ -281,6 +285,14 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                   MediathequeSection(
                     specific: _chapterResources,
                     title: 'Ressources du chapitre',
+                  ),
+                ],
+                // Support pédagogique lié à ce chapitre
+                if (_chapterSupports.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  SupportSection(
+                    items: _chapterSupports,
+                    title: 'Support de cours',
                   ),
                 ],
                 // Dernier chapitre du module → tout le lexique + médiathèque
