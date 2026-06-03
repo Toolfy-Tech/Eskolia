@@ -1,0 +1,55 @@
+{
+  "module": "M06",
+  "terms": [
+    {
+      "term": "Active Directory (AD DS)",
+      "definition": "Service d'annuaire de Microsoft Server. Il centralise l'authentification de tous les utilisateurs, les ordinateurs et la gestion des permissions du réseau d'entreprise.",
+      "chapterSlug": "M06-CH02-windows-server-active-directory"
+    },
+    {
+      "term": "Droits NTFS / Partage",
+      "definition": "Les droits de partage gèrent l'accès réseau à un dossier. Les droits NTFS gèrent les autorisations de lecture/écriture au niveau du système de fichiers local. La méthode AGDLP est la norme.",
+      "chapterSlug": "M06-CH07-ntfs-droits-partages"
+    },
+    {
+      "term": "GPO (Group Policy Object)",
+      "definition": "Stratégie de groupe liée à l'Active Directory. Permet d'imposer des règles de sécurité, de masquer des paramètres ou de mapper des lecteurs réseaux sur un parc de PC.",
+      "chapterSlug": "M06-CH02-windows-server-active-directory"
+    },
+    {
+      "term": "PowerShell",
+      "definition": "Moteur d'automatisation orienté objet et langage de script développé par Microsoft. Indispensable pour l'administration moderne de Windows Server et d'Office 365.",
+      "chapterSlug": "M06-CH13-powershell-introduction"
+    },
+    {
+      "term": "PXE / WDS",
+      "definition": "Le boot PXE permet de démarrer un PC vierge via la carte réseau. Il se connecte au serveur WDS pour télécharger et installer une image Windows automatiquement.",
+      "chapterSlug": "M06-CH03-deploiement-wds"
+    },
+    {
+      "term": "RDP (Remote Desktop Protocol)",
+      "definition": "Protocole propriétaire Microsoft permettant d'afficher l'interface graphique et de contrôler à distance un poste Windows via le réseau.",
+      "chapterSlug": "M06-CH05-bureau-a-distance-rdp"
+    },
+    {
+      "term": "Registre Windows (Regedit)",
+      "definition": "Base de données hiérarchique contenant l'intégralité des configurations et paramètres bas niveau de l'OS, des pilotes et des logiciels installés.",
+      "chapterSlug": "M06-CH10-registre-windows"
+    },
+    {
+      "term": "Spouleur d'impression",
+      "definition": "Service Windows qui gère la file d'attente des documents envoyés à l'imprimante. Son plantage est l'une des pannes N1 les plus fréquentes.",
+      "chapterSlug": "M06-CH14-gestion-imprimantes"
+    },
+    {
+      "term": "UAC (User Account Control)",
+      "definition": "Dispositif de sécurité Windows qui empêche les modifications non autorisées de l'OS en demandant une confirmation (ou mot de passe admin) avant d'exécuter une tâche critique.",
+      "chapterSlug": null
+    },
+    {
+      "term": "WSUS (Windows Server Update Services)",
+      "definition": "Rôle serveur permettant à un administrateur d'approuver et distribuer les mises à jour Windows de façon centralisée, sans que chaque PC ne télécharge sur internet.",
+      "chapterSlug": "M06-CH04-wsus-mises-a-jour"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "module": "M01",
+  "specific": [
+    {
+      "title": "Qu'est-ce que l'ITSM ?",
+      "creator": "Atlassian France",
+      "url": "https://www.youtube.com/watch?v=gpfgJW8fr7g",
+      "chapterSlug": "M01-CH01-itil-cadre-gestion"
+    },
+    {
+      "title": "ITIL 4 : Incident vs Problème",
+      "creator": "FCT Solutions",
+      "url": "https://www.youtube.com/watch?v=mBwGt0HPIts",
+      "chapterSlug": "M01-CH01-itil-cadre-gestion"
+    },
+    {
+      "title": "SLA au support",
+      "creator": "Freshdesk",
+      "url": "https://www.youtube.com/watch?v=rPrxcRHBgjg",
+      "chapterSlug": "M01-CH04-sla-engagements"
+    },
+    {
+      "title": "Matrice de priorisation ITIL",
+      "creator": "Appvizer",
+      "url": "https://www.appvizer.fr/magazine/operations/it-service-management/priorisation-tickets-itil",
+      "chapterSlug": "M01-CH03-priorisation-urgence-impact"
+    },
+    {
+      "title": "Installation GLPI 10",
+      "creator": "Tech2Tech",
+      "url": "https://www.youtube.com/watch?v=6ewwzRXsYKA",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "title": "GLPI : Collecte d'emails pour les tickets",
+      "creator": "Tech2Tech",
+      "url": "https://www.youtube.com/watch?v=sixlKmZxpx0",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "title": "Installer GLPI 10 sur Debian",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/comment-installer-glpi-10-sur-debian-11/",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "title": "Posture professionnelle au support",
+      "creator": "OpenClassrooms",
+      "url": "https://www.youtube.com/watch?v=hCaMIOPYFVE",
+      "chapterSlug": "M01-CH08-confidentialite-posture"
+    },
+    {
+      "title": "4 compétences clés du technicien support",
+      "creator": "Formip",
+      "url": "https://www.youtube.com/watch?v=m0clWIWLhGc",
+      "chapterSlug": "M01-CH07-communiquer-utilisateur"
+    }
+  ],
+  "veille": [
+    {
+      "title": "Atlassian (Blog ITSM)",
+      "url": "https://www.atlassian.com/fr/itsm",
+      "description": "Éditeur de logiciels de référence fournissant les meilleures explications théoriques sur l'ITSM, le framework ITIL et le cycle de vie d'un ticket."
+    },
+    {
+      "title": "Tech2Tech (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@tech2techfr",
+      "description": "Incontournable pour la partie pratique du métier, avec d'excellents tutoriels sur l'installation et l'administration de GLPI."
+    },
+    {
+      "title": "IT-Connect (Site Web)",
+      "url": "https://www.it-connect.fr/",
+      "description": "La bible francophone de l'administration système."
+    },
+    {
+      "title": "Freshdesk & Appvizer (Blogs)",
+      "url": "https://www.appvizer.fr/",
+      "description": "Ressources professionnelles idéales pour comprendre les enjeux métiers comme la mise en place des SLA."
+    }
+  ]
+}

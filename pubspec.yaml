@@ -51,6 +51,8 @@ flutter:
     - data/docs/mini_formation_anssi.md
     - data/docs/mini_formation_itil.md
     - data/docs/mini_formation_osi.md
+    - data/lexique/optimus/
+    - data/mediatheque/optimus/
     - data/curriculum/optimus/index.json
     - data/curriculum/optimus/images/
     - data/curriculum/optimus/section-01-hardware-architecture/

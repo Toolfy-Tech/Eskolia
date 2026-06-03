@@ -1,0 +1,118 @@
+{
+  "module": "M06",
+  "specific": [
+    {
+      "title": "Webinaire Microsoft Intune",
+      "creator": "Microsoft",
+      "url": "https://www.youtube.com/watch?v=2nF8l0j53uA",
+      "chapterSlug": "M06-CH01-m365-entra-id"
+    },
+    {
+      "title": "Introduction à Microsoft Intune",
+      "creator": "Notamax",
+      "url": "https://www.notamax.fr/introduction-a-microsoft-intune-et-gestion-des-terminaux/",
+      "chapterSlug": "M06-CH01-m365-entra-id"
+    },
+    {
+      "title": "Installer un contrôleur Active Directory",
+      "creator": "IT-Connect",
+      "url": "https://www.youtube.com/watch?v=610rlnB9CMw",
+      "chapterSlug": "M06-CH02-windows-server-active-directory"
+    },
+    {
+      "title": "Création d'un domaine Active Directory",
+      "creator": "Cocadmin",
+      "url": "https://www.youtube.com/watch?v=610rlnB9CMw",
+      "chapterSlug": "M06-CH02-windows-server-active-directory"
+    },
+    {
+      "title": "Droits NTFS et AGDLP",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/droits-ntfs-et-partage-la-methode-agdlp/",
+      "chapterSlug": "M06-CH07-ntfs-droits-partages"
+    },
+    {
+      "title": "Active Directory Domain Services (AD DS)",
+      "creator": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/fr-fr/windows-server/identity/ad-ds/active-directory-domain-services",
+      "chapterSlug": "M06-CH02-windows-server-active-directory"
+    },
+    {
+      "title": "Boot PXE et déploiement réseau",
+      "creator": "IT-Connect",
+      "url": "https://www.youtube.com/watch?v=SVCeFX3NndU",
+      "chapterSlug": "M06-CH03-deploiement-wds"
+    },
+    {
+      "title": "Tutoriel WDS complet",
+      "creator": "Mickaël Quesnot",
+      "url": "https://www.youtube.com/watch?v=nulOMSBY_Rs",
+      "chapterSlug": "M06-CH03-deploiement-wds"
+    },
+    {
+      "title": "Patch Tuesday et gestion des mises à jour",
+      "creator": "Lior Chamla",
+      "url": "https://www.youtube.com/watch?v=2nF8l0j53uA",
+      "chapterSlug": "M06-CH04-wsus-mises-a-jour"
+    },
+    {
+      "title": "Sécuriser l'accès à distance RDP",
+      "creator": "Cybermalveillance",
+      "url": "https://www.cybermalveillance.gouv.fr/tous-nos-contenus/fiches-reflexes/securiser-acces-distance-rdp",
+      "chapterSlug": "M06-CH05-bureau-a-distance-rdp"
+    },
+    {
+      "title": "Gestionnaire des tâches Windows",
+      "creator": "Cookie Connecté",
+      "url": "https://www.youtube.com/watch?v=v6YqBxZ6CFM",
+      "chapterSlug": "M06-CH09-gestionnaire-taches-performances"
+    },
+    {
+      "title": "Tâches planifiées Windows",
+      "creator": "Gravenilvec",
+      "url": "https://www.youtube.com/watch?v=r1m2N191IrM",
+      "chapterSlug": "M06-CH12-planificateur-taches"
+    },
+    {
+      "title": "Réparer Windows avec SFC et DISM",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/sfc-dism-reparer-fichiers-systeme-windows/",
+      "chapterSlug": "M06-CH11-reparation-sfc-dism"
+    },
+    {
+      "title": "10 commandes PowerShell indispensables",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/les-10-commandes-powershell-indispensables/",
+      "chapterSlug": "M06-CH13-powershell-introduction"
+    },
+    {
+      "title": "Documentation officielle PowerShell",
+      "creator": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/fr-fr/powershell/",
+      "chapterSlug": "M06-CH13-powershell-introduction"
+    },
+    {
+      "title": "Déployer des imprimantes par GPO",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/windows-server-deployer-des-imprimantes-par-gpo/",
+      "chapterSlug": "M06-CH14-gestion-imprimantes"
+    }
+  ],
+  "veille": [
+    {
+      "title": "Cocadmin (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@Cocadmin",
+      "description": "Spécialiste francophone de l'administration Windows Server, parfait pour les labs Active Directory."
+    },
+    {
+      "title": "Mickaël Quesnot (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@mickaelquesnot",
+      "description": "Chaîne technique orientée infrastructure et déploiement en réseau."
+    },
+    {
+      "title": "Microsoft Learn (Documentation)",
+      "url": "https://learn.microsoft.com/fr-fr/",
+      "description": "La base de connaissances officielle de Microsoft."
+    }
+  ]
+}

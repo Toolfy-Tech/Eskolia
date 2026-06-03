@@ -1,0 +1,60 @@
+{
+  "module": "M04",
+  "terms": [
+    {
+      "term": "Adresse IP & Adresse MAC",
+      "definition": "L'IP est l'adresse logique et routable d'un appareil sur un réseau. L'adresse MAC est l'identifiant physique permanent gravé dans la carte réseau par le fabricant.",
+      "chapterSlug": "M04-CH02-adressage-segmentation"
+    },
+    {
+      "term": "DHCP (Dynamic Host Configuration Protocol)",
+      "definition": "Service qui distribue automatiquement la configuration IP (Adresse, Masque, Passerelle, DNS) aux appareils via le processus DORA.",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    },
+    {
+      "term": "DNS (Domain Name System)",
+      "definition": "Service fondamental traduisant les noms de domaine (google.com) en adresses IP routables (142.250.179.110).",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    },
+    {
+      "term": "Masque de sous-réseau",
+      "definition": "Paramètre indissociable de l'adresse IP. Il délimite la taille du réseau en séparant la partie réseau de la partie hôte (machine).",
+      "chapterSlug": "M04-CH02-adressage-segmentation"
+    },
+    {
+      "term": "Modèle OSI",
+      "definition": "Modèle théorique en 7 couches (Physique, Liaison, Réseau, Transport, Session, Présentation, Application) utilisé pour diagnostiquer méthodiquement les pannes réseau.",
+      "chapterSlug": "M04-CH03-osi-encapsulation-tcp-ip"
+    },
+    {
+      "term": "Passerelle par défaut (Gateway)",
+      "definition": "L'adresse IP du routeur par laquelle un appareil doit passer pour communiquer avec des appareils situés en dehors de son propre réseau local.",
+      "chapterSlug": "M04-CH02-adressage-segmentation"
+    },
+    {
+      "term": "Ping / Traceroute",
+      "definition": "Utilitaires de diagnostic. Le Ping vérifie si une machine est joignable. Le Traceroute affiche le chemin et les routeurs traversés par un paquet de données.",
+      "chapterSlug": "M04-CH01-composants-reseau-binaire"
+    },
+    {
+      "term": "Port (TCP / UDP)",
+      "definition": "Point de terminaison logique d'une connexion réseau. Permet de diriger le trafic vers le bon service (port 80 = HTTP, 443 = HTTPS, 3389 = RDP).",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    },
+    {
+      "term": "Routeur vs Switch",
+      "definition": "Le Switch relie les appareils d'un même réseau local (couche 2). Le Routeur relie des réseaux différents entre eux et dirige le trafic vers internet (couche 3).",
+      "chapterSlug": "M04-CH01-composants-reseau-binaire"
+    },
+    {
+      "term": "VLAN (Virtual LAN)",
+      "definition": "Technique permettant de scinder un switch physique en plusieurs réseaux logiques isolés (ex : séparer le réseau des serveurs du réseau des invités).",
+      "chapterSlug": "M04-CH04-vlans-organisation"
+    },
+    {
+      "term": "VPN (Virtual Private Network)",
+      "definition": "Tunnel chiffré créé sur internet, permettant à un utilisateur distant d'accéder aux ressources de l'entreprise de façon sécurisée.",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    }
+  ]
+}

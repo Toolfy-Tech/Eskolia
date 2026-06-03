@@ -1,0 +1,50 @@
+{
+  "module": "M03",
+  "terms": [
+    {
+      "term": "Dual-boot",
+      "definition": "Configuration permettant d'installer deux systèmes d'exploitation sur le même ordinateur, en choisissant lequel démarrer via un menu (comme GRUB).",
+      "chapterSlug": "M03-CH01-differents-os"
+    },
+    {
+      "term": "Hyperviseur (Type 1 et 2)",
+      "definition": "Logiciel de virtualisation. Le Type 1 (Proxmox, ESXi) s'installe directement sur le matériel nu. Le Type 2 (VirtualBox) s'installe comme un logiciel sur un OS hôte.",
+      "chapterSlug": "M03-CH03-virtualisation"
+    },
+    {
+      "term": "Kernel (Noyau)",
+      "definition": "Le coeur du système d'exploitation. Il a le contrôle total sur le système et gère les ressources matérielles (mémoire, processus) pour les distribuer aux logiciels.",
+      "chapterSlug": "M03-CH01-differents-os"
+    },
+    {
+      "term": "MDM (Mobile Device Management)",
+      "definition": "Outil cloud permettant au service IT d'enrôler, configurer, verrouiller ou effacer à distance les smartphones et PC portables de l'entreprise.",
+      "chapterSlug": "M03-CH07-os-mobiles"
+    },
+    {
+      "term": "OS (Operating System)",
+      "definition": "Système d'exploitation. Interface indispensable qui orchestre la communication entre le matériel physique et les applications logicielles.",
+      "chapterSlug": "M03-CH01-differents-os"
+    },
+    {
+      "term": "Shell / Invite de commandes",
+      "definition": "Interface textuelle permettant de communiquer directement avec le système d'exploitation en tapant des commandes (Bash sous Linux, CMD/PowerShell sous Windows).",
+      "chapterSlug": "M03-CH04-linux-essentiel"
+    },
+    {
+      "term": "Système de fichiers",
+      "definition": "Façon dont les données sont organisées et stockées sur un disque (NTFS pour Windows, ext4 pour Linux, APFS pour macOS, exFAT/FAT32 pour les clés USB).",
+      "chapterSlug": "M03-CH01-differents-os"
+    },
+    {
+      "term": "TPM 2.0 (Trusted Platform Module)",
+      "definition": "Cryptoprocesseur sécurisé indispensable à Windows 11. Il stocke les clés de chiffrement (comme celles de BitLocker) au niveau matériel.",
+      "chapterSlug": "M03-CH02-installer-windows"
+    },
+    {
+      "term": "VM (Machine Virtuelle)",
+      "definition": "Émulation logicielle d'un ordinateur complet, possédant son propre OS et ses propres ressources (CPU, RAM virtuelles) isolés du reste du système physique.",
+      "chapterSlug": "M03-CH03-virtualisation"
+    }
+  ]
+}

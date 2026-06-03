@@ -1,0 +1,82 @@
+{
+  "module": "M04",
+  "specific": [
+    {
+      "title": "Les bases des réseaux informatiques",
+      "creator": "Formip",
+      "url": "https://www.youtube.com/watch?v=gONjleySTVU",
+      "chapterSlug": "M04-CH01-composants-reseau-binaire"
+    },
+    {
+      "title": "Adresses IP et masques de sous-réseau",
+      "creator": "Réseau du Zéro",
+      "url": "https://www.youtube.com/watch?v=dCWDq2Ty00g",
+      "chapterSlug": "M04-CH02-adressage-segmentation"
+    },
+    {
+      "title": "DNS et ports expliqués",
+      "creator": "Lior Chamla",
+      "url": "https://www.youtube.com/watch?v=dCWDq2Ty00g",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    },
+    {
+      "title": "Calcul de sous-réseaux IPv4",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/le-calcul-de-sous-reseaux-ipv4-explique/",
+      "chapterSlug": "M04-CH02-adressage-segmentation"
+    },
+    {
+      "title": "Le modèle OSI expliqué",
+      "creator": "Réseau du Zéro",
+      "url": "https://www.youtube.com/watch?v=boX_wowd6KY",
+      "chapterSlug": "M04-CH03-osi-encapsulation-tcp-ip"
+    },
+    {
+      "title": "OSI vs TCP/IP",
+      "creator": "Formip",
+      "url": "https://www.youtube.com/watch?v=boX_wowd6KY",
+      "chapterSlug": "M04-CH03-osi-encapsulation-tcp-ip"
+    },
+    {
+      "title": "C'est quoi un VLAN ?",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/cest-quoi-un-vlan/",
+      "chapterSlug": "M04-CH04-vlans-organisation"
+    },
+    {
+      "title": "Fiches de synthèse réseau Cisco",
+      "creator": "Cisco NetAcad",
+      "url": "https://www.netacad.com/fr",
+      "chapterSlug": null
+    },
+    {
+      "title": "Le protocole DHCP expliqué",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/le-protocole-dhcp-explique/",
+      "chapterSlug": "M04-CH05-services-protocoles-critiques"
+    },
+    {
+      "title": "Le VPN en entreprise",
+      "creator": "Cybermalveillance",
+      "url": "https://www.cybermalveillance.gouv.fr/tous-nos-contenus/fiches-reflexes/vpn-utilite-entreprises",
+      "chapterSlug": null
+    }
+  ],
+  "veille": [
+    {
+      "title": "Le Réseau du Zéro (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@LeReseauduZero",
+      "description": "La meilleure chaîne francophone pour visualiser et comprendre les bases du réseau grâce à des schémas animés."
+    },
+    {
+      "title": "Lior Chamla (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@LiorChamla",
+      "description": "Excellent pédagogue pour démystifier le fonctionnement de l'infrastructure internet et des requêtes DNS."
+    },
+    {
+      "title": "Cisco NetAcad (Documentation)",
+      "url": "https://www.netacad.com/fr",
+      "description": "Les fiches de synthèse du leader mondial de l'équipement réseau."
+    }
+  ]
+}

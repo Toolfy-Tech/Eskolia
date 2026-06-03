@@ -1,0 +1,93 @@
+{
+  "module": "M02",
+  "specific": [
+    {
+      "title": "Anatomie détaillée des composants PC",
+      "creator": "Deus Ex Silicium",
+      "url": "https://www.youtube.com/watch?v=geBcfKn3B1g",
+      "chapterSlug": null
+    },
+    {
+      "title": "Montage PC complet de A à Z",
+      "creator": "TopAchat",
+      "url": "https://www.youtube.com/watch?v=2nF8l0j53uA",
+      "chapterSlug": "M02-CH12-assemblage-diagnostic-hardware"
+    },
+    {
+      "title": "Comprendre la RAM et le Dual Channel",
+      "creator": "Cookie Connecté",
+      "url": "https://www.youtube.com/watch?v=gaa-REBaqn8",
+      "chapterSlug": "M02-CH04-ram-memoire-vive"
+    },
+    {
+      "title": "DDR4 vs DDR5",
+      "creator": "Crucial",
+      "url": "https://www.crucial.fr/articles/about-memory/ddr4-vs-ddr5-memory",
+      "chapterSlug": "M02-CH04-ram-memoire-vive"
+    },
+    {
+      "title": "Fonctionnement ordinateur",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/composants-fonctionnement-ordinateur/",
+      "chapterSlug": null
+    },
+    {
+      "title": "Choisir sa carte mère",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/carte-mere-definition-composants-choisir/",
+      "chapterSlug": "M02-CH02-carte-mere"
+    },
+    {
+      "title": "Comprendre les cartes graphiques",
+      "creator": "TopAchat",
+      "url": "https://www.youtube.com/watch?v=k3SeOaNjWCg",
+      "chapterSlug": "M02-CH06-gpu-npu"
+    },
+    {
+      "title": "Choisir son alimentation (PSU)",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/comment-choisir-alimentation-pc/",
+      "chapterSlug": "M02-CH07-alimentation-psu"
+    },
+    {
+      "title": "Ports USB, Thunderbolt et PCIe expliqués",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/ports-usb-thunderbolt-pcie-expliques/",
+      "chapterSlug": "M02-CH08-connecteurs-ports-externes"
+    },
+    {
+      "title": "Airflow PC et refroidissement",
+      "creator": "Cookie Connecté",
+      "url": "https://www.youtube.com/watch?v=p66P_dj5KZ0",
+      "chapterSlug": "M02-CH10-refroidissement"
+    },
+    {
+      "title": "Accéder au BIOS/UEFI",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/comment-acceder-au-bios-uefi/",
+      "chapterSlug": "M02-CH11-bios-uefi"
+    }
+  ],
+  "veille": [
+    {
+      "title": "Deus Ex Silicium (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@DeusExSilicium",
+      "description": "Analyse au microscope et anatomie parfaite des composants matériels."
+    },
+    {
+      "title": "Cookie Connecté (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@CookieConnecte",
+      "description": "Excellente ressource de vulgarisation pour comprendre l'optimisation matérielle."
+    },
+    {
+      "title": "Malekal (Site Web)",
+      "url": "https://www.malekal.com/",
+      "description": "L'encyclopédie textuelle pour comprendre le fonctionnement détaillé de l'ordinateur et le dépannage matériel."
+    },
+    {
+      "title": "TopAchat (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@TopAchat",
+      "description": "La référence pour les guides de montage de PC et les nouveautés composants."
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "module": "M05",
+  "specific": [
+    {
+      "title": "La règle de sauvegarde 3-2-1",
+      "creator": "IT-Connect",
+      "url": "https://www.youtube.com/watch?v=xtks1mM0QfI",
+      "chapterSlug": "M05-CH01-backup-definition-3210"
+    },
+    {
+      "title": "Veeam Backup en production",
+      "creator": "Tech2Tech",
+      "url": "https://www.youtube.com/watch?v=vKw8pGNW94g",
+      "chapterSlug": "M05-CH05-solutions-sauvegarde"
+    },
+    {
+      "title": "Stratégie de sauvegarde avec un NAS Synology",
+      "creator": "JusteGeek",
+      "url": "https://www.justegeek.fr/",
+      "chapterSlug": "M05-CH02-supports-sauvegarde"
+    },
+    {
+      "title": "Le RAID : fonctionnement et utilisation",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/raid-definition-avantages-fonctionnement/",
+      "chapterSlug": "M05-CH06-raid-protection-systeme"
+    },
+    {
+      "title": "Comprendre le RAID",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/comprendre-le-raid/",
+      "chapterSlug": "M05-CH06-raid-protection-systeme"
+    },
+    {
+      "title": "Réglementation DEEE",
+      "creator": "Ministère de l'Écologie",
+      "url": "https://www.ecologie.gouv.fr/deee",
+      "chapterSlug": "M05-CH07-deee-fin-de-vie"
+    },
+    {
+      "title": "Effacement sécurisé des données",
+      "creator": "Cybermalveillance",
+      "url": "https://www.cybermalveillance.gouv.fr/tous-nos-contenus/fiches-reflexes/effacer-donnees-ordinateur-portable-telephone",
+      "chapterSlug": "M05-CH07-deee-fin-de-vie"
+    }
+  ],
+  "veille": [
+    {
+      "title": "JusteGeek (Blog)",
+      "url": "https://www.justegeek.fr/",
+      "description": "Site extrêmement complet et spécialisé dans l'utilisation et la configuration des NAS."
+    },
+    {
+      "title": "Tech2Tech (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@tech2techfr",
+      "description": "Tutoriels de mise en production sur les logiciels de sauvegarde d'entreprise."
+    },
+    {
+      "title": "Cybermalveillance.gouv.fr (Site Web)",
+      "url": "https://www.cybermalveillance.gouv.fr/",
+      "description": "Fiches réflexes gouvernementales pour la sécurité informatique."
+    }
+  ]
+}
