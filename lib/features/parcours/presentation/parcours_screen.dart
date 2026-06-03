@@ -19,6 +19,8 @@ import '../../home/data/daily_quests_repository.dart';
 import '../../quiz/data/quiz_repository.dart';
 import '../data/parcours_repository.dart';
 import '../data/tip_progress_repository.dart';
+import '../../podcasts/data/podcast_model.dart';
+import '../../podcasts/presentation/podcast_player_card.dart';
 
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violetBrand = Color(0xFF6C63FF);
@@ -401,14 +403,33 @@ class _FormationCardState extends State<_FormationCard> {
   }
 }
 
-class _SectionTile extends StatelessWidget {
+class _SectionTile extends StatefulWidget {
   const _SectionTile({required this.section});
 
   final SectionModel section;
 
   @override
+  State<_SectionTile> createState() => _SectionTileState();
+}
+
+class _SectionTileState extends State<_SectionTile> {
+  Podcast? _podcast;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPodcast();
+  }
+
+  Future<void> _loadPodcast() async {
+    final p = await PodcastCatalog.forSection(widget.section.id);
+    if (!mounted) return;
+    setState(() => _podcast = p);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final t = TipSectionTheme.colorsFor(section.id);
+    final t = TipSectionTheme.colorsFor(widget.section.id);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -433,7 +454,7 @@ class _SectionTile extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  section.title,
+                  widget.section.title,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.98),
                     fontWeight: FontWeight.bold,
@@ -443,8 +464,16 @@ class _SectionTile extends StatelessWidget {
               ),
             ],
           ),
+          if (_podcast != null) ...[
+            const SizedBox(height: 10),
+            PodcastPlayerCard(
+              title: _podcast!.title,
+              subtitle: _podcast!.subtitle,
+              url: _podcast!.url,
+            ),
+          ],
           const SizedBox(height: 8),
-          for (final m in section.modules)
+          for (final m in widget.section.modules)
             _ModuleTile(module: m, sectionAccent: t.primary),
         ],
       ),
