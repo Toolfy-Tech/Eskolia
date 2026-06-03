@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Center(
               child: Image.asset(
                 'assets/images/logo/eskolia_splash_logo.png',
-                width: 220,
+                width: 440,
               ),
             ),
           ),
