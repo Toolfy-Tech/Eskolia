@@ -297,11 +297,7 @@ class _PodcastIntro extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        PodcastPlayerCard(
-          title: podcast.title,
-          subtitle: podcast.subtitle,
-          url: podcast.url,
-        ),
+        PodcastPlayerCard(podcast: podcast),
       ],
     );
   }

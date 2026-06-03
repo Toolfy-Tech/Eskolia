@@ -466,11 +466,7 @@ class _SectionTileState extends State<_SectionTile> {
           ),
           if (_podcast != null) ...[
             const SizedBox(height: 10),
-            PodcastPlayerCard(
-              title: _podcast!.title,
-              subtitle: _podcast!.subtitle,
-              url: _podcast!.url,
-            ),
+            PodcastPlayerCard(podcast: _podcast!),
           ],
           const SizedBox(height: 8),
           for (final m in widget.section.modules)

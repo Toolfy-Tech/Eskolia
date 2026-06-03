@@ -1,115 +1,27 @@
-import 'dart:async';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/eskolia_card.dart';
+import '../data/podcast_model.dart';
+import '../data/podcast_player_service.dart';
+
+export '../data/podcast_player_service.dart' show podcastPlayerProvider;
 
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
 const Color _slate = Color(0xFF94A3B8);
 const Color _danger = Color(0xFFFF6584);
 
-/// Lecteur autonome pour un seul podcast — reutilisable en tete de module.
-/// Streame le .m4a depuis son URL (release GitHub) ; la lecture est declenchee
-/// au tap (politique autoplay du web respectee).
-class PodcastPlayerCard extends StatefulWidget {
+/// Lecteur pour un podcast donné. Délègue l'audio à [podcastPlayerProvider].
+/// Un seul podcast peut jouer à la fois dans l'app.
+class PodcastPlayerCard extends ConsumerWidget {
   const PodcastPlayerCard({
     super.key,
-    required this.title,
-    required this.url,
-    this.subtitle,
+    required this.podcast,
   });
 
-  final String title;
-  final String url;
-  final String? subtitle;
-
-  @override
-  State<PodcastPlayerCard> createState() => _PodcastPlayerCardState();
-}
-
-class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
-  final AudioPlayer _player = AudioPlayer();
-  final List<StreamSubscription<dynamic>> _subs = [];
-
-  PlayerState _state = PlayerState.stopped;
-  Duration _position = Duration.zero;
-  Duration? _duration;
-  bool _started = false;
-  bool _loading = false;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _player.setReleaseMode(ReleaseMode.stop);
-    _subs.add(_player.onPlayerStateChanged.listen((s) {
-      if (!mounted) return;
-      setState(() => _state = s);
-    }));
-    _subs.add(_player.onDurationChanged.listen((d) {
-      if (!mounted) return;
-      setState(() => _duration = d);
-    }));
-    _subs.add(_player.onPositionChanged.listen((p) {
-      if (!mounted) return;
-      setState(() => _position = p);
-    }));
-    _subs.add(_player.onPlayerComplete.listen((_) {
-      if (!mounted) return;
-      setState(() {
-        _state = PlayerState.completed;
-        _position = Duration.zero;
-        _started = false;
-      });
-      _ActivePlayer.clear(this);
-    }));
-  }
-
-  @override
-  void dispose() {
-    for (final s in _subs) {
-      s.cancel();
-    }
-    _player.dispose();
-    _ActivePlayer.clear(this);
-    super.dispose();
-  }
-
-  Future<void> _toggle() async {
-    try {
-      if (_state == PlayerState.playing) {
-        await _player.pause();
-        return;
-      }
-      _ActivePlayer.setActive(this);
-      if (_started) {
-        await _player.resume();
-        return;
-      }
-      setState(() {
-        _loading = true;
-        _error = null;
-      });
-      await _player.play(UrlSource(widget.url));
-      _started = true;
-    } catch (_) {
-      if (mounted) {
-        setState(() => _error = 'Lecture impossible. Verifie ta connexion.');
-      }
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  Future<void> _pauseFromRegistry() async {
-    if (_state == PlayerState.playing) await _player.pause();
-  }
-
-  Future<void> _seekTo(double ms) async {
-    await _player.seek(Duration(milliseconds: ms.round()));
-  }
+  final Podcast podcast;
 
   static String _fmt(Duration d) {
     final m = d.inMinutes;
@@ -118,15 +30,25 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final playing = _state == PlayerState.playing;
-    final total = _duration ?? Duration.zero;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(podcastPlayerProvider);
+    final isThis = state.podcast?.url == podcast.url;
+    final playing = isThis && state.isPlaying;
+    final loading = isThis && state.loading;
+    final total = isThis ? (state.duration ?? Duration.zero) : Duration.zero;
     final hasDuration = total.inMilliseconds > 0;
-    final pos = _position.inMilliseconds
-        .clamp(0, hasDuration ? total.inMilliseconds : 0)
-        .toDouble();
+    final pos = isThis
+        ? state.position.inMilliseconds
+            .clamp(0, hasDuration ? total.inMilliseconds : 0)
+            .toDouble()
+        : 0.0;
+    final error = isThis ? state.error : null;
 
-    const timeStyle = TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600);
+    const timeStyle = TextStyle(
+      color: _slate,
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+    );
 
     return EskoliaCardContent(
       padding: const EdgeInsets.all(16),
@@ -135,14 +57,19 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
         children: [
           Row(
             children: [
-              _PlayButton(playing: playing, loading: _loading, onTap: _toggle),
+              _PlayButton(
+                playing: playing,
+                loading: loading,
+                onTap: () =>
+                    ref.read(podcastPlayerProvider.notifier).play(podcast),
+              ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.title,
+                      podcast.title,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -150,10 +77,10 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
                         height: 1.25,
                       ),
                     ),
-                    if (widget.subtitle != null) ...[
+                    if (podcast.subtitle != null) ...[
                       const SizedBox(height: 3),
                       Text(
-                        widget.subtitle!,
+                        podcast.subtitle!,
                         style: const TextStyle(color: _slate, fontSize: 12),
                       ),
                     ],
@@ -163,12 +90,12 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
               const SizedBox(width: 8),
               Icon(
                 Icons.graphic_eq_rounded,
-                color: _cyan.withValues(alpha: 0.7),
+                color: _cyan.withValues(alpha: playing ? 0.95 : 0.35),
                 size: 20,
               ),
             ],
           ),
-          if (hasDuration || _started) ...[
+          if (isThis && (hasDuration || state.loading)) ...[
             const SizedBox(height: 8),
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
@@ -177,17 +104,20 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
                 inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
                 thumbColor: _cyan,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                overlayShape:
+                    const RoundSliderOverlayShape(overlayRadius: 14),
               ),
               child: Slider(
                 value: pos,
                 max: hasDuration ? total.inMilliseconds.toDouble() : 1.0,
                 onChanged: hasDuration
-                    ? (v) => setState(
-                          () => _position = Duration(milliseconds: v.round()),
-                        )
+                    ? (v) {}
                     : null,
-                onChangeEnd: hasDuration ? _seekTo : null,
+                onChangeEnd: hasDuration
+                    ? (v) => ref
+                        .read(podcastPlayerProvider.notifier)
+                        .seek(Duration(milliseconds: v.round()))
+                    : null,
               ),
             ),
             Padding(
@@ -195,39 +125,28 @@ class _PodcastPlayerCardState extends State<PodcastPlayerCard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(_fmt(_position), style: timeStyle),
-                  Text(hasDuration ? _fmt(total) : '--:--', style: timeStyle),
+                  Text(
+                    isThis ? _fmt(state.position) : '0:00',
+                    style: timeStyle,
+                  ),
+                  Text(
+                    hasDuration ? _fmt(total) : '--:--',
+                    style: timeStyle,
+                  ),
                 ],
               ),
             ),
           ],
-          if (_error != null) ...[
+          if (error != null) ...[
             const SizedBox(height: 8),
             Text(
-              _error!,
+              error,
               style: const TextStyle(color: _danger, fontSize: 12),
             ),
           ],
         ],
       ),
     );
-  }
-}
-
-/// Coordonne les lecteurs : demarrer un podcast met en pause le precedent.
-abstract final class _ActivePlayer {
-  _ActivePlayer._();
-
-  static _PodcastPlayerCardState? _current;
-
-  static void setActive(_PodcastPlayerCardState s) {
-    final prev = _current;
-    if (prev != null && prev != s) prev._pauseFromRegistry();
-    _current = s;
-  }
-
-  static void clear(_PodcastPlayerCardState s) {
-    if (_current == s) _current = null;
   }
 }
 

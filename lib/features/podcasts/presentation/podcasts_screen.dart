@@ -57,11 +57,7 @@ class _PodcastsScreenState extends State<PodcastsScreen> {
                   itemBuilder: (context, index) {
                     if (index == 0) return const _Header();
                     final p = items[index - 1];
-                    return PodcastPlayerCard(
-                      title: p.title,
-                      subtitle: p.subtitle,
-                      url: p.url,
-                    );
+                    return PodcastPlayerCard(podcast: p);
                   },
                 );
               },
