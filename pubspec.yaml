@@ -55,19 +55,23 @@ flutter:
     - data/mediatheque/optimus/
     - data/curriculum/optimus/index.json
     - data/curriculum/optimus/images/
-    - data/curriculum/optimus/section-01-hardware-architecture/
-    - data/curriculum/optimus/section-02-systeme-exploitation/
-    - data/curriculum/optimus/section-03-reseaux-infrastructure/
-    - data/curriculum/optimus/section-04-maintenance-sauvegarde/
-    - data/curriculum/optimus/section-05-cybersecurite/
-    - data/curriculum/optimus/section-06-utiliser-ia/
+    - data/curriculum/optimus/module-01-support-utilisateur/
+    - data/curriculum/optimus/module-02-hardware-architecture/
+    - data/curriculum/optimus/module-03-systeme-exploitation/
+    - data/curriculum/optimus/module-04-reseaux-infrastructure/
+    - data/curriculum/optimus/module-05-maintenance-sauvegarde/
+    - data/curriculum/optimus/module-06-administration-windows/
+    - data/curriculum/optimus/module-07-cybersecurite/
+    - data/curriculum/optimus/module-08-utiliser-ia/
     # QCM par chapitre Optimus (alignés sur data/quiz/optimus/).
-    - data/quiz/optimus/section-01-hardware/
-    - data/quiz/optimus/section-02-systemes/
-    - data/quiz/optimus/section-03-reseaux/
-    - data/quiz/optimus/section-04-maintenance/
-    - data/quiz/optimus/section-05-securite/
-    - data/quiz/optimus/section-06-ia/
+    - data/quiz/optimus/module-01-support-utilisateur/
+    - data/quiz/optimus/module-02-hardware-architecture/
+    - data/quiz/optimus/module-03-systeme-exploitation/
+    - data/quiz/optimus/module-04-reseaux-infrastructure/
+    - data/quiz/optimus/module-05-maintenance-sauvegarde/
+    - data/quiz/optimus/module-06-administration-windows/
+    - data/quiz/optimus/module-07-cybersecurite/
+    - data/quiz/optimus/module-08-utiliser-ia/
     # Thèmes libres (transversaux).
     - data/quiz/themes/
     # Thèmes Terrain — banques hors-parcours ajoutées par le prof.
