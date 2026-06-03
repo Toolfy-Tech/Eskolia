@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -14,12 +15,12 @@ import '../services/revision_pool_repository.dart';
 import '../models/revision_pool_launch_mode.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _orange = Color(0xFFFF9800);
-const Color _slate = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
-const Color _red = Color(0xFFEF5350);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _orange = EskoliaTokens.orange;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _surface = EskoliaTokens.surface2;
+const Color _red = EskoliaTokens.error;
 
 class RevisionPoolScreen extends StatefulWidget {
   const RevisionPoolScreen({

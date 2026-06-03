@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
 import '../data/ai_key_repository.dart';
 import '../data/ollama_service.dart';
 import 'ollama_install_guide_sheet.dart';
-
-// ── Couleurs locales ─────────────────────────────────────────────────────────
-
-const Color _slate  = Color(0xFF94A3B8);
-const Color _amber  = Color(0xFFFFC107);
-const Color _violet = Color(0xFF6C63FF);
-const Color _green  = Color(0xFF4CAF50);
-const Color _red    = Color(0xFFE53935);
 
 // ── Prefixes preferes pour l'auto-selection du meilleur modele ───────────────
 
@@ -136,7 +129,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
   @override
   Widget build(BuildContext context) {
     return EskoliaCardContent(
-      accentBorderColor: _amber,
+      accentBorderColor: EskoliaTokens.amber,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,13 +153,13 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: _green.withValues(alpha: 0.2),
+                    color: EskoliaTokens.success.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
                     'CONNECTE',
                     style: TextStyle(
-                      color: _green,
+                      color: EskoliaTokens.success,
                       fontSize: 8,
                       fontWeight: FontWeight.w800,
                     ),
@@ -177,14 +170,14 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: _amber.withValues(alpha: 0.15),
+                  color: EskoliaTokens.amber.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: _amber.withValues(alpha: 0.4)),
+                  border: Border.all(color: EskoliaTokens.amber.withValues(alpha: 0.4)),
                 ),
                 child: const Text(
                   'ILLIMITE',
                   style: TextStyle(
-                    color: _amber,
+                    color: EskoliaTokens.amber,
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
                   ),
@@ -196,7 +189,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           Text(
             'gemma3 · llama3 · mistral — Tourne sur votre PC',
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.7),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
               fontSize: 11,
             ),
           ),
@@ -218,13 +211,13 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.warning_amber_rounded, color: _amber, size: 13),
+              const Icon(Icons.warningEskoliaTokens.amber_rounded, color: EskoliaTokens.amber, size: 13),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   'Necessite l\'installation d\'Ollama (~5 min)',
                   style: TextStyle(
-                    color: _amber.withValues(alpha: 0.85),
+                    color: EskoliaTokens.amber.withValues(alpha: 0.85),
                     fontSize: 11,
                     height: 1.4,
                   ),
@@ -237,7 +230,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           Text(
             'URL Ollama',
             style: TextStyle(
-              color: _slate,
+              color: EskoliaTokens.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
@@ -252,13 +245,13 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           // Note URLs selon la plateforme
           Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: _slate.withValues(alpha: 0.5), size: 11),
+              Icon(Icons.info_outline_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), size: 11),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
                   'Web/Bureau : 127.0.0.1:11434  |  Emulateur Android : 10.0.2.2:11434',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.55),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.55),
                     fontSize: 10,
                     height: 1.4,
                   ),
@@ -271,7 +264,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           Text(
             'Modele',
             style: TextStyle(
-              color: _slate,
+              color: EskoliaTokens.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
@@ -295,8 +288,8 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
                 child: OutlinedButton(
                   onPressed: _testing ? null : _testConnection,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: _amber,
-                    side: BorderSide(color: _amber.withValues(alpha: 0.6)),
+                    foregroundColor: EskoliaTokens.amber,
+                    side: BorderSide(color: EskoliaTokens.amber.withValues(alpha: 0.6)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -308,7 +301,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
                           height: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: _amber,
+                            color: EskoliaTokens.amber,
                           ),
                         )
                       : const Text(
@@ -322,8 +315,8 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
                 child: OutlinedButton(
                   onPressed: () => OllamaInstallGuideSheet.show(context),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: _violet,
-                    side: BorderSide(color: _violet.withValues(alpha: 0.6)),
+                    foregroundColor: EskoliaTokens.violet,
+                    side: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.6)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -356,13 +349,13 @@ class _ProLine extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_rounded, color: _amber, size: 13),
+          const Icon(Icons.check_rounded, color: EskoliaTokens.amber, size: 13),
           const SizedBox(width: 6),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.85),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                 fontSize: 11,
                 height: 1.4,
               ),
@@ -380,11 +373,11 @@ class _QualityDots extends StatelessWidget {
   final int score;
 
   static const _colors = [
-    Color(0xFFE53935),
-    Color(0xFFFF7043),
-    Color(0xFFFFC107),
-    Color(0xFF66BB6A),
-    Color(0xFF4CAF50),
+    EskoliaTokens.error,
+    EskoliaTokens.orange,
+    EskoliaTokens.amber,
+    EskoliaTokens.success,
+    EskoliaTokens.success,
   ];
 
   @override
@@ -395,7 +388,7 @@ class _QualityDots extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 10),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 10),
         ),
         const SizedBox(width: 6),
         Row(
@@ -424,7 +417,7 @@ class _StatusBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = ok ? _green : _red;
+    final color = ok ? EskoliaTokens.success : EskoliaTokens.error;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -516,17 +509,17 @@ class _ModelSelectorState extends State<_ModelSelector> {
     // Apres connexion : dropdown peuple dynamiquement depuis /api/tags
     return DropdownButtonFormField<String>(
       value: _selected,
-      dropdownColor: const Color(0xFF1E1E38),
+      dropdownColor: EskoliaTokens.surface2,
       style: const TextStyle(color: Colors.white, fontSize: 13),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _slate.withValues(alpha: 0.3)),
+          borderSide: BorderSide(color: EskoliaTokens.textSecondary.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: _violet.withValues(alpha: 0.7)),
+          borderSide: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.7)),
         ),
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.04),
@@ -536,7 +529,7 @@ class _ModelSelectorState extends State<_ModelSelector> {
           value: m,
           child: Row(
             children: [
-              const Icon(Icons.check_circle_rounded, color: _green, size: 13),
+              const Icon(Icons.check_circle_rounded, color: EskoliaTokens.success, size: 13),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

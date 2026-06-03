@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/tip_section_theme.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 
-const Color _slateLight = Color(0xFF94A3B8);
+const Color _slateLight = EskoliaTokens.textSecondary;
 
 /// Sélection de Maîtrise par section / chapitre (sources = chemins d'assets JSON).
 /// Mode contrôlé : l'état vit dans le parent ([selectedPaths]).
@@ -429,17 +430,17 @@ class _ActionChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           color: dimmed
               ? Colors.white.withValues(alpha: 0.05)
-              : const Color(0xFF6C63FF).withValues(alpha: 0.15),
+              : EskoliaTokens.violetSoft.withValues(alpha: 0.15),
           border: Border.all(
             color: dimmed
                 ? Colors.white.withValues(alpha: 0.12)
-                : const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                : EskoliaTokens.violetSoft.withValues(alpha: 0.4),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: dimmed ? Colors.white54 : const Color(0xFF818CF8),
+            color: dimmed ? Colors.white54 : EskoliaTokens.violet,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),

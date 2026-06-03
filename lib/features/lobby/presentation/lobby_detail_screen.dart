@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -11,12 +12,12 @@ import '../data/lobby_repository.dart';
 import 'battle_screen.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _green = Color(0xFF10B981);
-const Color _orange = Color(0xFFFF9800);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violet;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _slateLight = EskoliaTokens.textSecondary;
+const Color _green = EskoliaTokens.success;
+const Color _orange = EskoliaTokens.amber;
 
 class LobbyDetailScreen extends StatefulWidget {
   const LobbyDetailScreen({super.key, required this.lobbyId});

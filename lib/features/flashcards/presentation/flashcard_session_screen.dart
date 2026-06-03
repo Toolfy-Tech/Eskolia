@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../data/repositories/user_repository.dart';
@@ -153,7 +154,9 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
       final xp = 5 + _knew * 3 + _almost;
       try {
         await UserRepository().addXp(uid, xp);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[FlashcardSessionScreen._finish] $e');
+      }
     }
     if (uid != null) {
       await DailyQuestRewardService().onFlashSessionCompleted(uid);
@@ -173,7 +176,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         title: const Text(
           'Session terminée',
           style: TextStyle(color: Colors.white),
@@ -389,7 +392,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
                         child: _GradeButton(
                           label: 'Pas encore',
                           emoji: '\u{274C}',
-                          color: const Color(0xFFEF4444),
+                          color: EskoliaTokens.error,
                           onPressed: () => _onGrade(FlashcardGrade.forgot),
                         ),
                       ),
@@ -398,7 +401,7 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
                         child: _GradeButton(
                           label: 'Presque',
                           emoji: '\u{1F914}',
-                          color: const Color(0xFFF59E0B),
+                          color: EskoliaTokens.amber,
                           onPressed: () => _onGrade(FlashcardGrade.almost),
                         ),
                       ),

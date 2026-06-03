@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -8,9 +9,6 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -39,7 +37,7 @@ class AdminHomeScreen extends StatelessWidget {
                   Text(
                     'File de validation et signalements (Firestore).',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.95),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                       fontSize: 13,
                       height: 1.35,
                     ),
@@ -64,7 +62,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'Erreurs signalées sur les questions',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -92,7 +90,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'Propositions du Labo (labo_question_drafts)',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -120,7 +118,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'Astuces liées aux modules (community_tips)',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -148,7 +146,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'Votes 👍/👎 des joueurs par thème et question',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -176,7 +174,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'Quiz importés et gérés par les admins',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),
@@ -204,7 +202,7 @@ class AdminHomeScreen extends StatelessWidget {
                       subtitle: Text(
                         'XP, série, quiz et activité de chaque élève',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.9),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                           fontSize: 12,
                         ),
                       ),

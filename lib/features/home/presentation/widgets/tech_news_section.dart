@@ -4,10 +4,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../shared/widgets/eskolia_card.dart';
 import '../../data/tech_news_models.dart';
 import '../../data/tech_news_repository.dart';
+import '../../../../core/constants/eskolia_tokens.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _cyan = Color(0xFF00BCD4);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _slateLight = EskoliaTokens.textSecondary;
+const Color _cyan = EskoliaTokens.cyan;
 
 /// Bloc veille RSS (dont sources pro Windows / infra) pour le hub accueil.
 class TechNewsSection extends StatefulWidget {

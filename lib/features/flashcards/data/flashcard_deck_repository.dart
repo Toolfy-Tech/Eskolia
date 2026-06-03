@@ -140,7 +140,8 @@ class FlashcardDeckRepository {
         }
       }
       return out;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[FlashcardDeckRepository.readAll] $e');
       return [];
     }
   }
@@ -191,7 +192,9 @@ class FlashcardDeckRepository {
         final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: a);
         final found = qs.indexWhere((x) => x.question == q.question);
         idxInFile = found >= 0 ? found : 0;
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[FlashcardDeckRepository.addFromQuizQuestion] $e');
+      }
     }
     final sk = DeckFlashcard.sourceKeyForQuestion(q, idxInFile);
     final cur = await readAll();

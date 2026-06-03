@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -17,10 +18,10 @@ import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../notebook/data/note_ai_generator.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _amber = Color(0xFFFFC107);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _amber = EskoliaTokens.amber;
 
 class BilanRecapScreen extends StatefulWidget {
   const BilanRecapScreen({super.key});
@@ -86,7 +87,9 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
             nextDue: DateTime.now(),
           ));
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[BilanRecapScreen._reviserErreurs] $e');
+      }
     }
 
     if (!mounted) return;
@@ -126,7 +129,9 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
           if (decoded is Map) {
             bilans.add(Map<String, dynamic>.from(decoded));
           }
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[BilanRecapScreen._analyze] $e');
+        }
       }
     }
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/assets/app_assets.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/app_theme_extensions.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -14,11 +15,11 @@ import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = Color(0xFF3B82F6);
-const Color _violet = Color(0xFF7C3AED);
-const Color _slate = Color(0xFF94A3B8);
-const Color _fieldBg = Color(0xFF1E293B);
-const Color _fieldBorder = Color(0xFF334155);
+const Color _blue = EskoliaTokens.info;
+const Color _violet = EskoliaTokens.violet;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _fieldBg = EskoliaTokens.surface2;
+const Color _fieldBorder = EskoliaTokens.textDisabled;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.authRepository});

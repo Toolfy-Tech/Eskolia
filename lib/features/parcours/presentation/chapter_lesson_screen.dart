@@ -17,10 +17,11 @@ import '../data/tip_progress_repository.dart';
 import 'widgets/lexique_section.dart';
 import 'widgets/mediatheque_section.dart';
 import 'widgets/support_section.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Affiche le cours depuis [ModuleModel.lessonAssetPath] (fichier .md rendu en texte riche).
 class ChapterLessonScreen extends StatefulWidget {
@@ -197,7 +198,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                       letterSpacing: 0.3,
                     ),
                     backgroundColor: _cyan,
-                    foregroundColor: const Color(0xFF0B1220),
+                    foregroundColor: EskoliaTokens.bgBase,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

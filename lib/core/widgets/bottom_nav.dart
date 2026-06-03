@@ -352,7 +352,7 @@ class _NavCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? Colors.white : _inactiveGray;
+    final color = active ? EskoliaTokens.textPrimary : _inactiveGray;
     final intensity = neon?.intensity.clamp(0.0, 1.5) ?? 1.0;
 
     return Padding(
@@ -377,7 +377,7 @@ class _NavCell extends StatelessWidget {
                       colors: [
                         EskoliaTokens.violet.withValues(alpha: 0.42 * intensity),
                         EskoliaTokens.violet.withValues(alpha: 0.18 * intensity),
-                        const Color(0xFF312E81).withValues(alpha: 0.55),
+                        EskoliaTokens.surface3.withValues(alpha: 0.55),
                       ],
                     )
                   : null,
@@ -441,10 +441,10 @@ class _NavCell extends StatelessWidget {
                           width: 10,
                           height: 10,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF4CAF50),
+                            color: EskoliaTokens.success,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0xFF0F172A),
+                              color: EskoliaTokens.surface1,
                               width: 1.5,
                             ),
                           ),

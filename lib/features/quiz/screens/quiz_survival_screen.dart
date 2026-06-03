@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -179,7 +180,7 @@ class _QuizSurvivalScreenState extends State<QuizSurvivalScreen> {
                     FilledButton.icon(
                       onPressed: _busy ? null : _start,
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFE53935),
+                        backgroundColor: EskoliaTokens.error,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,

@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../data/gemini_model_info.dart';
-
-const Color _slate = Color(0xFF94A3B8);
 
 /// Selecteur de modele Gemini avec tier list visuelle.
 /// Recupere la liste depuis l'API Google et trie S > A > B > C.
@@ -135,7 +134,7 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
           const Text(
             'MODELE GEMINI',
             style: TextStyle(
-              color: _slate,
+              color: EskoliaTokens.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w800,
               letterSpacing: 1,
@@ -148,17 +147,17 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
               height: 10,
               child: CircularProgressIndicator(
                 strokeWidth: 1.5,
-                color: _slate.withValues(alpha: 0.6),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.6),
               ),
             ),
           ],
           if (!_loading && _offline) ...[
             const SizedBox(width: 8),
-            Icon(Icons.wifi_off_rounded, size: 11, color: _slate.withValues(alpha: 0.5)),
+            Icon(Icons.wifi_off_rounded, size: 11, color: EskoliaTokens.textSecondary.withValues(alpha: 0.5)),
             const SizedBox(width: 4),
             Text(
               'Liste locale',
-              style: TextStyle(color: _slate.withValues(alpha: 0.5), fontSize: 10),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), fontSize: 10),
             ),
           ],
         ]),
@@ -190,13 +189,13 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
             height: 16,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: _slate.withValues(alpha: 0.5),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(width: 10),
           Text(
             'Chargement des modeles...',
-            style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 12),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 12),
           ),
         ],
       ),
@@ -214,11 +213,11 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
       child: Row(
         children: [
           const SizedBox(width: 14),
-          Icon(Icons.info_outline_rounded, size: 15, color: _slate.withValues(alpha: 0.6)),
+          Icon(Icons.info_outline_rounded, size: 15, color: EskoliaTokens.textSecondary.withValues(alpha: 0.6)),
           const SizedBox(width: 8),
           Text(
             'Aucun modele compatible trouve.',
-            style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 12),
           ),
         ],
       ),
@@ -233,7 +232,7 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
 
     return Theme(
       data: Theme.of(context).copyWith(
-        canvasColor: const Color(0xFF1E2D40),
+        canvasColor: EskoliaTokens.surface2,
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -249,7 +248,7 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
             itemHeight: 56,
             icon: Icon(
               Icons.expand_more_rounded,
-              color: _slate.withValues(alpha: 0.7),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
               size: 20,
             ),
             items: _models.map((m) {
@@ -276,7 +275,7 @@ class _GeminiModelSelectorState extends State<GeminiModelSelector> {
                           Text(
                             m.tierLabel,
                             style: TextStyle(
-                              color: _slate.withValues(alpha: 0.7),
+                              color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                               fontSize: 11,
                             ),
                           ),

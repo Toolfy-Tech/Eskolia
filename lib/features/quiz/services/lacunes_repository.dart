@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'quiz_repository.dart';
@@ -24,7 +26,8 @@ class LacunesRepository {
         }
       }
       return out;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[LacunesRepository.readEntries] $e');
       return [];
     }
   }

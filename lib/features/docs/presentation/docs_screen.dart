@@ -12,8 +12,9 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import 'docs_mini_course_dialog.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _slate = Color(0xFF94A3B8);
+const Color _slate = EskoliaTokens.textSecondary;
 
 const String _assetMiniRgpd = 'data/docs/mini_formation_rgpd.md';
 const String _assetMiniCnil = 'data/docs/mini_formation_cnil.md';
@@ -234,7 +235,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _CoursFilePicker(files: files),
     );
@@ -253,7 +254,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: EskoliaTokens.surface2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),

@@ -8,12 +8,13 @@ import 'package:flutter/services.dart';
 import '../../../../core/services/asset_cache_service.dart';
 import '../../../../core/services/eskolia_folder_service.dart';
 import '../../../../core/utils/eskolia_snackbar.dart';
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../data/models/custom_quiz_data.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _green = Color(0xFF43E97B);
-const Color _surface = Color(0xFF1E293B);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _violet = EskoliaTokens.violet;
+const Color _green = EskoliaTokens.success;
+const Color _surface = EskoliaTokens.surface2;
 
 /// Widget autonome affiché dans le modal de création de lobby quand l'onglet
 /// "Mon quiz" est actif. Gère téléchargement du template, import et preview.
@@ -182,8 +183,8 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
         OutlinedButton.icon(
           onPressed: _importFromEskolia,
           style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFF00BCD4),
-            side: BorderSide(color: const Color(0xFF00BCD4).withValues(alpha: 0.4)),
+            foregroundColor: EskoliaTokens.cyan,
+            side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           icon: const Icon(Icons.folder_special_rounded, size: 18),

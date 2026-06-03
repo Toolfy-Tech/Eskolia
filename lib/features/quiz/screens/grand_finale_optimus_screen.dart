@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -67,7 +68,7 @@ class _GrandFinaleOptimusScreenState extends State<GrandFinaleOptimusScreen> {
                     : const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircularProgressIndicator(color: Color(0xFF00BCD4)),
+                          CircularProgressIndicator(color: EskoliaTokens.cyan),
                           SizedBox(height: 20),
                           Text(
                             'Préparation de l’épreuve finale TIP (parcours Optimus)…',

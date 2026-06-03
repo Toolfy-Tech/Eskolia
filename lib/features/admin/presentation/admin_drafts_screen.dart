@@ -231,8 +231,8 @@ class _DraftTile extends StatelessWidget {
                 '$mark${String.fromCharCode(65 + j)}. ${draft.options[j]}',
                 style: TextStyle(
                   color: j == draft.correctIndex
-                      ? const Color(0xFF43E97B)
-                      : _slate.withValues(alpha: 0.9),
+                      ? EskoliaTokens.success
+                      : EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                   fontSize: 12,
                 ),
               ),
@@ -243,7 +243,7 @@ class _DraftTile extends StatelessWidget {
             Text(
               draft.explanation,
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.85),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                 fontSize: 11,
               ),
             ),
@@ -251,7 +251,7 @@ class _DraftTile extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             '$dateStr · ${draft.difficulty} · auteur ${draft.authorId.length <= 10 ? draft.authorId : '${draft.authorId.substring(0, 8)}…'}',
-            style: TextStyle(color: _slate.withValues(alpha: 0.45), fontSize: 10),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.45), fontSize: 10),
           ),
           if (draft.status == 'rejected' && onDelete != null) ...[
             const SizedBox(height: 10),
@@ -260,9 +260,9 @@ class _DraftTile extends StatelessWidget {
               child: TextButton.icon(
                 onPressed: () => _confirmAndDelete(context),
                 icon: const Icon(Icons.delete_forever_rounded,
-                    size: 16, color: _red),
+                    size: 16, color: EskoliaTokens.error),
                 label: const Text('Supprimer définitivement',
-                    style: TextStyle(color: _red, fontSize: 12)),
+                    style: TextStyle(color: EskoliaTokens.error, fontSize: 12)),
                 style: TextButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

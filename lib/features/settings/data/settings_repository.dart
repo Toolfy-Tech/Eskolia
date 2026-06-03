@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSettings {
@@ -134,7 +135,9 @@ class SettingsRepository {
           s = AppSettings.fromFirestore(doc.data()!);
           await _persistLocal(s);
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[SettingsRepository.loadSettings] $e');
+      }
     }
     return s;
   }
@@ -168,7 +171,9 @@ class SettingsRepository {
             .collection('settings')
             .doc('app')
             .set(settings.toFirestore(), SetOptions(merge: true));
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[SettingsRepository.saveSettings] $e');
+      }
     }
   }
 
@@ -184,7 +189,9 @@ class SettingsRepository {
             .collection('settings')
             .doc('app')
             .set(d.toFirestore());
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[SettingsRepository.resetToDefaults] $e');
+      }
     }
   }
 }

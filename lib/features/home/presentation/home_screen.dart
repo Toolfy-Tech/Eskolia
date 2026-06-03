@@ -15,9 +15,10 @@ import '../../auth/data/user_model.dart';
 import '../../economy/data/achievement_triggers.dart';
 import '../data/home_repository.dart';
 import 'widgets/tech_news_section.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _surfaceBar = Color(0xFF1E293B);
-const Color _redStreak = Color(0xFFEF4444);
+const Color _surfaceBar = EskoliaTokens.surface2;
+const Color _redStreak = EskoliaTokens.error;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

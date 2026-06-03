@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -11,7 +12,7 @@ import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 
-const Color _slate = Color(0xFF94A3B8);
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Solo : révision lacunes — uniquement un quiz Maîtrise (jusqu’à 10 questions,
 /// ou moins s’il y a moins d’erreurs en attente). Pas de flashcards.
@@ -140,7 +141,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: Color(0xFF00BCD4)),
+                  CircularProgressIndicator(color: EskoliaTokens.cyan),
                   SizedBox(height: 16),
                   Text(
                     'Préparation…',

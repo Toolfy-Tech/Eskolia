@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../data/repositories/user_repository.dart';
 import 'parcours_repository.dart';
 import 'tip_progress_repository.dart';

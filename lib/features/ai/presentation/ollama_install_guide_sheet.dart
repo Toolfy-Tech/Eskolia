@@ -2,16 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// ── Couleurs locales ─────────────────────────────────────────────────────────
-
-const Color _bg     = Color(0xFF0F0F1A);
-const Color _surface = Color(0xFF1E1E38);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate  = Color(0xFF94A3B8);
-const Color _green  = Color(0xFF4CAF50);
-const Color _amber  = Color(0xFFFFC107);
-const Color _terminalBg = Color(0xFF0D1117);
-const Color _terminalGreen = Color(0xFF43E97B);
+import '../../../core/constants/eskolia_tokens.dart';
 
 // ── Donnees modeles ──────────────────────────────────────────────────────────
 
@@ -58,7 +49,7 @@ class OllamaInstallGuideSheet extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: _bg,
+            color: EskoliaTokens.bgBase,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -148,7 +139,7 @@ class _SheetHeader extends StatelessWidget {
           ),
           IconButton(
             onPressed: onClose,
-            icon: const Icon(Icons.close_rounded, color: _slate, size: 22),
+            icon: const Icon(Icons.close_rounded, color: EskoliaTokens.textSecondary, size: 22),
             tooltip: 'Fermer',
           ),
         ],
@@ -171,7 +162,7 @@ class _SectionHeader extends StatelessWidget {
           width: 3,
           height: 16,
           decoration: BoxDecoration(
-            color: _violet,
+            color: EskoliaTokens.violet,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -203,7 +194,7 @@ class _TerminalBlock extends StatelessWidget {
       SnackBar(
         content: Text('Commande copiee : $command'),
         duration: const Duration(seconds: 2),
-        backgroundColor: _surface,
+        backgroundColor: EskoliaTokens.surface2,
       ),
     );
   }
@@ -213,7 +204,7 @@ class _TerminalBlock extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: _terminalBg,
+        color: EskoliaTokens.surface1,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
@@ -223,7 +214,7 @@ class _TerminalBlock extends StatelessWidget {
             child: Text(
               command,
               style: const TextStyle(
-                color: _terminalGreen,
+                color: EskoliaTokens.success,
                 fontFamily: 'monospace',
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -244,7 +235,7 @@ class _TerminalBlock extends StatelessWidget {
                   Text(
                     'Copier',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.9),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -280,7 +271,7 @@ class _Step1 extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           'Rendez-vous sur ollama.com/download',
-          style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
         ),
         const SizedBox(height: 4),
         _BulletLine('Choisissez Windows, macOS ou Linux'),
@@ -293,8 +284,8 @@ class _Step1 extends StatelessWidget {
             icon: const Icon(Icons.open_in_new_rounded, size: 16),
             label: const Text('Ouvrir ollama.com/download'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: _violet,
-              side: BorderSide(color: _violet.withValues(alpha: 0.6)),
+              foregroundColor: EskoliaTokens.violet,
+              side: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.6)),
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
@@ -319,7 +310,7 @@ class _UrlSection extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           'Selon votre plateforme, utilisez l\'URL adaptee :',
-          style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
         ),
         const SizedBox(height: 10),
         _UrlRow(label: 'Web / Bureau', url: 'http://127.0.0.1:11434'),
@@ -342,7 +333,7 @@ class _UrlRow extends StatelessWidget {
       SnackBar(
         content: Text('URL copiee : $url'),
         duration: const Duration(seconds: 2),
-        backgroundColor: _surface,
+        backgroundColor: EskoliaTokens.surface2,
       ),
     );
   }
@@ -352,7 +343,7 @@ class _UrlRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: _terminalBg,
+        color: EskoliaTokens.surface1,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
@@ -361,13 +352,13 @@ class _UrlRow extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.2),
+              color: EskoliaTokens.violet.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               label,
               style: const TextStyle(
-                color: _violet,
+                color: EskoliaTokens.violet,
                 fontSize: 9,
                 fontWeight: FontWeight.w700,
               ),
@@ -378,7 +369,7 @@ class _UrlRow extends StatelessWidget {
             child: Text(
               url,
               style: const TextStyle(
-                color: _terminalGreen,
+                color: EskoliaTokens.success,
                 fontFamily: 'monospace',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -392,7 +383,7 @@ class _UrlRow extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               child: Text(
                 '\u{1F4CB}',
-                style: TextStyle(fontSize: 14, color: _slate.withValues(alpha: 0.8)),
+                style: TextStyle(fontSize: 14, color: EskoliaTokens.textSecondary.withValues(alpha: 0.8)),
               ),
             ),
           ),
@@ -416,7 +407,7 @@ class _Step2 extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           'Ouvrez un terminal (PowerShell sur Windows) et collez cette commande :',
-          style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
         ),
         const SizedBox(height: 10),
         const _TerminalBlock(command: 'ollama pull gemma3'),
@@ -424,7 +415,7 @@ class _Step2 extends StatelessWidget {
         Text(
           'Telechargement : 3 a 10 minutes selon connexion (~5 GB)',
           style: TextStyle(
-            color: _slate.withValues(alpha: 0.7),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
             fontSize: 12,
             fontStyle: FontStyle.italic,
           ),
@@ -448,7 +439,7 @@ class _Step3 extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           'Ollama demarre automatiquement. Si ce n\'est pas le cas :',
-          style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
         ),
         const SizedBox(height: 10),
         const _TerminalBlock(command: 'ollama serve'),
@@ -472,18 +463,18 @@ class _VerifySection extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: _green.withValues(alpha: 0.08),
+            color: EskoliaTokens.success.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _green.withValues(alpha: 0.3)),
+            border: Border.all(color: EskoliaTokens.success.withValues(alpha: 0.3)),
           ),
           child: Row(
             children: [
-              const Icon(Icons.check_circle_outline_rounded, color: _green, size: 18),
+              const Icon(Icons.check_circle_outline_rounded, color: EskoliaTokens.success, size: 18),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Dans Eskolia, cliquez sur "Tester la connexion".',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.95), fontSize: 13, height: 1.4),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.95), fontSize: 13, height: 1.4),
                 ),
               ),
             ],
@@ -513,7 +504,7 @@ class _ModelsTable extends StatelessWidget {
         const SizedBox(height: 12),
         Container(
           decoration: BoxDecoration(
-            color: _surface,
+            color: EskoliaTokens.surface2,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
@@ -534,7 +525,7 @@ class _ModelsTable extends StatelessWidget {
               // En-tete
               TableRow(
                 decoration: BoxDecoration(
-                  color: _violet.withValues(alpha: 0.2),
+                  color: EskoliaTokens.violet.withValues(alpha: 0.2),
                 ),
                 children: const [
                   _TableHeader('Modele'),
@@ -604,7 +595,7 @@ class _TableCell extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: highlight ? _amber : _slate.withValues(alpha: 0.85),
+          color: highlight ? EskoliaTokens.amber : EskoliaTokens.textSecondary.withValues(alpha: 0.85),
           fontSize: 12,
           fontFamily: mono ? 'monospace' : null,
           fontWeight: highlight ? FontWeight.w700 : FontWeight.w400,
@@ -704,7 +695,7 @@ class _TroubleshootItem extends StatelessWidget {
                 Text(
                   answer,
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.85),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                     fontSize: 12,
                     height: 1.5,
                   ),
@@ -717,7 +708,7 @@ class _TroubleshootItem extends StatelessWidget {
                     Text(
                       commandNote!,
                       style: TextStyle(
-                        color: _slate.withValues(alpha: 0.7),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                         fontSize: 11,
                         fontStyle: FontStyle.italic,
                         height: 1.4,
@@ -749,12 +740,12 @@ class _BulletLine extends StatelessWidget {
         children: [
           Text(
             '→ ',
-            style: TextStyle(color: _violet.withValues(alpha: 0.8), fontSize: 13),
+            style: TextStyle(color: EskoliaTokens.violet.withValues(alpha: 0.8), fontSize: 13),
           ),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.4),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.4),
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -12,9 +13,6 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
-
-const Color _slate = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E1E38);
 
 /// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
@@ -101,7 +99,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
           EskoliaShellBody(
             safeAreaTop: false,
             child: _loading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF)))
+                ? const Center(child: CircularProgressIndicator(color: EskoliaTokens.violet))
                 : _errorMessage != null
                     ? _buildError()
                     : _buildContent(),
@@ -123,12 +121,12 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
             Text(
               _errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 15),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 15),
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () { setState(() { _loading = true; _errorMessage = null; }); _load(); },
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFF6C63FF)),
+              style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violet),
               child: const Text('Réessayer'),
             ),
           ],
@@ -177,7 +175,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               _showMissionDetail(flatMissions[idx], idx);
             },
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
+              backgroundColor: EskoliaTokens.violet,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             icon: const Icon(Icons.play_arrow_rounded),
@@ -192,7 +190,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
         // ── Niveaux ──────────────────────────────────────────────
         const Text(
           'NIVEAUX',
-          style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+          style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
         ),
         const SizedBox(height: 12),
 
@@ -232,9 +230,9 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF6C63FF).withValues(alpha: 0.08),
+        color: EskoliaTokens.violet.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.35)),
+        border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,11 +269,11 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$done / $total missions', style: TextStyle(color: _slate, fontSize: 12)),
+                Text('$done / $total missions', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                 Text(
                   done >= total ? 'Terminé ✓' : done == 0 ? 'Non commencé' : 'En cours',
                   style: TextStyle(
-                    color: done >= total ? const Color(0xFF43E97B) : _slate,
+                    color: done >= total ? const Color(0xFF43E97B) : EskoliaTokens.textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -288,7 +286,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               child: LinearProgressIndicator(
                 value: total > 0 ? done / total : 0,
                 backgroundColor: Colors.white.withValues(alpha: 0.10),
-                color: const Color(0xFF6C63FF),
+                color: EskoliaTokens.violet,
                 minHeight: 6,
               ),
             ),
@@ -305,7 +303,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     required int totalFlatMissions,
   }) {
     final missions = (level['missions'] as List<dynamic>?) ?? [];
-    final levelColor = _hexColor(level['color'] as String? ?? '#6C63FF');
+    final levelColor = _hexColor(level['color'] as String? ?? '#7C6FFF');
 
     return Container(
       decoration: BoxDecoration(
