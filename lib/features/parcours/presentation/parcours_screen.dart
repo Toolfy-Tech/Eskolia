@@ -454,6 +454,26 @@ class _SectionTileState extends State<_SectionTile> {
                 ),
               ),
               const SizedBox(width: 10),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: t.primary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(4),
+                  border:
+                      Border.all(color: t.primary.withValues(alpha: 0.40)),
+                ),
+                child: Text(
+                  widget.section.id,
+                  style: TextStyle(
+                    color: t.primary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   widget.section.title,
@@ -471,8 +491,12 @@ class _SectionTileState extends State<_SectionTile> {
             PodcastPlayerCard(podcast: _podcast!),
           ],
           const SizedBox(height: 8),
-          for (final m in widget.section.modules)
-            _ModuleTile(module: m, sectionAccent: t.primary),
+          for (var i = 0; i < widget.section.modules.length; i++)
+            _ModuleTile(
+              module: widget.section.modules[i],
+              sectionAccent: t.primary,
+              chapterIndex: i + 1,
+            ),
         ],
       ),
     );
@@ -629,10 +653,12 @@ class _ModuleTile extends StatelessWidget {
   const _ModuleTile({
     required this.module,
     required this.sectionAccent,
+    required this.chapterIndex,
   });
 
   final ModuleModel module;
   final Color sectionAccent;
+  final int chapterIndex;
 
   static String _iconForType(String type) {
     switch (type) {
@@ -712,15 +738,43 @@ class _ModuleTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    module.title,
-                    style: TextStyle(
-                      color: completed
-                          ? _slateLight.withValues(alpha: 0.55)
-                          : Colors.white.withValues(alpha: 0.92),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (module.type != 'exam') ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 1),
+                          margin: const EdgeInsets.only(right: 7),
+                          decoration: BoxDecoration(
+                            color:
+                                sectionAccent.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                          child: Text(
+                            'Ch.$chapterIndex',
+                            style: TextStyle(
+                              color: sectionAccent.withValues(alpha: 0.75),
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                      Expanded(
+                        child: Text(
+                          module.title,
+                          style: TextStyle(
+                            color: completed
+                                ? _slateLight.withValues(alpha: 0.55)
+                                : Colors.white.withValues(alpha: 0.92),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 if (completed)
