@@ -102,10 +102,20 @@ service cloud.firestore {
       // Création : l'hôte doit être l'utilisateur courant.
       allow create: if signedIn()
           && request.resource.data.hostId == request.auth.uid;
-      // Modification : hôte ou joueur déjà dans la liste playerIds.
+      // Modification : hôte, joueur existant, ou nouveau joueur qui se joint.
       allow update: if signedIn()
-          && (resource.data.hostId == request.auth.uid
-              || request.auth.uid in resource.data.playerIds);
+          && (
+            resource.data.hostId == request.auth.uid
+            || request.auth.uid in resource.data.playerIds
+            // Nouveau joueur rejoignant : il s'ajoute lui-même à playerIds
+            // alors qu'il n'y était pas et que le lobby n'est pas plein.
+            || (
+              !(request.auth.uid in resource.data.playerIds)
+              && request.auth.uid in request.resource.data.playerIds
+              && resource.data.status in ['waiting', 'in_progress']
+              && resource.data.currentPlayers < resource.data.maxPlayers
+            )
+          );
       allow delete: if signedIn()
           && resource.data.hostId == request.auth.uid;
     }
