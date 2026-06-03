@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/podcast_player_service.dart';
-
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Mini-lecteur persistant affiché dans le shell quand un podcast est actif.
 /// Permet de contrôler la lecture sans quitter l'écran courant.
@@ -34,14 +31,14 @@ class PodcastMiniPlayer extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withValues(alpha: 0.96),
+        color: EskoliaTokens.bgBase.withValues(alpha: 0.96),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _violet.withValues(alpha: 0.30),
+          color: EskoliaTokens.violet.withValues(alpha: 0.30),
         ),
         boxShadow: [
           BoxShadow(
-            color: _violet.withValues(alpha: 0.18),
+            color: EskoliaTokens.violet.withValues(alpha: 0.18),
             blurRadius: 20,
             spreadRadius: 0,
           ),
@@ -59,7 +56,7 @@ class PodcastMiniPlayer extends ConsumerWidget {
                 value: progress.toDouble(),
                 backgroundColor: Colors.white.withValues(alpha: 0.08),
                 valueColor:
-                    const AlwaysStoppedAnimation<Color>(_cyan),
+                    const AlwaysStoppedAnimation<Color>(EskoliaTokens.cyan),
               ),
             ),
           ),
@@ -99,7 +96,7 @@ class PodcastMiniPlayer extends ConsumerWidget {
                             ? '${_fmt(state.position)} / ${_fmt(total)}'
                             : 'Chargement...',
                         style: const TextStyle(
-                          color: _slate,
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                         ),
                       ),
@@ -174,7 +171,7 @@ class _MiniPlayButton extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [_cyan, _violet],
+            colors: [EskoliaTokens.cyan, EskoliaTokens.violet],
           ),
         ),
         child: loading

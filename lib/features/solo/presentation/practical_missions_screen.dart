@@ -14,7 +14,6 @@ import '../data/practical_catalog_repository.dart';
 import '../data/practical_missions_progress_repository.dart';
 import '../data/practical_track_models.dart';
 
-const Color _slate = EskoliaTokens.textSecondary;
 
 /// Parcours missions sur VM : texte + étapes, validation manuelle, mission suivante.
 class PracticalMissionsScreen extends StatefulWidget {
@@ -230,7 +229,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
             Text(
               'Ce parcours missions sera disponible prochainement.',
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.85),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -276,7 +275,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
         Text(
           pack.subtitle,
           style: TextStyle(
-            color: _slate.withValues(alpha: 0.92),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.92),
             fontSize: 13,
             height: 1.4,
           ),
@@ -297,7 +296,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
         if (total == 0)
           Text(
             'Aucune mission dans ce fichier.',
-            style: TextStyle(color: _slate.withValues(alpha: 0.9)),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9)),
           )
         else if (done)
           GradientBorderCard(
@@ -380,7 +379,7 @@ class _MissionCard extends StatelessWidget {
             Text(
               mission.intro,
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.95),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                 fontSize: 14,
                 height: 1.45,
               ),

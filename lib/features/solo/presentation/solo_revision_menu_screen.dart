@@ -15,9 +15,6 @@ import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../quiz/data/quiz_repository.dart';
 import '../../quiz/presentation/revision_pool_launch_mode.dart';
 
-const Color _slate = EskoliaTokens.textSecondary;
-const Color _green = EskoliaTokens.success;
-const Color _teal = EskoliaTokens.cyan;
 
 /// Hub : pool 📌 épinglé + paquet SRS, chacun en quiz QCM ou flashcards.
 class SoloRevisionMenuScreen extends StatefulWidget {
@@ -128,7 +125,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                   'Choisis d’abord ce que tu veux réviser (épingles ou paquet SRS), '
                   'puis le mode : quiz QCM ou flashcards.',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 13,
                     height: 1.4,
                   ),
@@ -140,8 +137,8 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 12),
                 GradientBorderCard(
-                  gradientColors: const [_green, EskoliaTokens.violetSoft],
-                  glowColor: _green,
+                  gradientColors: const [EskoliaTokens.success, EskoliaTokens.violetSoft],
+                  glowColor: EskoliaTokens.success,
                   padding: const EdgeInsets.all(18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -210,8 +207,8 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 16),
                 GradientBorderCard(
-                  gradientColors: const [_teal, EskoliaTokens.violetSoft],
-                  glowColor: _teal,
+                  gradientColors: const [EskoliaTokens.cyan, EskoliaTokens.violetSoft],
+                  glowColor: EskoliaTokens.cyan,
                   padding: const EdgeInsets.all(18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

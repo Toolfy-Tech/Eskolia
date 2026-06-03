@@ -9,10 +9,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/true_false_repository.dart';
-
-const Color _slate = Color(0xFF94A3B8);
-const Color _greenSwipe = Color(0xFF10B981);
-const Color _redSwipe = Color(0xFFE53935);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Révision rapide : swipe gauche = **Faux**, droite = **Vrai** (ou boutons).
 class TrueFalseSwipeScreen extends StatefulWidget {
@@ -113,7 +110,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
     try {
       await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: const Color(0xFF151B2E),
+      backgroundColor: EskoliaTokens.surface1,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -127,7 +124,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
               Text(
                 ok ? 'Correct' : 'Incorrect',
                 style: TextStyle(
-                  color: ok ? _greenSwipe : _redSwipe,
+                  color: ok ? EskoliaTokens.success : EskoliaTokens.error,
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
                 ),
@@ -217,8 +214,8 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
               color: Color.lerp(
                 Colors.transparent,
                 greenBg
-                    ? _greenSwipe.withValues(alpha: 0.22)
-                    : _redSwipe.withValues(alpha: 0.22),
+                    ? EskoliaTokens.success.withValues(alpha: 0.22)
+                    : EskoliaTokens.error.withValues(alpha: 0.22),
                 _dragX == 0 ? 0 : tint,
               ),
             ),
@@ -227,7 +224,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
             safeAreaTop: false,
             child: _busyLoad
                 ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFF00BCD4)),
+                    child: CircularProgressIndicator(color: EskoliaTokens.cyan),
                   )
                 : _loadError != null
                     ? Center(
@@ -239,7 +236,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
                               Text(
                                 'Impossible de charger les affirmations.\n$_loadError',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(color: _slate),
+                                style: const TextStyle(color: EskoliaTokens.textSecondary),
                               ),
                               const SizedBox(height: 16),
                               FilledButton(
@@ -260,7 +257,7 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
                                   const Text(
                                     'Aucune affirmation disponible pour le moment.',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: _slate, fontSize: 15),
+                                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 15),
                                   ),
                                   const SizedBox(height: 20),
                                   FilledButton(
@@ -355,7 +352,7 @@ class _PlayArea extends StatelessWidget {
             Text(
               'Score $score · Série $streak',
               style: const TextStyle(
-                color: Color(0xFF00BCD4),
+                color: EskoliaTokens.cyan,
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
               ),
@@ -366,7 +363,7 @@ class _PlayArea extends StatelessWidget {
         Text(
           'Swipe ← FAUX · VRAI → ou utilise les boutons.',
           style: TextStyle(
-            color: _slate.withValues(alpha: 0.95),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
             fontSize: 12,
             height: 1.35,
           ),
@@ -395,7 +392,7 @@ class _PlayArea extends StatelessWidget {
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFF121A28),
+                    color: EskoliaTokens.surface1,
                     border: Border.all(
                       color: Colors.white.withValues(alpha: 0.12),
                     ),
@@ -431,8 +428,8 @@ class _PlayArea extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: onTapFalse,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: _redSwipe,
-                  side: const BorderSide(color: _redSwipe, width: 1.4),
+                  foregroundColor: EskoliaTokens.error,
+                  side: const BorderSide(color: EskoliaTokens.error, width: 1.4),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 icon: const Icon(Icons.arrow_back_rounded),
@@ -444,7 +441,7 @@ class _PlayArea extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: onTapTrue,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _greenSwipe,
+                  backgroundColor: EskoliaTokens.success,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -506,7 +503,7 @@ class _EndCard extends StatelessWidget {
             Text(
               'Meilleure série : $bestStreak',
               style: const TextStyle(
-                color: Color(0xFF00BCD4),
+                color: EskoliaTokens.cyan,
                 fontWeight: FontWeight.w600,
               ),
             ),

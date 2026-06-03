@@ -19,14 +19,6 @@ import '../components/quiz_question_context_row.dart';
 import '../viewmodels/quiz_notifier.dart';
 import 'quiz_result_screen.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = EskoliaTokens.cyan;
-const Color _violet = EskoliaTokens.violetSoft;
-const Color _slate = EskoliaTokens.textSecondary;
-const Color _green = EskoliaTokens.success;
-const Color _red = EskoliaTokens.error;
-const Color _orange = EskoliaTokens.orange;
-const Color _surface = EskoliaTokens.surface2;
 
 class QuizScreen extends ConsumerStatefulWidget {
   const QuizScreen({
@@ -248,13 +240,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               Text(
                 error.toString(),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _slate.withValues(alpha: 0.95)),
+                style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.95)),
               ),
               const SizedBox(height: 20),
               FilledButton(
                 onPressed: () => ref.read(quizProvider(widget.sessionId).notifier).initSession(widget.sessionId),
                 style: FilledButton.styleFrom(
-                  backgroundColor: _violet,
+                  backgroundColor: EskoliaTokens.violetSoft,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Réessayer'),
@@ -274,7 +266,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           animation: _pulseController,
           builder: (context, child) {
             final t = _pulseController.value;
-            final c = Color.lerp(_surface, EskoliaTokens.surface3, t)!;
+            final c = Color.lerp(EskoliaTokens.surface2, EskoliaTokens.surface3, t)!;
             return AnimatedContainer(
               duration: Duration.zero,
               height: 220,
@@ -316,13 +308,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Container(color: _surface),
+                  Container(color: EskoliaTokens.surface2),
                   FractionallySizedBox(
                     alignment: Alignment.centerLeft,
                     widthFactor: progress.clamp(0.0, 1.0),
                     child: Container(
                       decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: [_violet, _cyan]),
+                        gradient: LinearGradient(colors: [EskoliaTokens.violetSoft, EskoliaTokens.cyan]),
                       ),
                     ),
                   ),
@@ -397,13 +389,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: _orange.withValues(alpha: 0.2),
+              color: EskoliaTokens.orange.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: _orange.withValues(alpha: 0.5)),
+              border: Border.all(color: EskoliaTokens.orange.withValues(alpha: 0.5)),
             ),
             child: const Text(
               'TICKET D\'INCIDENT',
-              style: TextStyle(color: _orange, fontSize: 10, fontWeight: FontWeight.bold),
+              style: TextStyle(color: EskoliaTokens.orange, fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(height: 8),
@@ -434,7 +426,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               ),
               child: Text(
                 q.indices![i],
-                style: const TextStyle(color: _cyan, fontSize: 13, fontStyle: FontStyle.italic),
+                style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 13, fontStyle: FontStyle.italic),
               ),
             );
           }),
@@ -443,7 +435,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               onPressed: () => ref.read(quizProvider(widget.sessionId).notifier).incrementIndices(),
               icon: const Icon(Icons.lightbulb_outline, size: 16),
               label: Text('Révéler l\'indice ${state.revealedIndicesCount + 1}'),
-              style: TextButton.styleFrom(foregroundColor: _orange),
+              style: TextButton.styleFrom(foregroundColor: EskoliaTokens.orange),
             ),
         ],
         const SizedBox(height: 16),
@@ -497,11 +489,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       children: [
         Row(
           children: [
-            const Icon(Icons.swap_vert_rounded, color: _cyan, size: 16),
+            const Icon(Icons.swap_vert_rounded, color: EskoliaTokens.cyan, size: 16),
             const SizedBox(width: 6),
             const Text(
               'GLISSE POUR ORDONNER',
-              style: TextStyle(color: _cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
+              style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
         ),
@@ -519,7 +511,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           proxyDecorator: (child, index, animation) => Material(
             color: Colors.transparent,
             elevation: 6,
-            shadowColor: _violet.withValues(alpha: 0.4),
+            shadowColor: EskoliaTokens.violetSoft.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(10),
             child: child,
           ),
@@ -543,7 +535,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: _violet.withValues(alpha: 0.25)),
+        border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.25)),
       ),
       child: Row(
         children: [
@@ -552,7 +544,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             width: 26,
             height: 26,
             decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.25),
+              color: EskoliaTokens.violetSoft.withValues(alpha: 0.25),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
@@ -585,11 +577,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       children: [
         Row(
           children: [
-            const Icon(Icons.compare_arrows_rounded, color: _violet, size: 16),
+            const Icon(Icons.compare_arrows_rounded, color: EskoliaTokens.violetSoft, size: 16),
             const SizedBox(width: 6),
             const Text(
               'GLISSE POUR ASSOCIER',
-              style: TextStyle(color: _violet, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
+              style: TextStyle(color: EskoliaTokens.violetSoft, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
         ),
@@ -655,9 +647,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             decoration: BoxDecoration(
-                              color: _violet.withValues(alpha: 0.15),
+                              color: EskoliaTokens.violetSoft.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: _violet.withValues(alpha: 0.5)),
+                              border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.5)),
                             ),
                             child: Row(
                               children: [
@@ -671,16 +663,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
-                          color: isHovered ? _violet.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.03),
+                          color: isHovered ? EskoliaTokens.violetSoft.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.03),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: isHovered ? _violet.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.1),
+                            color: isHovered ? EskoliaTokens.violetSoft.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.1),
                           ),
                         ),
                         child: Text(
                           'Dépose ici...',
                           style: TextStyle(
-                            color: isHovered ? _violet : Colors.white.withValues(alpha: 0.3),
+                            color: isHovered ? EskoliaTokens.violetSoft : Colors.white.withValues(alpha: 0.3),
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
                           ),
@@ -704,13 +696,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         color: ghost
             ? Colors.white.withValues(alpha: 0.04)
             : dragging
-                ? _violet.withValues(alpha: 0.9)
+                ? EskoliaTokens.violetSoft.withValues(alpha: 0.9)
                 : Colors.white.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: ghost
               ? Colors.white.withValues(alpha: 0.1)
-              : _violet.withValues(alpha: dragging ? 1.0 : 0.4),
+              : EskoliaTokens.violetSoft.withValues(alpha: dragging ? 1.0 : 0.4),
         ),
       ),
       child: Text(
@@ -731,7 +723,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     }
     final total = correctPairs.length;
     final allCorrect = correctCount == total;
-    final accent = allCorrect ? _green : (correctCount > 0 ? _orange : _red);
+    final accent = allCorrect ? EskoliaTokens.success : (correctCount > 0 ? EskoliaTokens.orange : EskoliaTokens.error);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -788,10 +780,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isOk ? _green.withValues(alpha: 0.1) : _red.withValues(alpha: 0.08),
+                      color: isOk ? EskoliaTokens.success.withValues(alpha: 0.1) : EskoliaTokens.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isOk ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.3),
+                        color: isOk ? EskoliaTokens.success.withValues(alpha: 0.4) : EskoliaTokens.error.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Column(
@@ -799,7 +791,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       children: [
                         Row(
                           children: [
-                            Icon(isOk ? Icons.check_rounded : Icons.close_rounded, color: isOk ? _green : _red, size: 13),
+                            Icon(isOk ? Icons.check_rounded : Icons.close_rounded, color: isOk ? EskoliaTokens.success : EskoliaTokens.error, size: 13),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
@@ -813,7 +805,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                           const SizedBox(height: 4),
                           Text(
                             'Correct : $correct',
-                            style: const TextStyle(color: _green, fontSize: 11, fontWeight: FontWeight.w700),
+                            style: const TextStyle(color: EskoliaTokens.success, fontSize: 11, fontWeight: FontWeight.w700),
                           ),
                         ],
                       ],
@@ -852,7 +844,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               const SizedBox(width: 8),
               Icon(
                 isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                color: isCorrect ? _green : _red,
+                color: isCorrect ? EskoliaTokens.success : EskoliaTokens.error,
                 size: 16,
               ),
             ],
@@ -873,11 +865,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: state.isValidated
-                ? (isCorrect ? _green.withValues(alpha: 0.12) : _red.withValues(alpha: 0.10))
+                ? (isCorrect ? EskoliaTokens.success.withValues(alpha: 0.12) : EskoliaTokens.error.withValues(alpha: 0.10))
                 : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
             border: state.isValidated
-                ? Border.all(color: isCorrect ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.35))
+                ? Border.all(color: isCorrect ? EskoliaTokens.success.withValues(alpha: 0.4) : EskoliaTokens.error.withValues(alpha: 0.35))
                 : null,
           ),
           child: SelectableText(
@@ -894,7 +886,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           const Text(
             'CHECKLIST DE RÉSOLUTION',
             style: TextStyle(
-              color: _orange,
+              color: EskoliaTokens.orange,
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.1,
@@ -911,7 +903,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   children: [
                     Icon(
                       isChecked ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
-                      color: isChecked ? _green : Colors.white30,
+                      color: isChecked ? EskoliaTokens.success : Colors.white30,
                       size: 20,
                     ),
                     const SizedBox(width: 10),
@@ -943,20 +935,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
               duration: const Duration(milliseconds: 300),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: _orange.withValues(alpha: 0.1),
+                color: EskoliaTokens.orange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: _orange.withValues(alpha: 0.4)),
+                border: Border.all(color: EskoliaTokens.orange.withValues(alpha: 0.4)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.lightbulb_rounded, color: _orange, size: 14),
+                      const Icon(Icons.lightbulb_rounded, color: EskoliaTokens.orange, size: 14),
                       const SizedBox(width: 6),
                       const Text(
                         'RETIENS BIEN ÇA',
-                        style: TextStyle(color: _orange, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
+                        style: TextStyle(color: EskoliaTokens.orange, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.1),
                       ),
                     ],
                   ),
@@ -1022,7 +1014,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         : 0;
     final total = correctOrder.length;
     final allCorrect = correctCount == total;
-    final accent = allCorrect ? _green : (correctCount > 0 ? _orange : _red);
+    final accent = allCorrect ? EskoliaTokens.success : (correctCount > 0 ? EskoliaTokens.orange : EskoliaTokens.error);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1091,13 +1083,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     decoration: BoxDecoration(
                       color: isCorrect
-                          ? _green.withValues(alpha: 0.1)
-                          : _red.withValues(alpha: 0.08),
+                          ? EskoliaTokens.success.withValues(alpha: 0.1)
+                          : EskoliaTokens.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isCorrect
-                            ? _green.withValues(alpha: 0.4)
-                            : _red.withValues(alpha: 0.35),
+                            ? EskoliaTokens.success.withValues(alpha: 0.4)
+                            : EskoliaTokens.error.withValues(alpha: 0.35),
                       ),
                     ),
                     child: Row(
@@ -1109,13 +1101,13 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: isCorrect
-                                ? _green.withValues(alpha: 0.2)
-                                : _red.withValues(alpha: 0.2),
+                                ? EskoliaTokens.success.withValues(alpha: 0.2)
+                                : EskoliaTokens.error.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             isCorrect ? Icons.check_rounded : Icons.close_rounded,
-                            color: isCorrect ? _green : _red,
+                            color: isCorrect ? EskoliaTokens.success : EskoliaTokens.error,
                             size: 13,
                           ),
                         ),
@@ -1140,9 +1132,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _green.withValues(alpha: 0.07),
+                      color: EskoliaTokens.success.withValues(alpha: 0.07),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: _green.withValues(alpha: 0.25)),
+                      border: Border.all(color: EskoliaTokens.success.withValues(alpha: 0.25)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1215,7 +1207,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     final title = s.title;
     final survival = s.runMode == QuizRunMode.survival;
     final timed = s.timed;
-    final timerColor = Color.lerp(_violet, _red, state.secondsLeft < 10 ? (1 - state.secondsLeft / 10).clamp(0.0, 1.0) : 0.0)!;
+    final timerColor = Color.lerp(EskoliaTokens.violetSoft, EskoliaTokens.error, state.secondsLeft < 10 ? (1 - state.secondsLeft / 10).clamp(0.0, 1.0) : 0.0)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -1291,7 +1283,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           StreamBuilder<List<DailyLeaderboardEntry>>(
             stream: _leaderboardRepo.watchDailyQuizScores(dayKey: dayKey, limit: 5),
             builder: (context, snap) {
-              if (!snap.hasData) return const Center(child: LinearProgressIndicator(color: _cyan));
+              if (!snap.hasData) return const Center(child: LinearProgressIndicator(color: EskoliaTokens.cyan));
               final list = snap.data ?? [];
               if (list.isEmpty) return const Text('Soyez le premier !', style: TextStyle(color: Colors.white60, fontSize: 12));
               return Column(
@@ -1300,7 +1292,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   child: Row(
                     children: [
                       Expanded(child: Text(e.username, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold))),
-                      Text('${e.score}/${e.total}', style: const TextStyle(color: _cyan, fontSize: 12, fontWeight: FontWeight.w900)),
+                      Text('${e.score}/${e.total}', style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 12, fontWeight: FontWeight.w900)),
                     ],
                   ),
                 )).toList(),

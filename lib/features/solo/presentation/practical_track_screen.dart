@@ -15,7 +15,6 @@ import '../data/practical_catalog_repository.dart';
 import '../data/practical_track_models.dart';
 import 'practical_markdown_screen.dart';
 
-const Color _slate = EskoliaTokens.textSecondary;
 
 /// Un theme « Exercices pratiques » : tutoriels, liste de TP, QCM.
 class PracticalTrackScreen extends StatefulWidget {
@@ -166,7 +165,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                   Text(
                     e.id,
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.85),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                       fontSize: 12,
                     ),
                   ),
@@ -265,7 +264,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                 children: [
                                   const Icon(
                                     Icons.menu_book_rounded,
-                                    color: _slate,
+                                    color: EskoliaTokens.textSecondary,
                                     size: 18,
                                   ),
                                   const SizedBox(width: 8),
@@ -283,7 +282,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                   ),
                                   const Icon(
                                     Icons.open_in_new_rounded,
-                                    color: _slate,
+                                    color: EskoliaTokens.textSecondary,
                                     size: 16,
                                   ),
                                 ],
@@ -339,7 +338,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
             Text(
               'Ce theme sera disponible prochainement.\nReviens dans quelques jours !',
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.85),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -412,7 +411,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                   child: Text(
                                     m.subtitle,
                                     style: TextStyle(
-                                      color: _slate.withValues(alpha: 0.9),
+                                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                                       fontSize: 13,
                                       height: 1.35,
                                     ),
@@ -557,7 +556,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                                   subtitle: Text(
                                                     t.asset,
                                                     style: TextStyle(
-                                                      color: _slate.withValues(
+                                                      color: EskoliaTokens.textSecondary.withValues(
                                                         alpha: 0.75,
                                                       ),
                                                       fontSize: 11,
@@ -565,7 +564,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                                   ),
                                                   trailing: const Icon(
                                                     Icons.open_in_new_rounded,
-                                                    color: _slate,
+                                                    color: EskoliaTokens.textSecondary,
                                                   ),
                                                   onTap: () =>
                                                       _openTutorial(context, t),
@@ -626,7 +625,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                  color: _slate.withValues(
+                                                  color: EskoliaTokens.textSecondary.withValues(
                                                     alpha: 0.9,
                                                   ),
                                                   fontSize: 12,
@@ -634,7 +633,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                               ),
                                               trailing: const Icon(
                                                 Icons.expand_more_rounded,
-                                                color: _slate,
+                                                color: EskoliaTokens.textSecondary,
                                               ),
                                               onTap: () =>
                                                   _showExercise(
@@ -671,7 +670,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
                                             '• Les QCM pratiques portent sur des situations ; les QCM rappels sur les definitions.\n'
                                             '• Si tu bloques sur un TP, ouvre un tutoriel du theme puis reviens sur l’exercice.',
                                             style: TextStyle(
-                                              color: _slate.withValues(
+                                              color: EskoliaTokens.textSecondary.withValues(
                                                 alpha: 0.92,
                                               ),
                                               fontSize: 14,

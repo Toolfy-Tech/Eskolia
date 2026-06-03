@@ -273,7 +273,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
                 Text(
                   done >= total ? 'Terminé ✓' : done == 0 ? 'Non commencé' : 'En cours',
                   style: TextStyle(
-                    color: done >= total ? const Color(0xFF43E97B) : EskoliaTokens.textSecondary,
+                    color: done >= total ? EskoliaTokens.success : EskoliaTokens.textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -374,7 +374,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: isCompleted
-                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF43E97B), size: 18)
+                    ? const Icon(Icons.check_circle_rounded, color: EskoliaTokens.success, size: 18)
                     : isCurrent
                         ? Icon(Icons.radio_button_checked_rounded, color: accentColor, size: 18)
                         : const Icon(Icons.lock_rounded, color: EskoliaTokens.textSecondary, size: 16),
@@ -447,8 +447,8 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
 
   Color _difficultyColor(String difficulty) {
     switch (difficulty.toLowerCase()) {
-      case 'debutant': return const Color(0xFF43E97B);
-      case 'intermediaire': return const Color(0xFFEF9F27);
+      case 'debutant': return EskoliaTokens.success;
+      case 'intermediaire': return EskoliaTokens.amber;
       case 'avance': return EskoliaTokens.error;
       default: return EskoliaTokens.textSecondary;
     }
@@ -653,7 +653,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('• ', style: TextStyle(color: Color(0xFF43E97B), fontWeight: FontWeight.bold)),
+                                const Text('• ', style: TextStyle(color: EskoliaTokens.success, fontWeight: FontWeight.bold)),
                                 Expanded(child: Text(e, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
                               ],
                             ),
@@ -711,9 +711,9 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                     FilledButton.icon(
                       onPressed: (_validation == null || _validationPassed) ? widget.onComplete : null,
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF43E97B),
+                        backgroundColor: EskoliaTokens.success,
                         foregroundColor: Colors.black,
-                        disabledBackgroundColor: const Color(0xFF43E97B).withValues(alpha: 0.25),
+                        disabledBackgroundColor: EskoliaTokens.success.withValues(alpha: 0.25),
                         disabledForegroundColor: Colors.white30,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -777,7 +777,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 child: Text(
                   cmd,
                   style: const TextStyle(
-                    color: Color(0xFF4ADE80),
+                    color: EskoliaTokens.success,
                     fontFamily: 'monospace',
                     fontSize: 13,
                     height: 1.6,
@@ -802,14 +802,14 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: _validationPassed
-            ? const Color(0xFF43E97B).withValues(alpha: 0.08)
+            ? EskoliaTokens.success.withValues(alpha: 0.08)
             : _validationWrong
                 ? EskoliaTokens.error.withValues(alpha: 0.08)
                 : EskoliaTokens.violet.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _validationPassed
-              ? const Color(0xFF43E97B).withValues(alpha: 0.4)
+              ? EskoliaTokens.success.withValues(alpha: 0.4)
               : _validationWrong
                   ? EskoliaTokens.error.withValues(alpha: 0.4)
                   : EskoliaTokens.violet.withValues(alpha: 0.4),
@@ -874,7 +874,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
             const SizedBox(height: 8),
             const Text(
               'Bonne réponse ! Tu peux valider la mission.',
-              style: TextStyle(color: Color(0xFF43E97B), fontSize: 12, fontWeight: FontWeight.w600),
+              style: TextStyle(color: EskoliaTokens.success, fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ] else ...[
             const SizedBox(height: 12),

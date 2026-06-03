@@ -9,12 +9,7 @@ import '../../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../../shared/widgets/eskolia_card.dart';
 import '../../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/lexique_data.dart';
-
-const Color _slate  = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _green  = Color(0xFF43E97B);
-const Color _red    = Color(0xFFEF4444);
-const Color _amber  = Color(0xFFFFC107);
+import '../../../../core/constants/eskolia_tokens.dart';
 
 enum _Phase { intro, worksheet, corrected }
 
@@ -94,7 +89,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
         ],
       ),
       floatingActionButton: _phase == _Phase.intro ? null : FloatingActionButton.extended(
-        backgroundColor: _phase == _Phase.corrected ? _violet : _green,
+        backgroundColor: _phase == _Phase.corrected ? EskoliaTokens.violet : EskoliaTokens.success,
         foregroundColor: Colors.white,
         onPressed: _phase == _Phase.corrected ? _restart : _showAnswers,
         icon: Icon(_phase == _Phase.corrected
@@ -134,7 +129,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                 'Ecris ta definition, puis compare avec la correction et auto-evalue-toi.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: _slate.withValues(alpha: 0.9),
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                   fontSize: 13,
                   height: 1.5,
                 ),
@@ -145,14 +140,14 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
         const SizedBox(height: 20),
         Container(
           decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: _violet, width: 3)),
+            border: Border(left: BorderSide(color: EskoliaTokens.violet, width: 3)),
           ),
           padding: const EdgeInsets.only(left: 10),
           margin: const EdgeInsets.only(bottom: 12),
           child: const Text(
             'NOMBRE DE TERMES',
             style: TextStyle(
-              color: _slate,
+              color: EskoliaTokens.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.8,
@@ -172,12 +167,12 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
                       color: selected
-                          ? _violet.withValues(alpha: 0.15)
+                          ? EskoliaTokens.violet.withValues(alpha: 0.15)
                           : Colors.white.withValues(alpha: 0.04),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: selected
-                            ? _violet.withValues(alpha: 0.5)
+                            ? EskoliaTokens.violet.withValues(alpha: 0.5)
                             : Colors.white.withValues(alpha: 0.08),
                         width: selected ? 1.5 : 1,
                       ),
@@ -186,7 +181,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                       child: Text(
                         '$n',
                         style: TextStyle(
-                          color: selected ? _violet : _slate,
+                          color: selected ? EskoliaTokens.violet : EskoliaTokens.textSecondary,
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
                         ),
@@ -201,14 +196,14 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
         const SizedBox(height: 20),
         Container(
           decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: _slate, width: 3)),
+            border: Border(left: BorderSide(color: EskoliaTokens.textSecondary, width: 3)),
           ),
           padding: const EdgeInsets.only(left: 10),
           margin: const EdgeInsets.only(bottom: 12),
           child: const Text(
             'CATEGORIES COUVERTES',
             style: TextStyle(
-              color: _slate,
+              color: EskoliaTokens.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.8,
@@ -236,7 +231,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                   Text(
                     '${cat.count} termes',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.7),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                       fontSize: 12,
                     ),
                   ),
@@ -251,7 +246,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
           child: FilledButton.icon(
             onPressed: _start,
             style: FilledButton.styleFrom(
-              backgroundColor: _violet,
+              backgroundColor: EskoliaTokens.violet,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -294,7 +289,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
     final correct   = _correctCount;
     final total     = _fields.length;
     final ratio     = validated > 0 ? correct / validated : 0.0;
-    final color     = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final color     = ratio >= 0.8 ? EskoliaTokens.success : ratio >= 0.6 ? EskoliaTokens.amber : EskoliaTokens.error;
 
     return Container(
       color: EskoliaVisual.bgElevated,
@@ -346,8 +341,8 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
     final validated = field.selfValidated;
 
     Color accentColor = Colors.transparent;
-    if (corrected && validated == true)  accentColor = _green;
-    if (corrected && validated == false) accentColor = _red;
+    if (corrected && validated == true)  accentColor = EskoliaTokens.success;
+    if (corrected && validated == false) accentColor = EskoliaTokens.error;
 
     return EskoliaCardContent(
       accentBorderColor: corrected ? accentColor : null,
@@ -374,7 +369,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                 const SizedBox(width: 8),
                 Icon(
                   validated ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                  color: validated ? _green : _red,
+                  color: validated ? EskoliaTokens.success : EskoliaTokens.error,
                   size: 18,
                 ),
               ],
@@ -394,7 +389,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
             decoration: InputDecoration(
               hintText: 'Ta definition...',
               hintStyle: TextStyle(
-                color: _slate.withValues(alpha: 0.45),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.45),
                 fontSize: 13,
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -410,7 +405,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: _violet, width: 1.5),
+                borderSide: const BorderSide(color: EskoliaTokens.violet, width: 1.5),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -424,16 +419,16 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: _violet.withValues(alpha: 0.07),
+                color: EskoliaTokens.violet.withValues(alpha: 0.07),
                 borderRadius: BorderRadius.circular(8),
                 border: Border(
-                  left: BorderSide(color: _violet.withValues(alpha: 0.5), width: 3),
+                  left: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.5), width: 3),
                 ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lightbulb_outline_rounded, color: _violet.withValues(alpha: 0.8), size: 14),
+                  Icon(Icons.lightbulb_outline_rounded, color: EskoliaTokens.violet.withValues(alpha: 0.8), size: 14),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -457,7 +452,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                     child: _ValidationButton(
                       label: 'J\'avais bon',
                       icon: Icons.check_rounded,
-                      color: _green,
+                      color: EskoliaTokens.success,
                       onTap: () => _validate(i, true),
                     ),
                   ),
@@ -466,7 +461,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                     child: _ValidationButton(
                       label: 'J\'avais faux',
                       icon: Icons.close_rounded,
-                      color: _red,
+                      color: EskoliaTokens.error,
                       onTap: () => _validate(i, false),
                     ),
                   ),
@@ -477,14 +472,14 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                 children: [
                   Icon(
                     validated ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                    color: (validated ? _green : _red).withValues(alpha: 0.7),
+                    color: (validated ? EskoliaTokens.success : EskoliaTokens.error).withValues(alpha: 0.7),
                     size: 14,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     validated ? 'Marque comme correct' : 'Marque comme faux',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.6),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.6),
                       fontSize: 11,
                       fontStyle: FontStyle.italic,
                     ),
@@ -495,10 +490,10 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
                     child: Text(
                       'Modifier',
                       style: TextStyle(
-                        color: _violet.withValues(alpha: 0.7),
+                        color: EskoliaTokens.violet.withValues(alpha: 0.7),
                         fontSize: 11,
                         decoration: TextDecoration.underline,
-                        decorationColor: _violet.withValues(alpha: 0.4),
+                        decorationColor: EskoliaTokens.violet.withValues(alpha: 0.4),
                       ),
                     ),
                   ),
@@ -512,11 +507,11 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
 
   Widget _catBadge(String cat) {
     final (label, color) = switch (cat) {
-      'metier'   => ('Métier',       _amber),
-      'reseau'   => ('Réseau',       _violet),
-      'windows'  => ('Windows/AD',   const Color(0xFF00BCD4)),
-      'securite' => ('Sécurité',     _red),
-      _          => ('Matériel/OS',  _slate),
+      'metier'   => ('Métier',       EskoliaTokens.amber),
+      'reseau'   => ('Réseau',       EskoliaTokens.violet),
+      'windows'  => ('Windows/AD',   EskoliaTokens.cyan),
+      'securite' => ('Sécurité',     EskoliaTokens.error),
+      _          => ('Matériel/OS',  EskoliaTokens.textSecondary),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),

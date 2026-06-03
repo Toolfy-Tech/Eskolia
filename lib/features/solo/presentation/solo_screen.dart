@@ -7,11 +7,6 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 
-const Color _slateLight = EskoliaTokens.textSecondary;
-const Color _cyan = EskoliaTokens.cyan;
-const Color _green = EskoliaTokens.success;
-const Color _violet = EskoliaTokens.violetSoft;
-const Color _orange = EskoliaTokens.orange;
 
 class SoloScreen extends StatelessWidget {
   const SoloScreen({super.key});
@@ -54,7 +49,7 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Selectionne des chapitres, importe un fichier ou joue un quiz Eskolia en solo.',
                         icon: Icons.quiz_rounded,
-                        accentColor: _cyan,
+                        accentColor: EskoliaTokens.cyan,
                         onTap: () => context.push('/quiz/setup'),
                       ),
                       const SizedBox(height: 12),
@@ -63,7 +58,7 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Genere un quiz personnalise depuis tes notes via l\'IA — comme le multi, mais en solo.',
                         icon: Icons.auto_awesome_rounded,
-                        accentColor: _violet,
+                        accentColor: EskoliaTokens.violetSoft,
                         onTap: () => context.push('/solo/quiz-solo'),
                       ),
                       const SizedBox(height: 32),
@@ -90,7 +85,7 @@ class SoloScreen extends StatelessWidget {
                         title: 'Flashcards',
                         subtitle: 'Memorisation active par repetition espacee.',
                         icon: Icons.style_rounded,
-                        accentColor: _green,
+                        accentColor: EskoliaTokens.success,
                         onTap: () => context.push('/flashcards'),
                       ),
                       const SizedBox(height: 12),
@@ -99,7 +94,7 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Retrouve la signification des acronymes IT — sans indices.',
                         icon: Icons.abc_rounded,
-                        accentColor: _orange,
+                        accentColor: EskoliaTokens.orange,
                         onTap: () => context.push('/lexique'),
                       ),
                       const SizedBox(height: 40),
@@ -107,7 +102,7 @@ class SoloScreen extends StatelessWidget {
                         'Mode Active Recall active : toutes les reponses sont a saisir librement pour un ancrage memoriel maximal.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: _slateLight.withValues(alpha: 0.5),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.5),
                           fontSize: 11,
                           fontStyle: FontStyle.italic,
                         ),
@@ -198,7 +193,7 @@ class _SoloMenuCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: _slateLight.withValues(alpha: 0.8),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
                     fontSize: 11,
                     height: 1.2,
                   ),

@@ -11,12 +11,6 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = EskoliaTokens.info;
-const Color _violet = EskoliaTokens.violet;
-const Color _slate = EskoliaTokens.textSecondary;
-const Color _fieldBg = EskoliaTokens.surface2;
-const Color _fieldBorder = EskoliaTokens.textDisabled;
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key, this.authRepository});
@@ -112,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           constraints: const BoxConstraints(maxWidth: 440),
                           child: GradientBorderCard(
                             gradientColors: EskoliaVisual.borderPrimary,
-                            glowColor: _violet,
+                            glowColor: EskoliaTokens.violet,
                             padding: const EdgeInsets.all(32),
                             child: Form(
                               key: _formKey,
@@ -135,7 +129,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     'Indique ton pseudo ou ton email : '
                                     'nous enverrons un lien sur l’adresse du compte.',
                                     style: TextStyle(
-                                      color: _slate.withValues(alpha: 0.95),
+                                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                                       fontSize: 14,
                                       height: 1.35,
                                     ),
@@ -212,17 +206,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     required IconData prefixIcon,
   }) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
-    final focusColor = glass?.borderColor ?? _blue;
+    final focusColor = glass?.borderColor ?? EskoliaTokens.info;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: _fieldBorder),
+      borderSide: const BorderSide(color: EskoliaTokens.textDisabled),
     );
     return InputDecoration(
       filled: true,
-      fillColor: _fieldBg,
+      fillColor: EskoliaTokens.surface2,
       labelText: label,
-      labelStyle: const TextStyle(color: _slate),
-      prefixIcon: Icon(prefixIcon, color: _slate),
+      labelStyle: const TextStyle(color: EskoliaTokens.textSecondary),
+      prefixIcon: Icon(prefixIcon, color: EskoliaTokens.textSecondary),
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(color: focusColor, width: 1.5),
@@ -263,7 +257,7 @@ class _LogoBlock extends StatelessWidget {
           child: ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => const LinearGradient(
-              colors: [_blue, _violet],
+              colors: [EskoliaTokens.info, EskoliaTokens.violet],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ).createShader(bounds),

@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
-
-const Color _slate = Color(0xFF94A3B8);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Ecran post-inscription : guide le nouvel utilisateur vers sa premiere formation.
 class FormationChoiceScreen extends StatelessWidget {
@@ -39,7 +38,7 @@ class FormationChoiceScreen extends StatelessWidget {
                   Text(
                     'Choisis ton premier objectif — tu pourras tout explorer ensuite.',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.9),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                       fontSize: 15,
                       height: 1.45,
                     ),
@@ -76,7 +75,7 @@ class FormationChoiceScreen extends StatelessWidget {
                     description:
                         'TP réseau, scénarios Active Directory et PowerShell. '
                         'Pour les apprenants qui veulent pratiquer directement.',
-                    accentColor: const Color(0xFF34D399),
+                    accentColor: EskoliaTokens.success,
                     delay: 280,
                     onTap: () => context.go('/tp'),
                   ),
@@ -87,7 +86,7 @@ class FormationChoiceScreen extends StatelessWidget {
                       child: Text(
                         'Explorer d\'abord',
                         style: TextStyle(
-                          color: _slate.withValues(alpha: 0.7),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -168,7 +167,7 @@ class _FormationCard extends StatelessWidget {
                     Text(
                       description,
                       style: TextStyle(
-                        color: _slate.withValues(alpha: 0.85),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                         fontSize: 13,
                         height: 1.4,
                       ),

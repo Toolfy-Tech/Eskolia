@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../constants/eskolia_tokens.dart';
 import '../data/eskolia_tips_data.dart';
 
 const double kTipsBannerHeight = 44.0;
@@ -45,10 +46,10 @@ class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
         child: Container(
           height: topPad + kTipsBannerHeight,
           decoration: BoxDecoration(
-            color: const Color(0xFF0F0F1A).withValues(alpha: 0.82),
+            color: EskoliaTokens.bgBase.withValues(alpha: 0.82),
             border: const Border(
               bottom: BorderSide(
-                color: Color(0x14FFFFFF),
+                color: EskoliaTokens.borderSubtle,
                 width: 0.5,
               ),
             ),
@@ -67,7 +68,7 @@ class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
                     key: ValueKey(_index),
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF94A3B8),
+                      color: EskoliaTokens.textSecondary,
                       fontFamily: 'Inter',
                     ),
                     overflow: TextOverflow.ellipsis,

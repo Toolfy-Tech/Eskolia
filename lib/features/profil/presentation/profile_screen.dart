@@ -152,9 +152,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 20,
                         height: 20,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4CAF50),
+                          color: EskoliaTokens.success,
                           shape: BoxShape.circle,
-                          border: Border.all(color: _bg, width: 2.5),
+                          border: Border.all(color: EskoliaVisual.bgDeep, width: 2.5),
                         ),
                         child: const Icon(Icons.psychology_rounded, size: 11, color: Colors.white),
                       ),
@@ -169,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Niveau ${p.level}', style: const TextStyle(color: _amber, fontWeight: FontWeight.bold)),
+              Text('Niveau ${p.level}', style: const TextStyle(color: EskoliaTokens.amber, fontWeight: FontWeight.bold)),
               const SizedBox(width: 8),
               Text('${p.xp} XP', style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 13)),
             ],
@@ -197,12 +197,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Expanded(child: _MetricCard(label: 'Série', value: streakValue, color: Colors.orange)),
         const SizedBox(width: 10),
-        Expanded(child: _MetricCard(label: 'Quiz', value: '${p.totalQuizzesPlayed}', color: _cyan)),
+        Expanded(child: _MetricCard(label: 'Quiz', value: '${p.totalQuizzesPlayed}', color: EskoliaTokens.cyan)),
         const SizedBox(width: 10),
         Expanded(
           child: showVictories
-              ? _MetricCard(label: 'Victoires', value: '${p.battleWins}', color: _green)
-              : _MetricCard(label: 'Multi joués', value: '${p.totalWins}', color: _green),
+              ? _MetricCard(label: 'Victoires', value: '${p.battleWins}', color: EskoliaTokens.success)
+              : _MetricCard(label: 'Multi joués', value: '${p.totalWins}', color: EskoliaTokens.success),
         ),
       ],
     );
@@ -232,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             const Text(
               'ACTIVITÉ',
-              style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
             ),
             const SizedBox(width: 8),
             if (p.streak > 0)
@@ -264,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   final label = weekLabels[(startWeekday - 1 + i) % 7];
                   return SizedBox(
                     width: 28,
-                    child: Text(label, textAlign: TextAlign.center, style: TextStyle(color: _slate.withValues(alpha: 0.5), fontSize: 10, fontWeight: FontWeight.w600)),
+                    child: Text(label, textAlign: TextAlign.center, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), fontSize: 10, fontWeight: FontWeight.w600)),
                   );
                 }),
               ),
@@ -282,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (s.isToday && s.isActive) {
                         dotColor = EskoliaTokens.violet;
                       } else if (s.isActive) {
-                        dotColor = _cyan.withValues(alpha: 0.75);
+                        dotColor = EskoliaTokens.cyan.withValues(alpha: 0.75);
                       } else {
                         dotColor = Colors.white.withValues(alpha: 0.07);
                       }
@@ -323,7 +323,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('PROGRESSION PARCOURS', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
+            const Text('PROGRESSION PARCOURS', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
@@ -337,11 +337,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('Parcours Optimus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      Text('$done / $total chapitres', style: const TextStyle(color: _cyan, fontSize: 12, fontWeight: FontWeight.bold)),
+                      Text('$done / $total chapitres', style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 12, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  LinearProgressIndicator(value: ratio, backgroundColor: Colors.white10, color: _cyan, minHeight: 8),
+                  LinearProgressIndicator(value: ratio, backgroundColor: Colors.white10, color: EskoliaTokens.cyan, minHeight: 8),
                   if (ratio >= 1.0) ...[
                     const SizedBox(height: 16),
                     GestureDetector(
@@ -350,24 +350,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFFFD166).withValues(alpha: 0.5)),
-                          color: const Color(0xFFFFD166).withValues(alpha: 0.07),
+                          border: Border.all(color: EskoliaTokens.gold.withValues(alpha: 0.5)),
+                          color: EskoliaTokens.gold.withValues(alpha: 0.07),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.emoji_events_rounded, color: Color(0xFFFFD166), size: 18),
+                            const Icon(Icons.emoji_events_rounded, color: EskoliaTokens.gold, size: 18),
                             const SizedBox(width: 8),
                             const Text(
                               'Voir mon certificat',
                               style: TextStyle(
-                                color: Color(0xFFFFD166),
+                                color: EskoliaTokens.gold,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
                               ),
                             ),
                             const SizedBox(width: 6),
-                            Icon(Icons.arrow_forward_ios_rounded, color: const Color(0xFFFFD166).withValues(alpha: 0.7), size: 12),
+                            Icon(Icons.arrow_forward_ios_rounded, color: EskoliaTokens.gold.withValues(alpha: 0.7), size: 12),
                           ],
                         ),
                       ),
@@ -388,16 +388,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         const Text(
           'CETTE SEMAINE',
-          style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+          style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            Expanded(child: _MetricCard(label: 'XP gagnés', value: '${p.xpThisWeek}', color: _amber)),
+            Expanded(child: _MetricCard(label: 'XP gagnés', value: '${p.xpThisWeek}', color: EskoliaTokens.amber)),
             const SizedBox(width: 10),
-            Expanded(child: _MetricCard(label: 'Quiz joués', value: '${p.quizzesThisWeek}', color: _cyan)),
+            Expanded(child: _MetricCard(label: 'Quiz joués', value: '${p.quizzesThisWeek}', color: EskoliaTokens.cyan)),
             const SizedBox(width: 10),
-            Expanded(child: _MetricCard(label: 'Missions TP', value: '${p.tpMissionsThisWeek}', color: _green)),
+            Expanded(child: _MetricCard(label: 'Missions TP', value: '${p.tpMissionsThisWeek}', color: EskoliaTokens.success)),
           ],
         ),
       ],
@@ -409,7 +409,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('BADGES RÉCENTS', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
+        const Text('BADGES RÉCENTS', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
         const SizedBox(height: 12),
         SizedBox(
           height: 80,
@@ -424,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: b.isSuper ? _amber.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.1)),
+                  border: Border.all(color: b.isSuper ? EskoliaTokens.amber.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.1)),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -446,13 +446,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('EXPLORER', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
+        const Text('EXPLORER', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
         const SizedBox(height: 12),
         _ExplorerTile(icon: Icons.psychology_rounded, label: 'Mon IA', route: '/ai/setup', color: EskoliaTokens.violet),
-        _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: _amber),
+        _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: EskoliaTokens.amber),
         _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: EskoliaTokens.violet),
-        _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: _green),
-        _ExplorerTile(icon: Icons.settings_rounded, label: 'Réglages', route: '/settings', color: _slate),
+        _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: EskoliaTokens.success),
+        _ExplorerTile(icon: Icons.settings_rounded, label: 'Réglages', route: '/settings', color: EskoliaTokens.textSecondary),
       ],
     );
   }
@@ -461,8 +461,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return OutlinedButton(
       onPressed: _signOut,
       style: OutlinedButton.styleFrom(
-        foregroundColor: _red,
-        side: const BorderSide(color: _red, width: 1.5),
+        foregroundColor: EskoliaTokens.error,
+        side: const BorderSide(color: EskoliaTokens.error, width: 1.5),
         padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
@@ -475,9 +475,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, color: _red, size: 48),
+          const Icon(Icons.error_outline, color: EskoliaTokens.error, size: 48),
           const SizedBox(height: 16),
-          Text(error, style: const TextStyle(color: _slate)),
+          Text(error, style: const TextStyle(color: EskoliaTokens.textSecondary)),
           const SizedBox(height: 24),
           ElevatedButton(onPressed: _reload, child: const Text('Réessayer')),
         ],
@@ -506,7 +506,7 @@ class _MetricCard extends StatelessWidget {
         children: [
           Text(value, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: _slate, fontSize: 11)),
+          Text(label, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
         ],
       ),
     );

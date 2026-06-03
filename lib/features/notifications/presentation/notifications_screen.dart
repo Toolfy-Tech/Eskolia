@@ -9,14 +9,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../data/notification_repository.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
-const Color _redBadge = Color(0xFFE53935);
+import '../../../core/constants/eskolia_tokens.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -103,7 +96,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                 onPressed: () => _repo.markAllAsRead(_uid),
                 child: const Text(
                   'Tout lire',
-                  style: TextStyle(color: _cyan),
+                  style: TextStyle(color: EskoliaTokens.cyan),
                 ),
               );
             },
@@ -150,17 +143,17 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: _redBadge.withValues(alpha: 0.2),
+                                  color: EskoliaTokens.error.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color:
-                                        _redBadge.withValues(alpha: 0.5),
+                                        EskoliaTokens.error.withValues(alpha: 0.5),
                                   ),
                                 ),
                                 child: Text(
                                   '$unread non lues',
                                   style: const TextStyle(
-                                    color: _redBadge,
+                                    color: EskoliaTokens.error,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 12,
                                   ),
@@ -177,7 +170,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                             child: Text(
                               e.key,
                               style: TextStyle(
-                                color: _slateLight.withValues(alpha: 0.9),
+                                color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.9),
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
                               ),
@@ -236,7 +229,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             animation: _pulse,
             builder: (context, child) {
               final c =
-                  Color.lerp(_surface, const Color(0xFF2D3748), _pulse.value)!;
+                  Color.lerp(EskoliaTokens.surface2, EskoliaTokens.surface3, _pulse.value)!;
               return Container(
                 height: 88,
                 decoration: BoxDecoration(
@@ -271,7 +264,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             'Tu recevras des alertes pour les défis,\nles badges et les invitations multijoueur.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.85),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
               fontSize: 13,
               height: 1.4,
             ),
@@ -293,7 +286,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             Text(
               msg,
               textAlign: TextAlign.center,
-              style: TextStyle(color: _slateLight),
+              style: TextStyle(color: EskoliaTokens.textSecondaryLight),
             ),
             const SizedBox(height: 16),
             FilledButton(
@@ -350,12 +343,12 @@ class _NotificationDismissTile extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(16),
-            splashColor: _violet.withValues(alpha: 0.15),
+            splashColor: EskoliaTokens.violet.withValues(alpha: 0.15),
             child: Container(
               decoration: BoxDecoration(
                 color: read
                     ? Colors.transparent
-                    : _violet.withValues(alpha: 0.08),
+                    : EskoliaTokens.violet.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Colors.white.withValues(alpha: 0.1),
@@ -368,7 +361,7 @@ class _NotificationDismissTile extends StatelessWidget {
                     Container(
                       width: 4,
                       decoration: const BoxDecoration(
-                        color: _violet,
+                        color: EskoliaTokens.violet,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(16),
                           bottomLeft: Radius.circular(16),
@@ -413,7 +406,7 @@ class _NotificationDismissTile extends StatelessWidget {
                                   Text(
                                     n.body,
                                     style: TextStyle(
-                                      color: _slateLight
+                                      color: EskoliaTokens.textSecondaryLight
                                           .withValues(alpha: 0.95),
                                       fontSize: 13,
                                       height: 1.35,
@@ -423,7 +416,7 @@ class _NotificationDismissTile extends StatelessWidget {
                                   Text(
                                     relative,
                                     style: TextStyle(
-                                      color: _slate
+                                      color: EskoliaTokens.textSecondary
                                           .withValues(alpha: 0.85),
                                       fontSize: 11,
                                     ),

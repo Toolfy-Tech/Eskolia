@@ -11,12 +11,6 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../data/auth_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = EskoliaTokens.info;
-const Color _violet = EskoliaTokens.violet;
-const Color _slate = EskoliaTokens.textSecondary;
-const Color _fieldBg = EskoliaTokens.surface2;
-const Color _fieldBorder = EskoliaTokens.textDisabled;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -182,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           _obscurePassword
                                               ? Icons.visibility_off_outlined
                                               : Icons.visibility_outlined,
-                                          color: _slate,
+                                          color: EskoliaTokens.textSecondary,
                                         ),
                                         onPressed: () => setState(
                                           () => _obscurePassword =
@@ -215,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           _obscureConfirm
                                               ? Icons.visibility_off_outlined
                                               : Icons.visibility_outlined,
-                                          color: _slate,
+                                          color: EskoliaTokens.textSecondary,
                                         ),
                                         onPressed: () => setState(
                                           () => _obscureConfirm =
@@ -274,7 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         TextSpan(
                                           style: const TextStyle(
                                             fontSize: 14,
-                                            color: _slate,
+                                            color: EskoliaTokens.textSecondary,
                                           ),
                                           children: [
                                             const TextSpan(
@@ -284,7 +278,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               text: 'Se connecter',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: _blue,
+                                                color: EskoliaTokens.info,
                                               ),
                                             ),
                                           ],
@@ -316,19 +310,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String? hint,
   }) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
-    final focusColor = glass?.borderColor ?? _blue;
+    final focusColor = glass?.borderColor ?? EskoliaTokens.info;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: _fieldBorder),
+      borderSide: const BorderSide(color: EskoliaTokens.textDisabled),
     );
     return InputDecoration(
       filled: true,
-      fillColor: _fieldBg,
+      fillColor: EskoliaTokens.surface2,
       labelText: label,
       hintText: hint,
-      hintStyle: TextStyle(color: _slate.withValues(alpha: 0.65)),
-      labelStyle: const TextStyle(color: _slate),
-      prefixIcon: Icon(prefixIcon, color: _slate),
+      hintStyle: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.65)),
+      labelStyle: const TextStyle(color: EskoliaTokens.textSecondary),
+      prefixIcon: Icon(prefixIcon, color: EskoliaTokens.textSecondary),
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(color: focusColor, width: 1.5),
@@ -369,7 +363,7 @@ class _LogoBlock extends StatelessWidget {
           child: ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => const LinearGradient(
-              colors: [_blue, _violet],
+              colors: [EskoliaTokens.info, EskoliaTokens.violet],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ).createShader(bounds),
@@ -389,7 +383,7 @@ class _LogoBlock extends StatelessWidget {
           'Deviens expert en réseaux',
           style: TextStyle(
             fontSize: 16,
-            color: _slate.withValues(alpha: 0.95),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
           ),
         ),
       ],

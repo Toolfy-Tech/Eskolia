@@ -332,7 +332,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
           const SizedBox(height: 6),
           Text(
             'Valeur entre 0 et 255',
-            style: TextStyle(color: const Color(0xFFE53935), fontSize: 12),
+            style: TextStyle(color: EskoliaTokens.error, fontSize: 12),
           ),
         ],
         const SizedBox(height: 16),
@@ -390,7 +390,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
           const SizedBox(height: 6),
           Text(
             'Utilisez uniquement les chiffres 0 et 1 (8 max)',
-            style: TextStyle(color: const Color(0xFFE53935), fontSize: 12),
+            style: TextStyle(color: EskoliaTokens.error, fontSize: 12),
           ),
         ],
         const SizedBox(height: 12),
@@ -542,7 +542,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
             ),
             style: FilledButton.styleFrom(
               backgroundColor: _cyan,
-              foregroundColor: const Color(0xFF0B1120),
+              foregroundColor: EskoliaTokens.bgBase,
               padding: const EdgeInsets.symmetric(vertical: 13),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -641,7 +641,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
                   borderRadius: BorderRadius.circular(20),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: const Color(0xFF0B1120),
+                labelColor: EskoliaTokens.bgBase,
                 unselectedLabelColor: _slate,
                 labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
                 unselectedLabelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),

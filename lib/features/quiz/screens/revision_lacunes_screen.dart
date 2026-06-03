@@ -12,7 +12,6 @@ import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 
-const Color _slate = EskoliaTokens.textSecondary;
 
 /// Solo : révision lacunes — uniquement un quiz Maîtrise (jusqu’à 10 questions,
 /// ou moins s’il y a moins d’erreurs en attente). Pas de flashcards.
@@ -90,7 +89,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
                   'jusqu’à ce que tu répondes juste ici — en quiz Maîtrise, '
                   'jusqu’à 10 questions par session (moins si tu as moins de lacunes).',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 13,
                     height: 1.45,
                   ),
@@ -99,7 +98,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
                 Text(
                   'Banque Maîtrise',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),

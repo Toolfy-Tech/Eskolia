@@ -16,10 +16,6 @@ import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
 
-const Color _violet = EskoliaTokens.violetSoft;
-const Color _green = EskoliaTokens.success;
-const Color _amber = EskoliaTokens.amber;
-const Color _slate = EskoliaTokens.textSecondary;
 
 /// Compose un quiz solo (Mode Maîtrise).
 class QuizSoloSetupScreen extends StatefulWidget {
@@ -214,13 +210,13 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
                 borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
                   colors: [
-                    _violet.withValues(alpha: 0.85),
+                    EskoliaTokens.violetSoft.withValues(alpha: 0.85),
                     EskoliaVisual.neonCyan.withValues(alpha: 0.65),
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: _violet.withValues(alpha: 0.35),
+                    color: EskoliaTokens.violetSoft.withValues(alpha: 0.35),
                     blurRadius: 18,
                     offset: const Offset(0, 6),
                   ),
@@ -405,7 +401,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
           label: Text(t.$2),
           selected: selected,
           onSelected: (v) => setState(() => v ? _typeFilters.add(t.$1) : _typeFilters.remove(t.$1)),
-          selectedColor: _violet.withValues(alpha: 0.28),
+          selectedColor: EskoliaTokens.violetSoft.withValues(alpha: 0.28),
           checkmarkColor: Colors.white,
           labelStyle: TextStyle(
             color: selected ? Colors.white : Colors.white60,
@@ -413,7 +409,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
             fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
           ),
           backgroundColor: Colors.white.withValues(alpha: 0.05),
-          side: BorderSide(color: selected ? _violet : Colors.white.withValues(alpha: 0.15)),
+          side: BorderSide(color: selected ? EskoliaTokens.violetSoft : Colors.white.withValues(alpha: 0.15)),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           visualDensity: VisualDensity.compact,
         );
@@ -431,7 +427,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
           label: Text('${cat.name} (${cat.count})'),
           selected: selected,
           onSelected: (v) => setState(() => v ? _lexiqueKeys.add(cat.key) : _lexiqueKeys.remove(cat.key)),
-          selectedColor: _amber.withValues(alpha: 0.25),
+          selectedColor: EskoliaTokens.amber.withValues(alpha: 0.25),
           checkmarkColor: Colors.white,
           labelStyle: TextStyle(
             color: selected ? Colors.white : Colors.white60,
@@ -439,7 +435,7 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
             fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
           ),
           backgroundColor: Colors.white.withValues(alpha: 0.05),
-          side: BorderSide(color: selected ? _amber : Colors.white.withValues(alpha: 0.15)),
+          side: BorderSide(color: selected ? EskoliaTokens.amber : Colors.white.withValues(alpha: 0.15)),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           visualDensity: VisualDensity.compact,
         );
@@ -481,7 +477,7 @@ class _SavedQuizCard extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(14),
         border: Border(
-          left: BorderSide(color: _green, width: 3),
+          left: BorderSide(color: EskoliaTokens.success, width: 3),
           top: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
           right: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
           bottom: BorderSide(color: Colors.white.withValues(alpha: 0.07)),
@@ -509,7 +505,7 @@ class _SavedQuizCard extends StatelessWidget {
                   Text(
                     'Note : ${quiz.noteTitle}',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.7),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                       fontSize: 11,
                     ),
                     maxLines: 1,
@@ -520,7 +516,7 @@ class _SavedQuizCard extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.play_arrow_rounded, color: _green, size: 22),
+            icon: const Icon(Icons.play_arrow_rounded, color: EskoliaTokens.success, size: 22),
             onPressed: busy ? null : onPlay,
             tooltip: 'Jouer',
             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
@@ -528,7 +524,7 @@ class _SavedQuizCard extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.delete_outline_rounded,
-                color: _slate.withValues(alpha: 0.5), size: 18),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), size: 18),
             onPressed: onDelete,
             tooltip: 'Supprimer',
             constraints: const BoxConstraints.tightFor(width: 32, height: 32),

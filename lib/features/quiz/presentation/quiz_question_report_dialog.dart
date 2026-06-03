@@ -5,8 +5,7 @@ import '../../economy/data/achievement_rewards.dart';
 import '../../labo/data/question_report_kind.dart';
 import '../../labo/data/question_report_repository.dart';
 import '../data/quiz_repository.dart';
-
-const Color _dialogViolet = Color(0xFF6C63FF);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Dialogue de signalement (réutilisable depuis le quiz en cours ou l’écran résultats).
 Future<void> showQuizQuestionReportDialog(
@@ -28,7 +27,7 @@ Future<void> showQuizQuestionReportDialog(
     context: context,
     builder: (ctx) => StatefulBuilder(
       builder: (ctx, setSt) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         title: const Text(
           'Signaler une erreur',
           style: TextStyle(color: Colors.white),
@@ -62,10 +61,10 @@ Future<void> showQuizQuestionReportDialog(
                     ),
                     selected: sel,
                     onSelected: (_) => setSt(() => kind = k),
-                    selectedColor: _dialogViolet.withValues(alpha: 0.85),
+                    selectedColor: EskoliaTokens.violet.withValues(alpha: 0.85),
                     backgroundColor: Colors.white.withValues(alpha: 0.08),
                     side: BorderSide(
-                      color: sel ? _dialogViolet : Colors.white24,
+                      color: sel ? EskoliaTokens.violet : Colors.white24,
                     ),
                   );
                 }).toList(),

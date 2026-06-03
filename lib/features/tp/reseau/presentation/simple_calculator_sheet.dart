@@ -3,13 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const Color _bg       = Color(0xFF1A1A2E);
-const Color _violet   = Color(0xFF6C63FF);
-const Color _cyan     = Color(0xFF00BCD4);
-const Color _slate    = Color(0xFF94A3B8);
-const Color _red      = Color(0xFFEF4444);
-const Color _surface  = Color(0xFF252540);
-const Color _surface2 = Color(0xFF2E2E50);
+import '../../../../core/constants/eskolia_tokens.dart';
 
 class SimpleCalculatorSheet extends StatefulWidget {
   const SimpleCalculatorSheet({super.key});
@@ -195,7 +189,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
       SnackBar(
         content: const Text('Resultat copie dans le presse-papiers'),
         duration: const Duration(seconds: 2),
-        backgroundColor: const Color(0xFF1A1A2E),
+        backgroundColor: EskoliaTokens.surface1,
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -210,7 +204,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
     return Container(
       margin: EdgeInsets.only(bottom: bottomInset),
       decoration: const BoxDecoration(
-        color: _bg,
+        color: EskoliaTokens.surface1,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -232,7 +226,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             child: Row(
               children: [
-                const Icon(Icons.calculate_rounded, color: _cyan, size: 20),
+                const Icon(Icons.calculate_rounded, color: EskoliaTokens.cyan, size: 20),
                 const SizedBox(width: 8),
                 const Text(
                   'Calculatrice',
@@ -253,7 +247,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: _surface,
+              color: EskoliaTokens.surface2,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
             ),
@@ -263,7 +257,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
                 // Expression
                 Text(
                   _expression.isEmpty ? '0' : _expression,
-                  style: TextStyle(color: _slate, fontSize: 16, fontFamily: 'monospace'),
+                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 16, fontFamily: 'monospace'),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
@@ -290,17 +284,17 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _cyan.withValues(alpha: 0.12),
+                        color: EskoliaTokens.cyan.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: _cyan.withValues(alpha: 0.3)),
+                        border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.copy_rounded, color: _cyan, size: 13),
+                          const Icon(Icons.copy_rounded, color: EskoliaTokens.cyan, size: 13),
                           const SizedBox(width: 4),
                           const Text('Copier le resultat',
-                              style: TextStyle(color: _cyan, fontSize: 11, fontWeight: FontWeight.w600)),
+                              style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ),
@@ -315,37 +309,37 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
             child: Column(
               children: [
                 _row([
-                  _btn('C',  onTap: _onClear,    bg: _red.withValues(alpha: 0.15), fg: _red),
-                  _btn('⌫',  onTap: _onBackspace, bg: _surface2, fg: _slate),
-                  _btn('xʸ', onTap: _onPower,     bg: _violet.withValues(alpha: 0.15), fg: _violet),
-                  _btn('÷',  onTap: () => _onOperator('÷'), bg: _violet.withValues(alpha: 0.12), fg: _violet),
+                  _btn('C',  onTap: _onClear,    bg: EskoliaTokens.error.withValues(alpha: 0.15), fg: EskoliaTokens.error),
+                  _btn('⌫',  onTap: _onBackspace, bg: EskoliaTokens.surface3, fg: EskoliaTokens.textSecondary),
+                  _btn('xʸ', onTap: _onPower,     bg: EskoliaTokens.violet.withValues(alpha: 0.15), fg: EskoliaTokens.violet),
+                  _btn('÷',  onTap: () => _onOperator('÷'), bg: EskoliaTokens.violet.withValues(alpha: 0.12), fg: EskoliaTokens.violet),
                 ]),
                 const SizedBox(height: 8),
                 _row([
                   _btn('7', onTap: () => _onDigit('7')),
                   _btn('8', onTap: () => _onDigit('8')),
                   _btn('9', onTap: () => _onDigit('9')),
-                  _btn('×', onTap: () => _onOperator('×'), bg: _violet.withValues(alpha: 0.12), fg: _violet),
+                  _btn('×', onTap: () => _onOperator('×'), bg: EskoliaTokens.violet.withValues(alpha: 0.12), fg: EskoliaTokens.violet),
                 ]),
                 const SizedBox(height: 8),
                 _row([
                   _btn('4', onTap: () => _onDigit('4')),
                   _btn('5', onTap: () => _onDigit('5')),
                   _btn('6', onTap: () => _onDigit('6')),
-                  _btn('-', onTap: () => _onOperator('-'), bg: _violet.withValues(alpha: 0.12), fg: _violet),
+                  _btn('-', onTap: () => _onOperator('-'), bg: EskoliaTokens.violet.withValues(alpha: 0.12), fg: EskoliaTokens.violet),
                 ]),
                 const SizedBox(height: 8),
                 _row([
                   _btn('1', onTap: () => _onDigit('1')),
                   _btn('2', onTap: () => _onDigit('2')),
                   _btn('3', onTap: () => _onDigit('3')),
-                  _btn('+', onTap: () => _onOperator('+'), bg: _violet.withValues(alpha: 0.12), fg: _violet),
+                  _btn('+', onTap: () => _onOperator('+'), bg: EskoliaTokens.violet.withValues(alpha: 0.12), fg: EskoliaTokens.violet),
                 ]),
                 const SizedBox(height: 8),
                 _row([
                   _btn('0',   onTap: () => _onDigit('0'), flex: 2),
                   _btn('.',   onTap: _onDecimal),
-                  _btn('=',   onTap: _onEquals, bg: _violet, fg: Colors.white),
+                  _btn('=',   onTap: _onEquals, bg: EskoliaTokens.violet, fg: Colors.white),
                 ]),
               ],
             ),
@@ -371,7 +365,7 @@ class _SimpleCalculatorSheetState extends State<SimpleCalculatorSheet> {
     Color? fg,
     int flex = 1,
   }) {
-    final bgColor  = bg  ?? _surface2;
+    final bgColor  = bg  ?? EskoliaTokens.surface3;
     final fgColor  = fg  ?? Colors.white;
     return Expanded(
       flex: flex,

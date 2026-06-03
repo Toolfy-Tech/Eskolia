@@ -4,7 +4,6 @@ import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/tip_section_theme.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 
-const Color _slateLight = EskoliaTokens.textSecondary;
 
 /// Sélection de Maîtrise par section / chapitre (sources = chemins d'assets JSON).
 /// Mode contrôlé : l'état vit dans le parent ([selectedPaths]).
@@ -77,7 +76,7 @@ class _QuizScopePickerState extends State<QuizScopePicker> {
         padding: EdgeInsets.all(16),
         child: Text(
           'Aucune Maîtrise indexée.',
-          style: TextStyle(color: _slateLight),
+          style: TextStyle(color: EskoliaTokens.textSecondary),
         ),
       );
     }

@@ -14,12 +14,6 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = EskoliaTokens.info;
-const Color _violet = EskoliaTokens.violet;
-const Color _slate = EskoliaTokens.textSecondary;
-const Color _fieldBg = EskoliaTokens.surface2;
-const Color _fieldBorder = EskoliaTokens.textDisabled;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.authRepository});
@@ -123,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           constraints: const BoxConstraints(maxWidth: 440),
                           child: GradientBorderCard(
                             gradientColors: EskoliaVisual.borderPrimary,
-                            glowColor: _violet,
+                            glowColor: EskoliaTokens.violet,
                             padding: const EdgeInsets.all(32),
                             child: Form(
                               key: _formKey,
@@ -174,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           _obscureText
                                               ? Icons.visibility_off_outlined
                                               : Icons.visibility_outlined,
-                                          color: _slate,
+                                          color: EskoliaTokens.textSecondary,
                                         ),
                                         onPressed: () => setState(
                                           () => _obscureText = !_obscureText,
@@ -222,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       subtitle: Text(
                                         'Décoche pour être déconnecté à la fermeture de l’onglet.',
                                         style: TextStyle(
-                                          color: _slate.withValues(alpha: 0.9),
+                                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                                           fontSize: 12,
                                         ),
                                       ),
@@ -266,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         TextSpan(
                                           style: const TextStyle(
                                             fontSize: 14,
-                                            color: _slate,
+                                            color: EskoliaTokens.textSecondary,
                                           ),
                                           children: [
                                             const TextSpan(
@@ -276,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               text: 'S’inscrire',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: _blue,
+                                                color: EskoliaTokens.info,
                                               ),
                                             ),
                                           ],
@@ -308,19 +302,19 @@ class _LoginScreenState extends State<LoginScreen> {
     String? hint,
   }) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
-    final focusColor = glass?.borderColor ?? _blue;
+    final focusColor = glass?.borderColor ?? EskoliaTokens.info;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: _fieldBorder),
+      borderSide: const BorderSide(color: EskoliaTokens.textDisabled),
     );
     return InputDecoration(
       filled: true,
-      fillColor: _fieldBg,
+      fillColor: EskoliaTokens.surface2,
       labelText: label,
       hintText: hint,
-      hintStyle: TextStyle(color: _slate.withValues(alpha: 0.65)),
-      labelStyle: const TextStyle(color: _slate),
-      prefixIcon: Icon(prefixIcon, color: _slate),
+      hintStyle: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.65)),
+      labelStyle: const TextStyle(color: EskoliaTokens.textSecondary),
+      prefixIcon: Icon(prefixIcon, color: EskoliaTokens.textSecondary),
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(color: focusColor, width: 1.5),
@@ -361,7 +355,7 @@ class _LogoBlock extends StatelessWidget {
           child: ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => const LinearGradient(
-              colors: [_blue, _violet],
+              colors: [EskoliaTokens.info, EskoliaTokens.violet],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ).createShader(bounds),
@@ -381,7 +375,7 @@ class _LogoBlock extends StatelessWidget {
           'Deviens expert en réseaux',
           style: TextStyle(
             fontSize: 16,
-            color: _slate.withValues(alpha: 0.95),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
           ),
         ),
       ],
