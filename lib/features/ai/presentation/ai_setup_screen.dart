@@ -78,8 +78,8 @@ const _providerData = <_AiProviderData>[
       ),
       _TutorialStep('Connecte-toi avec ton compte Google — c\'est entierement gratuit'),
       _TutorialStep('Clique sur "Get API key" dans le menu de gauche'),
-      _TutorialStep('Clique sur "Create API key in new project" — copie la cle (commence par AIza...)'),
-      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus — Eskolia detecte Gemini automatiquement'),
+      _TutorialStep('Clique sur "Create API key in new project" et copie la cle generee'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus — Eskolia detecte Gemini automatiquement depuis la structure de la cle'),
       _TutorialStep('Choisis ton modele dans le selecteur qui apparait, puis clique "Connecter"'),
     ],
     warning: 'La limite de 15 req/min est invisible en usage normal. '
@@ -498,7 +498,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
         const SizedBox(height: 8),
         EskoliaTextField(
           controller: _keyController,
-          hintText: 'sk-ant-... / sk-... / AIza... / gsk_...',
+          hintText: 'Colle ta cle API — provider detecte automatiquement',
           obscureText: _obscure,
           onChanged: _onKeyChanged,
           suffixIcon: IconButton(

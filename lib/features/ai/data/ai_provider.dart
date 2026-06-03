@@ -80,20 +80,41 @@ enum AiProvider {
         _ => '',
       };
 
-  /// Detecte automatiquement le provider depuis le prefixe de la cle.
+  /// Modeles connus pour ce provider — utilises dans les selecteurs UI.
+  List<String> get availableModels => switch (this) {
+        AiProvider.gemini    => ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash'],
+        AiProvider.openai    => ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1-mini', 'o3-mini'],
+        AiProvider.anthropic => ['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
+        AiProvider.groq      => ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'gemma2-9b-it', 'mixtral-8x7b-32768'],
+        AiProvider.perplexity=> ['llama-3.1-sonar-large-128k-online', 'llama-3.1-sonar-small-128k-online', 'llama-3.1-sonar-huge-128k-online'],
+        AiProvider.xai       => ['grok-3', 'grok-3-fast', 'grok-beta', 'grok-2'],
+        AiProvider.mistral   => ['mistral-large-latest', 'mistral-small-latest', 'codestral-latest', 'open-mistral-nemo'],
+        AiProvider.ollama    => ['gemma3', 'llama3.2', 'mistral', 'phi4', 'qwen2.5', 'deepseek-r1'],
+        _                    => [],
+      };
+
+  /// Detecte le provider en analysant la structure complete de la cle (regex).
   /// Le sentinel 'ollama' identifie le provider local sans cle API.
   static AiProvider detectFromKey(String key) {
     final k = key.trim();
     if (k == 'ollama') return AiProvider.ollama;
-    if (k.startsWith('sk-ant-')) return AiProvider.anthropic;
-    if (k.startsWith('AIza') || k.startsWith('AQ.')) return AiProvider.gemini;
-    if (k.startsWith('gsk_')) return AiProvider.groq;
-    if (k.startsWith('pplx-')) return AiProvider.perplexity;
-    if (k.startsWith('xai-')) return AiProvider.xai;
-    if (k.startsWith('sk-proj-') || k.startsWith('sk-')) return AiProvider.openai;
-    if (RegExp(r'^[a-zA-Z0-9]{32,}$').hasMatch(k) && !k.contains('-')) {
-      return AiProvider.mistral;
-    }
+    // Anthropic : sk-ant- suivi d'au moins 80 caracteres base64url
+    if (RegExp(r'^sk-ant-[a-zA-Z0-9\-_]{80,}$').hasMatch(k))   return AiProvider.anthropic;
+    // Gemini Google AI Studio : AIza + 35 chars OU AQ. + base64url
+    if (RegExp(r'^AIza[a-zA-Z0-9_\-]{35}$').hasMatch(k))       return AiProvider.gemini;
+    if (RegExp(r'^AQ\.[a-zA-Z0-9_\-\.]{20,}$').hasMatch(k))    return AiProvider.gemini;
+    // Groq : gsk_ + 50+ chars
+    if (RegExp(r'^gsk_[a-zA-Z0-9]{50,}$').hasMatch(k))         return AiProvider.groq;
+    // Perplexity : pplx- + 40+ chars
+    if (RegExp(r'^pplx-[a-zA-Z0-9]{40,}$').hasMatch(k))        return AiProvider.perplexity;
+    // xAI Grok : xai- + 80+ chars
+    if (RegExp(r'^xai-[a-zA-Z0-9]{80,}$').hasMatch(k))         return AiProvider.xai;
+    // OpenAI project key : sk-proj- + 50+ chars
+    if (RegExp(r'^sk-proj-[a-zA-Z0-9_\-]{50,}$').hasMatch(k))  return AiProvider.openai;
+    // OpenAI legacy key : sk- + 48+ chars alphanumerique
+    if (RegExp(r'^sk-[a-zA-Z0-9]{48,}$').hasMatch(k))          return AiProvider.openai;
+    // Mistral : 32 chars alphanumeriques sans separateur
+    if (RegExp(r'^[a-zA-Z0-9]{32}$').hasMatch(k))               return AiProvider.mistral;
     return AiProvider.unknown;
   }
 
