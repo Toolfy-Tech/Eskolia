@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'podcast_model.dart';
@@ -50,6 +53,12 @@ class PodcastPlayerState {
 class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
   late final AudioPlayer _player;
   final List<StreamSubscription<dynamic>> _subs = [];
+  final _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(minutes: 5),
+  ));
+  // Cache bytes en session pour éviter de re-télécharger
+  final Map<String, Uint8List> _bytesCache = {};
 
   @override
   PodcastPlayerState build() {
@@ -84,8 +93,6 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
     return const PodcastPlayerState();
   }
 
-  /// Lecture d'un podcast. Si c'est le même podcast, bascule play/pause.
-  /// Si c'est un nouveau podcast, arrête le précédent et démarre le nouveau.
   Future<void> play(Podcast podcast) async {
     if (state.podcast?.url == podcast.url) {
       if (state.isPlaying) {
@@ -103,9 +110,29 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
       clearDuration: true,
     );
     try {
-      await _player.play(UrlSource(podcast.url));
-    } catch (_) {
-      state = state.copyWith(loading: false, error: 'Lecture impossible. Verifie ta connexion.');
+      // Sur Flutter Web, GitHub releases retourne Content-Type: application/octet-stream
+      // avec X-Content-Type-Options: nosniff — le navigateur bloque la lecture audio.
+      // On télécharge les bytes via dio (suit la redirection) et on joue via BytesSource.
+      if (kIsWeb) {
+        Uint8List? bytes = _bytesCache[podcast.url];
+        if (bytes == null) {
+          final resp = await _dio.get<List<int>>(
+            podcast.url,
+            options: Options(responseType: ResponseType.bytes),
+          );
+          bytes = Uint8List.fromList(resp.data!);
+          _bytesCache[podcast.url] = bytes;
+        }
+        await _player.play(BytesSource(bytes));
+      } else {
+        await _player.play(UrlSource(podcast.url));
+      }
+    } catch (e) {
+      debugPrint('[PodcastPlayer.play] error=$e url=${podcast.url}');
+      state = state.copyWith(
+        loading: false,
+        error: 'Lecture impossible. Verifie ta connexion.',
+      );
     }
   }
 
