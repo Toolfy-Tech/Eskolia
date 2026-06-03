@@ -1,0 +1,90 @@
+{
+  "moduleId": "M02",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support02/",
+  "supports": [
+    {
+      "chapterSlug": "M02-CH01-boitiers",
+      "type": "video",
+      "title": "Synthèse : Boîtiers PC",
+      "filename": "M02_C01_Synthese__Boitiers_PC.mp4",
+      "description": "Vue d'ensemble des types de boîtiers PC et leurs caractéristiques"
+    },
+    {
+      "chapterSlug": "M02-CH02-carte-mere",
+      "type": "image",
+      "title": "Guide de la Carte Mère",
+      "filename": "M02_C02_Guide.de.la.carte.mere.png",
+      "description": "Anatomie complète de la carte mère : slots, connecteurs, chipset, facteurs de forme"
+    },
+    {
+      "chapterSlug": "M02-CH03-cpu-processeur",
+      "type": "image",
+      "title": "Guide Complet du Processeur Informatique",
+      "filename": "M02_C03_Guide.complet.du.processeur.informatique.png",
+      "description": "Architecture CPU, cores, threads, cache, fréquence, sockets et familles de processeurs"
+    },
+    {
+      "chapterSlug": "M02-CH04-ram-memoire-vive",
+      "type": "pdf",
+      "title": "The RAM Blueprint",
+      "filename": "M02_C04_The.RAM.Blueprint.pdf",
+      "description": "Guide complet de la mémoire vive : types DDR, fréquences, latences, dual-channel, diagnostic"
+    },
+    {
+      "chapterSlug": "M02-CH05-stockage-hdd-ssd-nvme",
+      "type": "image",
+      "title": "Guide Complet du Stockage Informatique",
+      "filename": "M02_C05_Guide.complet.du.stockage.informatique.png",
+      "description": "Comparatif HDD vs SSD vs NVMe : interfaces SATA/M.2/PCIe, performances, cas d'usage"
+    },
+    {
+      "chapterSlug": "M02-CH06-gpu-npu",
+      "type": "pdf",
+      "title": "Modern Hardware Architectures",
+      "filename": "M02_C06_Modern.Hardware.Architectures.pdf",
+      "description": "Architectures GPU et NPU modernes, accélération graphique et IA, intégration dans les systèmes"
+    },
+    {
+      "chapterSlug": "M02-CH07-alimentation-psu",
+      "type": "image",
+      "title": "Guide Alimentation et Protection Électrique",
+      "filename": "M02_C07_Guide.Alimentation.et.Protection.Electrique.png",
+      "description": "Calcul de puissance, certifications 80 Plus, connecteurs d'alimentation, onduleurs et parasurtenseurs"
+    },
+    {
+      "chapterSlug": "M02-CH08-connecteurs-ports-externes",
+      "type": "pdf",
+      "title": "Hardware Port Mastery",
+      "filename": "M02_C08_Hardware.Port.Mastery.pdf",
+      "description": "Référentiel complet des ports et connecteurs : USB, DisplayPort, HDMI, Thunderbolt, audio, réseau"
+    },
+    {
+      "chapterSlug": "M02-CH09-bus-slots-extension",
+      "type": "image",
+      "title": "Guide Technique Bus PCIe",
+      "filename": "M02_C09_Guide.technique.bus.PCIe.png",
+      "description": "Architecture PCIe : lanes, générations (3.0/4.0/5.0), slots x1/x4/x8/x16, bande passante"
+    },
+    {
+      "chapterSlug": "M02-CH10-refroidissement",
+      "type": "video",
+      "title": "Refroidissement PC",
+      "filename": "M02_C10_Refroidissement_PC.mp4",
+      "description": "Solutions de refroidissement : ventilateurs, ventirad, watercooling AIO et custom"
+    },
+    {
+      "chapterSlug": "M02-CH11-bios-uefi",
+      "type": "pdf",
+      "title": "PC Hardware Mastery",
+      "filename": "M02_C11_PC.Hardware.Mastery.pdf",
+      "description": "BIOS/UEFI : configuration, séquence de démarrage, mise à jour du firmware, diagnostic POST"
+    },
+    {
+      "chapterSlug": "M02-CH12-assemblage-diagnostic-hardware",
+      "type": "image",
+      "title": "Guide Montage et Dépannage PC",
+      "filename": "M02_C12_Guide.montage.et.depannage.PC.png",
+      "description": "Procédure de montage pas à pas, checklist de démarrage, diagnostic des pannes hardware courantes"
+    }
+  ]
+}
