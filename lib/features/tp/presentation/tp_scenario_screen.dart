@@ -14,6 +14,8 @@ import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
 
+const Color _slate = EskoliaTokens.textSecondary;
+
 /// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
   'tp_ad_aerotech':       'assets/tp/AD/scenario_a_aerotech.json',
