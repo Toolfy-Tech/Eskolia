@@ -48,6 +48,7 @@ class QuizRepository {
       }
       return await _buildDailyRandomSession();
     } catch (e) {
+      debugPrint('[QuizRepository.loadSession] sessionId=$sessionId erreur=$e');
       return await _loadTipAssetSession(
         assetKey: 'data/quiz/optimus/section-01-hardware/part-01-fondations.json',
         sessionId: 'fallback',

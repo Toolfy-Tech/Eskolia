@@ -483,8 +483,8 @@ class _MissionDetailSheet extends StatefulWidget {
 class _MissionDetailSheetState extends State<_MissionDetailSheet> {
   final Map<String, bool> _expanded = {
     'context':  false,
-    'steps':    false,
-    'expected': false,
+    'steps':    true,
+    'expected': true,
     'help':     false,
     'commands': false,
   };

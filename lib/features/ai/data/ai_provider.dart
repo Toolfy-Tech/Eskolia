@@ -86,7 +86,7 @@ enum AiProvider {
     final k = key.trim();
     if (k == 'ollama') return AiProvider.ollama;
     if (k.startsWith('sk-ant-')) return AiProvider.anthropic;
-    if (k.startsWith('AIza')) return AiProvider.gemini;
+    if (k.startsWith('AIza') || k.startsWith('AQ.')) return AiProvider.gemini;
     if (k.startsWith('gsk_')) return AiProvider.groq;
     if (k.startsWith('pplx-')) return AiProvider.perplexity;
     if (k.startsWith('xai-')) return AiProvider.xai;

@@ -82,10 +82,14 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
                     const activeBattlePhases = {
                       'countdown', 'question', 'judgment', 'result', 'final_judgment',
                     };
+                    final inLobby = lobby.playerMeta.any((m) => m.userId == _uid) ||
+                        lobby.hostId == _uid;
                     if (battle != null &&
                         activeBattlePhases.contains(battle.phase) &&
-                        !_battleNavScheduled) {
+                        !_battleNavScheduled &&
+                        inLobby) {
                       _battleNavScheduled = true;
+                      debugPrint('[LobbyDetailScreen] auto-nav uid=$_uid phase=${battle.phase}');
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         _pushBattle();
                       });
@@ -398,8 +402,17 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
         }
         return FilledButton(
           onPressed: () async {
-            await _repo.joinLobby(lobby.id, uid);
-            if (mounted) await _pushBattle();
+            try {
+              await _repo.joinLobby(lobby.id, uid);
+              if (mounted) await _pushBattle();
+            } catch (e) {
+              debugPrint('[LobbyDetailScreen.joinLobby] $e');
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Impossible de rejoindre : $e')),
+                );
+              }
+            }
           },
           style: FilledButton.styleFrom(
             backgroundColor: _cyan,
@@ -478,8 +491,17 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
       if (!inLobby && !lobby.isFull) {
         return FilledButton(
           onPressed: () async {
-            await _repo.joinLobby(lobby.id, uid);
-            if (mounted) setState(() {});
+            try {
+              await _repo.joinLobby(lobby.id, uid);
+              if (mounted) setState(() {});
+            } catch (e) {
+              debugPrint('[LobbyDetailScreen.joinLobby] $e');
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Impossible de rejoindre : $e')),
+                );
+              }
+            }
           },
           style: FilledButton.styleFrom(
             backgroundColor: _cyan,

@@ -79,7 +79,8 @@ class _AdminTeacherQuizzesScreenState
     } on FormatException catch (e) {
       if (mounted) showEskoliaSnackBar(context, 'Format invalide : ${e.message}');
     } catch (e) {
-      if (mounted) showEskoliaSnackBar(context, 'Erreur lors de l\'import.');
+      debugPrint('[AdminTeacherQuizzesScreen._importJson] $e');
+      if (mounted) showEskoliaSnackBar(context, 'Erreur import : $e');
     } finally {
       if (mounted) setState(() => _importing = false);
     }
