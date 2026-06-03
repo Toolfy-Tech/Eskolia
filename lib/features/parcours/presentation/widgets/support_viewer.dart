@@ -1,24 +1,32 @@
+import 'dart:math' show Random;
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
 import '../../../../core/constants/eskolia_tokens.dart';
 import '../../../../core/theme/eskolia_visual.dart';
+import 'support_media.dart';
 
 const Color _orange = EskoliaTokens.orange;
 const Color _slate  = EskoliaTokens.textSecondary;
 
-/// Ouvre le bon viewer selon le type : image → inline fullscreen, PDF/vidéo → navigateur.
+/// Ouvre le bon viewer selon le type :
+/// image → plein écran inline, PDF/vidéo → overlay dédié.
 void openSupportItem(BuildContext context, SupportItem item) {
   if (item.type == 'image') {
     Navigator.of(context).push<void>(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => _FullscreenImageViewer(url: item.url, title: item.title),
+        builder: (_) =>
+            _FullscreenImageViewer(url: item.url, title: item.title),
       ),
     );
   } else {
-    launchUrl(Uri.parse(item.url), mode: LaunchMode.externalApplication);
+    showSupportViewer(context, [item]);
   }
 }
 
@@ -279,7 +287,7 @@ class _SupportViewerItem extends StatelessWidget {
         if (item.type == 'image')
           _InlineImage(url: item.url, onTap: onImageTap)
         else
-          _ExternalButton(item: item),
+          _MediaViewer(item: item),
       ],
     );
   }
@@ -360,29 +368,188 @@ class _InlineImage extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Chargeur + viewer inline pour PDF et vidéo
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _ExternalButton extends StatelessWidget {
-  const _ExternalButton({required this.item});
+enum _LoadState { idle, loading, loaded, error }
+
+class _MediaViewer extends StatefulWidget {
+  const _MediaViewer({required this.item});
 
   final SupportItem item;
 
   @override
+  State<_MediaViewer> createState() => _MediaViewerState();
+}
+
+class _MediaViewerState extends State<_MediaViewer> {
+  static final _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(minutes: 5),
+  ));
+
+  _LoadState _state = _LoadState.idle;
+  double? _progress;
+  String? _blobUrl;
+  // Chaque instance a un viewId unique pour platformViewRegistry.
+  final String _viewId =
+      'eskolia-media-${Random().nextInt(999999999)}';
+
+  @override
+  void dispose() {
+    if (_blobUrl != null) revokeBlobUrl(_blobUrl!);
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _state = _LoadState.loading;
+      _progress = null;
+    });
+    try {
+      final resp = await _dio.get<List<int>>(
+        widget.item.url,
+        options: Options(responseType: ResponseType.bytes),
+        onReceiveProgress: (received, total) {
+          if (total > 0 && mounted) {
+            setState(() => _progress = received / total);
+          }
+        },
+      );
+      final bytes = Uint8List.fromList(resp.data!);
+      final mimeType =
+          widget.item.type == 'pdf' ? 'application/pdf' : 'video/mp4';
+      final url = createBlobUrl(bytes, mimeType);
+      if (mounted) {
+        setState(() {
+          _blobUrl = url;
+          _state = _LoadState.loaded;
+        });
+      }
+    } catch (e) {
+      debugPrint('[SupportViewer._load] $e url=${widget.item.url}');
+      if (mounted) setState(() => _state = _LoadState.error);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final label =
-        item.type == 'pdf' ? 'Ouvrir le PDF' : 'Voir la vidéo';
-    return OutlinedButton.icon(
-      onPressed: () => launchUrl(
-        Uri.parse(item.url),
-        mode: LaunchMode.externalApplication,
-      ),
-      icon: const Icon(Icons.open_in_new_rounded, size: 16),
+    return switch (_state) {
+      _LoadState.idle    => _buildIdleButton(),
+      _LoadState.loading => _buildProgress(),
+      _LoadState.loaded  => _buildViewer(),
+      _LoadState.error   => _buildError(),
+    };
+  }
+
+  Widget _buildIdleButton() {
+    final isPdf = widget.item.type == 'pdf';
+    final color = isPdf ? EskoliaTokens.error : EskoliaTokens.info;
+    final icon  = isPdf
+        ? Icons.picture_as_pdf_rounded
+        : Icons.play_circle_filled_rounded;
+    final label = isPdf ? 'Afficher le PDF' : 'Lire la vidéo';
+    return FilledButton.icon(
+      onPressed: kIsWeb
+          ? _load
+          : () => launchUrl(Uri.parse(widget.item.url),
+              mode: LaunchMode.externalApplication),
+      icon: Icon(icon, size: 17),
       label: Text(label),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: Colors.white.withValues(alpha: 0.8),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      style: FilledButton.styleFrom(
+        backgroundColor: color.withValues(alpha: 0.15),
+        foregroundColor: color,
+        padding: const EdgeInsets.symmetric(vertical: 13),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 0,
       ),
+    );
+  }
+
+  Widget _buildProgress() {
+    final isPdf = widget.item.type == 'pdf';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isPdf ? 'Chargement du PDF...' : 'Chargement de la vidéo...',
+            style: TextStyle(color: _slate, fontSize: 12),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: _progress,
+              backgroundColor: Colors.white.withValues(alpha: 0.08),
+              color: _orange,
+              minHeight: 4,
+            ),
+          ),
+          if (_progress != null) ...[
+            const SizedBox(height: 6),
+            Text(
+              '${(_progress! * 100).toStringAsFixed(0)} %',
+              style: TextStyle(color: _slate, fontSize: 11),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildViewer() {
+    if (_blobUrl == null) return _buildIdleButton();
+    final isPdf  = widget.item.type == 'pdf';
+    final height = isPdf ? 540.0 : 260.0;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        height: height,
+        child: isPdf
+            ? buildPdfViewer(_blobUrl!, _viewId)
+            : buildVideoViewer(_blobUrl!, _viewId),
+      ),
+    );
+  }
+
+  Widget _buildError() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: EskoliaTokens.error.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            'Chargement impossible — verifie ta connexion.',
+            style: TextStyle(
+                color: EskoliaTokens.error.withValues(alpha: 0.85),
+                fontSize: 12),
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: () => launchUrl(Uri.parse(widget.item.url),
+              mode: LaunchMode.externalApplication),
+          icon: const Icon(Icons.open_in_new_rounded, size: 15),
+          label: Text(widget.item.type == 'pdf'
+              ? 'Ouvrir dans le navigateur'
+              : 'Voir la vidéo'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.white60,
+            side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          ),
+        ),
+      ],
     );
   }
 }
