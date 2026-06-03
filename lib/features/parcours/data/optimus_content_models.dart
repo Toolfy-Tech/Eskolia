@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class LexiqueEntry {
@@ -117,7 +119,9 @@ abstract final class OptimusLexiqueRepository {
     for (final id in _moduleIds) {
       try {
         results.add(await loadModule(id));
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[OptimusLexiqueRepository.loadAll] $e');
+      }
     }
     return results;
   }
@@ -257,7 +261,9 @@ abstract final class OptimusMediathequeRepository {
     for (final id in _moduleIds) {
       try {
         results.add(await loadModule(id));
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[OptimusMediathequeRepository.loadAll] $e');
+      }
     }
     return results;
   }

@@ -10,10 +10,7 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../auth/data/user_model.dart';
 import '../../parcours/data/parcours_repository.dart';
 import '../../parcours/data/tip_progress_repository.dart';
-
-const Color _gold = Color(0xFFFFD166);
-const Color _goldDark = Color(0xFFCC9B1A);
-const Color _slate = Color(0xFF94A3B8);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Affiche le certificat de completion d'une formation.
 /// Route : /certificate/:formationId  (ex. /certificate/optimus)
@@ -133,11 +130,11 @@ class _CertificateScreenState extends State<CertificateScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: _gold.withValues(alpha: 0.1),
+                color: EskoliaTokens.gold.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: _gold.withValues(alpha: 0.3)),
+                border: Border.all(color: EskoliaTokens.gold.withValues(alpha: 0.3)),
               ),
-              child: const Icon(Icons.emoji_events_outlined, color: _gold, size: 40),
+              child: const Icon(Icons.emoji_events_outlined, color: EskoliaTokens.gold, size: 40),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -147,7 +144,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
             const SizedBox(height: 10),
             Text(
               'Termine les $_total chapitres du $_formationLabel pour\ndebloquer ton certificat.',
-              style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 14, height: 1.5),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 14, height: 1.5),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -162,10 +159,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Progression', style: TextStyle(color: _slate, fontSize: 13)),
+                      Text('Progression', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13)),
                       Text(
                         '$_completed / $_total chapitres',
-                        style: const TextStyle(color: _gold, fontWeight: FontWeight.bold, fontSize: 13),
+                        style: const TextStyle(color: EskoliaTokens.gold, fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ],
                   ),
@@ -173,7 +170,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
                   LinearProgressIndicator(
                     value: ratio,
                     backgroundColor: Colors.white10,
-                    valueColor: const AlwaysStoppedAnimation(_gold),
+                    valueColor: const AlwaysStoppedAnimation(EskoliaTokens.gold),
                     minHeight: 8,
                   ),
                 ],
@@ -182,8 +179,8 @@ class _CertificateScreenState extends State<CertificateScreen> {
             const SizedBox(height: 24),
             TextButton.icon(
               onPressed: () => context.go('/parcours'),
-              icon: const Icon(Icons.arrow_forward_rounded, color: _gold),
-              label: const Text('Continuer le parcours', style: TextStyle(color: _gold, fontWeight: FontWeight.w700)),
+              icon: const Icon(Icons.arrow_forward_rounded, color: EskoliaTokens.gold),
+              label: const Text('Continuer le parcours', style: TextStyle(color: EskoliaTokens.gold, fontWeight: FontWeight.w700)),
             ),
           ],
         ),
@@ -204,14 +201,14 @@ class _CertificateScreenState extends State<CertificateScreen> {
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: _gold.withValues(alpha: 0.5), width: 1.5),
+              border: Border.all(color: EskoliaTokens.gold.withValues(alpha: 0.5), width: 1.5),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF1E293B),
-                  _gold.withValues(alpha: 0.06),
-                  const Color(0xFF0F172A),
+                  EskoliaTokens.surface2,
+                  EskoliaTokens.gold.withValues(alpha: 0.06),
+                  EskoliaTokens.bgBase,
                 ],
               ),
             ),
@@ -222,12 +219,12 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.emoji_events_rounded, color: _gold, size: 28),
+                    Icon(Icons.emoji_events_rounded, color: EskoliaTokens.gold, size: 28),
                     const SizedBox(width: 10),
                     Text(
                       'ESKOLIA',
                       style: TextStyle(
-                        color: _gold,
+                        color: EskoliaTokens.gold,
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 3,
@@ -238,10 +235,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 const SizedBox(height: 6),
                 Text(
                   'Plateforme de formation IT',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11, letterSpacing: 1),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 11, letterSpacing: 1),
                 ),
                 const SizedBox(height: 24),
-                Container(height: 1, color: _gold.withValues(alpha: 0.25)),
+                Container(height: 1, color: EskoliaTokens.gold.withValues(alpha: 0.25)),
                 const SizedBox(height: 24),
                 const Text(
                   'CERTIFICAT DE COMPLETION',
@@ -255,7 +252,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   'Ce certificat atteste que',
-                  style: TextStyle(color: _slate, fontSize: 13),
+                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -270,44 +267,44 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 const SizedBox(height: 12),
                 Text(
                   'a completé avec succes le',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 13),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 13),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _formationLabel,
                   style: const TextStyle(
-                    color: _gold,
+                    color: EskoliaTokens.gold,
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                Container(height: 1, color: _gold.withValues(alpha: 0.15)),
+                Container(height: 1, color: EskoliaTokens.gold.withValues(alpha: 0.15)),
                 const SizedBox(height: 20),
                 // Stats
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _Stat(value: '$_total', label: 'Chapitres'),
-                    Container(width: 1, height: 40, color: _gold.withValues(alpha: 0.2)),
+                    Container(width: 1, height: 40, color: EskoliaTokens.gold.withValues(alpha: 0.2)),
                     _Stat(value: '${user?.totalQuizzesPlayed ?? 0}', label: 'Quiz joués'),
-                    Container(width: 1, height: 40, color: _gold.withValues(alpha: 0.2)),
+                    Container(width: 1, height: 40, color: EskoliaTokens.gold.withValues(alpha: 0.2)),
                     _Stat(value: '${user?.xp ?? 0}', label: 'XP total'),
                   ],
                 ),
                 const SizedBox(height: 24),
-                Container(height: 1, color: _gold.withValues(alpha: 0.15)),
+                Container(height: 1, color: EskoliaTokens.gold.withValues(alpha: 0.15)),
                 const SizedBox(height: 16),
                 Text(
                   'Délivré le $dateStr',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _certId,
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.45),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.45),
                     fontSize: 10,
                     letterSpacing: 1.2,
                     fontFamily: 'monospace',
@@ -322,10 +319,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
           const SizedBox(height: 12),
           TextButton.icon(
             onPressed: () => context.go('/home'),
-            icon: Icon(Icons.home_rounded, color: _slate.withValues(alpha: 0.6), size: 18),
+            icon: Icon(Icons.home_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), size: 18),
             label: Text(
               'Retour a l\'accueil',
-              style: TextStyle(color: _slate.withValues(alpha: 0.7), fontWeight: FontWeight.w600),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -343,9 +340,9 @@ class _Stat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(color: _gold, fontSize: 20, fontWeight: FontWeight.w900)),
+        Text(value, style: const TextStyle(color: EskoliaTokens.gold, fontSize: 20, fontWeight: FontWeight.w900)),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11)),
+        Text(label, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 11)),
       ],
     );
   }
@@ -365,10 +362,10 @@ class _PrintButton extends StatelessWidget {
             ),
           );
         },
-        icon: const Icon(Icons.print_rounded, color: _gold),
-        label: const Text('Imprimer / Exporter PDF', style: TextStyle(color: _gold, fontWeight: FontWeight.w700)),
+        icon: const Icon(Icons.print_rounded, color: EskoliaTokens.gold),
+        label: const Text('Imprimer / Exporter PDF', style: TextStyle(color: EskoliaTokens.gold, fontWeight: FontWeight.w700)),
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: _gold.withValues(alpha: 0.5)),
+          side: BorderSide(color: EskoliaTokens.gold.withValues(alpha: 0.5)),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),

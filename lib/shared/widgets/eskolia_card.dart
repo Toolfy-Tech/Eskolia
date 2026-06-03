@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
+
 // ────────────────────────────────────────────────────────────────────────────
 // Système de 3 niveaux de cartes — Eskolia Design System
 //
@@ -8,8 +10,8 @@ import 'package:flutter/material.dart';
 // L3 ListItem: items de liste  — transparent, border-bottom blanc 8%, radius 0
 // ────────────────────────────────────────────────────────────────────────────
 
-const Color _kSurface = Color(0xFF1E1E38);
-const Color _kViolet = Color(0xFF6C63FF);
+const Color _kSurface = EskoliaTokens.surface2;
+const Color _kViolet = EskoliaTokens.violet;
 
 /// Carte L1 — Hero (maximum 1 par écran, action principale mise en avant).
 class EskoliaCardHero extends StatelessWidget {

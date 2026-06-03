@@ -12,8 +12,9 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import 'docs_mini_course_dialog.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _slate = Color(0xFF94A3B8);
+const Color _slate = EskoliaTokens.textSecondary;
 
 const String _assetMiniRgpd = 'data/docs/mini_formation_rgpd.md';
 const String _assetMiniCnil = 'data/docs/mini_formation_cnil.md';
@@ -234,7 +235,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _CoursFilePicker(files: files),
     );
@@ -253,7 +254,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: EskoliaTokens.surface2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
@@ -273,12 +274,12 @@ class _MesCoursCardState extends State<_MesCoursCard> {
               data: content,
               styleSheet: MarkdownStyleSheet(
                 h1: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
-                h2: const TextStyle(color: Color(0xFF00BCD4), fontSize: 15, fontWeight: FontWeight.w600),
+                h2: const TextStyle(color: EskoliaTokens.cyan, fontSize: 15, fontWeight: FontWeight.w600),
                 h3: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
                 p: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
-                listBullet: const TextStyle(color: Color(0xFF94A3B8)),
+                listBullet: const TextStyle(color: EskoliaTokens.textSecondary),
                 strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                code: const TextStyle(color: Color(0xFF43E97B), fontFamily: 'monospace', fontSize: 12, backgroundColor: Color(0xFF0F172A)),
+                code: const TextStyle(color: EskoliaVisual.neonGreen, fontFamily: 'monospace', fontSize: 12, backgroundColor: EskoliaTokens.bgBase),
                 blockquote: const TextStyle(color: Color(0xFFFFC107), fontStyle: FontStyle.italic),
               ),
             ),
@@ -288,7 +289,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Fermer', style: TextStyle(color: Color(0xFF94A3B8))),
+            child: const Text('Fermer', style: TextStyle(color: EskoliaTokens.textSecondary)),
           ),
         ],
       ),
@@ -299,13 +300,13 @@ class _MesCoursCardState extends State<_MesCoursCard> {
   Widget build(BuildContext context) {
     return GradientBorderCard(
       gradientColors: [
-        const Color(0xFF6C63FF).withValues(alpha: 0.6),
-        const Color(0xFF00BCD4).withValues(alpha: 0.3),
+        EskoliaTokens.violetSoft.withValues(alpha: 0.6),
+        EskoliaTokens.cyan.withValues(alpha: 0.3),
       ],
-      glowColor: const Color(0xFF6C63FF).withValues(alpha: 0.25),
+      glowColor: EskoliaTokens.violetSoft.withValues(alpha: 0.25),
       borderRadius: 18,
       innerBlurSigma: 12,
-      innerColor: const Color(0xFF101820),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -331,8 +332,8 @@ class _MesCoursCardState extends State<_MesCoursCard> {
           OutlinedButton.icon(
             onPressed: _pick,
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF6C63FF),
-              side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+              foregroundColor: EskoliaTokens.violetSoft,
+              side: BorderSide(color: EskoliaTokens.violetSoft.withValues(alpha: 0.5)),
               padding: const EdgeInsets.symmetric(vertical: 10),
             ),
             icon: const Icon(Icons.folder_open_rounded, size: 16),
@@ -368,7 +369,7 @@ class _CoursFilePicker extends StatelessWidget {
             shrinkWrap: true,
             itemCount: files.length,
             itemBuilder: (_, i) => ListTile(
-              leading: const Icon(Icons.description_rounded, color: Color(0xFF6C63FF)),
+              leading: const Icon(Icons.description_rounded, color: EskoliaTokens.violetSoft),
               title: Text(_label(files[i]), style: const TextStyle(color: Colors.white, fontSize: 14)),
               subtitle: Text(files[i], style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11)),
               onTap: () => Navigator.of(context).pop(files[i]),
@@ -410,7 +411,7 @@ class _DocSectionCard extends StatelessWidget {
       glowColor: accent.withValues(alpha: 0.35),
       borderRadius: 18,
       innerBlurSigma: 12,
-      innerColor: const Color(0xFF101820),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

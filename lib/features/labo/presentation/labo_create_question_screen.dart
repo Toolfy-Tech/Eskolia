@@ -9,10 +9,11 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../economy/data/achievement_rewards.dart';
 import '../data/labo_question_draft_repository.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class LaboCreateQuestionScreen extends StatefulWidget {
   const LaboCreateQuestionScreen({super.key});
@@ -51,7 +52,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text('Aperçu', style: TextStyle(color: Colors.white)),
         content: SingleChildScrollView(
@@ -72,7 +73,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
                 const SizedBox(height: 4),
                 Text(
                   _answer.text.trim(),
-                  style: const TextStyle(color: Color(0xFF43E97B), fontSize: 13),
+                  style: const TextStyle(color: EskoliaTokens.success, fontSize: 13),
                 ),
               ] else ...[
                 ...List.generate(4, (i) {
@@ -83,7 +84,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
                       '${String.fromCharCode(65 + i)}. ${opts[i]}'
                       '${i == _correct ? '  ✓' : ''}',
                       style: TextStyle(
-                        color: i == _correct ? const Color(0xFF43E97B) : Colors.white70,
+                        color: i == _correct ? EskoliaTokens.success : Colors.white70,
                         fontSize: 13,
                       ),
                     ),

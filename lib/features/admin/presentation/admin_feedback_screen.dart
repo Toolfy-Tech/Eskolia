@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -10,13 +11,6 @@ import '../../../shared/widgets/eskolia_card.dart';
 import '../../feedback/data/models/question_feedback.dart';
 import '../../feedback/data/question_feedback_repository.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _green = Color(0xFF43E97B);
-const Color _red = Color(0xFFE53935);
-const Color _violet = Color(0xFF6C63FF);
-const Color _surface = Color(0xFF1E293B);
 
 class AdminFeedbackScreen extends StatefulWidget {
   const AdminFeedbackScreen({super.key});
@@ -88,8 +82,8 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
           bottom: TabBar(
             controller: _tabs,
             labelColor: Colors.white,
-            unselectedLabelColor: _slate,
-            indicatorColor: _violet,
+            unselectedLabelColor: EskoliaTokens.textSecondary,
+            indicatorColor: EskoliaTokens.violetSoft,
             tabs: const [
               Tab(text: 'Par theme'),
               Tab(text: '👍 Appreciees'),
@@ -109,7 +103,7 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
                     return Center(
                       child: Text(
                         'Erreur de chargement.',
-                        style: TextStyle(color: _slate),
+                        style: TextStyle(color: EskoliaTokens.textSecondary),
                       ),
                     );
                   }
@@ -185,7 +179,7 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
               Text(
                 msg,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _slate, fontSize: 14, height: 1.4),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 14, height: 1.4),
               ),
             ],
           ),
@@ -244,7 +238,7 @@ class _ThemeCard extends StatelessWidget {
               ),
               Text(
                 '${stat.total} vote${stat.total > 1 ? "s" : ""}',
-                style: TextStyle(color: _slate, fontSize: 12),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
               ),
             ],
           ),
@@ -256,13 +250,13 @@ class _ThemeCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: Stack(
                     children: [
-                      Container(height: 12, color: _red.withValues(alpha: 0.25)),
+                      Container(height: 12, color: EskoliaTokens.error.withValues(alpha: 0.25)),
                       FractionallySizedBox(
                         widthFactor: stat.ratio.clamp(0.0, 1.0),
                         child: Container(
                           height: 12,
                           decoration: BoxDecoration(
-                            color: _green.withValues(alpha: 0.7),
+                            color: EskoliaTokens.success.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
@@ -274,7 +268,7 @@ class _ThemeCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 '👍 ${stat.pos}  👎 ${stat.neg}',
-                style: TextStyle(color: _slate, fontSize: 11),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
               ),
             ],
           ),
@@ -296,7 +290,7 @@ class _QuestionStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = liked ? _green : _red;
+    final accent = liked ? EskoliaTokens.success : EskoliaTokens.error;
     final count = liked ? stat.pos : stat.neg;
     return EskoliaCardContent(
       padding: const EdgeInsets.all(12),
@@ -328,7 +322,7 @@ class _QuestionStatCard extends StatelessWidget {
                 if (stat.quizTitle != null)
                   Text(
                     stat.quizTitle!,
-                    style: TextStyle(color: _slate, fontSize: 10),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 10),
                   ),
                 if (stat.theme != null)
                   Text(
@@ -375,9 +369,9 @@ class _QuestionStatCard extends StatelessWidget {
   Widget _chip(String label) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: _surface,
+          color: EskoliaTokens.surface2,
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Text(label, style: TextStyle(color: _slate, fontSize: 10)),
+        child: Text(label, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 10)),
       );
 }

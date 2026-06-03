@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/assets/app_assets.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/app_theme_extensions.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -13,12 +14,6 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = Color(0xFF3B82F6);
-const Color _violet = Color(0xFF7C3AED);
-const Color _slate = Color(0xFF94A3B8);
-const Color _fieldBg = Color(0xFF1E293B);
-const Color _fieldBorder = Color(0xFF334155);
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, this.authRepository});
@@ -122,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           constraints: const BoxConstraints(maxWidth: 440),
                           child: GradientBorderCard(
                             gradientColors: EskoliaVisual.borderPrimary,
-                            glowColor: _violet,
+                            glowColor: EskoliaTokens.violet,
                             padding: const EdgeInsets.all(32),
                             child: Form(
                               key: _formKey,
@@ -173,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           _obscureText
                                               ? Icons.visibility_off_outlined
                                               : Icons.visibility_outlined,
-                                          color: _slate,
+                                          color: EskoliaTokens.textSecondary,
                                         ),
                                         onPressed: () => setState(
                                           () => _obscureText = !_obscureText,
@@ -221,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       subtitle: Text(
                                         'Décoche pour être déconnecté à la fermeture de l’onglet.',
                                         style: TextStyle(
-                                          color: _slate.withValues(alpha: 0.9),
+                                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                                           fontSize: 12,
                                         ),
                                       ),
@@ -265,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         TextSpan(
                                           style: const TextStyle(
                                             fontSize: 14,
-                                            color: _slate,
+                                            color: EskoliaTokens.textSecondary,
                                           ),
                                           children: [
                                             const TextSpan(
@@ -275,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               text: 'S’inscrire',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: _blue,
+                                                color: EskoliaTokens.info,
                                               ),
                                             ),
                                           ],
@@ -307,28 +302,28 @@ class _LoginScreenState extends State<LoginScreen> {
     String? hint,
   }) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
-    final focusColor = glass?.borderColor ?? _blue;
+    final focusColor = glass?.borderColor ?? EskoliaTokens.info;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: _fieldBorder),
+      borderSide: const BorderSide(color: EskoliaTokens.textDisabled),
     );
     return InputDecoration(
       filled: true,
-      fillColor: _fieldBg,
+      fillColor: EskoliaTokens.surface2,
       labelText: label,
       hintText: hint,
-      hintStyle: TextStyle(color: _slate.withValues(alpha: 0.65)),
-      labelStyle: const TextStyle(color: _slate),
-      prefixIcon: Icon(prefixIcon, color: _slate),
+      hintStyle: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.65)),
+      labelStyle: const TextStyle(color: EskoliaTokens.textSecondary),
+      prefixIcon: Icon(prefixIcon, color: EskoliaTokens.textSecondary),
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(color: focusColor, width: 1.5),
       ),
       errorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444)),
+        borderSide: const BorderSide(color: EskoliaTokens.error),
       ),
       focusedErrorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+        borderSide: const BorderSide(color: EskoliaTokens.error, width: 1.5),
       ),
     );
   }
@@ -360,7 +355,7 @@ class _LogoBlock extends StatelessWidget {
           child: ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => const LinearGradient(
-              colors: [_blue, _violet],
+              colors: [EskoliaTokens.info, EskoliaTokens.violet],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ).createShader(bounds),
@@ -380,7 +375,7 @@ class _LogoBlock extends StatelessWidget {
           'Deviens expert en réseaux',
           style: TextStyle(
             fontSize: 16,
-            color: _slate.withValues(alpha: 0.95),
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
           ),
         ),
       ],
@@ -398,9 +393,9 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF7F1D1D).withValues(alpha: 0.3),
+        color: EskoliaTokens.error.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEF4444)),
+        border: Border.all(color: EskoliaTokens.error),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,7 +403,7 @@ class _ErrorBanner extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             size: 18,
-            color: const Color(0xFFFCA5A5).withValues(alpha: 0.9),
+            color: EskoliaTokens.error.withValues(alpha: 0.9),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -416,7 +411,7 @@ class _ErrorBanner extends StatelessWidget {
               message,
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFFFCA5A5),
+                color: EskoliaTokens.textPrimary,
               ),
             ),
           ),

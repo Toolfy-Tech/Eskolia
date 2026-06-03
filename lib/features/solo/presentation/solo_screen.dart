@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _green = Color(0xFF43E97B);
-const Color _violet = Color(0xFF6C63FF);
-const Color _orange = Color(0xFFFF9800);
 
 class SoloScreen extends StatelessWidget {
   const SoloScreen({super.key});
@@ -45,7 +41,7 @@ class SoloScreen extends StatelessWidget {
                     children: [
                       const _CategoryHeader(
                         title: 'QUIZ SOLO',
-                        color: Color(0xFF22D3EE),
+                        color: EskoliaTokens.cyan,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
@@ -53,7 +49,7 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Selectionne des chapitres, importe un fichier ou joue un quiz Eskolia en solo.',
                         icon: Icons.quiz_rounded,
-                        accentColor: _cyan,
+                        accentColor: EskoliaTokens.cyan,
                         onTap: () => context.push('/quiz/setup'),
                       ),
                       const SizedBox(height: 12),
@@ -62,13 +58,13 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Genere un quiz personnalise depuis tes notes via l\'IA — comme le multi, mais en solo.',
                         icon: Icons.auto_awesome_rounded,
-                        accentColor: _violet,
+                        accentColor: EskoliaTokens.violetSoft,
                         onTap: () => context.push('/solo/quiz-solo'),
                       ),
                       const SizedBox(height: 32),
                       const _CategoryHeader(
                         title: 'CONTENU OFFICIEL',
-                        color: Color(0xFF6C63FF),
+                        color: EskoliaTokens.violetSoft,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
@@ -82,14 +78,14 @@ class SoloScreen extends StatelessWidget {
                       const SizedBox(height: 32),
                       const _CategoryHeader(
                         title: 'ENTRAINEMENT LIBRE',
-                        color: Color(0xFF22D3EE),
+                        color: EskoliaTokens.cyan,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
                         title: 'Flashcards',
                         subtitle: 'Memorisation active par repetition espacee.',
                         icon: Icons.style_rounded,
-                        accentColor: _green,
+                        accentColor: EskoliaTokens.success,
                         onTap: () => context.push('/flashcards'),
                       ),
                       const SizedBox(height: 12),
@@ -98,7 +94,7 @@ class SoloScreen extends StatelessWidget {
                         subtitle:
                             'Retrouve la signification des acronymes IT — sans indices.',
                         icon: Icons.abc_rounded,
-                        accentColor: _orange,
+                        accentColor: EskoliaTokens.orange,
                         onTap: () => context.push('/lexique'),
                       ),
                       const SizedBox(height: 40),
@@ -106,7 +102,7 @@ class SoloScreen extends StatelessWidget {
                         'Mode Active Recall active : toutes les reponses sont a saisir librement pour un ancrage memoriel maximal.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: _slateLight.withValues(alpha: 0.5),
+                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.5),
                           fontSize: 11,
                           fontStyle: FontStyle.italic,
                         ),
@@ -140,7 +136,7 @@ class _CategoryHeader extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          color: const Color(0xFF94A3B8),
+          color: EskoliaTokens.textSecondary,
           fontSize: 11,
           fontWeight: FontWeight.w600,
           letterSpacing: 11 * 0.08,
@@ -197,7 +193,7 @@ class _SoloMenuCard extends StatelessWidget {
                 Text(
                   subtitle,
                   style: TextStyle(
-                    color: _slateLight.withValues(alpha: 0.8),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
                     fontSize: 11,
                     height: 1.2,
                   ),

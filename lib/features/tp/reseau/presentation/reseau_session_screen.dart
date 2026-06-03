@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../../../core/theme/eskolia_visual.dart';
 import '../../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../../shared/widgets/eskolia_button.dart';
 import '../../../../shared/widgets/eskolia_text_field.dart';
 import '../data/network_exercise_engine.dart';
 import 'network_calculator_sheet.dart';
-
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan   = Color(0xFF00BCD4);
-const Color _slate  = Color(0xFF94A3B8);
-const Color _green  = Color(0xFF4CAF50);
-const Color _red    = Color(0xFFE53935);
 
 class ReseauSessionScreen extends StatefulWidget {
   const ReseauSessionScreen({super.key, required this.category});
@@ -109,10 +104,10 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
             : 'Continue a t\'entrainer !';
 
     final scoreColor = _score >= 8
-        ? _green
+        ? EskoliaTokens.success
         : _score >= 5
-            ? _cyan
-            : _red;
+            ? EskoliaTokens.cyan
+            : EskoliaTokens.error;
 
     return Center(
       child: Padding(
@@ -149,7 +144,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
                   const SizedBox(height: 6),
                   Text(
                     '${_score} bonne${_score > 1 ? 's' : ''} reponse${_score > 1 ? 's' : ''} sur 10',
-                    style: TextStyle(color: _slate, fontSize: 14),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 14),
                   ),
                 ],
               ),
@@ -225,7 +220,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
 
   Widget _buildResultCard() {
     final isCorrect = _lastCorrect == true;
-    final borderColor = isCorrect ? _green : _red;
+    final borderColor = isCorrect ? EskoliaTokens.success : EskoliaTokens.error;
     final icon = isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded;
     final title = isCorrect ? 'Bonne reponse !' : 'Incorrect';
 
@@ -274,7 +269,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
                 const SizedBox(height: 10),
                 Text(
                   _current.explanation,
-                  style: TextStyle(color: _slate, fontSize: 13, height: 1.5),
+                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13, height: 1.5),
                 ),
               ],
             ],
@@ -305,7 +300,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
         title: _categoryLabel(widget.category),
         actions: [
           IconButton(
-            icon: const Icon(Icons.calculate_rounded, color: _cyan),
+            icon: const Icon(Icons.calculate_rounded, color: EskoliaTokens.cyan),
             tooltip: 'Calculatrice reseau',
             onPressed: _openCalculator,
           ),
@@ -339,7 +334,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
                                 child: LinearProgressIndicator(
                                   value: _total / 10,
                                   backgroundColor: Colors.white.withValues(alpha: 0.10),
-                                  valueColor: const AlwaysStoppedAnimation<Color>(_violet),
+                                  valueColor: const AlwaysStoppedAnimation<Color>(EskoliaTokens.violet),
                                   minHeight: 6,
                                 ),
                               ),
@@ -356,7 +351,7 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.star_rounded, color: _violet, size: 14),
+                                  Icon(Icons.star_rounded, color: EskoliaTokens.violet, size: 14),
                                   const SizedBox(width: 4),
                                   Text(
                                     '$_score / $_total',

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
+import '../../../../core/constants/eskolia_tokens.dart';
 
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _cyan = EskoliaTokens.cyan;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class MediathequeSection extends StatefulWidget {
   const MediathequeSection({

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -241,8 +242,8 @@ class _FlashcardsHubScreenState extends State<FlashcardsHubScreen> {
   }
 }
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class _EskoliaFlashcardsCard extends StatelessWidget {
   const _EskoliaFlashcardsCard({required this.onSession});
@@ -260,7 +261,7 @@ class _EskoliaFlashcardsCard extends StatelessWidget {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _FlashcardFilePicker(files: files),
     );

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -16,11 +17,6 @@ import '../../flashcards/data/flashcard_deck_repository.dart';
 import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../notebook/data/note_ai_generator.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _amber = Color(0xFFFFC107);
 
 class BilanRecapScreen extends StatefulWidget {
   const BilanRecapScreen({super.key});
@@ -86,7 +82,9 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
             nextDue: DateTime.now(),
           ));
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[BilanRecapScreen._reviserErreurs] $e');
+      }
     }
 
     if (!mounted) return;
@@ -126,7 +124,9 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
           if (decoded is Map) {
             bilans.add(Map<String, dynamic>.from(decoded));
           }
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[BilanRecapScreen._analyze] $e');
+        }
       }
     }
 
@@ -182,7 +182,7 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
                 _ExplanationCard(),
                 const SizedBox(height: 16),
                 if (_loading)
-                  const Center(child: CircularProgressIndicator(color: _cyan))
+                  const Center(child: CircularProgressIndicator(color: EskoliaTokens.cyan))
                 else if (_files.isEmpty)
                   _EmptyState(onRefresh: _loadFiles)
                 else ...[
@@ -210,7 +210,7 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
                   FilledButton.icon(
                     onPressed: (_selected.isEmpty || _analyzing) ? null : _analyze,
                     style: FilledButton.styleFrom(
-                      backgroundColor: _violet,
+                      backgroundColor: EskoliaTokens.violetSoft,
                       foregroundColor: Colors.white,
                       minimumSize: const Size.fromHeight(48),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -231,8 +231,8 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
                   OutlinedButton.icon(
                     onPressed: (_selected.isEmpty || _analyzing) ? null : _reviserErreurs,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: _cyan,
-                      side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+                      foregroundColor: EskoliaTokens.cyan,
+                      side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
                       minimumSize: const Size.fromHeight(48),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
@@ -261,22 +261,22 @@ class _BilanRecapScreenState extends State<BilanRecapScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.04),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: _violet.withValues(alpha: 0.3)),
+                        border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.3)),
                       ),
                       child: MarkdownBody(
                         data: _analysisBuffer,
                         styleSheet: MarkdownStyleSheet(
                           h1: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
-                          h2: const TextStyle(color: _cyan, fontSize: 16, fontWeight: FontWeight.w600),
+                          h2: const TextStyle(color: EskoliaTokens.cyan, fontSize: 16, fontWeight: FontWeight.w600),
                           h3: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600),
                           p: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
-                          listBullet: const TextStyle(color: _slate),
+                          listBullet: const TextStyle(color: EskoliaTokens.textSecondary),
                           strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                          blockquote: const TextStyle(color: _amber, fontStyle: FontStyle.italic),
+                          blockquote: const TextStyle(color: EskoliaTokens.amber, fontStyle: FontStyle.italic),
                           blockquoteDecoration: BoxDecoration(
-                            color: _amber.withValues(alpha: 0.08),
+                            color: EskoliaTokens.amber.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border(left: BorderSide(color: _amber.withValues(alpha: 0.5), width: 3)),
+                            border: Border(left: BorderSide(color: EskoliaTokens.amber.withValues(alpha: 0.5), width: 3)),
                           ),
                         ),
                       ),
@@ -298,20 +298,20 @@ class _ExplanationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: _cyan.withValues(alpha: 0.08),
+        color: EskoliaTokens.cyan.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _cyan.withValues(alpha: 0.25)),
+        border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: _cyan, size: 18),
+              Icon(Icons.info_outline_rounded, color: EskoliaTokens.cyan, size: 18),
               SizedBox(width: 8),
               Text(
                 'Comment ca marche ?',
-                style: TextStyle(color: _cyan, fontWeight: FontWeight.w700, fontSize: 14),
+                style: TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w700, fontSize: 14),
               ),
             ],
           ),
@@ -320,7 +320,7 @@ class _ExplanationCard extends StatelessWidget {
             '1. Apres chaque quiz, sauvegarde ton bilan via le bouton "Sauvegarder mon bilan".\n'
             '2. Configure ton dossier Eskolia dans les parametres pour que les fichiers s\'y enregistrent.\n'
             '3. Reviens ici, selectionne les bilans a analyser, et l\'IA identifie tes lacunes recurrentes.',
-            style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 13, height: 1.5),
           ),
         ],
       ),
@@ -340,25 +340,25 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.folder_open_rounded, color: _slate.withValues(alpha: 0.5), size: 52),
+            Icon(Icons.folder_open_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), size: 52),
             const SizedBox(height: 12),
             Text(
               'Aucun bilan trouve dans Eskolia/Bilans/',
-              style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 14),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
             Text(
               'Configure ton dossier Eskolia dans les parametres\npuis sauvegarde tes bilans apres chaque quiz.',
-              style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 12),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 12),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(
               onPressed: onRefresh,
               style: OutlinedButton.styleFrom(
-                foregroundColor: _cyan,
-                side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+                foregroundColor: EskoliaTokens.cyan,
+                side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
               ),
               icon: const Icon(Icons.refresh_rounded, size: 16),
               label: const Text('Actualiser'),
@@ -405,7 +405,7 @@ class _FileSelector extends StatelessWidget {
             ),
             TextButton(
               onPressed: onSelectAll,
-              style: TextButton.styleFrom(foregroundColor: _cyan, padding: EdgeInsets.zero),
+              style: TextButton.styleFrom(foregroundColor: EskoliaTokens.cyan, padding: EdgeInsets.zero),
               child: Text(allSelected ? 'Tout deselectionner' : 'Tout selectionner', style: const TextStyle(fontSize: 12)),
             ),
           ],
@@ -424,7 +424,7 @@ class _FileSelector extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                 dense: true,
                 value: isSelected,
-                activeColor: _violet,
+                activeColor: EskoliaTokens.violetSoft,
                 checkColor: Colors.white,
                 title: Text(
                   _label(f),
@@ -435,7 +435,7 @@ class _FileSelector extends StatelessWidget {
                 ),
                 subtitle: Text(
                   f,
-                  style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 11),
                 ),
                 onChanged: (_) => onToggle(f),
               );

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../constants/colors.dart';
+import '../constants/eskolia_tokens.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
 import '../../features/podcasts/data/podcast_player_service.dart';
@@ -14,8 +14,8 @@ import '../../features/podcasts/presentation/podcast_mini_player.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
 import 'eskolia_tips_banner.dart';
 
-const Color _inactiveGray = Color(0xFF64748B);
-const Color _cyanGlow = Color(0xFF22D3EE);
+const Color _inactiveGray = EskoliaTokens.textDisabled;
+const Color _cyanGlow = EskoliaTokens.cyan;
 
 /// Espace à laisser sous le contenu du shell pour ne pas passer sous la pill.
 /// Augmenté avec la barre redessinée (plus haute).
@@ -166,9 +166,9 @@ class EskoliaBottomNav extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF1E293B).withValues(alpha: 0.88),
-                      const Color(0xFF0F172A).withValues(alpha: 0.94),
-                      const Color(0xFF0B1020).withValues(alpha: 0.96),
+                      EskoliaTokens.surface2.withValues(alpha: 0.88),
+                      EskoliaTokens.surface1.withValues(alpha: 0.94),
+                      EskoliaTokens.bgBase.withValues(alpha: 0.96),
                     ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
@@ -176,7 +176,7 @@ class EskoliaBottomNav extends StatelessWidget {
                     width: 1.5,
                     color: Color.lerp(
                           glassBorder,
-                          primary.withValues(alpha: 0.75),
+                          EskoliaTokens.violet.withValues(alpha: 0.75),
                           neon != null
                               ? 0.35 * neon.intensity.clamp(0.0, 1.2)
                               : 0.25,
@@ -185,7 +185,7 @@ class EskoliaBottomNav extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: primary.withValues(alpha: 0.32),
+                      color: EskoliaTokens.violet.withValues(alpha: 0.32),
                       blurRadius: 28,
                       spreadRadius: -8,
                       offset: const Offset(0, 10),
@@ -352,7 +352,7 @@ class _NavCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? Colors.white : _inactiveGray;
+    final color = active ? EskoliaTokens.textPrimary : _inactiveGray;
     final intensity = neon?.intensity.clamp(0.0, 1.5) ?? 1.0;
 
     return Padding(
@@ -362,8 +362,8 @@ class _NavCell extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(26),
-          splashColor: primary.withValues(alpha: 0.18),
-          highlightColor: primary.withValues(alpha: 0.08),
+          splashColor: EskoliaTokens.violet.withValues(alpha: 0.18),
+          highlightColor: EskoliaTokens.violet.withValues(alpha: 0.08),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 240),
             curve: Curves.easeOutCubic,
@@ -375,16 +375,16 @@ class _NavCell extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        primary.withValues(alpha: 0.42 * intensity),
-                        primary.withValues(alpha: 0.18 * intensity),
-                        const Color(0xFF312E81).withValues(alpha: 0.55),
+                        EskoliaTokens.violet.withValues(alpha: 0.42 * intensity),
+                        EskoliaTokens.violet.withValues(alpha: 0.18 * intensity),
+                        EskoliaTokens.surface3.withValues(alpha: 0.55),
                       ],
                     )
                   : null,
               border: Border.all(
                 color: active
                     ? Color.lerp(
-                          primary,
+                          EskoliaTokens.violet,
                           _cyanGlow,
                           0.35,
                         )!
@@ -395,7 +395,7 @@ class _NavCell extends StatelessWidget {
               boxShadow: active
                   ? [
                       BoxShadow(
-                        color: primary.withValues(alpha: 0.45 * intensity),
+                        color: EskoliaTokens.violet.withValues(alpha: 0.45 * intensity),
                         blurRadius: 18,
                         spreadRadius: -2,
                       ),
@@ -422,7 +422,7 @@ class _NavCell extends StatelessWidget {
                         shadows: active
                             ? [
                                 Shadow(
-                                  color: primary.withValues(alpha: 0.9),
+                                  color: EskoliaTokens.violet.withValues(alpha: 0.9),
                                   blurRadius: 14,
                                 ),
                                 Shadow(
@@ -441,10 +441,10 @@ class _NavCell extends StatelessWidget {
                           width: 10,
                           height: 10,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF4CAF50),
+                            color: EskoliaTokens.success,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0xFF0F172A),
+                              color: EskoliaTokens.surface1,
                               width: 1.5,
                             ),
                           ),

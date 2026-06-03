@@ -335,7 +335,8 @@ class LobbyRepository {
       name = (username != null && username.isNotEmpty)
           ? username
           : (u.displayName ?? u.email?.split('@').first ?? 'Joueur');
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[LobbyRepository.joinLobby] $e');
       name = u.displayName ?? u.email?.split('@').first ?? 'Joueur';
     }
     final avatar = '\u{1F464}';
@@ -695,7 +696,9 @@ class LobbyRepository {
         try {
           final decoded = jsonDecode(p.lastAnswerText ?? '[]');
           if (decoded is List) playerOrder = List<String>.from(decoded);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[LobbyRepository.judgeSequenceAnswers] $e');
+        }
 
         double score = 0.0;
         if (correct.isNotEmpty) {

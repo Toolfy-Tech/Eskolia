@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -8,9 +9,6 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
-
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
 
 class TpHubScreen extends StatefulWidget {
   const TpHubScreen({super.key});
@@ -41,13 +39,13 @@ class _TpHubScreenState extends State<TpHubScreen> {
                   children: [
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Color(0xFF00BCD4), width: 3)),
+                        border: Border(left: BorderSide(color: EskoliaTokens.cyan, width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
                         'RÉSEAU & ADRESSAGE IP',
                         style: TextStyle(
-                          color: Color(0xFF94A3B8),
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 11 * 0.08,
@@ -59,13 +57,13 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Color(0xFF3B82F6), width: 3)),
+                        border: Border(left: BorderSide(color: EskoliaTokens.info, width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
                         'SCÉNARIOS ACTIVE DIRECTORY',
                         style: TextStyle(
-                          color: Color(0xFF94A3B8),
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 11 * 0.08,
@@ -98,18 +96,18 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '🏥',
                       difficulty: 'Avancé',
                       missionCount: 16,
-                      accentColor: const Color(0xFFE74C3C),
+                      accentColor: EskoliaTokens.error,
                     ),
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Color(0xFF3B82F6), width: 3)),
+                        border: Border(left: BorderSide(color: EskoliaTokens.info, width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
                         'SCRIPTING POWERSHELL',
                         style: TextStyle(
-                          color: Color(0xFF94A3B8),
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 11 * 0.08,
@@ -124,7 +122,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F4BB}',
                       difficulty: 'Débutant',
                       missionCount: 16,
-                      accentColor: const Color(0xFF3B82F6),
+                      accentColor: EskoliaTokens.info,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -134,7 +132,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{2699}\u{FE0F}',
                       difficulty: 'Intermédiaire',
                       missionCount: 16,
-                      accentColor: const Color(0xFF8B5CF6),
+                      accentColor: EskoliaTokens.violet,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -144,18 +142,18 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F680}',
                       difficulty: 'Avancé',
                       missionCount: 16,
-                      accentColor: const Color(0xFF10B981),
+                      accentColor: EskoliaTokens.success,
                     ),
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Color(0xFF22D3EE), width: 3)),
+                        border: Border(left: BorderSide(color: EskoliaTokens.cyan, width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
                         'PACKET TRACER — SIMULATION RÉSEAU',
                         style: TextStyle(
-                          color: Color(0xFF94A3B8),
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 11 * 0.08,
@@ -170,7 +168,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F310}',
                       difficulty: 'Débutant',
                       missionCount: 4,
-                      accentColor: const Color(0xFF22D3EE),
+                      accentColor: EskoliaTokens.cyan,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -180,7 +178,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F527}',
                       difficulty: 'Débutant',
                       missionCount: 3,
-                      accentColor: const Color(0xFFEF9F27),
+                      accentColor: EskoliaTokens.amber,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -190,7 +188,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F500}',
                       difficulty: 'Moyen',
                       missionCount: 4,
-                      accentColor: const Color(0xFF6C63FF),
+                      accentColor: EskoliaTokens.violet,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -200,18 +198,18 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F3E2}',
                       difficulty: 'Moyen+',
                       missionCount: 5,
-                      accentColor: const Color(0xFFEF9F27),
+                      accentColor: EskoliaTokens.amber,
                     ),
                     const SizedBox(height: 32),
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(left: BorderSide(color: Color(0xFF64748B), width: 3)),
+                        border: Border(left: BorderSide(color: EskoliaTokens.textDisabled, width: 3)),
                       ),
                       padding: const EdgeInsets.only(left: 10),
                       child: const Text(
                         'BIENTÔT DISPONIBLE',
                         style: TextStyle(
-                          color: Color(0xFF94A3B8),
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 11 * 0.08,
@@ -235,7 +233,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
 
   Widget _buildReseauCard() {
     return EskoliaCardContent(
-      accentBorderColor: const Color(0xFF00BCD4),
+      accentBorderColor: EskoliaTokens.cyan,
       padding: const EdgeInsets.all(16),
       onTap: () => context.push('/tp/reseau'),
       child: Row(
@@ -244,7 +242,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFF00BCD4).withValues(alpha: 0.12),
+              color: EskoliaTokens.cyan.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Center(child: Text('🌐', style: TextStyle(fontSize: 24))),
@@ -264,12 +262,12 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
+                        color: EskoliaTokens.cyan.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Text(
                         '5 modules',
-                        style: TextStyle(color: Color(0xFF00BCD4), fontSize: 9, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: EskoliaTokens.cyan, fontSize: 9, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -277,7 +275,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Conversion binaire, classes IP, masques, CIDR et calcul de sous-reseaux.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 12),
                 ),
               ],
             ),
@@ -297,7 +295,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
     required int missionCount,
     Color? accentColor,
   }) {
-    final color = accentColor ?? _violet;
+    final color = accentColor ?? EskoliaTokens.violet;
     return EskoliaCardContent(
       accentBorderColor: color,
       padding: const EdgeInsets.all(16),
@@ -334,10 +332,10 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     color: Colors.white10,
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text(difficulty, style: const TextStyle(color: _slate, fontSize: 9, fontWeight: FontWeight.bold)),
+                  child: Text(difficulty, style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold)),
                 ),
                 const SizedBox(height: 4),
-                Text(description, style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12)),
+                Text(description, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 12)),
               ],
             ),
           ),
@@ -372,7 +370,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
               children: [
                 Text(title, style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 15)),
                 const SizedBox(height: 4),
-                Text(description, style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11)),
+                Text(description, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 11)),
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: hasInterest ? null : () async {
@@ -385,13 +383,13 @@ class _TpHubScreenState extends State<TpHubScreen> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: hasInterest ? Colors.transparent : _violet.withValues(alpha: 0.15),
-                    foregroundColor: hasInterest ? _slate : _violet,
+                    backgroundColor: hasInterest ? Colors.transparent : EskoliaTokens.violet.withValues(alpha: 0.15),
+                    foregroundColor: hasInterest ? EskoliaTokens.textSecondary : EskoliaTokens.violet,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: hasInterest ? Colors.white10 : _violet.withValues(alpha: 0.3)),
+                      side: BorderSide(color: hasInterest ? Colors.white10 : EskoliaTokens.violet.withValues(alpha: 0.3)),
                     ),
                   ),
                   child: Text(hasInterest ? 'Inscrit ✔' : 'Ça m\'intéresse'),

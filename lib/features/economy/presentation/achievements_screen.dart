@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -11,8 +12,8 @@ import '../data/achievements_repository.dart';
 import '../data/badge_catalog.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _violet = EskoliaTokens.violet;
 
 class AchievementsScreen extends StatelessWidget {
   const AchievementsScreen({super.key});
@@ -194,7 +195,7 @@ class AchievementsScreen extends StatelessWidget {
                                         'Progression : $progressLabel',
                                         style: TextStyle(
                                           color: ok
-                                              ? const Color(0xFF43E97B)
+                                              ? EskoliaTokens.success
                                                   .withValues(alpha: 0.95)
                                               : _violet.withValues(alpha: 0.9),
                                           fontSize: 12,
@@ -217,7 +218,7 @@ class AchievementsScreen extends StatelessWidget {
                                             ),
                                             decoration: BoxDecoration(
                                               color: superStyle
-                                                  ? const Color(0xFFFFC107)
+                                                  ? EskoliaTokens.amber
                                                       .withValues(alpha: 0.12)
                                                   : _violet.withValues(
                                                       alpha: 0.12,
@@ -226,7 +227,7 @@ class AchievementsScreen extends StatelessWidget {
                                                   BorderRadius.circular(10),
                                               border: Border.all(
                                                 color: superStyle
-                                                    ? const Color(0xFFFFC107)
+                                                    ? EskoliaTokens.amber
                                                         .withValues(alpha: 0.45)
                                                     : _violet.withValues(
                                                         alpha: 0.35,
@@ -273,7 +274,7 @@ class AchievementsScreen extends StatelessWidget {
                               if (ok)
                                 const Icon(
                                   Icons.check_circle_rounded,
-                                  color: Color(0xFF43E97B),
+                                  color: EskoliaTokens.success,
                                   size: 22,
                                 )
                               else

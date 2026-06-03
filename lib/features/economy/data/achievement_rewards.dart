@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../data/repositories/user_repository.dart';
 import 'achievement_catalog.dart';
 import 'achievements_repository.dart';
@@ -24,7 +26,9 @@ class AchievementRewards {
     if (badgeId != null && uid.isNotEmpty) {
       try {
         await _users.addBadge(uid, badgeId);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[AchievementRewards.unlock] $e');
+      }
     }
     if (def != null) onUnlocked?.call(def.emoji, def.title);
     return true;

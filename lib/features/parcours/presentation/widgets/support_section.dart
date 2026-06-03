@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
+import '../../../../core/constants/eskolia_tokens.dart';
 
-const Color _orange = Color(0xFFFF9800);
-const Color _slate = Color(0xFF94A3B8);
+const Color _orange = EskoliaTokens.orange;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class SupportSection extends StatefulWidget {
   const SupportSection({
@@ -117,8 +118,8 @@ class _SupportTile extends StatelessWidget {
       };
 
   static Color _colorFor(String type) => switch (type) {
-        'pdf' => const Color(0xFFEF5350),
-        'video' => const Color(0xFF42A5F5),
+        'pdf' => EskoliaTokens.error,
+        'video' => EskoliaTokens.info,
         _ => _orange,
       };
 

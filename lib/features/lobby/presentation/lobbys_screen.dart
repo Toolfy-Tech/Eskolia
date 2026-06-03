@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/widgets/bottom_nav.dart';
@@ -25,14 +26,14 @@ import '../../ai/data/ai_key_repository.dart';
 import '../../notebook/data/note_ai_generator.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
-const Color _green = Color(0xFF10B981);
-const Color _orange = Color(0xFFFF9800);
-const Color _red = Color(0xFFE53935);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violet;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _slateLight = EskoliaTokens.textSecondary;
+const Color _surface = EskoliaTokens.surface2;
+const Color _green = EskoliaTokens.success;
+const Color _orange = EskoliaTokens.amber;
+const Color _red = EskoliaTokens.error;
 
 class LobbyListScreen extends StatefulWidget {
   const LobbyListScreen({super.key});
@@ -65,13 +66,17 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     try {
       final user = await UserRepository().getUserById(uid);
       if (mounted && user != null) setState(() => _isStaff = user.isStaff);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[LobbyListScreen._checkStaff] $e');
+    }
   }
 
   Future<void> _cleanupStale() async {
     try {
       await _repo.cleanupStaleLobbies();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[LobbyListScreen._cleanupStale] $e');
+    }
   }
 
   @override
@@ -105,7 +110,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: AlertDialog(
-            backgroundColor: const Color(0xFF151B2E).withValues(alpha: 0.94),
+            backgroundColor: EskoliaTokens.surface1.withValues(alpha: 0.94),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
               side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
@@ -287,7 +292,9 @@ class _LobbyListScreenState extends State<LobbyListScreen>
         if (userDoc != null && userDoc.username.isNotEmpty) {
           name = userDoc.username;
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[LobbyListScreen._openCreateDialog] $e');
+      }
     }
 
     if (!mounted) return;
@@ -297,7 +304,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
           child: AlertDialog(
-            backgroundColor: const Color(0xFF151B2E).withValues(alpha: 0.94),
+            backgroundColor: EskoliaTokens.surface1.withValues(alpha: 0.94),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
               side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
@@ -465,7 +472,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                               customQuizData = null;
                               aiError = null;
                             }),
-                            selectedColor: const Color(0xFFFFC107).withValues(alpha: 0.25),
+                            selectedColor: EskoliaTokens.amber.withValues(alpha: 0.25),
                             checkmarkColor: Colors.white,
                             labelStyle: TextStyle(
                               color: useAiSource ? Colors.white : _slateLight,
@@ -739,7 +746,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     required VoidCallback onGenerate,
     required VoidCallback onReset,
   }) {
-    const amber = Color(0xFFFFC107);
+    const amber = EskoliaTokens.amber;
     if (generatedData != null) {
       final preview = generatedData.questions.take(3).toList();
       final remaining = generatedData.questions.length - preview.length;
@@ -1007,7 +1014,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
         child: AnimatedBuilder(
           animation: _pulse,
           builder: (context, child) {
-            final c = Color.lerp(_surface, const Color(0xFF2D3748), _pulse.value)!;
+            final c = Color.lerp(_surface, EskoliaTokens.surface3, _pulse.value)!;
             return Container(
               height: 132,
               decoration: BoxDecoration(
@@ -1262,7 +1269,7 @@ class LobbyCard extends StatelessWidget {
   (Color, Color) _diff() {
     final d = lobby.difficulty.toLowerCase();
     if (d == 'progressive') {
-      return (_red.withValues(alpha: 0.2), const Color(0xFFFF6B6B));
+      return (_red.withValues(alpha: 0.2), EskoliaTokens.error);
     }
     if (d == 'mixte' || d.contains('+')) {
       return (_orange.withValues(alpha: 0.2), _orange);
@@ -1281,7 +1288,7 @@ class LobbyCard extends StatelessWidget {
     if (lobby.isSurvival) {
       return (
         _red.withValues(alpha: 0.22),
-        const Color(0xFFFF6B6B),
+        EskoliaTokens.error,
       );
     }
     return (
@@ -1295,7 +1302,7 @@ class LobbyCard extends StatelessWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: Text(
           isAdminDelete ? 'Supprimer ce lobby (admin) ?' : 'Supprimer ce lobby ?',
@@ -1343,7 +1350,7 @@ class LobbyCard extends StatelessWidget {
         : 0.0;
     final modeEmoji = lobby.isSurvival ? '\u{1F6E1}' : '\u{1F3AF}';
     final accent = ms.$2;
-    final progressColor = lobby.isSurvival ? const Color(0xFFFF6B6B) : _cyan;
+    final progressColor = lobby.isSurvival ? EskoliaTokens.error : _cyan;
 
     return Material(
       color: Colors.transparent,

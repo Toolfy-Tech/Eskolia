@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
@@ -13,13 +14,6 @@ import '../../admin/data/staff_capability.dart';
 import '../../auth/data/user_model.dart';
 import '../data/settings_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _danger = Color(0xFFE53935);
-const Color _dangerDark = Color(0xFFB71C1C);
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -109,13 +103,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Text(
                                   _loadError!,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(color: _slateLight),
+                                  style: const TextStyle(color: EskoliaTokens.textSecondary),
                                 ),
                                 const SizedBox(height: 20),
                                 FilledButton(
                                   onPressed: _load,
                                   style: FilledButton.styleFrom(
-                                    backgroundColor: _violet,
+                                    backgroundColor: EskoliaTokens.violetSoft,
                                   ),
                                   child: const Text('Réessayer'),
                                 ),
@@ -126,7 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       : _loading || _settings == null
                           ? const Center(
                               child: CircularProgressIndicator(
-                                color: _violet,
+                                color: EskoliaTokens.violetSoft,
                               ),
                             )
                           : ListView(
@@ -142,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       value: _settings!.notificationsEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: _violet,
+                                      activeTrackColor: EskoliaTokens.violetSoft,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(notificationsEnabled: v)),
                                     ),
@@ -153,7 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       value: _settings!.soundEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: _violet,
+                                      activeTrackColor: EskoliaTokens.violetSoft,
                                       onChanged: (v) => _save(
                                           _settings!.copyWith(soundEnabled: v)),
                                     ),
@@ -164,7 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       value: _settings!.vibrationEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: _violet,
+                                      activeTrackColor: EskoliaTokens.violetSoft,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(vibrationEnabled: v)),
                                     ),
@@ -181,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       value: _settings!.publicProfile,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: _violet,
+                                      activeTrackColor: EskoliaTokens.violetSoft,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(publicProfile: v)),
                                     ),
@@ -192,7 +186,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       value: _settings!.showStreak,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: _violet,
+                                      activeTrackColor: EskoliaTokens.violetSoft,
                                       onChanged: (v) => _save(
                                           _settings!.copyWith(showStreak: v)),
                                     ),
@@ -209,7 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       subtitle: Text(
                                         '${_settings!.dailyGoalMinutes} min/jour',
-                                        style: TextStyle(color: _slateLight),
+                                        style: TextStyle(color: EskoliaTokens.textSecondary),
                                       ),
                                       onTap: () => _showGoalDialog(),
                                     ),
@@ -222,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         _settings!.language == 'en'
                                             ? '\u{1F1EC}\u{1F1E7} English'
                                             : '\u{1F1EB}\u{1F1F7} Français',
-                                        style: TextStyle(color: _slateLight),
+                                        style: TextStyle(color: EskoliaTokens.textSecondary),
                                       ),
                                       onTap: () => _showLangDialog(),
                                     ),
@@ -253,10 +247,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           ),
                                           subtitle: Text(
                                             'Signalements & brouillons',
-                                            style: TextStyle(color: _slateLight),
+                                            style: TextStyle(color: EskoliaTokens.textSecondary),
                                           ),
                                           trailing: const Icon(Icons.chevron_right,
-                                              color: _slate),
+                                              color: EskoliaTokens.textSecondary),
                                           onTap: () => context.push('/admin'),
                                         );
                                       },
@@ -267,7 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                       trailing: const Icon(Icons.chevron_right,
-                                          color: _slate),
+                                          color: EskoliaTokens.textSecondary),
                                       onTap: () => context.push('/profil'),
                                     ),
                                     ListTile(
@@ -285,7 +279,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ListTile(
                                       title: const Text(
                                         'Se déconnecter',
-                                        style: TextStyle(color: _danger),
+                                        style: TextStyle(color: EskoliaTokens.error),
                                       ),
                                       onTap: () async {
                                         await FirebaseAuth.instance.signOut();
@@ -297,7 +291,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ListTile(
                                       title: const Text(
                                         'Supprimer le compte',
-                                        style: TextStyle(color: _dangerDark),
+                                        style: TextStyle(color: EskoliaTokens.error),
                                       ),
                                       onTap: () async {
                                         final ok = await _showDeleteConfirmDialog();
@@ -324,7 +318,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                       subtitle: Text(
                                         '1.0.0 (build 1)',
-                                        style: TextStyle(color: _slateLight),
+                                        style: TextStyle(color: EskoliaTokens.textSecondary),
                                       ),
                                     ),
                                     ListTile(
@@ -406,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setD) => AlertDialog(
-          backgroundColor: const Color(0xFF151B2E),
+          backgroundColor: EskoliaTokens.surface1,
           title: const Text(
             'Supprimer le compte ?',
             style: TextStyle(color: Colors.white),
@@ -417,7 +411,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text(
                 'Cette action est irréversible. Saisis ton pseudo pour confirmer.',
-                style: TextStyle(color: _slateLight, fontSize: 13, height: 1.4),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13, height: 1.4),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -426,17 +420,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: _username ?? 'Ton pseudo',
-                  hintStyle: TextStyle(color: _slate),
+                  hintStyle: TextStyle(color: EskoliaTokens.textSecondary),
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.07),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: _dangerDark),
+                    borderSide: const BorderSide(color: EskoliaTokens.error),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: _danger),
+                    borderSide: const BorderSide(color: EskoliaTokens.error),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -456,7 +450,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: _username != null && ctrl.text == _username
                   ? () => Navigator.pop(ctx, true)
                   : null,
-              style: FilledButton.styleFrom(backgroundColor: _dangerDark),
+              style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.error),
               child: const Text('Supprimer'),
             ),
           ],
@@ -475,7 +469,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setD) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF151B2E),
+              backgroundColor: EskoliaTokens.surface1,
               title: const Text(
                 'Objectif quotidien',
                 style: TextStyle(color: Colors.white),
@@ -501,7 +495,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _save(_settings!.copyWith(dailyGoalMinutes: g));
                     Navigator.pop(ctx);
                   },
-                  style: FilledButton.styleFrom(backgroundColor: _violet),
+                  style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violetSoft),
                   child: const Text('OK'),
                 ),
               ],
@@ -520,7 +514,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setD) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF151B2E),
+              backgroundColor: EskoliaTokens.surface1,
               title: const Text(
                 'Langue',
                 style: TextStyle(color: Colors.white),
@@ -534,7 +528,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     trailing: lang == 'fr'
-                        ? const Icon(Icons.check, color: _cyan)
+                        ? const Icon(Icons.check, color: EskoliaTokens.cyan)
                         : null,
                     onTap: () => setD(() => lang = 'fr'),
                   ),
@@ -544,7 +538,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     trailing: lang == 'en'
-                        ? const Icon(Icons.check, color: _cyan)
+                        ? const Icon(Icons.check, color: EskoliaTokens.cyan)
                         : null,
                     onTap: () => setD(() => lang = 'en'),
                   ),
@@ -560,7 +554,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     _save(_settings!.copyWith(language: lang));
                     Navigator.pop(ctx);
                   },
-                  style: FilledButton.styleFrom(backgroundColor: _violet),
+                  style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violetSoft),
                   child: const Text('OK'),
                 ),
               ],
@@ -587,8 +581,8 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
   bool _loading = true;
   String? _folderName;
 
-  static const _teal = Color(0xFF00BCD4);
-  static const _amber = Color(0xFFFFC107);
+  static const _teal = EskoliaTokens.cyan;
+  static const _amber = EskoliaTokens.amber;
 
   @override
   void initState() {
@@ -685,7 +679,7 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
                 'automatiquement en sous-dossiers. Choisis un emplacement dans tes '
                 'Documents par exemple.',
                 style: TextStyle(
-                  color: _slateLight.withValues(alpha: 0.7),
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                   fontSize: 12,
                   height: 1.4,
                 ),
@@ -700,12 +694,12 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
                 ),
                 subtitle: Text(
                   'Dossier actif',
-                  style: TextStyle(color: _slateLight, fontSize: 11),
+                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
                 ),
                 trailing: TextButton(
                   onPressed: _forget,
                   style: TextButton.styleFrom(
-                    foregroundColor: _danger,
+                    foregroundColor: EskoliaTokens.error,
                     textStyle: const TextStyle(fontSize: 12),
                   ),
                   child: const Text('Oublier'),
@@ -722,7 +716,7 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
                 _folderName != null ? 'Modifier le dossier' : 'Choisir mon dossier Eskolia',
                 style: const TextStyle(color: Colors.white),
               ),
-              trailing: const Icon(Icons.chevron_right, color: _slate),
+              trailing: const Icon(Icons.chevron_right, color: EskoliaTokens.textSecondary),
               onTap: _pick,
             ),
             Padding(

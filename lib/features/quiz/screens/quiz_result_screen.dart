@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
@@ -23,13 +24,6 @@ import '../services/revision_pool_repository.dart';
 import '../presentation/quiz_lesson_preview_dialog.dart';
 import '../presentation/quiz_question_report_dialog.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _green = Color(0xFF4CAF50);
-const Color _red = Color(0xFFF44336);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _orange = Color(0xFFFF9800);
 
 class QuizResultScreen extends StatefulWidget {
   const QuizResultScreen({
@@ -139,7 +133,9 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       if (uid != null && passedId != null) {
         await ParcoursSectionBadgeRewards().tryAwardSectionBadge(uid, passedId);
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[QuizResultScreen._saveOnce] $e');
+    }
   }
 
   Future<void> _autoPoolWrongAnswers() async {
@@ -206,7 +202,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle, 
                                       color: Colors.white.withValues(alpha: 0.05),
-                                      border: Border.all(color: _violet.withValues(alpha: 0.3), width: 4)
+                                      border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.3), width: 4)
                                     ),
                                     alignment: Alignment.center,
                                     child: Column(
@@ -289,14 +285,14 @@ class _QuizResultScreenState extends State<QuizResultScreen>
   }
 
   Widget _buildQuestionCard(int index, QuizQuestion q, double score) {
-    Color statusColor = _red;
+    Color statusColor = EskoliaTokens.error;
     IconData statusIcon = Icons.close_rounded;
 
     if (score >= 1.0) {
-      statusColor = _green;
+      statusColor = EskoliaTokens.success;
       statusIcon = Icons.verified_rounded;
     } else if (score > 0) {
-      statusColor = _orange;
+      statusColor = EskoliaTokens.orange;
       statusIcon = Icons.lightbulb_rounded;
     }
 
@@ -312,7 +308,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
           child: Icon(statusIcon, color: statusColor, size: 20),
         ),
         title: Text('Question ${index + 1}', style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
-        subtitle: Text(q.question, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: _slate, fontSize: 11)),
+        subtitle: Text(q.question, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
@@ -322,7 +318,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                 Text(q.answer, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
                 if (q.explanation != null) ...[
                   const SizedBox(height: 12),
-                  Text(q.explanation!, style: TextStyle(color: _slate, fontSize: 12)),
+                  Text(q.explanation!, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                 ],
                 const SizedBox(height: 16),
                 Row(
@@ -358,7 +354,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
         decoration: BoxDecoration(border: Border.all(color: Colors.white10), borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            Icon(icon, size: 14, color: _cyan),
+            Icon(icon, size: 14, color: EskoliaTokens.cyan),
             const SizedBox(width: 6),
             Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
           ],
@@ -374,9 +370,9 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _statItem(widget.correctCount.toString(), "Maîtrisées", _green),
-          _statItem(widget.unansweredCount.toString(), "Passées", _slate),
-          _statItem(widget.wrongCount.toString(), "À revoir", _red),
+          _statItem(widget.correctCount.toString(), "Maîtrisées", EskoliaTokens.success),
+          _statItem(widget.unansweredCount.toString(), "Passées", EskoliaTokens.textSecondary),
+          _statItem(widget.wrongCount.toString(), "À revoir", EskoliaTokens.error),
         ],
       ),
     );
@@ -387,7 +383,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       children: [
         Text(val, style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.w900)),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.bold)),
+        Text(label, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.bold)),
       ],
     );
   }
@@ -398,7 +394,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     return Row(
       children: List.generate(scores.length, (i) {
         final s = scores[i] ?? 0.0;
-        final Color c = s >= 1.0 ? _green : (s > 0 ? _orange : _red);
+        final Color c = s >= 1.0 ? EskoliaTokens.success : (s > 0 ? EskoliaTokens.orange : EskoliaTokens.error);
         final isLast = i == scores.length - 1;
         return Expanded(
           child: Container(
@@ -435,9 +431,9 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: _violet.withValues(alpha: 0.12),
+          color: EskoliaTokens.violetSoft.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _violet.withValues(alpha: 0.35)),
+          border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.35)),
         ),
         child: Row(
           children: [
@@ -445,7 +441,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _violet.withValues(alpha: 0.2),
+                color: EskoliaTokens.violetSoft.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
@@ -458,7 +454,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                 children: [
                   Text(
                     'Chapitre suivant',
-                    style: TextStyle(color: _violet, fontSize: 11, fontWeight: FontWeight.w700),
+                    style: TextStyle(color: EskoliaTokens.violetSoft, fontSize: 11, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -471,7 +467,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
               ),
             ),
             const SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios_rounded, color: _violet, size: 14),
+            Icon(Icons.arrow_forward_ios_rounded, color: EskoliaTokens.violetSoft, size: 14),
           ],
         ),
       ),
@@ -522,7 +518,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, _bg.withValues(alpha: 0.8), _bg])
+        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, EskoliaVisual.bgDeep.withValues(alpha: 0.8), EskoliaVisual.bgDeep])
       ),
       child: Column(
         children: [
@@ -532,7 +528,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                 Navigator.of(context).pop();
                 context.go('/parcours');
               },
-              style: FilledButton.styleFrom(backgroundColor: _violet, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+              style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violetSoft, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
               icon: const Icon(Icons.arrow_forward_rounded),
               label: Text(
                 next.title,
@@ -545,7 +541,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
-              backgroundColor: next != null ? Colors.white.withValues(alpha: 0.08) : _violet,
+              backgroundColor: next != null ? Colors.white.withValues(alpha: 0.08) : EskoliaTokens.violetSoft,
               foregroundColor: Colors.white,
               minimumSize: const Size.fromHeight(54),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -556,8 +552,8 @@ class _QuizResultScreenState extends State<QuizResultScreen>
           OutlinedButton.icon(
             onPressed: _downloadBilan,
             style: OutlinedButton.styleFrom(
-              foregroundColor: _cyan,
-              side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+              foregroundColor: EskoliaTokens.cyan,
+              side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
               minimumSize: const Size.fromHeight(48),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -571,7 +567,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
               Navigator.of(context).pop();
               context.go(destination);
             },
-            child: Text('RETOUR AU MENU', style: TextStyle(color: _slate, fontWeight: FontWeight.w700, fontSize: 13)),
+            child: Text('RETOUR AU MENU', style: TextStyle(color: EskoliaTokens.textSecondary, fontWeight: FontWeight.w700, fontSize: 13)),
           ),
         ],
       ),

@@ -15,9 +15,11 @@ import '../../auth/data/user_model.dart';
 import '../../economy/data/achievement_triggers.dart';
 import '../data/home_repository.dart';
 import 'widgets/tech_news_section.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _surfaceBar = Color(0xFF1E293B);
-const Color _redStreak = Color(0xFFEF4444);
+const Color _surfaceBar    = EskoliaTokens.surface2;
+const Color _redStreak     = EskoliaTokens.error;
+const Color _gradientDeep  = Color(0xFF1A1040); // violet profond — debut du dégradé header
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -244,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [const Color(0xFF1A1040), EskoliaVisual.bgDeep],
+          colors: [_gradientDeep, EskoliaVisual.bgDeep],
         ),
       ),
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -303,12 +305,12 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-                  const Color(0xFFFF6B35).withValues(alpha: 0.2),
-                  const Color(0xFFFF9F0A).withValues(alpha: 0.1),
+                  EskoliaVisual.neonOrange.withValues(alpha: 0.2),
+                  EskoliaVisual.neonAmber.withValues(alpha: 0.1),
                 ]),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFFFF9F0A).withValues(alpha: 0.4),
+                  color: EskoliaVisual.neonAmber.withValues(alpha: 0.4),
                 ),
               ),
               child: Row(
@@ -319,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     '${user.streak} jours de serie — continue !',
                     style: GoogleFonts.inter(
-                      color: const Color(0xFFFF9F0A),
+                      color: EskoliaVisual.neonAmber,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),

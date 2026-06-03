@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -13,13 +14,6 @@ import '../services/quiz_repository.dart';
 import '../services/revision_pool_repository.dart';
 import '../models/revision_pool_launch_mode.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _orange = Color(0xFFFF9800);
-const Color _slate = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
-const Color _red = Color(0xFFEF5350);
 
 class RevisionPoolScreen extends StatefulWidget {
   const RevisionPoolScreen({
@@ -149,7 +143,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
               future: _future,
               builder: (context, snap) {
                 if (snap.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator(color: _cyan));
+                  return const Center(child: CircularProgressIndicator(color: EskoliaTokens.cyan));
                 }
                 final model = snap.data!;
                 if (model.entries.isEmpty) return _buildEmpty();
@@ -185,7 +179,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
             Text(
               'Épingle des questions depuis les résultats de quiz\nou après chaque mauvaise réponse.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 13, height: 1.4),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 13, height: 1.4),
             ),
           ],
         ),
@@ -206,13 +200,13 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _violet.withValues(alpha: 0.15),
+                  color: EskoliaTokens.violetSoft.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: _violet.withValues(alpha: 0.3)),
+                  border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   '${model.entries.length} question${model.entries.length > 1 ? "s" : ""}',
-                  style: const TextStyle(color: _violet, fontWeight: FontWeight.w600, fontSize: 12),
+                  style: const TextStyle(color: EskoliaTokens.violetSoft, fontWeight: FontWeight.w600, fontSize: 12),
                 ),
               ),
               if (dueCount > 0) ...[
@@ -220,13 +214,13 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _orange.withValues(alpha: 0.15),
+                    color: EskoliaTokens.orange.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: _orange.withValues(alpha: 0.3)),
+                    border: Border.all(color: EskoliaTokens.orange.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     '$dueCount à revoir',
-                    style: const TextStyle(color: _orange, fontWeight: FontWeight.w600, fontSize: 12),
+                    style: const TextStyle(color: EskoliaTokens.orange, fontWeight: FontWeight.w600, fontSize: 12),
                   ),
                 ),
               ],
@@ -242,7 +236,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                       : const Icon(Icons.quiz_outlined, size: 18),
                   label: Text('Quiz ($selectedCount)'),
-                  style: FilledButton.styleFrom(backgroundColor: _violet),
+                  style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violetSoft),
                 ),
               ),
               const SizedBox(width: 10),
@@ -260,7 +254,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
           const SizedBox(height: 4),
           Text(
             'Glisse vers la gauche pour supprimer une question.',
-            style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 11),
           ),
         ],
       ),
@@ -286,10 +280,10 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
             padding: const EdgeInsets.only(right: 20),
             margin: const EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
-              color: _red.withValues(alpha: 0.2),
+              color: EskoliaTokens.error.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.delete_outline_rounded, color: _red),
+            child: const Icon(Icons.delete_outline_rounded, color: EskoliaTokens.error),
           ),
           onDismissed: (_) => _removeEntry(e),
           child: Padding(
@@ -348,12 +342,12 @@ class _PoolEntryCard extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: selected
-              ? _violet.withValues(alpha: 0.1)
-              : _surface.withValues(alpha: 0.6),
+              ? EskoliaTokens.violetSoft.withValues(alpha: 0.1)
+              : EskoliaTokens.surface2.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: selected
-                ? _violet.withValues(alpha: 0.4)
+                ? EskoliaTokens.violetSoft.withValues(alpha: 0.4)
                 : Colors.white.withValues(alpha: 0.07),
           ),
         ),
@@ -363,7 +357,7 @@ class _PoolEntryCard extends StatelessWidget {
             Checkbox(
               value: selected,
               onChanged: onToggle != null ? (v) => onToggle!(v ?? false) : null,
-              activeColor: _violet,
+              activeColor: EskoliaTokens.violetSoft,
               side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
               visualDensity: VisualDensity.compact,
             ),
@@ -386,18 +380,18 @@ class _PoolEntryCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                           margin: const EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
-                            color: _orange.withValues(alpha: 0.15),
+                            color: EskoliaTokens.orange.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: _orange.withValues(alpha: 0.4)),
+                            border: Border.all(color: EskoliaTokens.orange.withValues(alpha: 0.4)),
                           ),
                           child: const Text(
                             '\u{1F525} À revoir',
-                            style: TextStyle(color: _orange, fontSize: 10, fontWeight: FontWeight.w600),
+                            style: TextStyle(color: EskoliaTokens.orange, fontSize: 10, fontWeight: FontWeight.w600),
                           ),
                         ),
                       Text(
                         _formatLastSeen(),
-                        style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11),
+                        style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 11),
                       ),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -10,13 +11,6 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../auth/data/user_model.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _orange = Color(0xFFFF9800);
-const Color _green = Color(0xFF43E97B);
 
 class AdminClassDashboardScreen extends StatefulWidget {
   const AdminClassDashboardScreen({super.key});
@@ -95,7 +89,7 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
                           return Center(
                             child: Text(
                               'Erreur de chargement.',
-                              style: TextStyle(color: _slate),
+                              style: TextStyle(color: EskoliaTokens.textSecondary),
                             ),
                           );
                         }
@@ -131,8 +125,8 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
             style: const TextStyle(color: Colors.white, fontSize: 14),
             decoration: InputDecoration(
               hintText: 'Rechercher un élève...',
-              hintStyle: TextStyle(color: _slate.withValues(alpha: 0.6)),
-              prefixIcon: Icon(Icons.search_rounded, color: _slate, size: 20),
+              hintStyle: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6)),
+              prefixIcon: Icon(Icons.search_rounded, color: EskoliaTokens.textSecondary, size: 20),
               filled: true,
               fillColor: Colors.white.withValues(alpha: 0.05),
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
@@ -146,7 +140,7 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: _violet.withValues(alpha: 0.5)),
+                borderSide: BorderSide(color: EskoliaTokens.violetSoft.withValues(alpha: 0.5)),
               ),
             ),
           ),
@@ -164,16 +158,16 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
                       duration: const Duration(milliseconds: 180),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: active ? _violet.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
+                        color: active ? EskoliaTokens.violetSoft.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: active ? _violet.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.1),
+                          color: active ? EskoliaTokens.violetSoft.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.1),
                         ),
                       ),
                       child: Text(
                         f.label,
                         style: TextStyle(
-                          color: active ? _violet : _slate,
+                          color: active ? EskoliaTokens.violetSoft : EskoliaTokens.textSecondary,
                           fontSize: 12,
                           fontWeight: active ? FontWeight.w700 : FontWeight.normal,
                         ),
@@ -211,7 +205,7 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
           const SizedBox(height: 12),
           Text(
             'Aucun élève trouvé.',
-            style: TextStyle(color: _slate, fontSize: 14),
+            style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 14),
           ),
         ],
       ),
@@ -249,7 +243,7 @@ class _UserRow extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 22,
-                backgroundColor: _violet.withValues(alpha: 0.2),
+                backgroundColor: EskoliaTokens.violetSoft.withValues(alpha: 0.2),
                 child: Text(initial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
               ),
               if (isActive)
@@ -260,9 +254,9 @@ class _UserRow extends StatelessWidget {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: _green,
+                      color: EskoliaTokens.success,
                       shape: BoxShape.circle,
-                      border: Border.all(color: _bg, width: 1.5),
+                      border: Border.all(color: EskoliaTokens.bgBase, width: 1.5),
                     ),
                   ),
                 ),
@@ -282,17 +276,17 @@ class _UserRow extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   lastSeen,
-                  style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 11),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          _Stat(value: '${user.xp}', label: 'XP', color: _violet),
+          _Stat(value: '${user.xp}', label: 'XP', color: EskoliaTokens.violetSoft),
           const SizedBox(width: 10),
-          _Stat(value: '${user.streak}\u{1F525}', label: 'Série', color: _orange),
+          _Stat(value: '${user.streak}\u{1F525}', label: 'Série', color: EskoliaTokens.orange),
           const SizedBox(width: 10),
-          _Stat(value: '${user.totalQuizzesPlayed}', label: 'Quiz', color: _cyan),
+          _Stat(value: '${user.totalQuizzesPlayed}', label: 'Quiz', color: EskoliaTokens.cyan),
         ],
       ),
     );
@@ -310,7 +304,7 @@ class _Stat extends StatelessWidget {
     return Column(
       children: [
         Text(value, style: TextStyle(color: color, fontWeight: FontWeight.w800, fontSize: 13)),
-        Text(label, style: TextStyle(color: _slate.withValues(alpha: 0.65), fontSize: 10)),
+        Text(label, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.65), fontSize: 10)),
       ],
     );
   }

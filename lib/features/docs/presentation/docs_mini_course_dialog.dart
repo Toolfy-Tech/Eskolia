@@ -5,10 +5,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/services/asset_cache_service.dart';
 
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _dlgSurface = Color(0xFF1E293B);
-const Color _dlgSlate = Color(0xFF94A3B8);
-const Color _dlgAccent = Color(0xFF6C63FF);
+const Color _dlgSurface = EskoliaTokens.surface2;
+const Color _dlgSlate = EskoliaTokens.textSecondary;
+const Color _dlgAccent = EskoliaTokens.violetSoft;
 
 /// Popup « mini-formation » : markdown embarqué + lien optionnel vers une ressource officielle.
 Future<void> showDocsMiniCourseDialog(

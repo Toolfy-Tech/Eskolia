@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -14,10 +15,6 @@ import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
 
 /// Hub quiz : « du jour » ou composition à partir des sections / chapitres.
 class QuizSetupScreen extends StatefulWidget {
@@ -52,7 +49,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _EskoliaQuizFilePicker(files: files),
     );
@@ -136,7 +133,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
               builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
             return const Center(
-              child: CircularProgressIndicator(color: _cyan),
+              child: CircularProgressIndicator(color: EskoliaTokens.cyan),
             );
           }
           if (snap.hasError) {
@@ -146,7 +143,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 child: Text(
                   'Erreur de chargement du catalogue.\n${snap.error}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: _slate),
+                  style: const TextStyle(color: EskoliaTokens.textSecondary),
                 ),
               ),
             );
@@ -173,7 +170,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Solo — affirmations rapides : swipe ou boutons, puis courte explication.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/true-false'),
@@ -188,7 +185,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Solo — 3 vies, difficulté progressive, pas de choix du nombre de questions. Records top 3.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/survival'),
@@ -203,7 +200,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Solo — Maîtrise (max 10) sur tes erreurs : parcours, solo et multijoueur.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/revision-lacunes'),
@@ -218,7 +215,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Solo — L\'IA analyse tes bilans enregistres et identifie tes lacunes recurrentes.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/bilan-recap'),
@@ -233,7 +230,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Solo — Lance un quiz .json depuis ton dossier Eskolia/Quiz/.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: _playEskoliaQuiz,
@@ -253,13 +250,13 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 'sont mélangées dans la limite choisie. Des questionnaires validés par la '
                 'modération (Labo) peuvent être ajoutés automatiquement pour les '
                 'sections concernées.',
-                style: TextStyle(color: _slate.withValues(alpha: 0.95), height: 1.4),
+                style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.95), height: 1.4),
               ),
               const SizedBox(height: 12),
               Text(
                 'Banque Maîtrise',
                 style: TextStyle(
-                  color: _slate.withValues(alpha: 0.95),
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -280,7 +277,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
               const SizedBox(height: 12),
               Text(
                 '${_selected.length} fichier(s) Maîtrise sélectionné(s)',
-                style: const TextStyle(color: _cyan, fontWeight: FontWeight.w600),
+                style: const TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
               SizedBox(
@@ -306,7 +303,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                   ),
                   Text(
                     '${_maxQuestions.round()}',
-                    style: const TextStyle(color: _cyan, fontWeight: FontWeight.w700),
+                    style: const TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
@@ -315,7 +312,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 max: 40,
                 divisions: 35,
                 value: _maxQuestions,
-                activeColor: _violet,
+                activeColor: EskoliaTokens.violetSoft,
                 onChanged: (v) => setState(() => _maxQuestions = v),
               ),
               const SizedBox(height: 4),
@@ -327,10 +324,10 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 subtitle: Text(
                   'Les questions épinglées 📌 passent en premier (puis tirage aléatoire).',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 12),
                 ),
                 value: _prioritizeRevisionPool,
-                activeThumbColor: _cyan,
+                activeThumbColor: EskoliaTokens.cyan,
                 onChanged: (v) =>
                     setState(() => _prioritizeRevisionPool = v),
               ),
@@ -338,7 +335,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
               FilledButton(
                 onPressed: _startCustom,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _violet,
+                  backgroundColor: EskoliaTokens.violetSoft,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -373,8 +370,8 @@ class _DailyCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               colors: [
-                _violet.withValues(alpha: 0.35),
-                _cyan.withValues(alpha: 0.2),
+                EskoliaTokens.violetSoft.withValues(alpha: 0.35),
+                EskoliaTokens.cyan.withValues(alpha: 0.2),
               ],
             ),
             border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
@@ -446,14 +443,14 @@ class _EskoliaQuizFilePicker extends StatelessWidget {
             shrinkWrap: true,
             itemCount: files.length,
             itemBuilder: (_, i) => ListTile(
-              leading: const Icon(Icons.quiz_rounded, color: _violet),
+              leading: const Icon(Icons.quiz_rounded, color: EskoliaTokens.violetSoft),
               title: Text(
                 _label(files[i]),
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
               subtitle: Text(
                 files[i],
-                style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+                style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 11),
               ),
               onTap: () => Navigator.of(context).pop(files[i]),
             ),

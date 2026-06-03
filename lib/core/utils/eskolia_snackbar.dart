@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../constants/eskolia_tokens.dart';
+
 void showEskoliaSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      backgroundColor: const Color(0xFF6C63FF),
+      backgroundColor: EskoliaTokens.violet,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
@@ -18,7 +20,7 @@ void showStreakBanner(BuildContext context, int streak) {
         '🔥 Série de $streak jour${streak > 1 ? 's' : ''} — continue aujourd\'hui !',
         style: const TextStyle(fontWeight: FontWeight.w700),
       ),
-      backgroundColor: const Color(0xFFEF4444),
+      backgroundColor: EskoliaTokens.error,
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -48,7 +50,7 @@ void showAchievementSnackBar(BuildContext context, String emoji, String title) {
           ),
         ],
       ),
-      backgroundColor: const Color(0xFF6C63FF),
+      backgroundColor: EskoliaTokens.violet,
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

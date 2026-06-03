@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
+
 // ── Niveaux de difficulte IA (4 niveaux) ─────────────────────────────────────
 
 enum AiDifficulty { debutant, intermediaire, avance, expert }
@@ -20,10 +22,10 @@ extension AiDifficultyX on AiDifficulty {
       };
 
   Color get color => switch (this) {
-        AiDifficulty.debutant      => const Color(0xFF4CAF50),
-        AiDifficulty.intermediaire => const Color(0xFFFFC107),
-        AiDifficulty.avance        => const Color(0xFFFF7043),
-        AiDifficulty.expert        => const Color(0xFFE53935),
+        AiDifficulty.debutant      => EskoliaTokens.success,
+        AiDifficulty.intermediaire => EskoliaTokens.amber,
+        AiDifficulty.avance        => EskoliaTokens.orange,
+        AiDifficulty.expert        => EskoliaTokens.error,
       };
 
   IconData get icon => switch (this) {
@@ -33,10 +35,6 @@ extension AiDifficultyX on AiDifficulty {
         AiDifficulty.expert        => Icons.local_fire_department_rounded,
       };
 }
-
-// ── Couleurs locales ──────────────────────────────────────────────────────────
-
-const Color _slate = Color(0xFF94A3B8);
 
 // ── Widget reusable ───────────────────────────────────────────────────────────
 
@@ -68,7 +66,7 @@ class AiConfigWidget extends StatelessWidget {
         const Text(
           'DIFFICULTE',
           style: TextStyle(
-            color: _slate,
+            color: EskoliaTokens.textSecondary,
             fontSize: 11,
             fontWeight: FontWeight.w600,
             letterSpacing: 0.8,
@@ -117,7 +115,7 @@ class AiConfigWidget extends StatelessWidget {
             const Text(
               'NOMBRE DE QUESTIONS',
               style: TextStyle(
-                color: _slate,
+                color: EskoliaTokens.textSecondary,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.8,
@@ -165,9 +163,9 @@ class AiConfigWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('1', style: TextStyle(color: _slate.withValues(alpha: 0.45), fontSize: 10)),
-              Text('10', style: TextStyle(color: _slate.withValues(alpha: 0.45), fontSize: 10)),
-              Text('20', style: TextStyle(color: _slate.withValues(alpha: 0.45), fontSize: 10)),
+              Text('1', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.45), fontSize: 10)),
+              Text('10', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.45), fontSize: 10)),
+              Text('20', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.45), fontSize: 10)),
             ],
           ),
         ),
@@ -216,12 +214,12 @@ class _DiffChip extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(level.icon, color: isSelected ? color : _slate, size: 15),
+              Icon(level.icon, color: isSelected ? color : EskoliaTokens.textSecondary, size: 15),
               const SizedBox(height: 3),
               Text(
                 level.label,
                 style: TextStyle(
-                  color: isSelected ? color : _slate,
+                  color: isSelected ? color : EskoliaTokens.textSecondary,
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),

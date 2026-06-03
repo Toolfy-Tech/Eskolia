@@ -6,13 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../data/podcast_model.dart';
 import '../data/podcast_player_service.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 export '../data/podcast_player_service.dart' show podcastPlayerProvider;
-
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _danger = Color(0xFFFF6584);
 
 /// Lecteur pour un podcast donné. Délègue l'audio à [podcastPlayerProvider].
 /// Un seul podcast peut jouer à la fois dans l'app.
@@ -46,7 +42,7 @@ class PodcastPlayerCard extends ConsumerWidget {
     final error = isThis ? state.error : null;
 
     const timeStyle = TextStyle(
-      color: _slate,
+      color: EskoliaTokens.textSecondary,
       fontSize: 11,
       fontWeight: FontWeight.w600,
     );
@@ -77,15 +73,15 @@ class PodcastPlayerCard extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: _cyan.withValues(alpha: 0.15),
+                              color: EskoliaTokens.cyan.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
                               border: Border.all(
-                                  color: _cyan.withValues(alpha: 0.40)),
+                                  color: EskoliaTokens.cyan.withValues(alpha: 0.40)),
                             ),
                             child: Text(
                               podcast.id,
                               style: const TextStyle(
-                                color: _cyan,
+                                color: EskoliaTokens.cyan,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.6,
@@ -111,7 +107,7 @@ class PodcastPlayerCard extends ConsumerWidget {
                       const SizedBox(height: 3),
                       Text(
                         podcast.subtitle!,
-                        style: const TextStyle(color: _slate, fontSize: 12),
+                        style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                       ),
                     ],
                   ],
@@ -119,7 +115,7 @@ class PodcastPlayerCard extends ConsumerWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.download_rounded),
-                color: _slate,
+                color: EskoliaTokens.textSecondary,
                 iconSize: 20,
                 tooltip: 'Telecharger',
                 padding: const EdgeInsets.all(8),
@@ -133,7 +129,7 @@ class PodcastPlayerCard extends ConsumerWidget {
               const SizedBox(width: 2),
               Icon(
                 Icons.graphic_eq_rounded,
-                color: _cyan.withValues(alpha: playing ? 0.95 : 0.35),
+                color: EskoliaTokens.cyan.withValues(alpha: playing ? 0.95 : 0.35),
                 size: 20,
               ),
             ],
@@ -143,9 +139,9 @@ class PodcastPlayerCard extends ConsumerWidget {
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 trackHeight: 3,
-                activeTrackColor: _cyan,
+                activeTrackColor: EskoliaTokens.cyan,
                 inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
-                thumbColor: _cyan,
+                thumbColor: EskoliaTokens.cyan,
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                 overlayShape:
                     const RoundSliderOverlayShape(overlayRadius: 14),
@@ -184,7 +180,7 @@ class PodcastPlayerCard extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               error,
-              style: const TextStyle(color: _danger, fontSize: 12),
+              style: const TextStyle(color: EskoliaTokens.pink, fontSize: 12),
             ),
           ],
         ],
@@ -219,7 +215,7 @@ class _PlayButton extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [_cyan, _violet],
+              colors: [EskoliaTokens.cyan, EskoliaTokens.violet],
             ),
           ),
           child: loading

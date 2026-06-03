@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
+
 enum EskoliaButtonVariant {
   /// Bouton principal — fond violet #6C63FF. Maximum 1 par écran.
   primary,
@@ -11,8 +13,8 @@ enum EskoliaButtonVariant {
   destructive,
 }
 
-const Color _kPrimary = Color(0xFF6C63FF);
-const Color _kDestructive = Color(0xFFEF4444);
+const Color _kPrimary = EskoliaTokens.violet;
+const Color _kDestructive = EskoliaTokens.error;
 const double _kRadius = 12;
 
 /// Bouton Eskolia — 4 variantes sémantiques.
@@ -71,7 +73,7 @@ class _EskoliaButtonState extends State<EskoliaButton> {
 
   Widget _buildButton(BuildContext context) {
     final bg = widget.color ?? _kPrimary;
-    final fg = widget.textColor ?? Colors.white;
+    final fg = widget.textColor ?? EskoliaTokens.textPrimary;
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(_kRadius),
     );

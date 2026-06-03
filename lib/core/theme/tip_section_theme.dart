@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/eskolia_tokens.dart';
+
 /// DA par section TIP — `blueprint v3.md` § Design ambiance par section (adapté réseau / TIP).
 abstract final class TipSectionTheme {
   TipSectionTheme._();
@@ -25,12 +27,12 @@ abstract final class TipSectionTheme {
     final id = _norm(sectionId);
     return switch (id) {
       'S01' => (
-          primary: const Color(0xFF3B82F6),
+          primary: EskoliaTokens.info,
           secondary: const Color(0xFF60A5FA),
           glow: const Color(0xFF2563EB),
         ),
       'S02' => (
-          primary: const Color(0xFF10B981),
+          primary: EskoliaTokens.success,
           secondary: const Color(0xFF34D399),
           glow: const Color(0xFF059669),
         ),
@@ -40,12 +42,12 @@ abstract final class TipSectionTheme {
           glow: const Color(0xFF7C3AED),
         ),
       'S04' => (
-          primary: const Color(0xFF06B6D4),
-          secondary: const Color(0xFF22D3EE),
+          primary: EskoliaTokens.cyan,
+          secondary: EskoliaTokens.cyan,
           glow: const Color(0xFF0891B2),
         ),
       'S05' => (
-          primary: const Color(0xFFF59E0B),
+          primary: EskoliaTokens.amber,
           secondary: const Color(0xFFFBBF24),
           glow: const Color(0xFFD97706),
         ),
@@ -65,7 +67,7 @@ abstract final class TipSectionTheme {
           glow: const Color(0xFF0D9488),
         ),
       'S09' => (
-          primary: const Color(0xFFEF4444),
+          primary: EskoliaTokens.error,
           secondary: const Color(0xFFF87171),
           glow: const Color(0xFFDC2626),
         ),
@@ -75,9 +77,9 @@ abstract final class TipSectionTheme {
           glow: const Color(0xFF7C3AED),
         ),
       _ => (
-          primary: const Color(0xFF6C63FF),
+          primary: EskoliaTokens.violet,
           secondary: const Color(0xFF43E97B),
-          glow: const Color(0xFF6C63FF),
+          glow: EskoliaTokens.violet,
         ),
     };
   }

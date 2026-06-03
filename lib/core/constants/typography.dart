@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'colors.dart';
+import 'eskolia_tokens.dart';
 
-/// Titres : Poppins Bold · Corps : Inter Regular · Accents / labels : Poppins SemiBold
+/// Titres : Poppins Bold · Corps : Inter Regular · Code : JetBrains Mono
 abstract final class EskoliaTypography {
   EskoliaTypography._();
 
@@ -14,13 +14,14 @@ abstract final class EskoliaTypography {
   static const double _bodySize = 16;
   static const double _captionSize = 12;
   static const double _labelSize = 14;
+  static const double _codeSize = 13;
 
   static TextStyle display([Color? color]) => GoogleFonts.poppins(
         fontSize: _displaySize,
         fontWeight: FontWeight.w700,
         height: 1.15,
         letterSpacing: -0.5,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
       );
 
   static TextStyle h1([Color? color]) => GoogleFonts.poppins(
@@ -28,35 +29,35 @@ abstract final class EskoliaTypography {
         fontWeight: FontWeight.w700,
         height: 1.2,
         letterSpacing: -0.25,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
       );
 
   static TextStyle h2([Color? color]) => GoogleFonts.poppins(
         fontSize: _h2Size,
         fontWeight: FontWeight.w700,
         height: 1.25,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
       );
 
   static TextStyle h3([Color? color]) => GoogleFonts.poppins(
         fontSize: _h3Size,
         fontWeight: FontWeight.w700,
         height: 1.3,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
       );
 
   static TextStyle body([Color? color]) => GoogleFonts.inter(
         fontSize: _bodySize,
         fontWeight: FontWeight.w400,
         height: 1.5,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
       );
 
   static TextStyle caption([Color? color]) => GoogleFonts.inter(
         fontSize: _captionSize,
         fontWeight: FontWeight.w400,
-        height: 1.35,
-        color: color ?? textSecondary,
+        height: 1.4,
+        color: color ?? EskoliaTokens.textSecondary,
       );
 
   static TextStyle label([Color? color]) => GoogleFonts.poppins(
@@ -64,7 +65,14 @@ abstract final class EskoliaTypography {
         fontWeight: FontWeight.w600,
         height: 1.2,
         letterSpacing: 0.2,
-        color: color ?? textPrimary,
+        color: color ?? EskoliaTokens.textPrimary,
+      );
+
+  static TextStyle code([Color? color]) => GoogleFonts.jetBrainsMono(
+        fontSize: _codeSize,
+        fontWeight: FontWeight.w400,
+        height: 1.6,
+        color: color ?? EskoliaTokens.cyan,
       );
 
   /// [TextTheme] Material aligné sur les styles Eskolia (dark).

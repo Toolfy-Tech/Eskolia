@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../data/repositories/user_repository.dart';
 import 'parcours_repository.dart';
 import 'tip_progress_repository.dart';
@@ -37,6 +39,8 @@ class ParcoursSectionBadgeRewards {
     );
     try {
       await _users.addBadge(uid, badgeId);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ParcoursSectionBadgeRewards.tryAwardSectionBadge] $e');
+    }
   }
 }

@@ -6,10 +6,7 @@ import '../../../core/services/asset_cache_service.dart';
 
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
 import '../../parcours/data/parcours_repository.dart';
-
-const Color _dlgSurface = Color(0xFF1E293B);
-const Color _dlgSlate = Color(0xFF94A3B8);
-const Color _dlgViolet = Color(0xFF6C63FF);
+import '../../../core/constants/eskolia_tokens.dart';
 
 /// Aperçu markdown du chapitre + lien vers le cours complet ([ChapterLessonScreen]).
 Future<void> showQuizLessonPreviewDialog(
@@ -35,14 +32,14 @@ Future<void> showQuizLessonPreviewDialog(
     context: context,
     builder: (ctx) {
       return AlertDialog(
-        backgroundColor: _dlgSurface.withValues(alpha: 0.98),
+        backgroundColor: EskoliaTokens.surface2.withValues(alpha: 0.98),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
         ),
         title: Row(
           children: [
-            Icon(Icons.menu_book_outlined, color: _dlgViolet, size: 22),
+            Icon(Icons.menu_book_outlined, color: EskoliaTokens.violet, size: 22),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
@@ -66,7 +63,7 @@ Future<void> showQuizLessonPreviewDialog(
                   padding: EdgeInsets.all(24),
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: _dlgViolet,
+                      color: EskoliaTokens.violet,
                       strokeWidth: 2,
                     ),
                   ),
@@ -93,7 +90,7 @@ Future<void> showQuizLessonPreviewDialog(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               'Fermer',
-              style: TextStyle(color: _dlgSlate.withValues(alpha: 0.9)),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9)),
             ),
           ),
           FilledButton.icon(
@@ -104,7 +101,7 @@ Future<void> showQuizLessonPreviewDialog(
             icon: const Icon(Icons.open_in_new_rounded, size: 18),
             label: const Text('Cours complet'),
             style: FilledButton.styleFrom(
-              backgroundColor: _dlgViolet,
+              backgroundColor: EskoliaTokens.violet,
               foregroundColor: Colors.white,
             ),
           ),

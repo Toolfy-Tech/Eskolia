@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -12,9 +13,6 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
-
-const Color _slate = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E1E38);
 
 /// Mapping trackId → chemin asset JSON du scénario (AD + PS).
 const Map<String, String> _kScenarioAssets = {
@@ -101,7 +99,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
           EskoliaShellBody(
             safeAreaTop: false,
             child: _loading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF6C63FF)))
+                ? const Center(child: CircularProgressIndicator(color: EskoliaTokens.violet))
                 : _errorMessage != null
                     ? _buildError()
                     : _buildContent(),
@@ -123,12 +121,12 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
             Text(
               _errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 15),
+              style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 15),
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () { setState(() { _loading = true; _errorMessage = null; }); _load(); },
-              style: FilledButton.styleFrom(backgroundColor: const Color(0xFF6C63FF)),
+              style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.violet),
               child: const Text('Réessayer'),
             ),
           ],
@@ -177,7 +175,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               _showMissionDetail(flatMissions[idx], idx);
             },
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
+              backgroundColor: EskoliaTokens.violet,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             icon: const Icon(Icons.play_arrow_rounded),
@@ -192,7 +190,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
         // ── Niveaux ──────────────────────────────────────────────
         const Text(
           'NIVEAUX',
-          style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+          style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
         ),
         const SizedBox(height: 12),
 
@@ -232,9 +230,9 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF6C63FF).withValues(alpha: 0.08),
+        color: EskoliaTokens.violet.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.35)),
+        border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,11 +269,11 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('$done / $total missions', style: TextStyle(color: _slate, fontSize: 12)),
+                Text('$done / $total missions', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                 Text(
                   done >= total ? 'Terminé ✓' : done == 0 ? 'Non commencé' : 'En cours',
                   style: TextStyle(
-                    color: done >= total ? const Color(0xFF43E97B) : _slate,
+                    color: done >= total ? EskoliaTokens.success : EskoliaTokens.textSecondary,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -288,7 +286,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               child: LinearProgressIndicator(
                 value: total > 0 ? done / total : 0,
                 backgroundColor: Colors.white.withValues(alpha: 0.10),
-                color: const Color(0xFF6C63FF),
+                color: EskoliaTokens.violet,
                 minHeight: 6,
               ),
             ),
@@ -305,11 +303,11 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     required int totalFlatMissions,
   }) {
     final missions = (level['missions'] as List<dynamic>?) ?? [];
-    final levelColor = _hexColor(level['color'] as String? ?? '#6C63FF');
+    final levelColor = _hexColor(level['color'] as String? ?? '#7C6FFF');
 
     return Container(
       decoration: BoxDecoration(
-        color: _surface,
+        color: EskoliaTokens.surface1,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
@@ -376,10 +374,10 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: isCompleted
-                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF43E97B), size: 18)
+                    ? const Icon(Icons.check_circle_rounded, color: EskoliaTokens.success, size: 18)
                     : isCurrent
                         ? Icon(Icons.radio_button_checked_rounded, color: accentColor, size: 18)
-                        : const Icon(Icons.lock_rounded, color: _slate, size: 16),
+                        : const Icon(Icons.lock_rounded, color: EskoliaTokens.textSecondary, size: 16),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -401,13 +399,13 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
                     if (minutes > 0)
                       Text(
                         '$minutes min',
-                        style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 11),
+                        style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 11),
                       ),
                   ],
                 ),
               ),
               if (tappable)
-                Icon(Icons.chevron_right_rounded, color: _slate.withValues(alpha: 0.5), size: 16),
+                Icon(Icons.chevron_right_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), size: 16),
             ],
           ),
         ),
@@ -449,10 +447,10 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
 
   Color _difficultyColor(String difficulty) {
     switch (difficulty.toLowerCase()) {
-      case 'debutant': return const Color(0xFF43E97B);
-      case 'intermediaire': return const Color(0xFFEF9F27);
-      case 'avance': return const Color(0xFFEF4444);
-      default: return _slate;
+      case 'debutant': return EskoliaTokens.success;
+      case 'intermediaire': return EskoliaTokens.amber;
+      case 'avance': return EskoliaTokens.error;
+      default: return EskoliaTokens.textSecondary;
     }
   }
 
@@ -460,7 +458,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     try {
       return Color(int.parse(hex.replaceFirst('#', '0xFF')));
     } catch (_) {
-      return const Color(0xFF6C63FF);
+      return EskoliaTokens.violet;
     }
   }
 }
@@ -485,8 +483,8 @@ class _MissionDetailSheet extends StatefulWidget {
 class _MissionDetailSheetState extends State<_MissionDetailSheet> {
   final Map<String, bool> _expanded = {
     'context':  false,
-    'steps':    false,
-    'expected': false,
+    'steps':    true,
+    'expected': true,
     'help':     false,
     'commands': false,
   };
@@ -549,7 +547,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
       builder: (ctx, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF151B2E),
+            color: EskoliaTokens.surface1,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -576,17 +574,17 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                         children: [
                           Text(
                             'Mission ${widget.flatIndex + 1}',
-                            style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600),
+                            style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
                           Text(title, style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
                           if (minutes > 0)
-                            Text('⏱ $minutes min', style: const TextStyle(color: _slate, fontSize: 12)),
+                            Text('⏱ $minutes min', style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: _slate),
+                      icon: const Icon(Icons.close_rounded, color: EskoliaTokens.textSecondary),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -629,12 +627,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                                   height: 22,
                                   margin: const EdgeInsets.only(top: 1, right: 10),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                    color: EskoliaTokens.violet.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                                    border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.5)),
                                   ),
                                   alignment: Alignment.center,
-                                  child: Text('${e.key + 1}', style: const TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.bold)),
+                                  child: Text('${e.key + 1}', style: const TextStyle(color: EskoliaTokens.violet, fontSize: 11, fontWeight: FontWeight.bold)),
                                 ),
                                 Expanded(child: Text(e.value, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
                               ],
@@ -655,7 +653,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('• ', style: TextStyle(color: Color(0xFF43E97B), fontWeight: FontWeight.bold)),
+                                const Text('• ', style: TextStyle(color: EskoliaTokens.success, fontWeight: FontWeight.bold)),
                                 Expanded(child: Text(e, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
                               ],
                             ),
@@ -688,14 +686,14 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFF9800).withValues(alpha: 0.08),
+                            color: EskoliaTokens.amber.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.3)),
+                            border: Border.all(color: EskoliaTokens.amber.withValues(alpha: 0.3)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.w600)),
+                              Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: EskoliaTokens.amber, fontSize: 13, fontWeight: FontWeight.w600)),
                               if ((helpMap['where'] as String?)?.isNotEmpty == true) ...[
                                 const SizedBox(height: 6),
                                 Text(helpMap['where'] as String, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.4)),
@@ -713,9 +711,9 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                     FilledButton.icon(
                       onPressed: (_validation == null || _validationPassed) ? widget.onComplete : null,
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF43E97B),
+                        backgroundColor: EskoliaTokens.success,
                         foregroundColor: Colors.black,
-                        disabledBackgroundColor: const Color(0xFF43E97B).withValues(alpha: 0.25),
+                        disabledBackgroundColor: EskoliaTokens.success.withValues(alpha: 0.25),
                         disabledForegroundColor: Colors.white30,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -740,9 +738,9 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1117),
+        color: EskoliaTokens.bgBase,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF22D3EE).withValues(alpha: 0.25)),
+        border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -750,7 +748,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF22D3EE).withValues(alpha: 0.08),
+              color: EskoliaTokens.cyan.withValues(alpha: 0.08),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
             ),
             child: Row(
@@ -759,12 +757,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 const SizedBox(width: 6),
                 Text(
                   device.isNotEmpty ? device : label,
-                  style: const TextStyle(color: Color(0xFF22D3EE), fontSize: 11, fontWeight: FontWeight.w600),
+                  style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w600),
                 ),
                 if (device.isNotEmpty && label.isNotEmpty) ...[
-                  const Text(' — ', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                  const Text(' — ', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
                   Expanded(
-                    child: Text(label, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                    child: Text(label, style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
                   ),
                 ],
               ],
@@ -779,7 +777,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 child: Text(
                   cmd,
                   style: const TextStyle(
-                    color: Color(0xFF4ADE80),
+                    color: EskoliaTokens.success,
                     fontFamily: 'monospace',
                     fontSize: 13,
                     height: 1.6,
@@ -804,17 +802,17 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: _validationPassed
-            ? const Color(0xFF43E97B).withValues(alpha: 0.08)
+            ? EskoliaTokens.success.withValues(alpha: 0.08)
             : _validationWrong
-                ? const Color(0xFFEF4444).withValues(alpha: 0.08)
-                : const Color(0xFF6C63FF).withValues(alpha: 0.08),
+                ? EskoliaTokens.error.withValues(alpha: 0.08)
+                : EskoliaTokens.violet.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _validationPassed
-              ? const Color(0xFF43E97B).withValues(alpha: 0.4)
+              ? EskoliaTokens.success.withValues(alpha: 0.4)
               : _validationWrong
-                  ? const Color(0xFFEF4444).withValues(alpha: 0.4)
-                  : const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                  ? EskoliaTokens.error.withValues(alpha: 0.4)
+                  : EskoliaTokens.violet.withValues(alpha: 0.4),
         ),
       ),
       child: Column(
@@ -859,7 +857,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFF6C63FF)),
+                  borderSide: const BorderSide(color: EskoliaTokens.violet),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               ),
@@ -869,14 +867,14 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
             const SizedBox(height: 8),
             Text(
               '\u{1F4A1} $hint',
-              style: TextStyle(color: const Color(0xFFFF9800).withValues(alpha: 0.9), fontSize: 12, height: 1.4),
+              style: TextStyle(color: EskoliaTokens.amber.withValues(alpha: 0.9), fontSize: 12, height: 1.4),
             ),
           ],
           if (_validationPassed) ...[
             const SizedBox(height: 8),
             const Text(
               'Bonne réponse ! Tu peux valider la mission.',
-              style: TextStyle(color: Color(0xFF43E97B), fontSize: 12, fontWeight: FontWeight.w600),
+              style: TextStyle(color: EskoliaTokens.success, fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ] else ...[
             const SizedBox(height: 12),
@@ -885,12 +883,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
               child: ElevatedButton(
                 onPressed: _checkAnswer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
-                  foregroundColor: const Color(0xFF6C63FF),
+                  backgroundColor: EskoliaTokens.violet.withValues(alpha: 0.2),
+                  foregroundColor: EskoliaTokens.violet,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                    side: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.5)),
                   ),
                 ),
                 child: const Text('Valider ma réponse', style: TextStyle(fontWeight: FontWeight.w600)),
@@ -914,12 +912,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF6C63FF).withValues(alpha: 0.15)
+              ? EskoliaTokens.violet.withValues(alpha: 0.15)
               : Colors.white.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF6C63FF).withValues(alpha: 0.6)
+                ? EskoliaTokens.violet.withValues(alpha: 0.6)
                 : Colors.white.withValues(alpha: 0.08),
           ),
         ),
@@ -931,10 +929,10 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF6C63FF) : Colors.white30,
+                  color: isSelected ? EskoliaTokens.violet : Colors.white30,
                   width: 2,
                 ),
-                color: isSelected ? const Color(0xFF6C63FF) : Colors.transparent,
+                color: isSelected ? EskoliaTokens.violet : Colors.transparent,
               ),
               child: isSelected
                   ? const Icon(Icons.check, size: 11, color: Colors.white)
@@ -965,7 +963,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 Expanded(child: _sectionTitle(title)),
                 Icon(
                   isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                  color: const Color(0xFF94A3B8),
+                  color: EskoliaTokens.textSecondary,
                   size: 20,
                 ),
               ],

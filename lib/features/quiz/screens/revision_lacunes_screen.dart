@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -11,7 +12,6 @@ import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 
-const Color _slate = Color(0xFF94A3B8);
 
 /// Solo : révision lacunes — uniquement un quiz Maîtrise (jusqu’à 10 questions,
 /// ou moins s’il y a moins d’erreurs en attente). Pas de flashcards.
@@ -89,7 +89,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
                   'jusqu’à ce que tu répondes juste ici — en quiz Maîtrise, '
                   'jusqu’à 10 questions par session (moins si tu as moins de lacunes).',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 13,
                     height: 1.45,
                   ),
@@ -98,7 +98,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
                 Text(
                   'Banque Maîtrise',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -140,7 +140,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: Color(0xFF00BCD4)),
+                  CircularProgressIndicator(color: EskoliaTokens.cyan),
                   SizedBox(height: 16),
                   Text(
                     'Préparation…',

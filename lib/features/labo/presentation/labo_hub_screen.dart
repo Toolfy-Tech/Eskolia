@@ -11,11 +11,12 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../admin/data/staff_capability.dart';
 import '../../auth/data/user_model.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _cyan = EskoliaTokens.cyan;
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Hub Le Labo — blueprint v3.
 class LaboHubScreen extends StatelessWidget {
@@ -231,7 +232,7 @@ class LaboHubScreen extends StatelessWidget {
                       FilledButton.icon(
                         onPressed: () => context.push('/labo/create-tip'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF6584),
+                          backgroundColor: EskoliaTokens.pink,
                           foregroundColor: Colors.white,
                         ),
                         icon: const Icon(Icons.lightbulb_outline_rounded, size: 22),

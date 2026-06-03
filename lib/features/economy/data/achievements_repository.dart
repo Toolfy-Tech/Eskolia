@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'achievement_catalog.dart';
@@ -21,7 +22,8 @@ class AchievementsRepository {
       final list = map[uid];
       if (list is! List) return {};
       return list.map((e) => e.toString()).toSet();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[AchievementsRepository._readSet] $e');
       return {};
     }
   }
@@ -34,7 +36,9 @@ class AchievementsRepository {
     if (prev != null && prev.isNotEmpty) {
       try {
         map = Map<String, dynamic>.from(jsonDecode(prev) as Map);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[AchievementsRepository._writeSet] $e');
+      }
     }
     map[uid] = ids.toList();
     await p.setString(_prefsKey, jsonEncode(map));

@@ -3,6 +3,7 @@ import 'dart:math' show Random, min;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -14,9 +15,6 @@ import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../quiz/data/quiz_repository.dart';
 import '../../quiz/presentation/revision_pool_launch_mode.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _green = Color(0xFF43E97B);
-const Color _teal = Color(0xFF1DE9B6);
 
 /// Hub : pool 📌 épinglé + paquet SRS, chacun en quiz QCM ou flashcards.
 class SoloRevisionMenuScreen extends StatefulWidget {
@@ -127,7 +125,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                   'Choisis d’abord ce que tu veux réviser (épingles ou paquet SRS), '
                   'puis le mode : quiz QCM ou flashcards.',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 13,
                     height: 1.4,
                   ),
@@ -139,8 +137,8 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 12),
                 GradientBorderCard(
-                  gradientColors: const [_green, Color(0xFF6C63FF)],
-                  glowColor: _green,
+                  gradientColors: const [EskoliaTokens.success, EskoliaTokens.violetSoft],
+                  glowColor: EskoliaTokens.success,
                   padding: const EdgeInsets.all(18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -180,7 +178,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                               icon: const Icon(Icons.quiz_outlined, size: 20),
                               label: const Text('Quiz'),
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF6C63FF),
+                                backgroundColor: EskoliaTokens.violetSoft,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
@@ -209,8 +207,8 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 16),
                 GradientBorderCard(
-                  gradientColors: const [_teal, Color(0xFF6C63FF)],
-                  glowColor: _teal,
+                  gradientColors: const [EskoliaTokens.cyan, EskoliaTokens.violetSoft],
+                  glowColor: EskoliaTokens.cyan,
                   padding: const EdgeInsets.all(18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -261,7 +259,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                                 busy ? 'Préparation…' : 'Quiz',
                               ),
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF6C63FF),
+                                backgroundColor: EskoliaTokens.violetSoft,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),

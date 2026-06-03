@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
@@ -16,11 +17,6 @@ import '../../lobby/data/models/custom_quiz_data.dart';
 import '../data/models/teacher_quiz.dart';
 import '../data/teacher_quiz_repository.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _green = Color(0xFF43E97B);
 
 class AdminTeacherQuizzesScreen extends StatefulWidget {
   const AdminTeacherQuizzesScreen({super.key});
@@ -83,7 +79,8 @@ class _AdminTeacherQuizzesScreenState
     } on FormatException catch (e) {
       if (mounted) showEskoliaSnackBar(context, 'Format invalide : ${e.message}');
     } catch (e) {
-      if (mounted) showEskoliaSnackBar(context, 'Erreur lors de l\'import.');
+      debugPrint('[AdminTeacherQuizzesScreen._importJson] $e');
+      if (mounted) showEskoliaSnackBar(context, 'Erreur import : $e');
     } finally {
       if (mounted) setState(() => _importing = false);
     }
@@ -139,7 +136,7 @@ class _AdminTeacherQuizzesScreenState
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _importing ? null : _importJson,
-          backgroundColor: _violet,
+          backgroundColor: EskoliaTokens.violetSoft,
           icon: _importing
               ? const SizedBox(
                   width: 18,
@@ -175,7 +172,7 @@ class _AdminTeacherQuizzesScreenState
               Text(
                 'Importez un fichier .json (format template Eskolia)\npour créer votre premier quiz.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _slate, fontSize: 13, height: 1.4),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13, height: 1.4),
               ),
             ],
           ),
@@ -221,13 +218,13 @@ class _QuizCard extends StatelessWidget {
                       quiz.description,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: _slate, fontSize: 12),
+                      style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                     ),
                   ],
                   const SizedBox(height: 4),
                   Text(
                     '${quiz.questions.length} question${quiz.questions.length > 1 ? 's' : ''} · par ${quiz.authorName}',
-                    style: TextStyle(color: _slate, fontSize: 11),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
                   ),
                 ],
               ),
@@ -239,13 +236,13 @@ class _QuizCard extends StatelessWidget {
                 Switch(
                   value: quiz.isPublished,
                   onChanged: onTogglePublish,
-                  activeColor: _green,
+                  activeColor: EskoliaTokens.success,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 Text(
                   quiz.isPublished ? 'Publié' : 'Brouillon',
                   style: TextStyle(
-                    color: quiz.isPublished ? _green : _slate,
+                    color: quiz.isPublished ? EskoliaTokens.success : EskoliaTokens.textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),

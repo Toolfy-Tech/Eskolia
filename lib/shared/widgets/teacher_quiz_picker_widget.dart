@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
 import '../../features/admin/data/models/teacher_quiz.dart';
 import '../../features/admin/data/teacher_quiz_repository.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _violet = EskoliaTokens.violet;
+const Color _cyan = EskoliaTokens.cyan;
 
 /// Sélecteur de quiz du prof (teacher_quizzes publiés depuis Firestore).
 /// Retourne un chemin sentinel 'teacher://{quizId}' via [onSelected].

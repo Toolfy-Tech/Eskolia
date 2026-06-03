@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'core/constants/eskolia_tokens.dart';
 import 'core/router/app_router.dart';
 import 'core/services/firebase_service.dart';
 import 'features/auth/data/auth_repository.dart';
@@ -61,12 +62,12 @@ Future<void> main() async {
 
   ErrorWidget.builder = (FlutterErrorDetails details) {
     return Material(
-      color: const Color(0xFF0F0F1A),
+      color: EskoliaTokens.bgBase,
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Card(
-            color: const Color(0xFFB71C1C),
+            color: EskoliaTokens.error,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),

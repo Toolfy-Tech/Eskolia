@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../../../core/theme/eskolia_layout.dart';
 import '../../../../core/theme/eskolia_visual.dart';
 import '../../../../shared/widgets/eskolia_ambient_background.dart';
@@ -15,17 +16,10 @@ import '../data/tp_binaire_ai_generator.dart';
 import '../data/tp_binaire_data.dart';
 import 'simple_calculator_sheet.dart';
 
-const Color _slate  = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan   = Color(0xFF00BCD4);
-const Color _green  = Color(0xFF4CAF50);
-const Color _amber  = Color(0xFFFFC107);
-const Color _red    = Color(0xFFE53935);
-
 Color _diffColor(TpDifficulty d) => switch (d) {
-      TpDifficulty.facile    => _green,
-      TpDifficulty.moyen     => _amber,
-      TpDifficulty.difficile => _red,
+      TpDifficulty.facile    => EskoliaTokens.success,
+      TpDifficulty.moyen     => EskoliaTokens.amber,
+      TpDifficulty.difficile => EskoliaTokens.error,
     };
 
 class TpBinaireHubScreen extends StatefulWidget {
@@ -75,12 +69,12 @@ class _TpBinaireHubScreenState extends State<TpBinaireHubScreen> {
               actions: [
                 if (aiConnected)
                   IconButton(
-                    icon: const Icon(Icons.auto_awesome_rounded, color: _violet),
+                    icon: const Icon(Icons.auto_awesome_rounded, color: EskoliaTokens.violet),
                     tooltip: 'Générer un TP avec l\'IA',
                     onPressed: () => _openAiSheet(aiState!),
                   ),
                 IconButton(
-                  icon: const Icon(Icons.calculate_rounded, color: _cyan),
+                  icon: const Icon(Icons.calculate_rounded, color: EskoliaTokens.cyan),
                   tooltip: 'Calculatrice',
                   onPressed: _openCalculator,
                 ),
@@ -88,13 +82,13 @@ class _TpBinaireHubScreenState extends State<TpBinaireHubScreen> {
               ],
               bottom: TabBar(
                 tabs: [
-                  _diffTab('Facile',    _green),
-                  _diffTab('Moyen',     _amber),
-                  _diffTab('Difficile', _red),
+                  _diffTab('Facile',    EskoliaTokens.success),
+                  _diffTab('Moyen',     EskoliaTokens.amber),
+                  _diffTab('Difficile', EskoliaTokens.error),
                 ],
                 labelColor: Colors.white,
-                unselectedLabelColor: _slate,
-                indicatorColor: _violet,
+                unselectedLabelColor: EskoliaTokens.textSecondary,
+                indicatorColor: EskoliaTokens.violet,
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.white.withValues(alpha: 0.06),
                 labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
@@ -170,7 +164,7 @@ class _TpList extends StatelessWidget {
                 child: Text(
                   _diffDescription(difficulty),
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.9),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                     fontSize: 12,
                     height: 1.5,
                   ),
@@ -237,7 +231,7 @@ class _AiGenerateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EskoliaCardContent(
-      accentBorderColor: _violet,
+      accentBorderColor: EskoliaTokens.violet,
       padding: const EdgeInsets.all(14),
       onTap: () => showModalBottomSheet<void>(
         context: context,
@@ -254,11 +248,11 @@ class _AiGenerateCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.15),
+              color: EskoliaTokens.violet.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Center(
-              child: Icon(Icons.auto_awesome_rounded, color: _violet, size: 20),
+              child: Icon(Icons.auto_awesome_rounded, color: EskoliaTokens.violet, size: 20),
             ),
           ),
           const SizedBox(width: 14),
@@ -277,7 +271,7 @@ class _AiGenerateCard extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   'Exercices uniques generés en temps réel',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 12),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 12),
                 ),
               ],
             ),
@@ -378,11 +372,11 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: _violet.withValues(alpha: 0.15),
+                    color: EskoliaTokens.violet.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Center(
-                    child: Icon(Icons.auto_awesome_rounded, color: _violet, size: 20),
+                    child: Icon(Icons.auto_awesome_rounded, color: EskoliaTokens.violet, size: 20),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -401,7 +395,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                       SizedBox(height: 2),
                       Text(
                         'Exercices uniques, corriges automatiquement',
-                        style: TextStyle(color: _slate, fontSize: 12),
+                        style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                       ),
                     ],
                   ),
@@ -422,7 +416,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
             const Text(
               'TYPE D\'EXERCICE',
               style: TextStyle(
-                color: _slate,
+                color: EskoliaTokens.textSecondary,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.8,
@@ -431,7 +425,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
             const SizedBox(height: 8),
             DropdownButtonFormField<TpExerciseType>(
               value: _exerciseType,
-              dropdownColor: const Color(0xFF1E1E38),
+              dropdownColor: EskoliaTokens.surface2,
               style: const TextStyle(color: Colors.white, fontSize: 13),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -441,7 +435,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: _violet.withValues(alpha: 0.6)),
+                  borderSide: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.6)),
                 ),
                 filled: true,
                 fillColor: Colors.white.withValues(alpha: 0.04),
@@ -453,7 +447,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                     t.label,
                     style: TextStyle(
                       color: t == TpExerciseType.complet
-                          ? _violet
+                          ? EskoliaTokens.violet
                           : Colors.white,
                       fontWeight: t == TpExerciseType.complet
                           ? FontWeight.w600
@@ -472,18 +466,18 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: _violet.withValues(alpha: 0.07),
+                  color: EskoliaTokens.violet.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: _violet.withValues(alpha: 0.2)),
+                  border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.my_location_rounded, color: _violet, size: 14),
+                    const Icon(Icons.my_location_rounded, color: EskoliaTokens.violet, size: 14),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Mode entraine ment cible — $_questionCount question(s) en "${_exerciseType.label}" uniquement.',
-                        style: TextStyle(color: _violet.withValues(alpha: 0.9), fontSize: 11, height: 1.4),
+                        style: TextStyle(color: EskoliaTokens.violet.withValues(alpha: 0.9), fontSize: 11, height: 1.4),
                       ),
                     ),
                   ],
@@ -496,19 +490,19 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _red.withValues(alpha: 0.08),
+                  color: EskoliaTokens.error.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: _red.withValues(alpha: 0.2)),
+                  border: Border.all(color: EskoliaTokens.error.withValues(alpha: 0.2)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.error_outline_rounded, color: _red, size: 16),
+                    const Icon(Icons.error_outline_rounded, color: EskoliaTokens.error, size: 16),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _error!,
-                        style: const TextStyle(color: _red, fontSize: 12, height: 1.4),
+                        style: const TextStyle(color: EskoliaTokens.error, fontSize: 12, height: 1.4),
                       ),
                     ),
                   ],
@@ -523,9 +517,9 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                   ? Container(
                       height: 48,
                       decoration: BoxDecoration(
-                        color: _violet.withValues(alpha: 0.15),
+                        color: EskoliaTokens.violet.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: _violet.withValues(alpha: 0.3)),
+                        border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.3)),
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -533,12 +527,12 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                           SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: _violet),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: EskoliaTokens.violet),
                           ),
                           SizedBox(width: 10),
                           Text(
                             'Generation en cours...',
-                            style: TextStyle(color: _violet, fontSize: 14, fontWeight: FontWeight.w600),
+                            style: TextStyle(color: EskoliaTokens.violet, fontSize: 14, fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -547,7 +541,7 @@ class _AiGenerateSheetState extends State<_AiGenerateSheet> {
                       label: 'Generer le TP',
                       icon: Icons.auto_awesome_rounded,
                       variant: EskoliaButtonVariant.primary,
-                      color: _violet,
+                      color: EskoliaTokens.violet,
                       expand: true,
                       onPressed: _generate,
                     ),
@@ -618,7 +612,7 @@ class _TpCard extends StatelessWidget {
                 Text(
                   '$totalQ questions · 6 sections',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.7),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                     fontSize: 12,
                   ),
                 ),
@@ -626,12 +620,12 @@ class _TpCard extends StatelessWidget {
                 Wrap(
                   spacing: 6,
                   children: [
-                    _sectionPill('Dec→Bin',    _violet),
-                    _sectionPill('Bin→Dec',    _cyan),
-                    _sectionPill('Classes IP', _green),
-                    _sectionPill('Masques',    _amber),
-                    _sectionPill('CIDR',       _red),
-                    _sectionPill('Subnetting', _slate),
+                    _sectionPill('Dec→Bin',    EskoliaTokens.violet),
+                    _sectionPill('Bin→Dec',    EskoliaTokens.cyan),
+                    _sectionPill('Classes IP', EskoliaTokens.success),
+                    _sectionPill('Masques',    EskoliaTokens.amber),
+                    _sectionPill('CIDR',       EskoliaTokens.error),
+                    _sectionPill('Subnetting', EskoliaTokens.textSecondary),
                   ],
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/app_theme_extensions.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -10,12 +11,6 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = Color(0xFF3B82F6);
-const Color _violet = Color(0xFF7C3AED);
-const Color _slate = Color(0xFF94A3B8);
-const Color _fieldBg = Color(0xFF1E293B);
-const Color _fieldBorder = Color(0xFF334155);
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key, this.authRepository});
@@ -111,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           constraints: const BoxConstraints(maxWidth: 440),
                           child: GradientBorderCard(
                             gradientColors: EskoliaVisual.borderPrimary,
-                            glowColor: _violet,
+                            glowColor: EskoliaTokens.violet,
                             padding: const EdgeInsets.all(32),
                             child: Form(
                               key: _formKey,
@@ -134,7 +129,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     'Indique ton pseudo ou ton email : '
                                     'nous enverrons un lien sur l’adresse du compte.',
                                     style: TextStyle(
-                                      color: _slate.withValues(alpha: 0.95),
+                                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                                       fontSize: 14,
                                       height: 1.35,
                                     ),
@@ -211,26 +206,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     required IconData prefixIcon,
   }) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
-    final focusColor = glass?.borderColor ?? _blue;
+    final focusColor = glass?.borderColor ?? EskoliaTokens.info;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: _fieldBorder),
+      borderSide: const BorderSide(color: EskoliaTokens.textDisabled),
     );
     return InputDecoration(
       filled: true,
-      fillColor: _fieldBg,
+      fillColor: EskoliaTokens.surface2,
       labelText: label,
-      labelStyle: const TextStyle(color: _slate),
-      prefixIcon: Icon(prefixIcon, color: _slate),
+      labelStyle: const TextStyle(color: EskoliaTokens.textSecondary),
+      prefixIcon: Icon(prefixIcon, color: EskoliaTokens.textSecondary),
       enabledBorder: border,
       focusedBorder: border.copyWith(
         borderSide: BorderSide(color: focusColor, width: 1.5),
       ),
       errorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444)),
+        borderSide: const BorderSide(color: EskoliaTokens.error),
       ),
       focusedErrorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+        borderSide: const BorderSide(color: EskoliaTokens.error, width: 1.5),
       ),
     );
   }
@@ -262,7 +257,7 @@ class _LogoBlock extends StatelessWidget {
           child: ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => const LinearGradient(
-              colors: [_blue, _violet],
+              colors: [EskoliaTokens.info, EskoliaTokens.violet],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ).createShader(bounds),
@@ -292,9 +287,9 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF7F1D1D).withValues(alpha: 0.3),
+        color: EskoliaTokens.error.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEF4444)),
+        border: Border.all(color: EskoliaTokens.error),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +297,7 @@ class _ErrorBanner extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             size: 18,
-            color: const Color(0xFFFCA5A5).withValues(alpha: 0.9),
+            color: EskoliaTokens.error.withValues(alpha: 0.9),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -310,7 +305,7 @@ class _ErrorBanner extends StatelessWidget {
               message,
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFFFCA5A5),
+                color: EskoliaTokens.textPrimary,
               ),
             ),
           ),

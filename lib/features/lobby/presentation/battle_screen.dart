@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
@@ -17,12 +18,12 @@ import '../../quiz/services/revision_pool_repository.dart';
 import '../data/lobby_repository.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _red = Color(0xFFE53935);
-const Color _slate = Color(0xFF94A3B8);
-const Color _orange = Color(0xFFFF9800);
-const Color _green = Color(0xFF4CAF50);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violet;
+const Color _red = EskoliaTokens.error;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _orange = EskoliaTokens.amber;
+const Color _green = EskoliaTokens.success;
 const Color _surface = Colors.white10;
 
 class BattleScreen extends StatefulWidget {
@@ -1050,11 +1051,11 @@ class _BattleScreenState extends State<BattleScreen> {
           final leave = await showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-              backgroundColor: const Color(0xFF151B2E),
+              backgroundColor: EskoliaTokens.surface1,
               title: const Text('Quitter la battle ?', style: TextStyle(color: Colors.white)),
               content: const Text(
                 'Tu vas abandonner la partie en cours. Le host pourra continuer sans toi.',
-                style: TextStyle(color: Color(0xFF94A3B8)),
+                style: TextStyle(color: EskoliaTokens.textSecondary),
               ),
               actions: [
                 TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuler')),
@@ -1130,9 +1131,9 @@ class _BattleScreenState extends State<BattleScreen> {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: i == 0 ? const Color(0xFFFFD700).withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.04),
+                    color: i == 0 ? EskoliaTokens.gold.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.04),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: i == 0 ? const Color(0xFFFFD700).withValues(alpha: 0.35) : Colors.white.withValues(alpha: 0.08)),
+                    border: Border.all(color: i == 0 ? EskoliaTokens.gold.withValues(alpha: 0.35) : Colors.white.withValues(alpha: 0.08)),
                   ),
                   child: Row(
                     children: [

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 
+import 'package:flutter/foundation.dart';
+
 enum EskoliaFolder {
   quiz('Quiz'),
   flashcards('Flashcards'),
@@ -83,7 +85,9 @@ class EskoliaFolderService {
           );
           return;
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[EskoliaFolderService.saveFile] $e');
+      }
     }
     _blobDownload(filename, content, mimeType);
   }
@@ -122,7 +126,9 @@ class EskoliaFolderService {
       await js_util.promiseToFuture<void>(
         js.context['EskoliaFS'].callMethod('forgetFolder', []),
       );
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[EskoliaFolderService.forgetFolder] $e');
+    }
   }
 
   void _blobDownload(String filename, String content, String mimeType) {

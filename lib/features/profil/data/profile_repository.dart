@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../auth/data/user_model.dart';
 import '../../../data/repositories/user_repository.dart';
 
@@ -78,7 +80,9 @@ class ProfileRepository {
     try {
       final u = await _userRepo.getUserById(uid);
       if (u != null) return ProfileSnapshot.fromUser(u);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ProfileRepository.getProfile] $e');
+    }
     return ProfileSnapshot.mock();
   }
 }

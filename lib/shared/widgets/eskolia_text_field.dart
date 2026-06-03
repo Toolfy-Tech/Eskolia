@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/colors.dart';
+import '../../core/constants/eskolia_tokens.dart';
 
 /// Champ texte avec effet verre (blur + calque) aligné sur le thème.
 class EskoliaTextField extends StatelessWidget {
@@ -66,7 +66,7 @@ class EskoliaTextField extends StatelessWidget {
           enabled: enabled,
           autocorrect: autocorrect,
           style: theme.textTheme.bodyLarge,
-          cursorColor: primary,
+          cursorColor: EskoliaTokens.violet,
           decoration: InputDecoration(
             hintText: hintText,
             labelText: labelText,

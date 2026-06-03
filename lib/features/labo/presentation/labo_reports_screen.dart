@@ -7,10 +7,11 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../data/question_report_entry.dart';
 import '../data/question_report_repository.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 String _statusLabel(String s) {
   switch (s) {
@@ -180,7 +181,7 @@ class _ReportTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: EskoliaTokens.surface2,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

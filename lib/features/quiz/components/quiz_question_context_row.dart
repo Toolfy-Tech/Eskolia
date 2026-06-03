@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../models/quiz_models.dart';
 
@@ -20,11 +21,11 @@ String quizDifficultyLabelFr(String difficultyBucket) {
 Color _difficultyAccent(String bucket) {
   switch (bucket) {
     case 'facile':
-      return const Color(0xFF66BB6A);
+      return EskoliaTokens.success;
     case 'difficile':
-      return const Color(0xFFE57373);
+      return EskoliaTokens.error;
     case 'moyen':
-      return const Color(0xFFFFB74D);
+      return EskoliaTokens.amber;
     default:
       return EskoliaVisual.neonCyanSoft;
   }
@@ -120,17 +121,17 @@ class QuizQuestionContextRow extends StatelessWidget {
     switch (categoryGroup) {
       case QuestionCategoryGroup.officialParcours:
         label = 'OFFICIEL';
-        color = const Color(0xFF6C63FF); // Violet Eskolia
+        color = EskoliaTokens.violetSoft;
         icon = Icons.verified_rounded;
         break;
       case QuestionCategoryGroup.themes:
         label = 'THÈME';
-        color = const Color(0xFF00BCD4); // Cyan
+        color = EskoliaTokens.cyan;
         icon = Icons.category_rounded;
         break;
       case QuestionCategoryGroup.labo:
         label = 'LABO';
-        color = const Color(0xFFFF9800); // Orange
+        color = EskoliaTokens.orange;
         icon = Icons.science_rounded;
         break;
     }

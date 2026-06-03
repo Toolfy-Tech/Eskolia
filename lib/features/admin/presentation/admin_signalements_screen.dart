@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -7,11 +8,6 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../labo/data/question_report_entry.dart';
 import '../data/admin_signalements_repository.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _red = Color(0xFFE53935);
 
 String _shortUid(String uid) {
   if (uid.isEmpty) return '—';
@@ -60,7 +56,7 @@ class AdminSignalementsScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(24),
                         child: Text(
                           '${snap.error}',
-                          style: const TextStyle(color: _slate),
+                          style: const TextStyle(color: EskoliaTokens.textSecondary),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -68,7 +64,7 @@ class AdminSignalementsScreen extends StatelessWidget {
                   }
                   if (!snap.hasData) {
                     return const Center(
-                      child: CircularProgressIndicator(color: _violet),
+                      child: CircularProgressIndicator(color: EskoliaTokens.violetSoft),
                     );
                   }
                   final list = snap.data!;
@@ -76,7 +72,7 @@ class AdminSignalementsScreen extends StatelessWidget {
                     return Center(
                       child: Text(
                         'Aucun signalement.',
-                        style: TextStyle(color: _slate.withValues(alpha: 0.9)),
+                        style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9)),
                       ),
                     );
                   }
@@ -121,19 +117,19 @@ class _AdminReportTile extends StatelessWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text('Supprimer définitivement ?',
             style: TextStyle(color: Colors.white)),
         content: const Text('Cette action est irréversible.',
-            style: TextStyle(color: _slate)),
+            style: TextStyle(color: EskoliaTokens.textSecondary)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
               child: const Text('Annuler')),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(backgroundColor: _red),
+            style: FilledButton.styleFrom(backgroundColor: EskoliaTokens.error),
             child: const Text('Supprimer'),
           ),
         ],
@@ -192,7 +188,7 @@ class _AdminReportTile extends StatelessWidget {
                     Text(
                       _statusFr(entry.status),
                       style: TextStyle(
-                        color: _slate.withValues(alpha: 0.85),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                         fontSize: 11,
                       ),
                     ),
@@ -201,7 +197,7 @@ class _AdminReportTile extends StatelessWidget {
               ),
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert, color: Colors.white54),
-                color: const Color(0xFF1A1F2E),
+                color: EskoliaTokens.surface1,
                 onSelected: (st) async {
                   try {
                     await onSetStatus(st);
@@ -233,7 +229,7 @@ class _AdminReportTile extends StatelessWidget {
             Text(
               '« ${entry.questionPreview!} »',
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.95),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
                 height: 1.3,
@@ -253,13 +249,13 @@ class _AdminReportTile extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             '$dateStr · user ${_shortUid(entry.reporterId)}',
-            style: TextStyle(color: _slate.withValues(alpha: 0.5), fontSize: 10),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), fontSize: 10),
           ),
           Text(
             entry.assetPath.isEmpty ? '' : entry.assetPath,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: _slate.withValues(alpha: 0.45), fontSize: 10),
+            style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.45), fontSize: 10),
           ),
           if (entry.status == 'rejected' && onDelete != null) ...[
             const SizedBox(height: 10),
@@ -268,9 +264,9 @@ class _AdminReportTile extends StatelessWidget {
               child: TextButton.icon(
                 onPressed: () => _confirmAndDelete(context),
                 icon: const Icon(Icons.delete_forever_rounded,
-                    size: 16, color: _red),
+                    size: 16, color: EskoliaTokens.error),
                 label: const Text('Supprimer définitivement',
-                    style: TextStyle(color: _red, fontSize: 12)),
+                    style: TextStyle(color: EskoliaTokens.error, fontSize: 12)),
                 style: TextButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

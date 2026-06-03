@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../labo/data/labo_community_constants.dart';
@@ -98,7 +100,8 @@ class RevisionPoolRepository {
         return a.lastReviewedAt!.compareTo(b.lastReviewedAt!);
       });
       return out;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[RevisionPoolRepository.readEntries] $e');
       return [];
     }
   }
@@ -157,7 +160,9 @@ class RevisionPoolRepository {
         final session = await repo.loadSession(e.assetPath);
         final q = session.questions.firstWhere((q) => q.id == e.questionId, orElse: () => session.questions.first);
         out.add(q);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[RevisionPoolRepository.resolveQuestions] $e');
+      }
     }
     return out;
   }

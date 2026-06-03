@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../../../core/theme/eskolia_layout.dart';
 import '../../../../core/theme/eskolia_visual.dart';
 import '../../../../shared/widgets/eskolia_ambient_background.dart';
@@ -9,17 +10,10 @@ import '../../../../shared/widgets/eskolia_card.dart';
 import '../data/tp_binaire_data.dart';
 import 'simple_calculator_sheet.dart';
 
-const Color _slate  = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan   = Color(0xFF00BCD4);
-const Color _green  = Color(0xFF4CAF50);
-const Color _amber  = Color(0xFFFFC107);
-const Color _red    = Color(0xFFE53935);
-
 Color _diffColor(TpDifficulty d) => switch (d) {
-      TpDifficulty.facile    => _green,
-      TpDifficulty.moyen     => _amber,
-      TpDifficulty.difficile => _red,
+      TpDifficulty.facile    => EskoliaTokens.success,
+      TpDifficulty.moyen     => EskoliaTokens.amber,
+      TpDifficulty.difficile => EskoliaTokens.error,
     };
 
 // ─── Per-field state ──────────────────────────────────────────────────────────
@@ -177,7 +171,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.calculate_rounded, color: _cyan),
+            icon: const Icon(Icons.calculate_rounded, color: EskoliaTokens.cyan),
             tooltip: 'Calculatrice',
             onPressed: _openCalculator,
           ),
@@ -224,8 +218,8 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
       floatingActionButton: _corrected
           ? FloatingActionButton.extended(
               onPressed: _reset,
-              backgroundColor: const Color(0xFF1A1A2E),
-              foregroundColor: _violet,
+              backgroundColor: EskoliaTokens.surface1,
+              foregroundColor: EskoliaTokens.violet,
               icon: const Icon(Icons.refresh_rounded),
               label: const Text(
                 'Recommencer',
@@ -234,7 +228,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: _violet.withValues(alpha: 0.4)),
+                side: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.4)),
               ),
             )
           : null,
@@ -245,7 +239,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
 
   Widget _buildScoreBar() {
     final ratio      = _total > 0 ? _score / _total : 0.0;
-    final barColor   = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final barColor   = ratio >= 0.8 ? EskoliaTokens.success : ratio >= 0.6 ? EskoliaTokens.amber : EskoliaTokens.error;
     final hPad = EskoliaLayout.screenPaddingH;
 
     return Container(
@@ -256,7 +250,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.emoji_events_rounded, color: _amber, size: 16),
+              const Icon(Icons.emoji_events_rounded, color: EskoliaTokens.amber, size: 16),
               const SizedBox(width: 6),
               Text(
                 'Score : $_score / $_total points',
@@ -293,7 +287,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
 
   Widget _buildFinalMessage() {
     final ratio  = _total > 0 ? _score / _total : 0.0;
-    final color  = ratio >= 0.8 ? _green : ratio >= 0.6 ? _amber : _red;
+    final color  = ratio >= 0.8 ? EskoliaTokens.success : ratio >= 0.6 ? EskoliaTokens.amber : EskoliaTokens.error;
     final msg    = ratio >= 0.8
         ? 'Excellent !'
         : ratio >= 0.6
@@ -333,7 +327,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
                 Text(
                   '$_score points sur $_total',
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.75), fontSize: 12),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.75), fontSize: 12),
                 ),
               ],
             ),
@@ -363,7 +357,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         // Section header — same pattern as TpHubScreen
         Container(
           decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: _violet, width: 3)),
+            border: Border(left: BorderSide(color: EskoliaTokens.violet, width: 3)),
           ),
           padding: const EdgeInsets.only(left: 10, top: 2, bottom: 2),
           child: Column(
@@ -381,7 +375,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
               Text(
                 section.instruction,
                 style: TextStyle(
-                  color: _slate.withValues(alpha: 0.7),
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                   fontSize: 12,
                 ),
               ),
@@ -461,7 +455,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         // Main prompt
         Row(
           children: [
-            const Icon(Icons.lan_outlined, color: _cyan, size: 15),
+            const Icon(Icons.lan_outlined, color: EskoliaTokens.cyan, size: 15),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -501,7 +495,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
                 child: Text(
                   subQ.label,
                   style: TextStyle(
-                    color: _slate.withValues(alpha: 0.85),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                     fontSize: 12,
                   ),
                 ),
@@ -526,11 +520,11 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
     final Color border;
     final Color fill;
     if (ok == true) {
-      border = _green.withValues(alpha: 0.6);
-      fill   = _green.withValues(alpha: 0.05);
+      border = EskoliaTokens.success.withValues(alpha: 0.6);
+      fill   = EskoliaTokens.success.withValues(alpha: 0.05);
     } else if (ok == false) {
-      border = _red.withValues(alpha: 0.6);
-      fill   = _red.withValues(alpha: 0.04);
+      border = EskoliaTokens.error.withValues(alpha: 0.6);
+      fill   = EskoliaTokens.error.withValues(alpha: 0.04);
     } else {
       border = Colors.white.withValues(alpha: 0.12);
       fill   = Colors.white.withValues(alpha: 0.05);
@@ -544,7 +538,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         fontSize: 13,
         fontFamily: 'monospace',
       ),
-      cursorColor: _cyan,
+      cursorColor: EskoliaTokens.cyan,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
@@ -561,7 +555,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: ok != null ? border : _cyan.withValues(alpha: 0.7),
+            color: ok != null ? border : EskoliaTokens.cyan.withValues(alpha: 0.7),
             width: 1.5,
           ),
         ),
@@ -571,7 +565,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         ),
         hintText: '...',
         hintStyle: TextStyle(
-          color: _slate.withValues(alpha: 0.25),
+          color: EskoliaTokens.textSecondary.withValues(alpha: 0.25),
           fontSize: 13,
           fontFamily: 'monospace',
         ),
@@ -583,7 +577,7 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
     if (!checked) return const SizedBox(width: 20);
     return Icon(
       isOk ? Icons.check_rounded : Icons.close_rounded,
-      color: isOk ? _green : _red,
+      color: isOk ? EskoliaTokens.success : EskoliaTokens.error,
       size: 18,
     );
   }
@@ -592,13 +586,13 @@ class _TpBinaireSessionScreenState extends State<TpBinaireSessionScreen> {
         padding: const EdgeInsets.only(top: 4, left: 2),
         child: Row(
           children: [
-            const Icon(Icons.arrow_right_rounded, color: _amber, size: 14),
+            const Icon(Icons.arrow_right_rounded, color: EskoliaTokens.amber, size: 14),
             const SizedBox(width: 2),
             Expanded(
               child: Text(
                 expected,
                 style: const TextStyle(
-                  color: _amber,
+                  color: EskoliaTokens.amber,
                   fontSize: 11,
                   fontFamily: 'monospace',
                   fontWeight: FontWeight.w600,
