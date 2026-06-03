@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/widgets/eskolia_card.dart';
 import '../data/podcast_model.dart';
@@ -68,14 +69,43 @@ class PodcastPlayerCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      podcast.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        height: 1.25,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (podcast.id.isNotEmpty) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: _cyan.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                  color: _cyan.withValues(alpha: 0.40)),
+                            ),
+                            child: Text(
+                              podcast.id,
+                              style: const TextStyle(
+                                color: _cyan,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.6,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                        Expanded(
+                          child: Text(
+                            podcast.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              height: 1.25,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     if (podcast.subtitle != null) ...[
                       const SizedBox(height: 3),
@@ -87,7 +117,20 @@ class PodcastPlayerCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.download_rounded),
+                color: _slate,
+                iconSize: 20,
+                tooltip: 'Telecharger',
+                padding: const EdgeInsets.all(8),
+                constraints: const BoxConstraints(),
+                visualDensity: VisualDensity.compact,
+                onPressed: () => launchUrl(
+                  Uri.parse(podcast.url),
+                  mode: LaunchMode.externalApplication,
+                ),
+              ),
+              const SizedBox(width: 2),
               Icon(
                 Icons.graphic_eq_rounded,
                 color: _cyan.withValues(alpha: playing ? 0.95 : 0.35),
