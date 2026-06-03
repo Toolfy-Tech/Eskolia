@@ -738,9 +738,9 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1117),
+        color: EskoliaTokens.bgBase,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF22D3EE).withValues(alpha: 0.25)),
+        border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

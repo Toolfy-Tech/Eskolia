@@ -19,12 +19,13 @@ import '../../quiz/services/quiz_repository.dart';
 import '../data/note_ai_generator.dart';
 import '../data/note_model.dart';
 import '../data/saved_quiz_repository.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate  = Color(0xFF94A3B8);
-const Color _green  = Color(0xFF4CAF50);
-const Color _amber  = Color(0xFFFFC107);
-const Color _red    = Color(0xFFEF4444);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate  = EskoliaTokens.textSecondary;
+const Color _green  = EskoliaTokens.success;
+const Color _amber  = EskoliaTokens.amber;
+const Color _red    = EskoliaTokens.error;
 
 // ── Modèle résultat ────────────────────────────────────────────────────────────
 

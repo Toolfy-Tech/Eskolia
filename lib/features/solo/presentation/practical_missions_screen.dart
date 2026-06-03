@@ -98,7 +98,7 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         title: const Text(
           'Réinitialiser ?',
           style: TextStyle(color: Colors.white),
@@ -302,10 +302,10 @@ class _PracticalMissionsScreenState extends State<PracticalMissionsScreen> {
         else if (done)
           GradientBorderCard(
             gradientColors: const [
-              Color(0xFF43E97B),
-              Color(0xFF6C63FF),
+              EskoliaTokens.success,
+              EskoliaTokens.violetSoft,
             ],
-            glowColor: const Color(0xFF43E97B),
+            glowColor: EskoliaTokens.success,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
