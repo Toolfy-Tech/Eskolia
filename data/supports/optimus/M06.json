@@ -1,0 +1,69 @@
+{
+  "moduleId": "M06",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support06/",
+  "supports": [
+    {
+      "chapterSlug": "M06-CH01-m365-entra-id",
+      "type": "image",
+      "title": "Guide de Gestion Cloud Hybride",
+      "filename": "M06_C01_Guide.de.gestion.cloud.hybride.png",
+      "description": "Microsoft 365 + Entra ID : licences, tenant, synchronisation AD, accès conditionnel et gestion hybride"
+    },
+    {
+      "chapterSlug": "M06-CH02-windows-server-active-directory",
+      "type": "image",
+      "title": "Architecture et Gestion des Droits",
+      "filename": "M06_C02_Architecture.et.gestion.des.droits.png",
+      "description": "Active Directory : domaine, OU, GPO, AGDLP, délégation de contrôle et modèle de droits"
+    },
+    {
+      "chapterSlug": "M06-CH03-deploiement-wds",
+      "type": "video",
+      "title": "Déploiement PXE et WDS",
+      "filename": "M06_C03_Deploiement__PXE_et_WDS.mp4",
+      "description": "Déploiement Windows par le réseau : configuration WDS, images WIM, séquences de boot PXE"
+    },
+    {
+      "chapterSlug": "M06-CH04-wsus-mises-a-jour",
+      "type": "image",
+      "title": "Gestion Centralisée des Mises à Jour",
+      "filename": "M06_C04_Gestion.centralisee.des.mises.png",
+      "description": "WSUS : synchronisation, groupes d'ordinateurs, approbation des mises à jour, rapports de conformité"
+    },
+    {
+      "chapterSlug": "M06-CH05-bureau-a-distance-rdp",
+      "type": "pdf",
+      "title": "Windows Security Blueprint",
+      "filename": "M06_C05-07_Windows.Security.Blueprint.pdf",
+      "description": "Référence CH05–CH07 : RDP sécurisé, BitLocker, chiffrement EFS, NTFS et partages, stratégies de sécurité"
+    },
+    {
+      "chapterSlug": "M06-CH08-observateur-evenements",
+      "type": "image",
+      "title": "Diagnostic et Supervision du Système",
+      "filename": "M06_C08-10_Diagnostic.et.supervision.du.systeme.png",
+      "description": "Référence CH08–CH10 : Observateur d'événements, Gestionnaire des tâches, moniteur de performances, registre Windows"
+    },
+    {
+      "chapterSlug": "M06-CH11-reparation-sfc-dism",
+      "type": "video",
+      "title": "La Boucle SFC et DISM",
+      "filename": "M06_C11_La_boucle_SFC_et_DISM.mp4",
+      "description": "Réparation Windows : SFC /scannow, DISM /RestoreHealth, ordre d'exécution et interprétation des résultats"
+    },
+    {
+      "chapterSlug": "M06-CH12-planificateur-taches",
+      "type": "pdf",
+      "title": "Windows Automation Blueprint",
+      "filename": "M06_C12-13_Windows.Automation.Blueprint.pdf",
+      "description": "Référence CH12–CH13 : Planificateur de tâches, scripts PowerShell, automatisation administrative Windows"
+    },
+    {
+      "chapterSlug": "M06-CH14-gestion-imprimantes",
+      "type": "image",
+      "title": "Guide de Dépannage Impression",
+      "filename": "M06_C14_Guide.de.Depannage.Impression.png",
+      "description": "Diagnostic imprimantes : files d'impression bloquées, pilotes, partage réseau, serveur d'impression"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "moduleId": "M03",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support03/",
+  "supports": [
+    {
+      "chapterSlug": "M03-CH01-differents-os",
+      "type": "pdf",
+      "title": "Windows Architecture Blueprint",
+      "filename": "M03_C01_Windows.Architecture.Blueprint.pdf",
+      "description": "Architecture interne de Windows : noyau, registre, couches système, gestion des processus et des droits"
+    },
+    {
+      "chapterSlug": "M03-CH02-installer-windows",
+      "type": "video",
+      "title": "Masterclass Windows",
+      "filename": "M03_C02_Masterclass_Windows.mp4",
+      "description": "Installation, configuration et personnalisation de Windows pas à pas en vidéo"
+    },
+    {
+      "chapterSlug": "M03-CH03-virtualisation",
+      "type": "image",
+      "title": "Guide de la Virtualisation Informatique",
+      "filename": "M03_C03_Guide.de.la.virtualisation.informatique.png",
+      "description": "Hyperviseurs Type 1 / Type 2, machines virtuelles, conteneurs, VirtualBox vs Hyper-V vs VMware"
+    },
+    {
+      "chapterSlug": "M03-CH04-linux-essentiel",
+      "type": "image",
+      "title": "L'Essentiel des Commandes Linux",
+      "filename": "M03_C04_Essentiel.de.Linux.Commandes.png",
+      "description": "Référentiel des commandes Linux essentielles : navigation, fichiers, permissions, réseau, processus"
+    },
+    {
+      "chapterSlug": "M03-CH05-accessibilite-numerique",
+      "type": "pdf",
+      "title": "The IT Accessibility Blueprint",
+      "filename": "M03_C05_The.IT.Accessibility.Blueprint.pdf",
+      "description": "Accessibilité numérique : outils d'assistance, normes WCAG, configuration OS pour utilisateurs en situation de handicap"
+    },
+    {
+      "chapterSlug": "M03-CH06-macos-apercu",
+      "type": "image",
+      "title": "Guide de Transition pour Techniciens",
+      "filename": "M03_C06_Guide.de.transition.pour.techniciens.png",
+      "description": "Passerelle Windows → macOS : équivalences des outils, raccourcis, gestion des fichiers et du réseau"
+    },
+    {
+      "chapterSlug": "M03-CH07-os-mobiles",
+      "type": "image",
+      "title": "Comparaison OS Mobiles et MDM",
+      "filename": "M03_C07_Comparaison.OS.mobiles.et.MDM.png",
+      "description": "iOS vs Android en entreprise, gestion MDM (Mobile Device Management), politiques de sécurité mobile"
+    }
+  ]
+}

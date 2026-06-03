@@ -1,0 +1,27 @@
+{
+  "moduleId": "M05",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support05/",
+  "supports": [
+    {
+      "chapterSlug": "M05-CH01-backup-definition-3210",
+      "type": "image",
+      "title": "Guide de Sauvegarde et Continuité",
+      "filename": "M05_C01-05_Guide.de.sauvegarde.et.continuite.png",
+      "description": "Référence complète CH01–CH05 : règle 3-2-1-0, types de sauvegardes (complète/incrémentielle/différentielle), RPO/RTO, solutions et supports"
+    },
+    {
+      "chapterSlug": "M05-CH06-raid-protection-systeme",
+      "type": "video",
+      "title": "Comprendre le Stockage RAID",
+      "filename": "M05_C06_Comprendre_le_Stockage_RAID.mp4",
+      "description": "RAID 0, 1, 5, 6, 10 : fonctionnement, tolérance aux pannes, performances et cas d'usage en entreprise"
+    },
+    {
+      "chapterSlug": "M05-CH07-deee-fin-de-vie",
+      "type": "pdf",
+      "title": "Sustainable IT Hardware Disposal",
+      "filename": "M05_C07_Sustainable.IT.Hardware.Disposal.pdf",
+      "description": "DEEE, destruction sécurisée des données, recyclage du matériel informatique, réglementation et bonnes pratiques"
+    }
+  ]
+}
