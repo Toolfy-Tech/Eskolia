@@ -1,0 +1,44 @@
+{
+  "moduleId": "M07",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support07/",
+  "supports": [
+    {
+      "chapterSlug": "M07-CH01-malwares",
+      "type": "image",
+      "title": "Panorama des Malwares et Menaces",
+      "filename": "M07_C01_Panorama.des.malwares.et.menaces.png",
+      "description": "Taxonomie des malwares : virus, vers, ransomware, trojans, spyware, rootkits — vecteurs d'attaque et impacts"
+    },
+    {
+      "chapterSlugs": [
+        "M07-CH02-detection-analyse",
+        "M07-CH03-defense-maintenance"
+      ],
+      "type": "pdf",
+      "title": "Cyber Defense Manual",
+      "filename": "M07_C02-03_Cyber.Defense.Manual.pdf",
+      "description": "Référence CH02–CH03 : détection des menaces, analyse de comportement, outils de défense, procédures de remédiation"
+    },
+    {
+      "chapterSlug": "M07-CH04-ingenierie-sociale",
+      "type": "video",
+      "title": "L'Ingénierie Sociale",
+      "filename": "M07_C04_L_Ingenierie_Sociale.mp4",
+      "description": "Phishing, vishing, pretexting, tailgating : techniques d'attaque et réflexes de défense face à la manipulation"
+    },
+    {
+      "chapterSlug": "M07-CH05-securite-physique",
+      "type": "image",
+      "title": "Sécurité Physique du Poste Informatique",
+      "filename": "M07_C05_Securite.physique.du.poste.informatique.png",
+      "description": "Verrous Kensington, chiffrement de disque, destruction sécurisée, contrôle d'accès physique aux postes"
+    },
+    {
+      "chapterSlug": "M07-CH06-rgpd-protection-donnees",
+      "type": "pdf",
+      "title": "The IT Guardian Protocol",
+      "filename": "M07_C06_The.IT.Guardian.Protocol.pdf",
+      "description": "RGPD appliqué au technicien IT : responsabilités, signalement d'incidents, protection des données personnelles"
+    }
+  ]
+}

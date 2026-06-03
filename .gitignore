@@ -58,3 +58,6 @@ node_modules/
 # Claude Code — permissions locales (chemins machine-spécifiques)
 .claude/settings.local.json
 .claude/worktrees/
+
+# Staging local pour uploads GitHub Releases (binaires non versionnés)
+supports_staging/

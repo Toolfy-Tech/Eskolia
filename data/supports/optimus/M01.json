@@ -1,0 +1,69 @@
+{
+  "moduleId": "M01",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support01/",
+  "supports": [
+    {
+      "chapterSlug": "M01-CH01-itil",
+      "type": "image",
+      "title": "La Structure ITIL : Au Coeur du Support Utilisateur",
+      "filename": "M01_C01_Structure.du.Support.Utilisateur.png",
+      "description": "SPOC, cycle de vie du ticket (Ouverture → Qualification → Résolution → Clôture), incidents vs problèmes vs demandes de service"
+    },
+    {
+      "chapterSlug": "M01-CH02-cycle-vie-ticket",
+      "type": "image",
+      "title": "Parcours d'une Intervention IT : Les 7 Étapes Clés",
+      "filename": "M01_C02_Etapes.d.une.intervention.informatique.png",
+      "description": "3 phases : Prise en charge & Qualification → Analyse & Résolution → Finalisation & Suivi. Étapes 1 à 7 détaillées."
+    },
+    {
+      "chapterSlug": "M01-CH03-priorisation-urgence-impact",
+      "type": "pdf",
+      "title": "ITIL Tactical Matrix",
+      "filename": "M01_C03_ITIL.Tactical.Matrix.pdf",
+      "description": "SPOC, incident vs problème, matrice de priorité P1–P4, SLA, procédures d'escalade N1→N2→N3 (7 pages)"
+    },
+    {
+      "chapterSlug": "M01-CH04-sla-engagements",
+      "type": "image",
+      "title": "GTI vs GTR : Les Deux Chronomètres du Support IT",
+      "filename": "M01_C04_GTI.vs.GTR.support.informatique.png",
+      "description": "GTI = délai de prise en charge, GTR = délai de résolution concrète. Tableau P1–P3 avec exemples de délais."
+    },
+    {
+      "chapterSlug": "M01-CH05-outils-ticketing-parc",
+      "type": "video",
+      "title": "La Trinité du Support",
+      "filename": "M01_C05_La_Trinite_du_Support.mp4",
+      "description": "Les trois piliers du support utilisateur en vidéo"
+    },
+    {
+      "chapterSlug": "M01-CH06-diagnostic-resolution-escalade",
+      "type": "image",
+      "title": "Le Guide Méthodologique de l'Intervention Support IT",
+      "filename": "M01_C06_Guide.Methodologique.Support.IT.png",
+      "description": "Flowchart complet : Accueil → Questionnement → Qualification → Résolution ou Escalade → Vérification & Traçabilité. Inclut le Rapport d'Escalade."
+    },
+    {
+      "chapterSlug": "M01-CH07-communiquer-utilisateur",
+      "type": "pdf",
+      "title": "The Human Interface",
+      "filename": "M01_C07_The.Human.Interface.pdf",
+      "description": "Guide de traduction entre jargon technique et langage utilisateur, communication empathique et pédagogique (2 pages)"
+    },
+    {
+      "chapterSlug": "M01-CH08-confidentialite-posture",
+      "type": "image",
+      "title": "6 Règles d'Or de Vérification d'Identité",
+      "filename": "M01_C08_6.regles.de.verification.d.identite.png",
+      "description": "Règles d'or de l'intervention + leviers psychologiques des attaquants (ingénierie sociale) : Autorité, Urgence, Serviabilité"
+    },
+    {
+      "chapterSlug": "M01-CH09-veille-amelioration-continue",
+      "type": "image",
+      "title": "La Veille Technologique du Technicien IT",
+      "filename": "M01_C09_Veille.technologique.du.technicien.IT.png",
+      "description": "Sources de connaissance fondamentales et compétences de veille stratégique : Documentation, Forums, IA, Analyse des erreurs & logs"
+    }
+  ]
+}

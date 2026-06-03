@@ -40,9 +40,6 @@ flutter:
   assets:
     # Manifeste des podcasts (titres + URLs des releases GitHub).
     - assets/audio/
-    # - data/solo/practical/index.json # Fichier manquant
-    # - data/games/true_false.json # Fichier manquant
-    # - data/lore/tip_dialogues.json # Fichier manquant
     # Flux RSS accueil (actualités tech) — voir TechNewsRepository.
     - data/home/tech_feeds.json
     # Mini-formations Docs métier (RGPD / CNIL / ANSSI / ITIL / OSI).
@@ -53,6 +50,7 @@ flutter:
     - data/docs/mini_formation_osi.md
     - data/lexique/optimus/
     - data/mediatheque/optimus/
+    - data/supports/optimus/
     - data/curriculum/optimus/index.json
     - data/curriculum/optimus/images/
     - data/curriculum/optimus/module-01-support-utilisateur/

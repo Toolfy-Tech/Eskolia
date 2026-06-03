@@ -1,0 +1,41 @@
+{
+  "moduleId": "M04",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support04/",
+  "supports": [
+    {
+      "chapterSlug": "M04-CH01-composants-reseau-binaire",
+      "type": "video",
+      "title": "Le Réseau Physique",
+      "filename": "M04_C01_Le_Reseau_Physique.mp4",
+      "description": "Câbles, switchs, routeurs, points d'accès : les composants physiques du réseau local expliqués en vidéo"
+    },
+    {
+      "chapterSlug": "M04-CH02-adressage-segmentation",
+      "type": "pdf",
+      "title": "Network Subnetting Mastery",
+      "filename": "M04_C02_Network.Subnetting.Mastery.pdf",
+      "description": "Adressage IP, masques de sous-réseau, CIDR, calcul de plages, subnetting pratique avec exercices"
+    },
+    {
+      "chapterSlug": "M04-CH03-osi-encapsulation-tcp-ip",
+      "type": "image",
+      "title": "L'Escalier de la Communication Réseau",
+      "filename": "M04_C03_L.escalier.de.la.communication.reseau.png",
+      "description": "Modèle OSI 7 couches vs TCP/IP 4 couches : encapsulation, rôle de chaque couche, protocoles associés"
+    },
+    {
+      "chapterSlug": "M04-CH04-vlans-organisation",
+      "type": "video",
+      "title": "Réseaux et VLANs",
+      "filename": "M04_C04_Reseaux_et_VLANs.mp4",
+      "description": "Configuration des VLANs sur switches managés, trunk et access ports, segmentation logique du réseau"
+    },
+    {
+      "chapterSlug": "M04-CH05-services-protocoles-critiques",
+      "type": "image",
+      "title": "Carte Mentale des Services Réseau",
+      "filename": "M04_C05_Carte.mentale.des.services.reseau.png",
+      "description": "DHCP, DNS, NTP, SNMP, FTP, HTTP/S, SSH, RDP : rôles, ports standards et cas d'usage"
+    }
+  ]
+}
