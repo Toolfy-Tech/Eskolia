@@ -160,7 +160,9 @@ class RevisionPoolRepository {
         final session = await repo.loadSession(e.assetPath);
         final q = session.questions.firstWhere((q) => q.id == e.questionId, orElse: () => session.questions.first);
         out.add(q);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[RevisionPoolRepository.resolveQuestions] $e');
+      }
     }
     return out;
   }

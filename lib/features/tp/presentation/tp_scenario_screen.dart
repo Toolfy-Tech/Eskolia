@@ -627,12 +627,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                                   height: 22,
                                   margin: const EdgeInsets.only(top: 1, right: 10),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                    color: EskoliaTokens.violet.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                                    border: Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.5)),
                                   ),
                                   alignment: Alignment.center,
-                                  child: Text('${e.key + 1}', style: const TextStyle(color: Color(0xFF6C63FF), fontSize: 11, fontWeight: FontWeight.bold)),
+                                  child: Text('${e.key + 1}', style: const TextStyle(color: EskoliaTokens.violet, fontSize: 11, fontWeight: FontWeight.bold)),
                                 ),
                                 Expanded(child: Text(e.value, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.4))),
                               ],
@@ -686,14 +686,14 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFF9800).withValues(alpha: 0.08),
+                            color: EskoliaTokens.amber.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.3)),
+                            border: Border.all(color: EskoliaTokens.amber.withValues(alpha: 0.3)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: Color(0xFFFF9800), fontSize: 13, fontWeight: FontWeight.w600)),
+                              Text(helpMap['text'] as String? ?? '', style: const TextStyle(color: EskoliaTokens.amber, fontSize: 13, fontWeight: FontWeight.w600)),
                               if ((helpMap['where'] as String?)?.isNotEmpty == true) ...[
                                 const SizedBox(height: 6),
                                 Text(helpMap['where'] as String, style: TextStyle(color: Colors.white.withValues(alpha: 0.85), fontSize: 13, height: 1.4)),
