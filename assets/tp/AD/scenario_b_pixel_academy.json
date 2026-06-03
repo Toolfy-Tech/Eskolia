@@ -170,26 +170,29 @@
         {
           "id": "B-2-2",
           "order": 2,
-          "title": "Créer les groupes de sécurité de l'école",
+          "title": "Créer les groupes de sécurité de l'école (méthode AGDLP)",
           "unlocked_by": "B-2-1",
-          "estimated_minutes": 20,
-          "objective": "Créer G_Professeurs, G_Etudiants_Actifs et G_Admins_IT avec leurs membres.",
-          "context": "Ces groupes seront utilisés partout : dans les permissions des partages, dans le ciblage des GPO, et pour les délégations. Un groupe bien nommé et bien maintenu est la différence entre une infra saine et une infra incontrôlable. Ici on crée trois groupes aux rôles bien distincts.",
+          "estimated_minutes": 30,
+          "objective": "Créer les groupes Globaux (GG) et les groupes de Domaine Local (GDL) selon la méthode AGDLP, puis associer les GG aux GDL.",
+          "context": "La méthode AGDLP (Account → Global Group → Domain Local Group → Permission) est la norme en entreprise. On ne met JAMAIS un groupe Global directement sur une permission NTFS. On crée d'abord les GG qui représentent les rôles métier (qui sont les gens ?), puis les GDL qui représentent les niveaux d'accès sur les ressources (que peuvent-ils faire ?). Cette séparation permet de gérer des milliers de ressources sans jamais toucher aux permissions NTFS — on joue uniquement sur les membres des GDL.",
           "steps": [
-            "Dans l'OU Groupes, crée G_Professeurs (Global, Sécurité)",
-            "Ouvre G_Professeurs → onglet Membres → ajoute les 3 professeurs créés précédemment",
-            "Crée G_Etudiants_Actifs (Global, Sécurité) et ajoute l'étudiant de test",
-            "Crée G_Admins_IT (Global, Sécurité) — laisse-le vide pour l'instant",
-            "Vérifie les membres de chaque groupe dans l'onglet Membres"
+            "Dans l'OU Groupes, crée GG_Professeurs (Global, Sécurité) — ajoute les 3 professeurs créés précédemment",
+            "Crée GG_Etudiants_Actifs (Global, Sécurité) — ajoute l'étudiant de test",
+            "Crée GG_Admins_IT (Global, Sécurité) — laisse-le vide pour l'instant",
+            "Crée GDL_Professeurs_RO (Domaine local, Sécurité) — ouvre ses Membres → ajoute GG_Professeurs",
+            "Crée GDL_Professeurs_RW (Domaine local, Sécurité) — ouvre ses Membres → ajoute GG_Professeurs",
+            "Crée GDL_Etudiants_Depot (Domaine local, Sécurité) — ouvre ses Membres → ajoute GG_Etudiants_Actifs",
+            "Vérifie : ouvre GDL_Professeurs_RW → onglet Membres : GG_Professeurs doit y apparaître"
           ],
           "help": {
-            "text": "Comment ajouter plusieurs membres d'un coup dans un groupe ?",
-            "where": "Dans l'onglet Membres du groupe, clique sur Ajouter. Dans la boîte de dialogue, tu peux taper plusieurs noms séparés par un point-virgule. Tu peux aussi cliquer sur Avancé → Rechercher pour faire une recherche filtrée et sélectionner plusieurs résultats."
+            "text": "Pourquoi créer des GDL si on a déjà les GG ?",
+            "where": "Les GG (Global Groups) représentent QUI : les professeurs, les étudiants. Les GDL (Domain Local Groups) représentent QUOI : un niveau d'accès sur une ressource précise. Demain, si tu ajoutes un nouveau partage, tu ajoutes simplement GDL_Professeurs_RW dans ses permissions NTFS — tu ne retouches à aucun compte. Après-demain, un professeur remplaçant arrive : tu l'ajoutes à GG_Professeurs, il hérite instantanément de TOUS ses accès. C'est ça, l'AGDLP."
           },
           "expected_result": [
-            "G_Professeurs contient les 3 comptes professeurs",
-            "G_Etudiants_Actifs contient l'étudiant de test",
-            "G_Admins_IT existe dans l'OU Groupes"
+            "GG_Professeurs contient les 3 comptes professeurs",
+            "GG_Etudiants_Actifs contient l'étudiant de test",
+            "GDL_Professeurs_RO et GDL_Professeurs_RW existent — membres : GG_Professeurs",
+            "GDL_Etudiants_Depot existe — membres : GG_Etudiants_Actifs"
           ]
         },
         {
@@ -232,22 +235,23 @@
           "title": "Créer les partages pédagogiques",
           "unlocked_by": "B-2-3",
           "estimated_minutes": 30,
-          "objective": "Créer le partage Sujets$ (réservé aux professeurs) et le partage Rendus (accessible aux étudiants).",
-          "context": "L'école a deux besoins distincts : un espace sécurisé où les professeurs stockent les sujets d'examen (que les étudiants ne doivent jamais voir avant l'examen), et un espace de dépôt où les étudiants remettent leurs travaux. Ces deux partages ont des permissions très différentes.",
+          "objective": "Créer le partage Sujets$ (réservé aux professeurs) et le partage Rendus (accessible aux étudiants) en appliquant la méthode AGDLP sur les permissions NTFS.",
+          "context": "On applique ici la méthode AGDLP : les permissions NTFS sont attribuées aux GDL (groupes de domaine local), jamais directement aux GG ou aux comptes. Résultat : si demain un nouveau professeur arrive, il suffit de l'ajouter à GG_Professeurs — il hérite automatiquement de l'accès à Sujets$ et à Rendus sans toucher à aucune permission NTFS.",
           "steps": [
             "Sur le serveur, crée les dossiers : C:\\Partages\\Sujets et C:\\Partages\\Rendus",
-            "Partage Sujets$ (masqué) : permissions NTFS → G_Professeurs avec Modification, supprime Tout le monde",
-            "Partage Rendus : permissions NTFS → G_Professeurs avec Contrôle total, G_Etudiants_Actifs avec Modification",
-            "Teste depuis un compte professeur : accès à \\\\DC-PIXEL\\Sujets$ et \\\\DC-PIXEL\\Rendus",
-            "Teste depuis le compte étudiant de test : accès à Rendus uniquement, Sujets$ inaccessible"
+            "Partage Sujets$ (masqué) : permissions NTFS → ajoute GDL_Professeurs_RW avec Modification, supprime Tout le monde et Utilisateurs authentifiés",
+            "Partage Rendus : permissions NTFS → ajoute GDL_Professeurs_RW avec Contrôle total, ajoute GDL_Etudiants_Depot avec Modification, supprime Tout le monde",
+            "Teste depuis un compte professeur : accès à \\\\DC-PIXEL\\Sujets$ (via GG_Professeurs → GDL_Professeurs_RW) et à \\\\DC-PIXEL\\Rendus",
+            "Teste depuis le compte étudiant de test : accès à Rendus uniquement (via GG_Etudiants_Actifs → GDL_Etudiants_Depot), Sujets$ inaccessible"
           ],
           "help": {
             "text": "Comment vérifier que Sujets$ est bien invisible ?",
             "where": "Sur un PC client, ouvre l'Explorateur de fichiers et tape \\\\DC-PIXEL dans la barre d'adresse. Tu verras la liste des partages visibles — Sujets$ ne doit pas apparaître dans cette liste. Par contre, taper directement \\\\DC-PIXEL\\Sujets$ dans la barre d'adresse doit fonctionner pour les professeurs."
           },
           "expected_result": [
+            "Les permissions NTFS de Sujets$ contiennent GDL_Professeurs_RW — pas G_Professeurs directement",
             "\\\\DC-PIXEL\\Sujets$ est accessible aux professeurs mais invisible en navigation",
-            "\\\\DC-PIXEL\\Rendus est accessible aux professeurs et aux étudiants",
+            "\\\\DC-PIXEL\\Rendus est accessible aux professeurs et aux étudiants actifs",
             "Un étudiant ne peut pas accéder à \\\\DC-PIXEL\\Sujets$"
           ]
         }
@@ -298,12 +302,12 @@
             "Crée la GPO GPO_Lecteurs_Profs liée à l'OU PIXEL_ACADEMY",
             "Configuration utilisateur → Préférences → Paramètres Windows → Mappages de lecteurs",
             "Nouveau lecteur mappé : Action Créer | Chemin : \\\\DC-PIXEL\\Sujets$ | Lettre : S",
-            "Onglet Commun → Ciblage au niveau de l'élément → Nouveau → Groupe de sécurité : G_Professeurs",
+            "Onglet Commun → Ciblage au niveau de l'élément → Nouveau → Groupe de sécurité : GG_Professeurs",
             "Valide et teste sur un PC client avec un compte professeur"
           ],
           "help": {
             "text": "Le lecteur S: apparaît aussi pour les étudiants ?",
-            "where": "Vérifie que le ciblage au niveau de l'élément est bien configuré sur G_Professeurs dans l'onglet Commun de la règle de mappage. Sans ce ciblage, la règle s'applique à tous les utilisateurs couverts par la GPO."
+            "where": "Vérifie que le ciblage au niveau de l'élément est bien configuré sur GG_Professeurs dans l'onglet Commun de la règle de mappage. Sans ce ciblage, la règle s'applique à tous les utilisateurs couverts par la GPO."
           },
           "expected_result": [
             "Connecté en professeur : le lecteur S: apparaît automatiquement dans l'Explorateur",
@@ -345,7 +349,7 @@
           "context": "Le service scolarité reçoit régulièrement des appels d'étudiants qui ont oublié leur mot de passe ou dont le compte est verrouillé. Plutôt que de solliciter l'administrateur réseau à chaque fois, on délègue ces droits spécifiques au service scolarité — uniquement sur l'OU Etudiants.",
           "steps": [
             "Dans dsa.msc, clic droit sur l'OU Etudiants → Délégation de contrôle",
-            "Ajoute le groupe G_Admins_IT (ou un utilisateur Scolarité si tu en as créé un)",
+            "Ajoute le groupe GG_Admins_IT (ou un utilisateur Scolarité si tu en as créé un)",
             "Coche les tâches : Réinitialiser les mots de passe et Lire toutes les informations utilisateur",
             "Termine l'assistant",
             "Teste : connecte-toi avec le compte délégué et tente de réinitialiser un mot de passe étudiant"
@@ -400,23 +404,23 @@
           "title": "Préparer l'arrivée de la nouvelle promotion",
           "unlocked_by": "B-5-1",
           "estimated_minutes": 25,
-          "objective": "Créer l'OU Promo2026, créer 5 comptes étudiants de test et les ajouter à G_Etudiants_Actifs.",
-          "context": "C'est le scénario de septembre : la nouvelle promotion 2026 arrive. Il faut créer leurs comptes dans la bonne OU et les ajouter au groupe G_Etudiants_Actifs pour qu'ils aient automatiquement accès aux ressources de l'école (partages, lecteurs mappés, etc.). En production, cette opération se fait avec un fichier CSV fourni par le service scolarité.",
+          "objective": "Créer l'OU Promo2026, créer 5 comptes étudiants de test et les ajouter à GG_Etudiants_Actifs.",
+          "context": "C'est le scénario de septembre : la nouvelle promotion 2026 arrive. Il faut créer leurs comptes dans la bonne OU et les ajouter au groupe GG_Etudiants_Actifs pour qu'ils aient automatiquement accès aux ressources de l'école (partages, lecteurs mappés, etc.). En production, cette opération se fait avec un fichier CSV fourni par le service scolarité.",
           "steps": [
             "Dans dsa.msc, crée la sous-OU Promo2026 dans l'OU Etudiants",
             "Crée 5 comptes étudiants fictifs dans Promo2026 (ex: alice.moreau, tom.petit...)",
             "Pour chacun : login cohérent, mot de passe temporaire, changement obligatoire à la première connexion",
-            "Ouvre le groupe G_Etudiants_Actifs → onglet Membres → Ajouter les 5 nouveaux étudiants",
+            "Ouvre le groupe GG_Etudiants_Actifs → onglet Membres → Ajouter les 5 nouveaux étudiants",
             "Vérifie qu'un des nouveaux étudiants peut se connecter sur un PC client et accéder au partage Rendus"
           ],
           "help": {
-            "text": "Dois-je aussi retirer les étudiants Promo2023 de G_Etudiants_Actifs ?",
-            "where": "Oui, bonne réflexion. Les comptes désactivés ne peuvent plus se connecter, mais ils sont toujours techniquement dans le groupe. La bonne pratique est de les retirer du groupe en même temps qu'on les désactive. Ouvre G_Etudiants_Actifs → onglet Membres → sélectionne les anciens étudiants → Supprimer."
+            "text": "Dois-je aussi retirer les étudiants Promo2023 de GG_Etudiants_Actifs ?",
+            "where": "Oui, bonne réflexion. Les comptes désactivés ne peuvent plus se connecter, mais ils sont toujours techniquement dans le groupe. La bonne pratique est de les retirer du groupe en même temps qu'on les désactive. Ouvre GG_Etudiants_Actifs → onglet Membres → sélectionne les anciens étudiants → Supprimer."
           },
           "expected_result": [
             "L'OU Promo2026 existe dans Etudiants",
             "5 comptes étudiants existent dans Promo2026",
-            "Ces comptes sont membres de G_Etudiants_Actifs",
+            "Ces comptes sont membres de GG_Etudiants_Actifs",
             "Un étudiant Promo2026 peut accéder au partage Rendus"
           ]
         }
