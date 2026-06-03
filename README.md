@@ -2,13 +2,18 @@
 
 > Application Flutter d'apprentissage gamifié avec quiz, battles multijoueur et parcours pédagogiques.
 
-## Documentation (prompts & blueprint)
+## Documentation
+
+La documentation vit dans le dossier `docs/`. Principaux fichiers :
 
 | Fichier | Rôle |
 |---------|------|
-| `eskolia_blueprint.md` | Vision, stack, architecture — **source unique** |
-| `eskolia_cursor_prompts.md` | Prompts Cursor (fusion V2+V3) |
-| `eskolia_image_prompts.md` | Prompts images IA (fusion ; bonus réseau) |
+| `docs/project-overview.md` | Vision, stack, architecture — source de référence |
+| `docs/design-system.md` | Couleurs, composants, conventions UI |
+| `docs/firebase-structure.md` | Modèle de données Firestore |
+| `docs/screens-inventory.md` | Inventaire des écrans et routes |
+| `docs/features-status.md` | État d'avancement des fonctionnalités |
+| `docs/audit-technique-code-2026-06.md` | Audit technique (sécurité, archi, IA, deps) |
 
 ## Fonctionnalités
 

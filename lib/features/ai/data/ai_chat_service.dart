@@ -114,12 +114,8 @@ class AiChatService {
         if (!trimmed.startsWith('data: ')) continue;
         final data = trimmed.substring(6).trim();
         if (data == '[DONE]') return;
-        try {
-          final json = jsonDecode(data) as Map<String, dynamic>;
-          final delta = (json['choices'] as List?)
-              ?.firstOrNull?['delta']?['content'] as String?;
-          if (delta != null && delta.isNotEmpty) yield delta;
-        } catch (_) {}
+        final delta = _extractOpenAIDelta(data);
+        if (delta != null && delta.isNotEmpty) yield delta;
       }
     }
   }
@@ -169,13 +165,8 @@ class AiChatService {
         final trimmed = line.trim();
         if (!trimmed.startsWith('data: ')) continue;
         final data = trimmed.substring(6).trim();
-        try {
-          final json = jsonDecode(data) as Map<String, dynamic>;
-          if (json['type'] == 'content_block_delta') {
-            final text = json['delta']?['text'] as String?;
-            if (text != null && text.isNotEmpty) yield text;
-          }
-        } catch (_) {}
+        final text = _extractAnthropicDelta(data);
+        if (text != null && text.isNotEmpty) yield text;
       }
     }
   }
@@ -208,9 +199,12 @@ class AiChatService {
     try {
       response = await _dio.post<dynamic>(
         'https://generativelanguage.googleapis.com/v1beta/models/'
-        '$geminiModel:generateContent?key=$key',
+        '$geminiModel:generateContent',
         options: Options(
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': key,
+          },
           sendTimeout: const Duration(seconds: 15),
           receiveTimeout: const Duration(seconds: 90),
         ),
@@ -233,6 +227,38 @@ class AiChatService {
         : jsonDecode(response.data.toString()) as Map<String, dynamic>;
     final text = _extractGeminiText(data);
     if (text != null && text.isNotEmpty) yield text;
+  }
+
+  /// Extrait le delta de contenu d'une ligne SSE OpenAI-compatible.
+  /// Decode + navigation type-safe : evite les crashs dart2js sur ?. dynamic.
+  static String? _extractOpenAIDelta(String data) {
+    try {
+      final json = jsonDecode(data);
+      if (json is! Map) return null;
+      final choices = json['choices'];
+      if (choices is! List || choices.isEmpty) return null;
+      final first = choices[0];
+      if (first is! Map) return null;
+      final delta = first['delta'];
+      if (delta is! Map) return null;
+      return delta['content'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Extrait le texte d'un event SSE Anthropic content_block_delta.
+  static String? _extractAnthropicDelta(String data) {
+    try {
+      final json = jsonDecode(data);
+      if (json is! Map) return null;
+      if (json['type'] != 'content_block_delta') return null;
+      final delta = json['delta'];
+      if (delta is! Map) return null;
+      return delta['text'] as String?;
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Extrait le texte d'une reponse Gemini generateContent de facon securisee.

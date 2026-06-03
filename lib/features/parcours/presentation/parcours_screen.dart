@@ -137,7 +137,13 @@ class _ParcoursScreenState extends State<ParcoursScreen>
                                     if (index == 0) {
                                       return const Padding(
                                         padding: EdgeInsets.only(bottom: 16),
-                                        child: _DocsMetierCard(),
+                                        child: Column(
+                                          children: [
+                                            _PodcastsCard(),
+                                            SizedBox(height: 16),
+                                            _DocsMetierCard(),
+                                          ],
+                                        ),
                                       );
                                     }
                                     final formation = list[index - 1];
@@ -836,6 +842,84 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PodcastsCard extends StatelessWidget {
+  const _PodcastsCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.push('/podcasts'),
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF6C63FF).withValues(alpha: 0.20),
+                const Color(0xFF00BCD4).withValues(alpha: 0.12),
+              ],
+            ),
+            border: Border.all(
+              color: const Color(0xFF6C63FF).withValues(alpha: 0.35),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.headphones_rounded,
+                  color: Color(0xFF6C63FF),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Podcasts',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Une analyse audio par module — a ecouter avant de lire le cours.',
+                      style: TextStyle(
+                        color: Color(0xFF94A3B8),
+                        fontSize: 12,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.white.withValues(alpha: 0.4),
+                size: 22,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
