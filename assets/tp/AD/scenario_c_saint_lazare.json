@@ -133,25 +133,30 @@
         {
           "id": "C-1-2",
           "order": 2,
-          "title": "Créer les groupes de sécurité médicaux",
+          "title": "Créer les groupes de sécurité médicaux (méthode AGDLP)",
           "unlocked_by": "C-1-1",
-          "estimated_minutes": 20,
-          "objective": "Créer les groupes G_Infirmiers, G_Medecins, G_Urgences et G_Acces_Psy.",
-          "context": "Dans un hôpital, les droits d'accès sont déterminés par le métier et le service. Un infirmier de Soins n'a pas accès aux mêmes dossiers qu'un médecin des Urgences. Et personne n'a accès aux dossiers de Psychiatrie sauf les soignants habilités. Ces groupes seront la base de tout le système d'autorisation.",
+          "estimated_minutes": 30,
+          "objective": "Créer les groupes Globaux (GG) par métier et les groupes de Domaine Local (GDL) par niveau d'accès, puis imbriquer les GG dans les GDL.",
+          "context": "Dans un hôpital, les droits d'accès sont déterminés par le métier et le service. On applique la méthode AGDLP : les GG (Global Groups) représentent QUI sont les personnes (médecins, infirmiers), les GDL (Domain Local Groups) représentent CE QU'ILS PEUVENT FAIRE sur une ressource précise. On n'attribue jamais un GG directement sur une permission NTFS.",
           "steps": [
-            "Dans l'OU Groupes, crée G_Infirmiers (Global, Sécurité)",
-            "Crée G_Medecins (Global, Sécurité)",
-            "Crée G_Urgences (Global, Sécurité)",
-            "Crée G_Acces_Psy (Global, Sécurité) — ce groupe aura des droits spéciaux en mission C-3-2",
-            "Laisse les groupes vides pour l'instant — les membres seront ajoutés à la mission suivante"
+            "Dans l'OU Groupes, crée GGG_Infirmiers (Global, Sécurité)",
+            "Crée GGG_Medecins (Global, Sécurité)",
+            "Crée GGG_Urgences (Global, Sécurité)",
+            "Crée GGG_Acces_Psy (Global, Sécurité) — accès restreint aux données de psychiatrie",
+            "Crée GDL_DossiersPatients_RO (Domaine local, Sécurité) — ouvre Membres → ajoute GGG_Infirmiers et GGG_Medecins",
+            "Crée GDL_DossiersPatients_RW (Domaine local, Sécurité) — ouvre Membres → ajoute GGG_Medecins",
+            "Crée GDL_Psy_RW (Domaine local, Sécurité) — ouvre Membres → ajoute GGG_Acces_Psy",
+            "Vérifie : GDL_DossiersPatients_RO → Membres doit lister GGG_Infirmiers et GGG_Medecins"
           ],
           "help": {
-            "text": "Faut-il créer un groupe par service ou par métier ?",
-            "where": "Dans un hôpital, les deux approches coexistent. Des groupes par métier (G_Medecins) permettent de donner des droits communs à tous les médecins. Des groupes par service (G_Urgences) permettent de gérer les accès propres à un service. On peut imbriquer les deux : un médecin des urgences sera dans G_Medecins ET dans G_Urgences."
+            "text": "Pourquoi les médecins sont dans deux GDL différents ?",
+            "where": "GDL_DossiersPatients_RO donne la lecture aux infirmiers ET aux médecins. GDL_DossiersPatients_RW donne la modification uniquement aux médecins (ils peuvent modifier un dossier patient, pas les infirmiers). En ajoutant GGG_Medecins dans les deux GDL, un médecin hérite automatiquement des deux niveaux d'accès."
           },
           "expected_result": [
-            "Les 4 groupes de sécurité existent dans l'OU Groupes",
-            "G_Acces_Psy est bien distinct des autres — il contrôlera l'accès aux données de psychiatrie"
+            "Les 4 groupes GG_ existent dans l'OU Groupes (Global, Sécurité)",
+            "GDL_DossiersPatients_RO membres : GGG_Infirmiers, GGG_Medecins",
+            "GDL_DossiersPatients_RW membres : GGG_Medecins",
+            "GDL_Psy_RW membres : GGG_Acces_Psy"
           ]
         }
       ]
@@ -177,7 +182,7 @@
             "Dans l'OU Laboratoire, crée : Walter White | Login : w.white | Service : Laboratoire",
             "Dans l'OU Psychiatrie, crée : Hannibal Lecter | Login : h.lecter | Service : Psychiatrie",
             "Pour chacun : ajoute le Service dans l'onglet Organisation de ses propriétés",
-            "Ajoute g.house et m.grey dans G_Infirmiers, m.grey dans G_Urgences, h.lecter dans G_Acces_Psy"
+            "Ajoute g.house et m.grey dans GG_Infirmiers, m.grey dans GG_Urgences, h.lecter dans GG_Acces_Psy"
           ],
           "help": {
             "text": "Pourquoi remplir le champ Service dans les propriétés ?",
@@ -257,15 +262,15 @@
           "title": "Politique de mot de passe renforcée pour la psychiatrie",
           "unlocked_by": "C-3-1",
           "estimated_minutes": 30,
-          "objective": "Créer une stratégie de mot de passe spécifique pour le groupe G_Acces_Psy : 12 caractères minimum, verrouillage après 3 tentatives.",
-          "context": "Les données de psychiatrie sont les plus sensibles de l'hôpital. Les personnes qui y accèdent (G_Acces_Psy) doivent avoir des mots de passe plus forts que le reste du personnel. Windows Server permet de créer des politiques de mot de passe différentes selon les groupes grâce aux Fine-Grained Password Policies (FGPP). C'est une fonctionnalité avancée, mais l'interface graphique la rend accessible.",
+          "objective": "Créer une stratégie de mot de passe spécifique pour le groupe GG_Acces_Psy : 12 caractères minimum, verrouillage après 3 tentatives.",
+          "context": "Les données de psychiatrie sont les plus sensibles de l'hôpital. Les personnes qui y accèdent (GG_Acces_Psy) doivent avoir des mots de passe plus forts que le reste du personnel. Windows Server permet de créer des politiques de mot de passe différentes selon les groupes grâce aux Fine-Grained Password Policies (FGPP). C'est une fonctionnalité avancée, mais l'interface graphique la rend accessible.",
           "steps": [
             "Ouvre le Centre d'administration Active Directory (dsac.exe via le menu Démarrer → Outils d'administration)",
             "Dans l'arborescence, navigue vers lazare.local → System → Password Settings Container",
             "Clic droit dans la zone de droite → Nouveau → Paramètres de mot de passe",
             "Nom : PSO_Psychiatrie | Priorité : 10",
             "Configure : longueur minimale 12 | Complexité activée | Historique 12 mots de passe | Verrouillage après 3 tentatives",
-            "Dans la section S'applique directement à, clique sur Ajouter et sélectionne G_Acces_Psy",
+            "Dans la section S'applique directement à, clique sur Ajouter et sélectionne GG_Acces_Psy",
             "Valide — la politique s'applique immédiatement aux membres du groupe"
           ],
           "help": {
@@ -274,8 +279,8 @@
           },
           "expected_result": [
             "PSO_Psychiatrie est visible dans Password Settings Container",
-            "La politique est liée au groupe G_Acces_Psy",
-            "h.lecter (membre de G_Acces_Psy) est soumis à la politique de 12 caractères",
+            "La politique est liée au groupe GG_Acces_Psy",
+            "h.lecter (membre de GG_Acces_Psy) est soumis à la politique de 12 caractères",
             "Un autre utilisateur hors du groupe n'est pas soumis à cette politique renforcée"
           ]
         },
@@ -351,7 +356,7 @@
           "steps": [
             "Crée le dossier C:\\Partages\\DossiersPatients sur le serveur",
             "Partage-le en masqué : Dossiers_Patients$",
-            "Permissions NTFS : G_Infirmiers et G_Medecins avec Modification, G_Acces_Psy avec Modification",
+            "Permissions NTFS : ajoute GDL_DossiersPatients_RO avec Lecture, GDL_DossiersPatients_RW avec Modification, GDL_Psy_RW avec Modification — supprime Tout le monde",
             "Dans les propriétés NTFS → onglet Sécurité → Avancé → onglet Audit",
             "Ajoute une entrée d'audit : Tout le monde | Type : Succès ET Échec | Lecture et Écriture",
             "Teste l'accès avec g.house — vérifie que l'événement d'accès apparaît dans l'Observateur"
@@ -362,7 +367,7 @@
           },
           "expected_result": [
             "Le partage Dossiers_Patients$ existe et est invisible en navigation réseau",
-            "Les groupes médicaux ont accès au partage avec les droits appropriés",
+            "Les permissions NTFS contiennent les GDL (pas les GG directement) — méthode AGDLP respectée",
             "L'audit d'accès est configuré sur le dossier",
             "Un accès de g.house génère un événement dans l'Observateur d'événements (ID 4663)"
           ]
