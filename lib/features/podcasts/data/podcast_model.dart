@@ -8,12 +8,19 @@ class Podcast {
     required this.title,
     required this.url,
     this.subtitle,
+    this.sectionId,
   });
 
   final String id;
   final String title;
   final String url;
   final String? subtitle;
+
+  /// Section/module du parcours auquel ce podcast est rattache (ex. `M01`).
+  /// Si absent, on retombe sur [id] (les ids podcasts == ids sections).
+  final String? sectionId;
+
+  String get sectionKey => sectionId ?? id;
 }
 
 /// Charge le manifeste des podcasts (titres + URLs des releases GitHub).
@@ -40,15 +47,28 @@ abstract final class PodcastCatalog {
       if (id is! String || title is! String || url is! String) continue;
       if (url.isEmpty) continue;
       final subtitle = item['subtitle'];
+      final sectionId = item['sectionId'];
       out.add(
         Podcast(
           id: id,
           title: title,
           url: url,
           subtitle: subtitle is String && subtitle.isNotEmpty ? subtitle : null,
+          sectionId:
+              sectionId is String && sectionId.isNotEmpty ? sectionId : null,
         ),
       );
     }
     return out;
+  }
+
+  /// Retourne le podcast rattache a une section/module (ex. `M01`), ou null.
+  static Future<Podcast?> forSection(String? sectionId) async {
+    if (sectionId == null || sectionId.isEmpty) return null;
+    final all = await load();
+    for (final p in all) {
+      if (p.sectionKey == sectionId) return p;
+    }
+    return null;
   }
 }
