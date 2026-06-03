@@ -63,9 +63,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   @override
   void initState() {
     super.initState();
-    _load();
-    _loadPodcast();
-    _loadContent();
+    Future.wait([_load(), _loadPodcast(), _loadContent()]);
   }
 
   Future<void> _loadContent() async {

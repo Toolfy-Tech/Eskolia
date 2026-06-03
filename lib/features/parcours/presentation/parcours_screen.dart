@@ -49,23 +49,27 @@ class _ParcoursScreenState extends State<ParcoursScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid != null) {
-        await DailyQuestRewardService().onParcoursVisited(uid);
-        final u = await UserRepository().getUserById(uid);
-        if (u != null) {
-          await AchievementTriggers(
-            onUnlocked: (emoji, title) {
-              if (!mounted) return;
-              showAchievementSnackBar(context, emoji, title);
-            },
-          ).syncFromUserSnapshot(u);
-        }
-      } else {
-        await DailyQuestsRepository().markParcoursProgressDone();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onFirstFrame());
+  }
+
+  Future<void> _onFirstFrame() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      await DailyQuestRewardService().onParcoursVisited(uid);
+      if (!mounted) return;
+      final u = await UserRepository().getUserById(uid);
+      if (!mounted) return;
+      if (u != null) {
+        await AchievementTriggers(
+          onUnlocked: (emoji, title) {
+            if (!mounted) return;
+            showAchievementSnackBar(context, emoji, title);
+          },
+        ).syncFromUserSnapshot(u);
       }
-    });
+    } else {
+      await DailyQuestsRepository().markParcoursProgressDone();
+    }
   }
 
   @override
@@ -103,13 +107,6 @@ class _ParcoursScreenState extends State<ParcoursScreen>
                                     message: snap.error.toString(),
                                     onRetry: () =>
                                         setState(() => _streamRetry++),
-                                  );
-                                }
-                                if (snap.connectionState ==
-                                        ConnectionState.waiting &&
-                                    !snap.hasData) {
-                                  return _SkeletonLoader(
-                                    pulse: _pulseController,
                                   );
                                 }
                                 if (!snap.hasData) {
