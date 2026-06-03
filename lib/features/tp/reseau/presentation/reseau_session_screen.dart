@@ -298,7 +298,8 @@ class _ReseauSessionScreenState extends State<ReseauSessionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: _categoryLabel(widget.category),

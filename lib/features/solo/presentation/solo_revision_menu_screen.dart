@@ -107,7 +107,8 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
   Widget build(BuildContext context) {
     final busy = _busySrsQuiz;
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Révision'),
       body: Stack(
         children: [

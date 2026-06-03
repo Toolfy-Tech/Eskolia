@@ -170,7 +170,7 @@ class _BattleScreenState extends State<BattleScreen> {
   Widget build(BuildContext context) {
     final s = _state;
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

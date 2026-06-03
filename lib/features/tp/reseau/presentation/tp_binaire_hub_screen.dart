@@ -67,7 +67,8 @@ class _TpBinaireHubScreenState extends State<TpBinaireHubScreen> {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            backgroundColor: EskoliaVisual.bgDeep,
+            extendBodyBehindAppBar: true,
+            backgroundColor: Colors.transparent,
             appBar: EskoliaAppBar.standard(
               context,
               title: 'TPs Binaire & Adressage',

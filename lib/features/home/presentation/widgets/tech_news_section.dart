@@ -5,7 +5,7 @@ import '../../../../shared/widgets/eskolia_card.dart';
 import '../../data/tech_news_models.dart';
 import '../../data/tech_news_repository.dart';
 
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _cyan = Color(0xFF00BCD4);
 

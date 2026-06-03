@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
+import '../../lobby/data/models/custom_quiz_data.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
+import '../models/quiz_models.dart';
 import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
@@ -35,6 +38,60 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
   void initState() {
     super.initState();
     _catalogFuture = TipQuizCatalog.loadChaptersWithQuiz();
+  }
+
+  Future<void> _playEskoliaQuiz() async {
+    final fs = EskoliaFolderService.instance;
+    final files = await fs.listFiles(EskoliaFolder.quiz);
+    if (!mounted) return;
+    if (files.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucun quiz dans Eskolia/Quiz/. Genere des quiz depuis le Notebook.')),
+      );
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF1E293B),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _EskoliaQuizFilePicker(files: files),
+    );
+    if (picked == null || !mounted) return;
+    final raw = await fs.readFile(EskoliaFolder.quiz, picked);
+    if (raw == null || !mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Impossible de lire ce fichier.')));
+      return;
+    }
+    try {
+      final data = CustomQuizData.fromJsonString(raw);
+      final qs = data.questions.asMap().entries.map((e) {
+          final q = e.value;
+          return QuizQuestion(
+            id: 'cq_${e.key}',
+            type: q.type,
+            question: q.question,
+            answer: q.answer,
+            difficultyBucket: q.difficulty,
+            explanation: q.hint.isNotEmpty ? q.hint : null,
+            contextLine: q.contextLine,
+            indices: q.indices.isNotEmpty ? q.indices : null,
+            answerSequence: q.items.isNotEmpty ? q.items : null,
+            options: q.items.isNotEmpty ? q.items : null,
+            authorName: data.author,
+          );
+        }).toList();
+      final session = QuizSession(
+        sessionId: 'eskolia_${DateTime.now().millisecondsSinceEpoch}',
+        title: data.title,
+        questions: qs,
+        currentIndex: 0,
+        userScores: List.filled(qs.length, null),
+        startTime: DateTime.now(),
+      );
+      if (mounted) context.push('/quiz/run', extra: session);
+    } on FormatException catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Fichier invalide : ${e.message}')));
+    }
   }
 
   Future<void> _startCustom() async {
@@ -66,7 +123,8 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Quiz'),
       body: Stack(
         children: [
@@ -164,6 +222,21 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
                 ),
                 trailing: const Icon(Icons.chevron_right, color: Colors.white38),
                 onTap: () => context.push('/quiz/bilan-recap'),
+              ),
+              const SizedBox(height: 6),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Text('\u{1F4C2}', style: TextStyle(fontSize: 28)),
+                title: const Text(
+                  'Jouer un quiz Eskolia',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                ),
+                subtitle: Text(
+                  'Solo — Lance un quiz .json depuis ton dossier Eskolia/Quiz/.',
+                  style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12),
+                ),
+                trailing: const Icon(Icons.chevron_right, color: Colors.white38),
+                onTap: _playEskoliaQuiz,
               ),
               const SizedBox(height: 20),
               const Text(
@@ -335,6 +408,59 @@ class _DailyCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _EskoliaQuizFilePicker extends StatelessWidget {
+  const _EskoliaQuizFilePicker({required this.files});
+  final List<String> files;
+
+  String _label(String f) => f
+      .replaceAll('quiz_', '')
+      .replaceAll('.json', '')
+      .replaceAll('_', ' ');
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+        ),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Choisir un quiz',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: files.length,
+            itemBuilder: (_, i) => ListTile(
+              leading: const Icon(Icons.quiz_rounded, color: _violet),
+              title: Text(
+                _label(files[i]),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              subtitle: Text(
+                files[i],
+                style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+              ),
+              onTap: () => Navigator.of(context).pop(files[i]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

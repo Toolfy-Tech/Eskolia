@@ -36,6 +36,12 @@
         "champs_requis": ["question", "answer", "difficulty", "items"],
         "champs_optionnels": ["hint", "context"],
         "note_items": "Tableau des éléments dans l'ORDRE CORRECT (min 2, max recommandé 6). Les joueurs les verront mélangés. Le champ 'answer' est une description lisible affichée pendant la correction."
+      },
+      "association": {
+        "description": "Les joueurs associent deux colonnes par glisser-déposer. Colonne gauche : termes fixes. Colonne droite : définitions mélangées à faire glisser. Le score est automatique — pas de jugement manuel par le host.",
+        "champs_requis": ["question", "difficulty", "pairs"],
+        "champs_optionnels": ["hint", "context", "answer"],
+        "note_pairs": "Tableau d'objets {left, right} représentant les paires correctes. Min 3, max 6 paires recommandé. Le champ 'answer' est optionnel (description affichée si pas de pairs valides)."
       }
     },
     "difficultes": {
@@ -47,7 +53,7 @@
       "question": "Texte de la question (obligatoire, non vide).",
       "answer": "Réponse attendue — peut être longue, le host juge la proximité (obligatoire).",
       "difficulty": "facile | moyen | difficile (obligatoire).",
-      "type": "classic | ticket | diagnostic_indices (optionnel, défaut : classic).",
+      "type": "classic | ticket | diagnostic_indices | sequence | association (optionnel, défaut : classic).",
       "hint": "Explication affichée après la correction — aide à comprendre la bonne réponse (optionnel).",
       "context": "Ligne de contexte affichée au-dessus de la question, ex : 'Réseau — Couche 3' (optionnel).",
       "indices": "Tableau de chaînes — uniquement pour diagnostic_indices. Du plus vague au plus précis (obligatoire pour ce type).",
@@ -148,6 +154,34 @@
         "Le lien de la GPO sur l'OU affiche une icône différente des autres liens."
       ],
       "hint": "Vérifiez l'état du lien GPO (clic droit → Lien activé) et l'état de la GPO elle-même (onglet Détails → État de la GPO)."
+    },
+    {
+      "_commentaire": "--- TYPE 5 : association --- Glisser-deposer pour associer deux colonnes",
+      "type": "association",
+      "context": "Réseau — Protocoles",
+      "question": "Associe chaque protocole à son port par défaut.",
+      "difficulty": "facile",
+      "pairs": [
+        {"left": "HTTP", "right": "80"},
+        {"left": "HTTPS", "right": "443"},
+        {"left": "SSH", "right": "22"},
+        {"left": "DNS", "right": "53"}
+      ],
+      "hint": "Ces ports sont standardisés par l'IANA. HTTPS utilise TLS/SSL sur le port 443."
+    },
+    {
+      "_commentaire": "--- TYPE 5 : association --- Deuxieme exemple",
+      "type": "association",
+      "context": "Active Directory — Concepts",
+      "question": "Associe chaque objet Active Directory a sa description.",
+      "difficulty": "moyen",
+      "pairs": [
+        {"left": "OU (Unité Organisationnelle)", "right": "Conteneur pour grouper des objets AD"},
+        {"left": "GPO", "right": "Stratégie de groupe appliquée aux OUs"},
+        {"left": "Schéma AD", "right": "Définit les classes et attributs des objets"},
+        {"left": "Site AD", "right": "Ensemble de sous-réseaux bien connectés"}
+      ],
+      "hint": "Les OUs permettent de déléguer l'administration et d'appliquer des GPOs ciblées."
     }
   ]
 }

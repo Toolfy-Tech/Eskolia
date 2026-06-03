@@ -64,7 +64,8 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Lacunes',

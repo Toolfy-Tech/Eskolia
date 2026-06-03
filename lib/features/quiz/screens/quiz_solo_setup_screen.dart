@@ -8,6 +8,7 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/teacher_quiz_picker_widget.dart';
+import '../../lexique/data/lexique_data.dart';
 import '../../notebook/data/saved_quiz_repository.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../services/quiz_repository.dart';
@@ -16,6 +17,7 @@ import '../components/quiz_scope_picker.dart';
 
 const Color _violet = Color(0xFF6C63FF);
 const Color _green = Color(0xFF4CAF50);
+const Color _amber = Color(0xFFFFB74D);
 const Color _slate = Color(0xFF94A3B8);
 
 /// Compose un quiz solo (Mode Maîtrise).
@@ -30,6 +32,8 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   List<TipQuizChapterRef>? _chapters;
   Object? _error;
   Set<String> _selectedPaths = {};
+  Set<String> _typeFilters = {};
+  Set<String> _lexiqueKeys = {};
   int _questionCount = 15;
   bool _busy = false;
   QuizCatalogTrack _catalogTrack = QuizCatalogTrack.optimusOnly;
@@ -109,21 +113,21 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   }
 
   Future<void> _start() async {
-    if (_busy || _selectedPaths.isEmpty) {
-      if (_selectedPaths.isEmpty && mounted) {
+    final hasSource = _selectedPaths.isNotEmpty || _lexiqueKeys.isNotEmpty;
+    if (_busy || !hasSource) {
+      if (!hasSource && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sélectionne au moins un chapitre.'),
-          ),
+          const SnackBar(content: Text('Selectionne au moins un chapitre ou une categorie de lexique.')),
         );
       }
       return;
     }
     setState(() => _busy = true);
     try {
+      final lexiquePaths = _lexiqueKeys.map((k) => '${QuizRepository.lexiqueSentinelPrefix}$k').toList();
       final session = await QuizRepository().buildSoloComposeSession(
-        quizAssetPaths: _selectedPaths.toList(),
-        difficultyFilters: const {}, // Toutes les difficultés
+        quizAssetPaths: [..._selectedPaths, ...lexiquePaths],
+        typeFilters: _typeFilters,
         maxQuestions: _questionCount,
         timed: false,
       );
@@ -143,7 +147,8 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Mode Maîtrise'),
       body: Stack(
         children: [
@@ -312,6 +317,17 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
         ),
         const SizedBox(height: 20),
 
+        // Type filter
+        _buildSectionHeader('Style de questions'),
+        const SizedBox(height: 4),
+        Text(
+          'Aucun style selectionné = tous les types inclus.',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.35), fontSize: 11),
+        ),
+        const SizedBox(height: 8),
+        _buildTypeFilterChips(),
+        const SizedBox(height: 20),
+
         // Sources Section
         _buildSectionHeader('Sources des questions'),
         const SizedBox(height: 8),
@@ -348,6 +364,16 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
             onSelectionChanged: (s) => setState(() => _selectedPaths = {...s}),
           ),
         ],
+        // Lexique IT
+        const SizedBox(height: 4),
+        _buildSectionHeader('Lexique IT'),
+        const SizedBox(height: 4),
+        Text(
+          'Questions flash sur les termes et définitions du lexique.',
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.35), fontSize: 11),
+        ),
+        const SizedBox(height: 8),
+        _buildLexiqueChips(),
         const SizedBox(height: 24),
 
         EskoliaButton(
@@ -357,6 +383,66 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
           onPressed: _busy ? null : _start,
         ),
       ],
+    );
+  }
+
+  static const _questionTypes = [
+    ('classic',            'Classique'),
+    ('ticket',             'Ticket'),
+    ('diagnostic_indices', 'Indices'),
+    ('sequence',           'Séquence'),
+    ('association',        'Association'),
+  ];
+
+  Widget _buildTypeFilterChips() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: _questionTypes.map((t) {
+        final selected = _typeFilters.contains(t.$1);
+        return FilterChip(
+          label: Text(t.$2),
+          selected: selected,
+          onSelected: (v) => setState(() => v ? _typeFilters.add(t.$1) : _typeFilters.remove(t.$1)),
+          selectedColor: _violet.withValues(alpha: 0.28),
+          checkmarkColor: Colors.white,
+          labelStyle: TextStyle(
+            color: selected ? Colors.white : Colors.white60,
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+          ),
+          backgroundColor: Colors.white.withValues(alpha: 0.05),
+          side: BorderSide(color: selected ? _violet : Colors.white.withValues(alpha: 0.15)),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          visualDensity: VisualDensity.compact,
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildLexiqueChips() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: lexiqueCategories.map((cat) {
+        final selected = _lexiqueKeys.contains(cat.key);
+        return FilterChip(
+          label: Text('${cat.name} (${cat.count})'),
+          selected: selected,
+          onSelected: (v) => setState(() => v ? _lexiqueKeys.add(cat.key) : _lexiqueKeys.remove(cat.key)),
+          selectedColor: _amber.withValues(alpha: 0.25),
+          checkmarkColor: Colors.white,
+          labelStyle: TextStyle(
+            color: selected ? Colors.white : Colors.white60,
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
+          ),
+          backgroundColor: Colors.white.withValues(alpha: 0.05),
+          side: BorderSide(color: selected ? _amber : Colors.white.withValues(alpha: 0.15)),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          visualDensity: VisualDensity.compact,
+        );
+      }).toList(),
     );
   }
 

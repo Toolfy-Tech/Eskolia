@@ -3,9 +3,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/eskolia_layout.dart';
+import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../data/ai_key_repository.dart';
@@ -20,85 +22,165 @@ const Color _green  = Color(0xFF4CAF50);
 const Color _violet = Color(0xFF6C63FF);
 const Color _cyan   = Color(0xFF00BCD4);
 const Color _amber  = Color(0xFFFFC107);
-const Color _red    = Color(0xFFE53935);
+const Color _purple = Color(0xFFB57BFF);
 
-// ── Données tier list ────────────────────────────────────────────────────────
+// ── Données providers ─────────────────────────────────────────────────────────
 
-class _ProviderInfo {
-  const _ProviderInfo({
+class _TutorialStep {
+  const _TutorialStep(this.text, {this.linkLabel, this.linkUrl});
+  final String text;
+  final String? linkLabel;
+  final String? linkUrl;
+}
+
+class _AiProviderData {
+  const _AiProviderData({
     required this.provider,
-    required this.tier,
-    required this.tierLabel,
-    required this.tierColor,
-    required this.price,
+    required this.section,
     required this.priceBadge,
     required this.priceBadgeColor,
+    required this.tagline,
     required this.qualityCours,
     required this.qualityQuiz,
     required this.pros,
-    required this.warning,
+    required this.steps,
+    this.warning,
+    this.isRecommended = false,
   });
 
   final AiProvider provider;
-  final int tier;               // 1 = meilleur
-  final String tierLabel;
-  final Color tierColor;
-  final String price;           // description courte
-  final String priceBadge;      // GRATUIT / ~0,001€ / etc.
+  final String section;        // 'free' | 'local' | 'paid'
+  final String priceBadge;
   final Color priceBadgeColor;
-  final int qualityCours;       // /5
-  final int qualityQuiz;        // /5
+  final String tagline;
+  final int qualityCours;
+  final int qualityQuiz;
   final List<String> pros;
+  final List<_TutorialStep> steps;
   final String? warning;
+  final bool isRecommended;
 }
 
-const _providers = <_ProviderInfo>[
-  _ProviderInfo(
-    provider: AiProvider.groq,
-    tier: 1,
-    tierLabel: 'GRATUIT',
-    tierColor: _green,
-    price: '100 % gratuit — aucune CB requise',
+const _providerData = <_AiProviderData>[
+  // ── GRATUIT ───────────────────────────────────────────────────────────────
+  _AiProviderData(
+    provider: AiProvider.gemini,
+    section: 'free',
     priceBadge: 'GRATUIT',
     priceBadgeColor: _green,
+    tagline: '1 million tokens/jour — Recommande Eskolia',
+    qualityCours: 4,
+    qualityQuiz: 4,
+    isRecommended: true,
+    pros: [
+      'Tier gratuit genereux : 1M tokens/jour, 15 req/min',
+      'Excellente qualite redactionnelle pour les cours IT',
+      'JSON mode natif — schemas respectes avec precision',
+      'Selecteur de modele integre (Flash, Pro, Lite)',
+    ],
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur Google AI Studio (compte Google suffit)',
+        linkLabel: 'aistudio.google.com',
+        linkUrl: 'https://aistudio.google.com',
+      ),
+      _TutorialStep('Connecte-toi avec ton compte Google — c\'est entierement gratuit'),
+      _TutorialStep('Clique sur "Get API key" dans le menu de gauche'),
+      _TutorialStep('Clique sur "Create API key in new project" — copie la cle (commence par AIza...)'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus — Eskolia detecte Gemini automatiquement'),
+      _TutorialStep('Choisis ton modele dans le selecteur qui apparait, puis clique "Connecter"'),
+    ],
+    warning: 'La limite de 15 req/min est invisible en usage normal. '
+        'Gemini peut etre prolixe — les hints seront parfois longs.',
+  ),
+  _AiProviderData(
+    provider: AiProvider.groq,
+    section: 'free',
+    priceBadge: 'GRATUIT',
+    priceBadgeColor: _green,
+    tagline: '14 400 requetes gratuites par jour — ultra-rapide',
     qualityCours: 3,
     qualityQuiz: 3,
     pros: [
-      'Zero inscription bancaire — parfait pour les eleves',
-      'Ultra-rapide (streaming quasi instantane)',
-      '14 400 requetes gratuites par jour',
+      'Zero inscription bancaire — aucune CB requise',
+      'Streaming quasi instantane (GPU cloud Groq)',
+      'Quota tres genereux pour un usage quotidien',
     ],
-    warning: 'Llama 3.3 suit bien les schemas simples mais peut produire des questions moins variees '
-        '(favorise "classic" plutot que "sequence" ou "diagnostic"). '
-        'Ideal pour un usage quotidien ; deconseille pour des cours tres techniques ou pointus.',
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur la console Groq',
+        linkLabel: 'console.groq.com',
+        linkUrl: 'https://console.groq.com',
+      ),
+      _TutorialStep('Cree un compte gratuit — email + mot de passe, sans CB'),
+      _TutorialStep('Dans le menu de gauche, clique sur "API Keys"'),
+      _TutorialStep('Clique "Create API key", donne-lui un nom (ex: Eskolia)'),
+      _TutorialStep('Copie la cle generee (commence par gsk_...)'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus et clique "Connecter"'),
+    ],
+    warning: 'Llama 3.3 suit bien les schemas simples mais favorise les questions "classic". '
+        'Les types complexes (sequence, diagnostic) peuvent etre moins bien structures.',
   ),
-  _ProviderInfo(
-    provider: AiProvider.gemini,
-    tier: 1,
-    tierLabel: 'GRATUIT',
-    tierColor: _green,
-    price: '15 req/min gratuites — Google AI Studio',
-    priceBadge: 'GRATUIT',
-    priceBadgeColor: _green,
-    qualityCours: 4,
-    qualityQuiz: 4,
+  _AiProviderData(
+    provider: AiProvider.mistral,
+    section: 'free',
+    priceBadge: 'BETA GRATUIT',
+    priceBadgeColor: _cyan,
+    tagline: 'Modele europeen open source — RGPD natif',
+    qualityCours: 3,
+    qualityQuiz: 3,
     pros: [
-      'Tier gratuit genereux (1 million tokens/jour)',
-      'Tres bonne qualite redactionnelle pour les cours',
-      'JSON mode natif — schemas tres bien respectes',
+      'Modele europeen — conformite RGPD native',
+      'Open source et transparent',
+      'Tier gratuit disponible (quota limite en beta)',
     ],
-    warning: 'Necessite un compte Google et un acces a Google AI Studio. '
-        'La limite de 15 requetes/minute est invisible en usage normal. '
-        'Gemini peut parfois etre prolixe dans ses explications — les hints seront longs.',
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur la console Mistral',
+        linkLabel: 'console.mistral.ai',
+        linkUrl: 'https://console.mistral.ai',
+      ),
+      _TutorialStep('Cree un compte gratuit'),
+      _TutorialStep('Dans le menu, clique sur "API Keys"'),
+      _TutorialStep('Clique "Create new key" et copie la cle generee'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus et clique "Connecter"'),
+    ],
+    warning: 'Mistral Small peut manquer de rigueur sur les schemas JSON complexes. '
+        'Le tier gratuit est en beta et peut etre retire a tout moment.',
   ),
-  _ProviderInfo(
+  // ── LOCAL ─────────────────────────────────────────────────────────────────
+  _AiProviderData(
+    provider: AiProvider.ollama,
+    section: 'local',
+    priceBadge: 'GRATUIT',
+    priceBadgeColor: _amber,
+    tagline: 'Modeles locaux sur ton PC — 100% prive, illimite',
+    qualityCours: 3,
+    qualityQuiz: 3,
+    pros: [
+      'Aucune donnee ne quitte ton ordinateur',
+      'Illimite — pas de quota, pas de facture',
+      'Compatible Llama 3, Mistral, Gemma, Phi...',
+    ],
+    steps: [
+      _TutorialStep(
+        'Installe Ollama sur ton PC (Mac, Windows, Linux)',
+        linkLabel: 'ollama.com',
+        linkUrl: 'https://ollama.com',
+      ),
+      _TutorialStep('Lance Ollama — une icone apparait dans la barre des taches'),
+      _TutorialStep('Dans un terminal, tape : ollama pull gemma3'),
+      _TutorialStep('Configure l\'URL et le modele ci-dessous, puis clique "Connecter"'),
+    ],
+    warning: null,
+  ),
+  // ── PAYANT ────────────────────────────────────────────────────────────────
+  _AiProviderData(
     provider: AiProvider.anthropic,
-    tier: 2,
-    tierLabel: 'PREMIUM',
-    tierColor: Color(0xFFB57BFF),
-    price: 'Payant — credits a partir de 5 USD',
+    section: 'paid',
     priceBadge: '~0,001 EUR/quiz',
-    priceBadgeColor: Color(0xFFB57BFF),
+    priceBadgeColor: _purple,
+    tagline: 'Meilleure qualite pedagogique — Claude Sonnet',
     qualityCours: 5,
     qualityQuiz: 5,
     pros: [
@@ -106,16 +188,25 @@ const _providers = <_ProviderInfo>[
       'Excellente diversite de types (sequence, diagnostic, ticket)',
       'Hints tres explicatifs et adaptes au niveau IT',
     ],
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur la console Anthropic',
+        linkLabel: 'console.anthropic.com',
+        linkUrl: 'https://console.anthropic.com',
+      ),
+      _TutorialStep('Cree un compte et ajoute du credit dans "Billing" (minimum 5 USD)'),
+      _TutorialStep('Va dans "API Keys" et clique "Create Key"'),
+      _TutorialStep('Copie la cle (commence par sk-ant-...)'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus et clique "Connecter"'),
+    ],
     warning: null,
   ),
-  _ProviderInfo(
+  _AiProviderData(
     provider: AiProvider.openai,
-    tier: 2,
-    tierLabel: 'PREMIUM',
-    tierColor: Color(0xFFB57BFF),
-    price: 'Payant — credits a partir de 5 USD',
+    section: 'paid',
     priceBadge: '~0,001 EUR/quiz',
-    priceBadgeColor: Color(0xFFB57BFF),
+    priceBadgeColor: _purple,
+    tagline: 'GPT-4o-mini — fiable, JSON mode officiel',
     qualityCours: 5,
     qualityQuiz: 5,
     pros: [
@@ -123,66 +214,73 @@ const _providers = <_ProviderInfo>[
       'JSON mode officiel — aucun JSON malformed',
       'Tres bon equilibre vitesse / qualite',
     ],
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur la plateforme OpenAI',
+        linkLabel: 'platform.openai.com',
+        linkUrl: 'https://platform.openai.com',
+      ),
+      _TutorialStep('Cree un compte et ajoute du credit dans "Settings > Billing"'),
+      _TutorialStep('Va dans "API keys" et clique "Create new secret key"'),
+      _TutorialStep('Copie la cle (commence par sk-...)'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus et clique "Connecter"'),
+    ],
     warning: null,
   ),
-  _ProviderInfo(
-    provider: AiProvider.mistral,
-    tier: 3,
-    tierLabel: 'ALTERNATIF',
-    tierColor: _cyan,
-    price: 'Tier gratuit beta disponible',
-    priceBadge: 'BETA GRATUIT',
-    priceBadgeColor: _cyan,
-    qualityCours: 3,
-    qualityQuiz: 3,
-    pros: [
-      'Modele europeen — conformite RGPD native',
-      'Open source et transparent',
-      'Tier gratuit disponible (quota limite)',
-    ],
-    warning: 'Mistral Small peut manquer de rigueur sur les schemas JSON complexes. '
-        'Si tu obtiens des erreurs "JSON invalide", regenere le quiz. '
-        'Le tier gratuit est en beta et peut etre retire.',
-  ),
-  _ProviderInfo(
+  _AiProviderData(
     provider: AiProvider.perplexity,
-    tier: 3,
-    tierLabel: 'ALTERNATIF',
-    tierColor: _cyan,
-    price: 'Abonnement ~20 USD/mois ou credits',
+    section: 'paid',
     priceBadge: '~20 EUR/mois',
     priceBadgeColor: _amber,
+    tagline: 'Acces internet temps reel — sujets tech recents',
     qualityCours: 3,
     qualityQuiz: 2,
     pros: [
-      'Acces internet en temps reel — actu tech recente',
-      'Utile pour les quiz sur des sujets d\'actualite',
+      'Acces internet en temps reel — tech recente',
+      'Utile pour des quiz sur des sujets d\'actualite',
       'Bonne comprehension du contexte IT',
     ],
-    warning: 'Perplexity est optimise pour la recherche web, pas pour la generation de schemas JSON stricts. '
-        'Les quiz generes peuvent etre moins bien structures. '
-        'Recommande uniquement si tu veux des questions sur des sujets tres recents.',
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur Perplexity',
+        linkLabel: 'perplexity.ai',
+        linkUrl: 'https://www.perplexity.ai',
+      ),
+      _TutorialStep('Cree un compte et souscris a un abonnement Pro (~20 USD/mois)'),
+      _TutorialStep('Va dans Settings > API et clique "Generate"'),
+      _TutorialStep('Copie ta cle API et colle-la dans le champ "Cle API" ci-dessus'),
+    ],
+    warning: 'Optimise pour la recherche web, pas pour la generation de schemas JSON stricts. '
+        'Recommande uniquement pour des questions sur des sujets tres recents.',
   ),
-  _ProviderInfo(
+  _AiProviderData(
     provider: AiProvider.xai,
-    tier: 3,
-    tierLabel: 'ALTERNATIF',
-    tierColor: _cyan,
-    price: 'Credits necessaires — API payante',
+    section: 'paid',
     priceBadge: 'PAYANT',
     priceBadgeColor: _amber,
+    tagline: 'Grok — modele xAI en developpement actif',
     qualityCours: 2,
     qualityQuiz: 2,
     pros: [
       'Modele Grok en developpement actif',
       'Bonne comprehension du langage naturel',
     ],
-    warning: 'xAI Grok est encore en developpement et peut produire des resultats imprevus. '
-        'Non recommande pour la generation de cours et quiz — privilegie Anthropic, OpenAI ou Gemini.',
+    steps: [
+      _TutorialStep(
+        'Rends-toi sur la console xAI',
+        linkLabel: 'console.x.ai',
+        linkUrl: 'https://console.x.ai',
+      ),
+      _TutorialStep('Cree un compte et ajoute du credit'),
+      _TutorialStep('Genere ta cle API dans la section "API Keys"'),
+      _TutorialStep('Colle-la dans le champ "Cle API" ci-dessus et clique "Connecter"'),
+    ],
+    warning: 'Grok est encore en developpement — resultats imprevus possibles. '
+        'Non recommande pour la generation de cours et quiz : prefere Anthropic, OpenAI ou Gemini.',
   ),
 ];
 
-// ── Ecran principal ──────────────────────────────────────────────────────────
+// ── Ecran principal ───────────────────────────────────────────────────────────
 
 class AiSetupScreen extends StatefulWidget {
   const AiSetupScreen({super.key});
@@ -203,6 +301,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   String _geminiModel  = 'gemini-2.5-flash';
   AiConnectionState _state    = const AiConnectionState(isConnected: false);
   AiProvider        _detected = AiProvider.unknown;
+  AiProvider?       _expandedProvider;
 
   @override
   void initState() {
@@ -218,7 +317,6 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
         _state        = s;
         _loading      = false;
         _geminiModel  = model;
-        // Ne pas copier le sentinel 'ollama' dans le champ cle API.
         if (s.isConnected && s.apiKey != null && !s.provider.isLocal) {
           _keyController.text = s.apiKey!;
           _detected = s.provider;
@@ -276,10 +374,6 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     showEskoliaSnackBar(context, 'IA deconnectee.');
   }
 
-  Future<void> _openUrl(String url) async {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-  }
-
   @override
   void dispose() {
     _keyController.dispose();
@@ -289,64 +383,64 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: '\u{1F916} Assistant IA'),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator(color: _violet))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(
-                EskoliaLayout.screenPaddingH, 16,
-                EskoliaLayout.screenPaddingH, 60,
-              ),
-              children: [
-                _buildStatusBanner(),
-                // Sélecteur de modèle Gemini — visible dès que Gemini est actif
-                // (clé sauvegardée ou en cours de saisie).
-                Builder(builder: (_) {
-                  final connectedGemini =
-                      _state.isConnected && _state.provider == AiProvider.gemini;
-                  final typingGemini = _detected == AiProvider.gemini &&
-                      _keyController.text.trim().length >= 10;
-                  if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
-                  final apiKey = connectedGemini
-                      ? (_state.apiKey ?? _keyController.text.trim())
-                      : _keyController.text.trim();
-                  return Column(
+      body: Stack(
+        children: [
+          const EskoliaAmbientBackground(),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: _loading
+                ? const Center(child: CircularProgressIndicator(color: _violet))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      EskoliaLayout.screenPaddingH, 16,
+                      EskoliaLayout.screenPaddingH, 60,
+                    ),
                     children: [
-                      const SizedBox(height: 12),
-                      GeminiModelSelector(
-                        key: ValueKey(apiKey),
-                        apiKey: apiKey,
-                        initialModel: _geminiModel,
-                        onChanged: (m) => setState(() => _geminiModel = m),
-                      ),
+                      _buildStatusBanner(),
+                      Builder(builder: (_) {
+                        final connectedGemini =
+                            _state.isConnected && _state.provider == AiProvider.gemini;
+                        final typingGemini = _detected == AiProvider.gemini &&
+                            _keyController.text.trim().length >= 10;
+                        if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
+                        final apiKey = connectedGemini
+                            ? (_state.apiKey ?? _keyController.text.trim())
+                            : _keyController.text.trim();
+                        return Column(
+                          children: [
+                            const SizedBox(height: 12),
+                            GeminiModelSelector(
+                              key: ValueKey(apiKey),
+                              apiKey: apiKey,
+                              initialModel: _geminiModel,
+                              onChanged: (m) => setState(() => _geminiModel = m),
+                            ),
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 16),
+                      _buildKeyInput(),
+                      const SizedBox(height: 14),
+                      if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
+                        const SizedBox(height: 14),
+                        _buildConsentCheckbox(),
+                        const SizedBox(height: 10),
+                      ],
+                      _buildSaveButton(),
+                      if (_state.isConnected) ...[
+                        const SizedBox(height: 10),
+                        _buildDisconnectButton(),
+                      ],
+                      const SizedBox(height: 32),
+                      _buildProviderSection(),
                     ],
-                  );
-                }),
-                const SizedBox(height: 16),
-                _buildKeyInput(),
-                const SizedBox(height: 14),
-                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
-                  const SizedBox(height: 14),
-                  _buildConsentCheckbox(),
-                  const SizedBox(height: 10),
-                ],
-                _buildSaveButton(),
-                if (_state.isConnected) ...[
-                  const SizedBox(height: 10),
-                  _buildDisconnectButton(),
-                ],
-                // Avertissement contextuel (cloud providers uniquement)
-                if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
-                  const SizedBox(height: 14),
-                  _buildWarningCard(_detected),
-                ],
-                const SizedBox(height: 32),
-                _buildTierList(),
-                const SizedBox(height: 32),
-                _buildHowToSection(),
-              ],
-            ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -490,59 +584,9 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     );
   }
 
-  // ── Avertissement contextuel ───────────────────────────────────────────────
+  // ── Section providers ──────────────────────────────────────────────────────
 
-  Widget _buildWarningCard(AiProvider provider) {
-    final info = _providers.firstWhere((p) => p.provider == provider, orElse: () => _providers.first);
-    final hasWarning = info.warning != null;
-    final borderColor = hasWarning ? _amber : _green;
-    final icon = hasWarning ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded;
-    final title = hasWarning ? 'A savoir pour ${provider.displayName}' : '${provider.displayName} — Bon choix !';
-    final body = hasWarning
-        ? info.warning!
-        : 'Ce provider offre une excellente qualite pour la generation de cours et quiz dans Eskolia.';
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: borderColor.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor.withValues(alpha: 0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Icon(icon, color: borderColor, size: 18),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(title, style: TextStyle(color: borderColor, fontWeight: FontWeight.w700, fontSize: 13)),
-            ),
-          ]),
-          const SizedBox(height: 8),
-          Text(body, style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12, height: 1.5)),
-          const SizedBox(height: 10),
-          // Barres de qualite
-          Row(children: [
-            _QualityBar(label: 'Cours', score: info.qualityCours),
-            const SizedBox(width: 16),
-            _QualityBar(label: 'Quiz', score: info.qualityQuiz),
-          ]),
-        ],
-      ),
-    );
-  }
-
-  // ── Tier list ──────────────────────────────────────────────────────────────
-
-  Widget _buildTierList() {
-    final tiers = <int>{for (final p in _providers) p.tier};
-    final tierTitles = {
-      1: ('GRATUIT — Recommande pour commencer', _green),
-      2: ('PREMIUM — Meilleure qualite pedagogique', Color(0xFFB57BFF)),
-      3: ('ALTERNATIF — Usages specifiques', _cyan),
-    };
-
+  Widget _buildProviderSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -552,65 +596,67 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Comparatif des providers supportes — qualite evaluee sur la generation de cours et quiz IT.',
+          'Clique sur un provider pour voir le tuto et obtenir ta cle API gratuitement ou avec abonnement.',
           style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12, height: 1.4),
         ),
         const SizedBox(height: 16),
-        // Section LOCAL
+        _TierHeader(label: 'GRATUIT — Recommande pour commencer', color: _green),
+        const SizedBox(height: 8),
+        for (final data in _providerData.where((d) => d.section == 'free'))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AiAccordionCard(
+              data: data,
+              isExpanded: _expandedProvider == data.provider,
+              isConnected: _state.isConnected && _state.provider == data.provider,
+              onTap: () => setState(() {
+                _expandedProvider =
+                    _expandedProvider == data.provider ? null : data.provider;
+              }),
+            ),
+          ),
+        const SizedBox(height: 12),
         _TierHeader(label: 'LOCAL — GRATUIT & ILLIMITE', color: _amber),
         const SizedBox(height: 8),
-        OllamaSetupCard(
-          isConnected: _state.isConnected && _state.provider == AiProvider.ollama,
-          onConnected: () async {
-            final s = await _repo.load();
-            if (mounted) setState(() => _state = s);
-          },
-        ),
-        const SizedBox(height: 12),
-        for (final tier in tiers.toList()..sort()) ...[
-          _TierHeader(
-            label: tierTitles[tier]!.$1,
-            color: tierTitles[tier]!.$2,
-          ),
-          const SizedBox(height: 8),
-          for (final info in _providers.where((p) => p.tier == tier))
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _ProviderCard(
-                info: info,
-                isConnected: _state.isConnected && _state.provider == info.provider,
-                onOpenUrl: () => _openUrl(info.provider.apiKeyUrl),
-              ),
+        for (final data in _providerData.where((d) => d.section == 'local'))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AiAccordionCard(
+              data: data,
+              isExpanded: _expandedProvider == data.provider,
+              isConnected: _state.isConnected && _state.provider == data.provider,
+              onTap: () => setState(() {
+                _expandedProvider =
+                    _expandedProvider == data.provider ? null : data.provider;
+              }),
+              extraContent: data.provider == AiProvider.ollama
+                  ? OllamaSetupCard(
+                      isConnected: _state.isConnected && _state.provider == AiProvider.ollama,
+                      onConnected: () async {
+                        final s = await _repo.load();
+                        if (mounted) setState(() => _state = s);
+                      },
+                    )
+                  : null,
             ),
-          const SizedBox(height: 12),
-        ],
-      ],
-    );
-  }
-
-  // ── Comment obtenir sa cle ─────────────────────────────────────────────────
-
-  Widget _buildHowToSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'COMMENT OBTENIR SA CLE API',
-          style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Clique sur le lien de ton provider, cree un compte, puis copie-colle ta cle dans le champ ci-dessus. '
-          'Eskolia detecte automatiquement le provider.',
-          style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12, height: 1.4),
-        ),
+          ),
         const SizedBox(height: 12),
-        _HowToStep(num: '1', text: 'Choisis un provider dans la liste ci-dessus (Groq ou Gemini si tu veux gratuit)'),
-        _HowToStep(num: '2', text: 'Clique sur le bouton lien pour acceder a la console du provider'),
-        _HowToStep(num: '3', text: 'Cree un compte si necessaire, puis genere une cle API'),
-        _HowToStep(num: '4', text: 'Copie la cle (commence par sk-ant-, gsk_, AIza...) et colle-la dans le champ en haut'),
-        _HowToStep(num: '5', text: 'Clique sur "Connecter" — Eskolia teste la cle automatiquement'),
-        const SizedBox(height: 16),
+        _TierHeader(label: 'PAYANT — Meilleure qualite pedagogique', color: _purple),
+        const SizedBox(height: 8),
+        for (final data in _providerData.where((d) => d.section == 'paid'))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AiAccordionCard(
+              data: data,
+              isExpanded: _expandedProvider == data.provider,
+              isConnected: _state.isConnected && _state.provider == data.provider,
+              onTap: () => setState(() {
+                _expandedProvider =
+                    _expandedProvider == data.provider ? null : data.provider;
+              }),
+            ),
+          ),
+        const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -638,7 +684,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   }
 }
 
-// ── Widgets secondaires ──────────────────────────────────────────────────────
+// ── Widgets secondaires ───────────────────────────────────────────────────────
 
 class _TierHeader extends StatelessWidget {
   const _TierHeader({required this.label, required this.color});
@@ -655,110 +701,243 @@ class _TierHeader extends StatelessWidget {
   }
 }
 
-class _ProviderCard extends StatelessWidget {
-  const _ProviderCard({
-    required this.info,
-    required this.isConnected,
-    required this.onOpenUrl,
-  });
-
-  final _ProviderInfo info;
-  final bool isConnected;
-  final VoidCallback onOpenUrl;
+class _Chip extends StatelessWidget {
+  const _Chip({required this.label, required this.color});
+  final String label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Text(label, style: TextStyle(color: color, fontSize: 8, fontWeight: FontWeight.w800)),
+    );
+  }
+}
+
+class _AiAccordionCard extends StatelessWidget {
+  const _AiAccordionCard({
+    required this.data,
+    required this.isExpanded,
+    required this.isConnected,
+    required this.onTap,
+    this.extraContent,
+  });
+
+  final _AiProviderData data;
+  final bool isExpanded;
+  final bool isConnected;
+  final VoidCallback onTap;
+  final Widget? extraContent;
+
+  Color get _sectionColor => switch (data.section) {
+    'free'  => _green,
+    'local' => _amber,
+    _       => _purple,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = isConnected
+        ? _green
+        : (data.isRecommended ? _violet : _sectionColor);
+
     return EskoliaCardContent(
-      accentBorderColor: isConnected ? _green : info.tierColor,
-      padding: const EdgeInsets.all(14),
+      accentBorderColor: accentColor,
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(info.provider.emoji, style: const TextStyle(fontSize: 22)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Text(
-                    info.provider.displayName,
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
-                  ),
-                  if (isConnected) ...[
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: _green.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Text('CONNECTE', style: TextStyle(color: _green, fontSize: 8, fontWeight: FontWeight.w800)),
+          // Header
+          GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Text(data.provider.emoji, style: const TextStyle(fontSize: 20)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: 6,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              data.provider.displayName,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 13,
+                              ),
+                            ),
+                            if (isConnected) _Chip(label: 'CONNECTE', color: _green),
+                            if (data.isRecommended) _Chip(label: 'RECOMMANDE ESKOLIA', color: _violet),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          data.tagline,
+                          style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11),
+                        ),
+                      ],
                     ),
-                  ],
-                ]),
-                const SizedBox(height: 2),
-                Text(
-                  info.provider.defaultModel,
-                  style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 10, fontFamily: 'monospace'),
-                ),
-              ]),
-            ),
-            // Badge prix
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: info.priceBadgeColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: info.priceBadgeColor.withValues(alpha: 0.4)),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: data.priceBadgeColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(color: data.priceBadgeColor.withValues(alpha: 0.4)),
+                    ),
+                    child: Text(
+                      data.priceBadge,
+                      style: TextStyle(
+                        color: data.priceBadgeColor,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  AnimatedRotation(
+                    turns: isExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.expand_more_rounded, color: _slate.withValues(alpha: 0.7), size: 20),
+                  ),
+                ],
               ),
-              child: Text(
-                info.priceBadge,
-                style: TextStyle(color: info.priceBadgeColor, fontSize: 9, fontWeight: FontWeight.w800),
-              ),
-            ),
-            const SizedBox(width: 4),
-            IconButton(
-              onPressed: onOpenUrl,
-              icon: const Icon(Icons.open_in_new_rounded, size: 16, color: _violet),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
-              tooltip: 'Obtenir la cle',
-            ),
-          ]),
-          const SizedBox(height: 10),
-          // Barres qualite
-          Row(children: [
-            _QualityBar(label: 'Cours', score: info.qualityCours),
-            const SizedBox(width: 16),
-            _QualityBar(label: 'Quiz', score: info.qualityQuiz),
-          ]),
-          const SizedBox(height: 10),
-          // Pros
-          ...info.pros.map(
-            (p) => Padding(
-              padding: const EdgeInsets.only(bottom: 3),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Icon(Icons.check_rounded, color: info.tierColor, size: 13),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(p, style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 11, height: 1.4)),
-                ),
-              ]),
             ),
           ),
-          if (info.warning != null) ...[
-            const SizedBox(height: 8),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Icon(Icons.info_outline_rounded, color: _amber, size: 13),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  info.warning!,
-                  style: TextStyle(color: _amber.withValues(alpha: 0.8), fontSize: 11, height: 1.4),
-                ),
+          // Body expanded
+          if (isExpanded) ...[
+            Divider(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    _QualityBar(label: 'Cours', score: data.qualityCours),
+                    const SizedBox(width: 16),
+                    _QualityBar(label: 'Quiz', score: data.qualityQuiz),
+                  ]),
+                  const SizedBox(height: 10),
+                  ...data.pros.map(
+                    (p) => Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Icon(Icons.check_rounded, color: _sectionColor, size: 13),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(p, style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 11, height: 1.4)),
+                        ),
+                      ]),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    data.section == 'local' ? 'COMMENT INSTALLER' : 'COMMENT OBTENIR SA CLE',
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.6),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...data.steps.asMap().entries.map(
+                    (e) => _StepRow(num: e.key + 1, step: e.value),
+                  ),
+                  if (data.warning != null) ...[
+                    const SizedBox(height: 8),
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const Icon(Icons.info_outline_rounded, color: _amber, size: 13),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          data.warning!,
+                          style: TextStyle(color: _amber.withValues(alpha: 0.8), fontSize: 11, height: 1.4),
+                        ),
+                      ),
+                    ]),
+                  ],
+                  if (extraContent != null) ...[
+                    const SizedBox(height: 12),
+                    extraContent!,
+                  ],
+                ],
               ),
-            ]),
+            ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StepRow extends StatelessWidget {
+  const _StepRow({required this.num, required this.step});
+  final int num;
+  final _TutorialStep step;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: _violet.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '$num',
+                style: const TextStyle(color: _violet, fontSize: 10, fontWeight: FontWeight.w800),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(step.text, style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 11, height: 1.4)),
+                  if (step.linkUrl != null) ...[
+                    const SizedBox(height: 3),
+                    GestureDetector(
+                      onTap: () => launchUrl(Uri.parse(step.linkUrl!), mode: LaunchMode.externalApplication),
+                      child: Text(
+                        step.linkLabel ?? step.linkUrl!,
+                        style: TextStyle(
+                          color: _violet.withValues(alpha: 0.9),
+                          fontSize: 11,
+                          decoration: TextDecoration.underline,
+                          decorationColor: _violet.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -768,7 +947,7 @@ class _ProviderCard extends StatelessWidget {
 class _QualityBar extends StatelessWidget {
   const _QualityBar({required this.label, required this.score});
   final String label;
-  final int score; // /5
+  final int score;
 
   static const _colors = [
     Color(0xFFE53935),
@@ -798,38 +977,5 @@ class _QualityBar extends StatelessWidget {
         }),
       ),
     ]);
-  }
-}
-
-class _HowToStep extends StatelessWidget {
-  const _HowToStep({required this.num, required this.text});
-  final String num;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          width: 22,
-          height: 22,
-          decoration: BoxDecoration(
-            color: _violet.withValues(alpha: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(num, style: const TextStyle(color: _violet, fontSize: 11, fontWeight: FontWeight.w800)),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Text(text, style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 12, height: 1.4)),
-          ),
-        ),
-      ]),
-    );
   }
 }

@@ -52,6 +52,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   List<String> _sequenceOrder = [];
   String? _sequenceQuestionId;
 
+  // Association drag & drop state
+  Map<String, String> _userPairings = {};
+  List<String> _assocPool = [];
+  String? _assocQuestionId;
+
   @override
   void initState() {
     super.initState();
@@ -87,12 +92,27 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     });
   }
 
+  void _initAssociationForQuestion(QuizQuestion q) {
+    if (q.id == _assocQuestionId) return;
+    if (q.matchPairs == null || q.matchPairs!.isEmpty) return;
+    setState(() {
+      _assocQuestionId = q.id;
+      _userPairings = {};
+      _assocPool = q.matchPairs!.map((p) => p[1]).toList()..shuffle();
+    });
+  }
+
   void _onReveal() {
     final state = ref.read(quizProvider(widget.sessionId));
     final q = state.session?.questions[state.session!.currentIndex];
     if (q?.type == 'sequence' && q?.answerSequence != null && _sequenceOrder.isNotEmpty) {
       ref.read(quizProvider(widget.sessionId).notifier)
           .revealAndScoreSequence(_sequenceOrder, q!.answerSequence!);
+      return;
+    }
+    if (q?.type == 'association' && q?.matchPairs != null) {
+      ref.read(quizProvider(widget.sessionId).notifier)
+          .revealAndScoreAssociation(_userPairings, q!.matchPairs!);
       return;
     }
     ref.read(quizProvider(widget.sessionId).notifier).reveal();
@@ -173,6 +193,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       if (q?.type == 'sequence' && q?.id != _sequenceQuestionId) {
         _initSequenceForQuestion(q!);
       }
+      if (q?.type == 'association' && q?.id != _assocQuestionId) {
+        _initAssociationForQuestion(q!);
+      }
     });
 
     final state = ref.watch(quizProvider(widget.sessionId));
@@ -186,7 +209,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         });
       },
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),
@@ -418,13 +441,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             TextButton.icon(
               onPressed: () => ref.read(quizProvider(widget.sessionId).notifier).incrementIndices(),
               icon: const Icon(Icons.lightbulb_outline, size: 16),
-              label: Text('Révéler l\'indice ${state.revealedIndicesCount + 1} (-25% points)'),
+              label: Text('Révéler l\'indice ${state.revealedIndicesCount + 1}'),
               style: TextButton.styleFrom(foregroundColor: _orange),
             ),
         ],
         const SizedBox(height: 16),
         if (q.type == 'sequence') ...[
           _buildSequenceReorder(q),
+        ] else if (q.type == 'association') ...[
+          _buildAssociationWidget(q),
         ] else ...[
           EskoliaTextField(
             controller: _answerController,
@@ -551,6 +576,257 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     );
   }
 
+  Widget _buildAssociationWidget(QuizQuestion q) {
+    if (_assocQuestionId != q.id || q.matchPairs == null) return const SizedBox.shrink();
+    final pairs = q.matchPairs!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.compare_arrows_rounded, color: _violet, size: 16),
+            const SizedBox(width: 6),
+            const Text(
+              'GLISSE POUR ASSOCIER',
+              style: TextStyle(color: _violet, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (_assocPool.isNotEmpty) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _assocPool.map((item) => Draggable<String>(
+              data: item,
+              feedback: Material(
+                color: Colors.transparent,
+                child: _buildAssocChip(item, dragging: true),
+              ),
+              childWhenDragging: _buildAssocChip(item, ghost: true),
+              child: _buildAssocChip(item),
+            )).toList(),
+          ),
+          const SizedBox(height: 16),
+        ],
+        ...pairs.map((pair) {
+          final leftItem = pair[0];
+          final placed = _userPairings[leftItem];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.07),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    ),
+                    child: Text(leftItem, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const Icon(Icons.arrow_forward_rounded, color: Colors.white30, size: 16),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: DragTarget<String>(
+                    onAccept: (item) {
+                      setState(() {
+                        if (_userPairings[leftItem] != null) {
+                          _assocPool.add(_userPairings[leftItem]!);
+                        }
+                        _assocPool.remove(item);
+                        _userPairings[leftItem] = item;
+                      });
+                    },
+                    builder: (ctx, candidates, rejected) {
+                      final isHovered = candidates.isNotEmpty;
+                      if (placed != null) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _assocPool.add(placed);
+                              _userPairings.remove(leftItem);
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: _violet.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: _violet.withValues(alpha: 0.5)),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(placed, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3))),
+                                Icon(Icons.close_rounded, color: Colors.white.withValues(alpha: 0.4), size: 14),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: isHovered ? _violet.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.03),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isHovered ? _violet.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.1),
+                          ),
+                        ),
+                        child: Text(
+                          'Dépose ici...',
+                          style: TextStyle(
+                            color: isHovered ? _violet : Colors.white.withValues(alpha: 0.3),
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ],
+    );
+  }
+
+  Widget _buildAssocChip(String item, {bool dragging = false, bool ghost = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: ghost
+            ? Colors.white.withValues(alpha: 0.04)
+            : dragging
+                ? _violet.withValues(alpha: 0.9)
+                : Colors.white.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: ghost
+              ? Colors.white.withValues(alpha: 0.1)
+              : _violet.withValues(alpha: dragging ? 1.0 : 0.4),
+        ),
+      ),
+      child: Text(
+        item,
+        style: TextStyle(
+          color: ghost ? Colors.white24 : Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAssociationComparison(List<List<String>> correctPairs) {
+    int correctCount = 0;
+    for (final pair in correctPairs) {
+      if (pair.length >= 2 && _userPairings[pair[0]] == pair[1]) correctCount++;
+    }
+    final total = correctPairs.length;
+    final allCorrect = correctCount == total;
+    final accent = allCorrect ? _green : (correctCount > 0 ? _orange : _red);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: accent.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                allCorrect ? '\u{1F3C6}' : (correctCount > 0 ? '\u{1F4CA}' : '\u{1F504}'),
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                allCorrect
+                    ? 'Toutes les paires correctes !'
+                    : '$correctCount / $total paire${total > 1 ? 's' : ''} correcte${correctCount > 1 ? 's' : ''}',
+                style: TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        ...correctPairs.map((pair) {
+          if (pair.length < 2) return const SizedBox.shrink();
+          final left = pair[0];
+          final correct = pair[1];
+          final placed = _userPairings[left];
+          final isOk = placed == correct;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(left, style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10, left: 4, right: 4),
+                  child: Icon(Icons.arrow_forward_rounded, color: Colors.white24, size: 14),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isOk ? _green.withValues(alpha: 0.1) : _red.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isOk ? _green.withValues(alpha: 0.4) : _red.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(isOk ? Icons.check_rounded : Icons.close_rounded, color: isOk ? _green : _red, size: 13),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                placed ?? '—',
+                                style: TextStyle(color: isOk ? Colors.white : Colors.white54, fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (!isOk) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Correct : $correct',
+                            style: const TextStyle(color: _green, fontSize: 11, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ],
+    );
+  }
+
   Widget _buildBack(QuizState state, QuizQuestion q) {
     final currentScore = state.isValidated && state.session != null
         ? (state.session!.userScores[state.session!.currentIndex] ?? 0.0)
@@ -579,10 +855,19 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                 size: 16,
               ),
             ],
+            const Spacer(),
+            QuestionThumbsWidget(
+              questionId: q.id,
+              quizTitle: state.session?.title,
+              theme: q.theme,
+              difficulty: q.difficultyBucket,
+              questionType: q.type,
+              source: 'solo',
+            ),
           ],
         ),
         const SizedBox(height: 12),
-        AnimatedContainer(
+        if (q.type != 'association') AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -644,7 +929,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             );
           }),
         ],
-        if (q.type == 'sequence' && q.answerSequence != null) ...[
+        if (q.type == 'association' && q.matchPairs != null) ...[
+          const SizedBox(height: 20),
+          _buildAssociationComparison(q.matchPairs!),
+        ] else if (q.type == 'sequence' && q.answerSequence != null) ...[
           const SizedBox(height: 20),
           _buildSequenceComparison(q.answerSequence!),
         ] else if (q.explanation != null) ...[
@@ -692,7 +980,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           ],
         ],
         const SizedBox(height: 16),
-        if (!state.isValidated && q.type != 'sequence') ...[
+        if (!state.isValidated && q.type != 'sequence' && q.type != 'association') ...[
           const Text(
             'Étais-tu proche de la réponse ?',
             textAlign: TextAlign.center,
@@ -894,9 +1182,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     if (!state.isFlipped) {
       final q = state.session?.questions[state.session!.currentIndex];
       final isSeq = q?.type == 'sequence';
+      final isAssoc = q?.type == 'association';
       return EskoliaButton(
-        label: isSeq ? 'Vérifier l\'ordre' : 'Vérifier la réponse',
-        icon: isSeq ? Icons.check_circle_outline_rounded : Icons.visibility_rounded,
+        label: isSeq
+            ? 'Vérifier l\'ordre'
+            : isAssoc
+                ? 'Vérifier les associations'
+                : 'Vérifier la réponse',
+        icon: (isSeq || isAssoc) ? Icons.check_circle_outline_rounded : Icons.visibility_rounded,
         variant: EskoliaButtonVariant.primary,
         onPressed: _onReveal,
       );

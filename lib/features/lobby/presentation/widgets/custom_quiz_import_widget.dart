@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/services/asset_cache_service.dart';
+import '../../../../core/services/eskolia_folder_service.dart';
 import '../../../../core/utils/eskolia_snackbar.dart';
 import '../../data/models/custom_quiz_data.dart';
-
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html show Blob, Url, AnchorElement;
 
 const Color _slate = Color(0xFF94A3B8);
 const Color _violet = Color(0xFF6C63FF);
@@ -47,7 +45,12 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
       final raw = await AssetCacheService.loadString(
           'assets/templates/eskolia_quiz_template.json');
       if (kIsWeb) {
-        _downloadWeb(raw);
+        await EskoliaFolderService.instance.saveFile(
+          EskoliaFolder.quiz,
+          'eskolia_quiz_template.json',
+          raw,
+          mimeType: 'application/json',
+        );
       } else {
         await _shareMobile(raw);
       }
@@ -58,22 +61,43 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
     }
   }
 
-  void _downloadWeb(String content) {
-    final bytes = utf8.encode(content);
-    final blob = html.Blob([bytes], 'application/json');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute('download', 'eskolia_quiz_template.json')
-      ..click();
-    html.Url.revokeObjectUrl(url);
-  }
-
   Future<void> _shareMobile(String content) async {
     // share_plus utilisé sur mobile — import conditionnel évité grâce à kIsWeb
     // La méthode n'est jamais appelée sur web.
     if (mounted) {
       showEskoliaSnackBar(context, 'Modèle copié — collez-le dans un fichier .json');
       await Clipboard.setData(ClipboardData(text: content));
+    }
+  }
+
+  Future<void> _importFromEskolia() async {
+    final fs = EskoliaFolderService.instance;
+    final files = await fs.listFiles(EskoliaFolder.quiz);
+    if (!mounted) return;
+    if (files.isEmpty) {
+      showEskoliaSnackBar(context, 'Aucun quiz dans Eskolia/Quiz/. Configure ton dossier dans les parametres.');
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: _surface,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _EskoliaQFilePicker(files: files),
+    );
+    if (picked == null || !mounted) return;
+    final raw = await fs.readFile(EskoliaFolder.quiz, picked);
+    if (raw == null) {
+      if (mounted) showEskoliaSnackBar(context, 'Impossible de lire ce fichier.');
+      return;
+    }
+    try {
+      final data = CustomQuizData.fromJsonString(raw);
+      if (mounted) {
+        widget.onImported(data);
+        showEskoliaSnackBar(context, '${data.questions.length} questions importees — "${data.title}"');
+      }
+    } on FormatException catch (e) {
+      if (mounted) showEskoliaSnackBar(context, 'Format invalide : ${e.message}');
     }
   }
 
@@ -153,6 +177,17 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
                 )
               : const Icon(Icons.folder_open_rounded, size: 18),
           label: const Text('Importer mon quiz .json'),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _importFromEskolia,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF00BCD4),
+            side: BorderSide(color: const Color(0xFF00BCD4).withValues(alpha: 0.4)),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+          icon: const Icon(Icons.folder_special_rounded, size: 18),
+          label: const Text('Depuis mon dossier Eskolia'),
         ),
         const SizedBox(height: 10),
         Text(
@@ -268,6 +303,60 @@ class _CustomQuizImportWidgetState extends State<CustomQuizImportWidget> {
           icon: const Icon(Icons.refresh_rounded, size: 16),
           label: const Text('Changer de fichier'),
         ),
+      ],
+    );
+  }
+}
+
+class _EskoliaQFilePicker extends StatelessWidget {
+  const _EskoliaQFilePicker({required this.files});
+  final List<String> files;
+
+  String _label(String f) => f
+      .replaceAll('quiz_', '')
+      .replaceAll('eskolia_quiz_template', 'Modele vide')
+      .replaceAll('.json', '')
+      .replaceAll('_', ' ');
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+        ),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            'Choisir un quiz Eskolia',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: files.length,
+            itemBuilder: (_, i) => ListTile(
+              leading: const Icon(Icons.quiz_rounded, color: _violet),
+              title: Text(
+                _label(files[i]),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              subtitle: Text(
+                files[i],
+                style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11),
+              ),
+              onTap: () => Navigator.of(context).pop(files[i]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
       ],
     );
   }

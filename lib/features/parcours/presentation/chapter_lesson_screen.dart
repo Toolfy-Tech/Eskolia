@@ -42,22 +42,6 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
     _loadPodcast();
   }
 
-  /// Charge le podcast de la section, seulement en tete de section
-  /// (1er chapitre) pour ne pas le repeter sur chaque chapitre du module.
-  Future<void> _loadPodcast() async {
-    final loc = ParcoursRepository.moduleLocation[widget.moduleId];
-    if (loc == null) return;
-    final section = ParcoursRepository
-        .sectionByCompoundKey['${loc.formationId}::${loc.sectionId}'];
-    final isFirstChapter = section != null &&
-        section.modules.isNotEmpty &&
-        section.modules.first.id == widget.moduleId;
-    if (!isFirstChapter) return;
-    final p = await PodcastCatalog.forSection(loc.sectionId);
-    if (!mounted) return;
-    setState(() => _podcast = p);
-  }
-
   Future<void> _load() async {
     final mod = ParcoursRepository.moduleById(widget.moduleId);
     final path = mod?.lessonAssetPath;
@@ -77,6 +61,22 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
       if (!mounted) return;
       setState(() => _error = e);
     }
+  }
+
+  /// Charge le podcast de la section, mais seulement en tete de section
+  /// (1er chapitre) pour ne pas le repeter sur chaque chapitre du module.
+  Future<void> _loadPodcast() async {
+    final loc = ParcoursRepository.moduleLocation[widget.moduleId];
+    if (loc == null) return;
+    final section = ParcoursRepository
+        .sectionByCompoundKey['${loc.formationId}::${loc.sectionId}'];
+    final isFirstChapter = section != null &&
+        section.modules.isNotEmpty &&
+        section.modules.first.id == widget.moduleId;
+    if (!isFirstChapter) return;
+    final p = await PodcastCatalog.forSection(loc.sectionId);
+    if (!mounted) return;
+    setState(() => _podcast = p);
   }
 
   @override
@@ -103,7 +103,8 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: EskoliaVisual.bgDeep,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(
           context,
           title: m?.title ?? 'Cours',

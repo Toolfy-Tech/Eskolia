@@ -42,7 +42,7 @@ class EskoliaBottomNav extends StatelessWidget {
   static const _NavItem _solo = _NavItem(
     path: '/solo',
     emoji: '\u{1F3AF}',
-    label: 'S\'entraîner',
+    label: 'Pratique',
   );
   static const _NavItem _multijoueur = _NavItem(
     path: '/lobbys',
@@ -59,10 +59,10 @@ class EskoliaBottomNav extends StatelessWidget {
     emoji: '\u{1F4D3}',
     label: 'Notes',
   );
-  static const _NavItem _profil = _NavItem(
-    path: '/profil',
-    emoji: '\u{1F464}',
-    label: 'Moi',
+  static const _NavItem _ai = _NavItem(
+    path: '/ai/setup',
+    emoji: '\u{1F916}',
+    label: 'IA',
   );
   static const _NavItem _admin = _NavItem(
     path: '/admin',
@@ -79,7 +79,7 @@ class EskoliaBottomNav extends StatelessWidget {
         _multijoueur,
         _labo,
         _notebook,
-        _profil,
+        _ai,
         if (showAdminNav) _admin,
       ];
 
@@ -150,12 +150,10 @@ class EskoliaBottomNav extends StatelessWidget {
   }) {
     final index = _indexForPath(currentPath, items);
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-        child: Center(
-          child: ClipRRect(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+      child: Center(
+        child: ClipRRect(
             borderRadius: BorderRadius.circular(40),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
@@ -217,7 +215,7 @@ class EskoliaBottomNav extends StatelessWidget {
                         item: item,
                         active: active,
                         neon: neon,
-                        showBadge: item.path == '/profil' && aiConnected,
+                        showBadge: item.path == '/ai/setup' && aiConnected,
                         onTap: () async {
                           final router = GoRouter.of(context);
                           final current =
@@ -236,7 +234,11 @@ class EskoliaBottomNav extends StatelessWidget {
                             if (!context.mounted || !ok) return;
                           }
                           if (!context.mounted) return;
-                          router.go(target);
+                          if (target == '/ai/setup') {
+                            router.push(target);
+                          } else {
+                            router.go(target);
+                          }
                         },
                       );
                     }),
@@ -246,7 +248,6 @@ class EskoliaBottomNav extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }
@@ -264,6 +265,7 @@ class MainShell extends ConsumerWidget {
     final routerState = GoRouterState.of(context);
     final path = routerState.uri.path;
     final topPad = MediaQuery.of(context).padding.top;
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
     final hasPodcast = ref.watch(
       podcastPlayerProvider.select((s) => s.podcast != null),
@@ -274,7 +276,7 @@ class MainShell extends ConsumerWidget {
         : 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F1A),
+      backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -294,7 +296,7 @@ class MainShell extends ConsumerWidget {
             right: 0,
             child: const EskoliaTipsBanner(),
           ),
-          // Mini-player flottant au-dessus de la barre de navigation
+          // Mini-lecteur flottant au-dessus de la barre de navigation
           if (hasPodcast)
             Positioned(
               left: 14,
@@ -305,8 +307,10 @@ class MainShell extends ConsumerWidget {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 0,
-            child: EskoliaBottomNav(currentPath: path),
+            bottom: 12 + bottomInset,
+            child: Center(
+              child: EskoliaBottomNav(currentPath: path),
+            ),
           ),
         ],
       ),

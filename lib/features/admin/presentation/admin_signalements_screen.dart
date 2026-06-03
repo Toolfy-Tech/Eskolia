@@ -41,9 +41,10 @@ class AdminSignalementsScreen extends StatelessWidget {
     final repo = AdminSignalementsRepository();
 
     return StaffGateScaffold(
-      title: 'Signalements',
+            title: 'Signalements',
       child: Scaffold(
-        backgroundColor: _bg,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Signalements'),
         body: Stack(
           children: [

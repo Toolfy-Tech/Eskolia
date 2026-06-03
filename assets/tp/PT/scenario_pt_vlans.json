@@ -1,0 +1,315 @@
+{
+  "id": "tp_pt_vlans",
+  "title": "VLANs & Routage Inter-VLAN",
+  "subtitle": "TechCorp — Segmentation réseau",
+  "emoji": "🔀",
+  "color": "#6C63FF",
+  "difficulty": "moyen",
+  "difficulty_label": "Moyen",
+  "description": "Segmente le réseau de TechCorp en VLANs par département, puis configure le routage inter-VLAN pour permettre la communication entre les services.",
+  "domain": "Réseau",
+  "type": "construction",
+  "company": "TechCorp",
+  "packet_tracer_version": "8.2",
+  "total_missions": 4,
+  "estimated_hours": "2h30",
+  "prerequisite": "tp_pt_fondamentaux",
+  "context_intro": "TechCorp grandit. Pour des raisons de sécurité et d'organisation, on va séparer le réseau par département : le service RH ne doit pas voir le trafic IT, et inversement. On utilise les VLANs (Virtual LAN) pour ça — une segmentation logique du réseau physique.",
+  "badges": [],
+  "levels": [
+    {
+      "id": "niveau_vlan_base",
+      "title": "Introduction aux VLANs",
+      "emoji": "🏷️",
+      "color": "#6C63FF",
+      "missions": [
+        {
+          "id": "PT-V-1",
+          "order": 1,
+          "title": "Créer et affecter des VLANs",
+          "type": "construction",
+          "estimated_minutes": 25,
+          "objective": "Créer deux VLANs sur un switch et affecter les ports aux bons VLANs.",
+          "context": "Un VLAN (Virtual LAN) permet de segmenter logiquement un switch physique en plusieurs réseaux indépendants. Les ports du switch sont affectés à un VLAN — les machines connectées à des VLANs différents ne peuvent pas communiquer entre elles sans routeur, même si elles sont sur le même switch physique.",
+          "steps": [
+            "Reprends la topologie du TP Fondamentaux (1 switch, 4 PCs) ou recrée-la",
+            "Clique sur le switch → onglet 'CLI'",
+            "Crée le VLAN 10 avec le nom RH :",
+            "  enable → conf t → vlan 10 → name RH → exit",
+            "Crée le VLAN 20 avec le nom IT :",
+            "  vlan 20 → name IT → exit",
+            "Affecte Fa0/1 et Fa0/2 (PC1 et PC2) au VLAN 10 :",
+            "  interface Fa0/1 → switchport mode access → switchport access vlan 10 → exit",
+            "  interface Fa0/2 → switchport mode access → switchport access vlan 10 → exit",
+            "Affecte Fa0/3 et Fa0/4 (PC3 et PC4) au VLAN 20 :",
+            "  interface Fa0/3 → switchport mode access → switchport access vlan 20 → exit",
+            "  interface Fa0/4 → switchport mode access → switchport access vlan 20 → exit",
+            "Vérifie avec : show vlan brief",
+            "Teste : PC1 (VLAN 10) ping PC2 (VLAN 10) → doit réussir",
+            "Teste : PC1 (VLAN 10) ping PC3 (VLAN 20) → doit échouer"
+          ],
+          "ios_commands": [
+            {
+              "device": "Switch SW1",
+              "label": "Création des VLANs",
+              "commands": [
+                "enable",
+                "conf t",
+                "vlan 10",
+                "name RH",
+                "exit",
+                "vlan 20",
+                "name IT",
+                "exit"
+              ]
+            },
+            {
+              "device": "Switch SW1",
+              "label": "Affectation des ports",
+              "commands": [
+                "interface Fa0/1",
+                "switchport mode access",
+                "switchport access vlan 10",
+                "exit",
+                "interface Fa0/2",
+                "switchport mode access",
+                "switchport access vlan 10",
+                "exit",
+                "interface Fa0/3",
+                "switchport mode access",
+                "switchport access vlan 20",
+                "exit",
+                "interface Fa0/4",
+                "switchport mode access",
+                "switchport access vlan 20",
+                "exit"
+              ]
+            },
+            {
+              "device": "Switch SW1",
+              "label": "Vérification",
+              "commands": ["show vlan brief"]
+            }
+          ],
+          "help": {
+            "text": "PC1 ne ping plus PC2 après configuration des VLANs ?",
+            "where": "Vérifie que les deux ports sont bien dans le VLAN 10 avec 'show vlan brief'. Si un port apparaît dans le VLAN 1 (défaut), c'est que la commande 'switchport access vlan 10' n'a pas été appliquée correctement sur ce port."
+          },
+          "expected_result": [
+            "VLAN 10 (RH) existe sur le switch avec Fa0/1 et Fa0/2",
+            "VLAN 20 (IT) existe sur le switch avec Fa0/3 et Fa0/4",
+            "PC1 ping PC2 avec succès (même VLAN)",
+            "PC1 ne peut pas joindre PC3 (VLANs différents, pas de routeur)"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Quelle commande affiche la liste des VLANs et les ports qui leur sont associés ?",
+            "expected_answer": "show vlan brief",
+            "hint": "Cette commande donne une vue résumée de tous les VLANs actifs et leurs ports membres."
+          }
+        },
+        {
+          "id": "PT-V-2",
+          "order": 2,
+          "title": "Routage inter-VLAN (Router-on-a-Stick)",
+          "type": "construction",
+          "estimated_minutes": 35,
+          "objective": "Configurer un routeur avec des sous-interfaces pour permettre la communication entre le VLAN RH et le VLAN IT.",
+          "context": "Pour faire communiquer deux VLANs, il faut un routeur. La technique 'Router-on-a-Stick' utilise une seule interface physique du routeur divisée en sous-interfaces logiques — une par VLAN. Le lien entre le switch et le routeur doit être configuré en mode trunk pour transporter les trames des deux VLANs.",
+          "steps": [
+            "Ajoute un routeur 1941 dans la topologie",
+            "Connecte le routeur au switch avec un câble droit sur GigabitEthernet0/0",
+            "Sur le switch, configure le port connecté au routeur en mode trunk :",
+            "  conf t → interface Fa0/5 → switchport mode trunk → exit",
+            "Sur le routeur, configure la sous-interface pour le VLAN 10 :",
+            "  conf t → interface GigabitEthernet0/0.10",
+            "  encapsulation dot1Q 10",
+            "  ip address 192.168.10.254 255.255.255.0",
+            "  exit",
+            "Configure la sous-interface pour le VLAN 20 :",
+            "  interface GigabitEthernet0/0.20",
+            "  encapsulation dot1Q 20",
+            "  ip address 192.168.20.254 255.255.255.0",
+            "  exit",
+            "Active l'interface physique : interface GigabitEthernet0/0 → no shutdown → end",
+            "Reconfigure les IPs des PCs dans les bons sous-réseaux :",
+            "  PC1 et PC2 : IP en 192.168.10.x, Gateway = 192.168.10.254",
+            "  PC3 et PC4 : IP en 192.168.20.x, Gateway = 192.168.20.254",
+            "Teste : PC1 ping PC3 (inter-VLAN) → doit réussir"
+          ],
+          "ios_commands": [
+            {
+              "device": "Switch SW1",
+              "label": "Port trunk vers le routeur",
+              "commands": [
+                "conf t",
+                "interface Fa0/5",
+                "switchport mode trunk",
+                "exit"
+              ]
+            },
+            {
+              "device": "Routeur R1",
+              "label": "Sous-interfaces VLAN",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/0.10",
+                "encapsulation dot1Q 10",
+                "ip address 192.168.10.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0.20",
+                "encapsulation dot1Q 20",
+                "ip address 192.168.20.254 255.255.255.0",
+                "exit",
+                "interface GigabitEthernet0/0",
+                "no shutdown",
+                "end"
+              ]
+            }
+          ],
+          "help": {
+            "text": "PC1 ne ping toujours pas PC3 après configuration ?",
+            "where": "Vérifications dans l'ordre : (1) Le port du switch connecté au routeur est bien en mode trunk ('show interfaces trunk'). (2) Les sous-interfaces ont bien 'encapsulation dot1Q' avec le bon numéro de VLAN. (3) Les PCs ont bien la bonne Default Gateway (192.168.10.254 pour le VLAN 10, 192.168.20.254 pour le VLAN 20)."
+          },
+          "expected_result": [
+            "Le routeur a les sous-interfaces G0/0.10 (192.168.10.254) et G0/0.20 (192.168.20.254)",
+            "Le port trunk est configuré sur le switch",
+            "PC1 (VLAN 10) peut joindre PC3 (VLAN 20) via le routeur",
+            "La commande 'show ip interface brief' montre les sous-interfaces actives"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quelle commande configure une sous-interface pour transporter les trames du VLAN 10 ?",
+            "choices": [
+              "encapsulation dot1Q 10",
+              "switchport access vlan 10",
+              "vlan 10 trunk",
+              "ip vlan 10 enable"
+            ],
+            "expected_answer": "encapsulation dot1Q 10",
+            "hint": "dot1Q est le standard IEEE 802.1Q utilisé pour le tagging des trames VLAN sur les liens trunk."
+          }
+        }
+      ]
+    },
+    {
+      "id": "niveau_vlan_avance",
+      "title": "VLANs multi-switchs",
+      "emoji": "🔗",
+      "color": "#22D3EE",
+      "missions": [
+        {
+          "id": "PT-V-3",
+          "order": 3,
+          "title": "Étendre les VLANs sur deux switchs",
+          "type": "construction",
+          "estimated_minutes": 30,
+          "objective": "Propager les VLANs RH et IT sur un second switch via un lien trunk.",
+          "context": "TechCorp a deux salles. Chaque salle a son propre switch, mais les VLANs doivent être cohérents : un PC du VLAN RH dans la salle 1 doit pouvoir communiquer avec un PC du VLAN RH dans la salle 2. Pour ça, le lien entre les deux switchs doit être configuré en mode trunk.",
+          "steps": [
+            "Ajoute un second switch 2960 dans la topologie et connecte 4 PCs dessus",
+            "Connecte les deux switchs entre eux avec un câble droit sur Gi0/1 de chaque switch",
+            "Sur SW1, configure le lien inter-switch en trunk :",
+            "  conf t → interface GigabitEthernet0/1 → switchport mode trunk → exit",
+            "Sur SW2, configure le même port en trunk :",
+            "  conf t → interface GigabitEthernet0/1 → switchport mode trunk → exit",
+            "Sur SW2, crée les mêmes VLANs (10 RH, 20 IT) et affecte les ports aux PCs",
+            "Configure les IPs des nouveaux PCs dans les bons sous-réseaux (192.168.10.x ou 192.168.20.x)",
+            "Assigne la bonne Default Gateway à chaque PC",
+            "Teste la communication entre un PC VLAN 10 de SW1 et un PC VLAN 10 de SW2"
+          ],
+          "ios_commands": [
+            {
+              "device": "Switch SW1 et SW2",
+              "label": "Lien trunk inter-switch",
+              "commands": [
+                "conf t",
+                "interface GigabitEthernet0/1",
+                "switchport mode trunk",
+                "exit"
+              ]
+            },
+            {
+              "device": "Switch SW2",
+              "label": "Création VLANs sur SW2",
+              "commands": [
+                "vlan 10",
+                "name RH",
+                "exit",
+                "vlan 20",
+                "name IT",
+                "exit"
+              ]
+            }
+          ],
+          "help": {
+            "text": "Les PCs du même VLAN sur deux switchs différents ne se joignent pas ?",
+            "where": "Vérifie que le lien entre les deux switchs est bien en mode trunk sur les deux extrémités ('show interfaces trunk'). Si un seul côté est en trunk, ça ne fonctionne pas. Vérifie aussi que les VLANs sont créés sur SW2 — ils ne se propagent pas automatiquement sans VTP."
+          },
+          "expected_result": [
+            "Les deux switchs sont reliés par un lien trunk",
+            "Les VLANs 10 et 20 existent sur les deux switchs",
+            "Un PC VLAN 10 de SW1 peut joindre un PC VLAN 10 de SW2",
+            "Un PC VLAN 10 ne peut pas joindre un PC VLAN 20 sans passer par le routeur"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Pourquoi doit-on configurer le lien inter-switch en mode trunk ?",
+            "choices": [
+              "Pour transporter les trames de plusieurs VLANs sur un seul lien physique",
+              "Pour augmenter la bande passante entre les deux switchs",
+              "Pour éviter les boucles réseau (STP)",
+              "Parce que les switchs Cisco ne supportent que les connexions trunk entre eux"
+            ],
+            "expected_answer": "Pour transporter les trames de plusieurs VLANs sur un seul lien physique",
+            "hint": "Un lien en mode access ne transporte qu'un seul VLAN. Le trunk permet de transporter plusieurs VLANs simultanément grâce au tagging 802.1Q."
+          }
+        },
+        {
+          "id": "PT-V-4",
+          "order": 4,
+          "title": "Dépannage VLAN",
+          "type": "depannage",
+          "estimated_minutes": 25,
+          "objective": "Diagnostiquer pourquoi deux PCs du même VLAN ne se joignent pas.",
+          "context": "Un collègue a configuré les VLANs mais quelque chose ne va pas — des PCs censés être dans le même VLAN ne peuvent pas communiquer. Charge le fichier .pkt et trouve la panne.",
+          "steps": [
+            "Charge le fichier .pkt de départ",
+            "Teste la connectivité entre PC1 et PC2 (même VLAN théoriquement) — échec attendu",
+            "Sur le switch, vérifie l'affectation des ports : show vlan brief",
+            "Vérifie le mode des ports concernés : show interfaces Fa0/1 switchport",
+            "Identifie le port mal configuré et corrige-le",
+            "Reteste le ping"
+          ],
+          "ios_commands": [
+            {
+              "device": "Switch SW1",
+              "label": "Diagnostic VLAN",
+              "commands": [
+                "show vlan brief",
+                "show interfaces Fa0/1 switchport",
+                "show interfaces Fa0/2 switchport"
+              ]
+            }
+          ],
+          "help": {
+            "text": "La commande show vlan brief montre le VLAN 1 sur certains ports ?",
+            "where": "VLAN 1 est le VLAN par défaut. Si un port y apparaît, c'est que la commande 'switchport access vlan X' n'a pas été appliquée. Reconfigure le port : conf t → interface Fa0/X → switchport mode access → switchport access vlan 10 → exit."
+          },
+          "expected_result": [
+            "La panne a été identifiée (port dans le mauvais VLAN)",
+            "Le port a été reconfiguré dans le bon VLAN",
+            "PC1 et PC2 se joignent avec succès"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quel VLAN est attribué par défaut à tous les ports d'un switch Cisco ?",
+            "choices": ["VLAN 1", "VLAN 0", "VLAN 100", "Aucun VLAN par défaut"],
+            "expected_answer": "VLAN 1",
+            "hint": "Sur les switchs Cisco, tous les ports appartiennent au VLAN 1 par défaut si aucune configuration n'est appliquée."
+          }
+        }
+      ]
+    }
+  ]
+}

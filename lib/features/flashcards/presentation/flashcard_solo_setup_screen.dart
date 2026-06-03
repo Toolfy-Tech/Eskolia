@@ -140,7 +140,8 @@ class _FlashcardSoloSetupScreenState extends State<FlashcardSoloSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Flashcards'),
       body: Stack(
         children: [

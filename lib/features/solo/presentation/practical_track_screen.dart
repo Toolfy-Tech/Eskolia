@@ -364,7 +364,8 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
     final ex = _exercises;
 
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

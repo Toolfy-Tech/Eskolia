@@ -60,7 +60,8 @@ class _LaboReportsScreenState extends State<LaboReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Mes signalements'),
       body: Stack(
         children: [

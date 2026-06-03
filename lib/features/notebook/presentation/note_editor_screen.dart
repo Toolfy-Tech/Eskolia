@@ -1,6 +1,5 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
-import 'dart:html' as html show Blob, Url, AnchorElement;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -10,9 +9,11 @@ import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../ai/data/ai_key_repository.dart';
 import '../../quiz/services/quiz_repository.dart';
 import '../data/note_ai_generator.dart';
@@ -268,24 +269,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   // ── Download ─────────────────────────────────────────────────────────────────
 
-  void _downloadFile(String content, String filename, String mimeType) {
-    final bytes = utf8.encode(content);
-    final blob  = html.Blob([bytes], mimeType);
-    final url   = html.Url.createObjectUrlFromBlob(blob);
-    html.AnchorElement(href: url)
-      ..setAttribute('download', filename)
-      ..click();
-    html.Url.revokeObjectUrl(url);
-  }
+  final _fs = EskoliaFolderService.instance;
 
   String _safeName(String subject) =>
       subject.replaceAll(RegExp(r'[^\w\s-]'), '').replaceAll(' ', '_').toLowerCase();
 
-  void _downloadCourse(_SubjectResult item) =>
-      _downloadFile(item.course, 'cours_${_safeName(item.subject)}.md', 'text/markdown');
+  Future<void> _downloadCourse(_SubjectResult item) => _fs.saveFile(
+        EskoliaFolder.cours,
+        'cours_${_safeName(item.subject)}.md',
+        item.course,
+        mimeType: 'text/markdown',
+      );
 
-  void _downloadQuiz(_SubjectResult item) =>
-      _downloadFile(item.quizJson, 'quiz_${_safeName(item.subject)}.json', 'application/json');
+  Future<void> _downloadQuiz(_SubjectResult item) => _fs.saveFile(
+        EskoliaFolder.quiz,
+        'quiz_${_safeName(item.subject)}.json',
+        item.quizJson,
+        mimeType: 'application/json',
+      );
 
   // ── Quiz play / save ─────────────────────────────────────────────────────────
 
@@ -338,25 +339,21 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Assistant IA'),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
-                  children: [
-                    _buildNotesSection(),
-                    const SizedBox(height: 24),
-                    _buildAiSection(),
-                  ],
-                ),
-              ),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 60),
+              children: [
+                _buildNotesSection(),
+                const SizedBox(height: 24),
+                _buildAiSection(),
+              ],
             ),
           ),
         ],
@@ -598,6 +595,50 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildFlashcardDownloadRow() {
+    final json = _flashcardJson!;
+    int count = 0;
+    try {
+      final data = jsonDecode(json) as Map<String, dynamic>;
+      count = (data['questions'] as List?)?.length ?? 0;
+    } catch (_) {}
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _amber.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _amber.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded, color: _amber, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '$count flashcards generees',
+              style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+          ),
+          FilledButton.icon(
+            onPressed: () => _fs.saveFile(
+              EskoliaFolder.flashcards,
+              'flashcards_${_safeName(widget.note?.title ?? 'notes')}.json',
+              json,
+              mimeType: 'application/json',
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: _amber,
+              foregroundColor: Colors.black87,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            icon: const Icon(Icons.download_rounded, size: 16),
+            label: const Text('Telecharger', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
     );
   }
 

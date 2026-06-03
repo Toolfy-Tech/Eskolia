@@ -137,7 +137,8 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
   Widget build(BuildContext context) {
     final busy = _busyQuiz || _busyFlashcards;
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Ma révision'),
       body: Stack(
         children: [

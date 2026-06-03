@@ -71,6 +71,7 @@ import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
 import '../../features/notebook/data/note_model.dart';
 import '../../features/lexique/presentation/lexique_screen.dart';
+import '../../features/podcasts/presentation/podcasts_screen.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -341,6 +342,10 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const LexiqueScreen()),
         ),
         GoRoute(
+          path: '/podcasts',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const PodcastsScreen()),
+        ),
+        GoRoute(
           path: '/notebook/edit',
           pageBuilder: (context, state) => eskoliaTransitionPage(
             child: NoteEditorScreen(note: state.extra as NoteModel?),
@@ -376,7 +381,7 @@ final GoRouter appRouter = GoRouter(
           path: '/tp/:trackId',
           pageBuilder: (context, state) {
             final trackId = state.pathParameters['trackId']!;
-            if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_')) {
+            if (trackId.startsWith('tp_ad_') || trackId.startsWith('tp_ps_') || trackId.startsWith('tp_pt_')) {
               return eskoliaTransitionPage(child: TpScenarioScreen(trackId: trackId));
             }
             return eskoliaTransitionPage(child: PracticalTrackScreen(trackId: trackId));

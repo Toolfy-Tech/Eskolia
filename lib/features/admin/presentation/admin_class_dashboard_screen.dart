@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
+import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../auth/data/user_model.dart';
@@ -75,22 +76,9 @@ class _AdminClassDashboardScreenState extends State<AdminClassDashboardScreen> {
     return StaffGateScaffold(
       title: 'Vue classe',
       child: Scaffold(
-        backgroundColor: _bg,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          foregroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.pop(),
-          ),
-          title: const Text(
-            'Vue classe',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-          ),
-          centerTitle: true,
-        ),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        appBar: EskoliaAppBar.standard(context, title: 'Vue classe'),
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),

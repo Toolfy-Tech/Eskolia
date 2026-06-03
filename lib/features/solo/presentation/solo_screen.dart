@@ -2,31 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
-import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _cyan = Color(0xFF00BCD4);
-const Color _orange = Color(0xFFFF9800);
 const Color _green = Color(0xFF43E97B);
 const Color _violet = Color(0xFF6C63FF);
+const Color _orange = Color(0xFFFF9800);
 
-class SoloScreen extends StatefulWidget {
+class SoloScreen extends StatelessWidget {
   const SoloScreen({super.key});
 
   @override
-  State<SoloScreen> createState() => _SoloScreenState();
-}
-
-class _SoloScreenState extends State<SoloScreen> {
-  @override
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
-    
+
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
@@ -34,23 +28,62 @@ class _SoloScreenState extends State<SoloScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildHeader(hPad),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 0),
+                  child: const Text(
+                    'Pratique',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: ListView(
                     padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 24),
                     children: [
-                      const _CategoryHeader(title: 'CONTENU OFFICIEL', color: Color(0xFF6C63FF)),
+                      const _CategoryHeader(
+                        title: 'QUIZ SOLO',
+                        color: Color(0xFF22D3EE),
+                      ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
-                        title: "Travaux Pratiques (TP)",
-                        subtitle: "Mise en situation réelle sur Windows Server (Active Directory).",
+                        title: 'Creer un Quiz',
+                        subtitle:
+                            'Selectionne des chapitres, importe un fichier ou joue un quiz Eskolia en solo.',
+                        icon: Icons.quiz_rounded,
+                        accentColor: _cyan,
+                        onTap: () => context.push('/quiz/setup'),
+                      ),
+                      const SizedBox(height: 12),
+                      _SoloMenuCard(
+                        title: 'Mode Maitrise IA',
+                        subtitle:
+                            'Genere un quiz personnalise depuis tes notes via l\'IA — comme le multi, mais en solo.',
+                        icon: Icons.auto_awesome_rounded,
+                        accentColor: _violet,
+                        onTap: () => context.push('/solo/quiz-solo'),
+                      ),
+                      const SizedBox(height: 32),
+                      const _CategoryHeader(
+                        title: 'CONTENU OFFICIEL',
+                        color: Color(0xFF6C63FF),
+                      ),
+                      const SizedBox(height: 12),
+                      _SoloMenuCard(
+                        title: 'Travaux Pratiques (TP)',
+                        subtitle:
+                            'Mise en situation reelle sur Windows Server (Active Directory).',
                         icon: Icons.terminal_rounded,
                         accentColor: Colors.blueAccent,
                         onTap: () => context.push('/tp'),
                       ),
                       const SizedBox(height: 32),
-                      
-                      const _CategoryHeader(title: 'ENTRAÎNEMENT LIBRE', color: Color(0xFF22D3EE)),
+                      const _CategoryHeader(
+                        title: 'ENTRAINEMENT LIBRE',
+                        color: Color(0xFF22D3EE),
+                      ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
                         title: 'Flashcards',
@@ -62,14 +95,15 @@ class _SoloScreenState extends State<SoloScreen> {
                       const SizedBox(height: 12),
                       _SoloMenuCard(
                         title: 'Lexique IT',
-                        subtitle: 'Retrouve la signification des acronymes IT — sans indices.',
+                        subtitle:
+                            'Retrouve la signification des acronymes IT — sans indices.',
                         icon: Icons.abc_rounded,
-                        accentColor: _violet,
+                        accentColor: _orange,
                         onTap: () => context.push('/lexique'),
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Mode Active Recall activé : toutes les réponses sont à saisir librement pour un ancrage mémoriel maximal.",
+                        'Mode Active Recall active : toutes les reponses sont a saisir librement pour un ancrage memoriel maximal.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: _slateLight.withValues(alpha: 0.5),
@@ -82,25 +116,6 @@ class _SoloScreenState extends State<SoloScreen> {
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(double hPad) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(hPad, 12, hPad, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "S'entraîner",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
             ),
           ),
         ],
@@ -123,7 +138,7 @@ class _CategoryHeader extends StatelessWidget {
       ),
       padding: const EdgeInsets.only(left: 10),
       child: Text(
-        title.toUpperCase(),
+        title,
         style: TextStyle(
           color: const Color(0xFF94A3B8),
           fontSize: 11,
@@ -190,7 +205,11 @@ class _SoloMenuCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right_rounded, color: Colors.white.withValues(alpha: 0.3), size: 20),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: Colors.white.withValues(alpha: 0.3),
+            size: 20,
+          ),
         ],
       ),
     );

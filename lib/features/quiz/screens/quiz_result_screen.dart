@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../core/services/eskolia_folder_service.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
@@ -173,7 +177,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     final String displayScore = widget.score.toStringAsFixed(widget.score.truncateToDouble() == widget.score ? 0 : 2);
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
@@ -474,7 +478,47 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     );
   }
 
+  Future<void> _downloadBilan() async {
+    final now = DateTime.now();
+    final date = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final questions = List.generate(widget.questions.length, (i) {
+      final q = widget.questions[i];
+      final s = widget.userScores[i] ?? 0.0;
+      final result = s >= 1.0 ? 'correct' : s > 0 ? 'partial' : 'wrong';
+      return {
+        'question': q.question,
+        'answer': q.answer,
+        if (q.explanation != null) 'explanation': q.explanation,
+        'result': result,
+        'userScore': s,
+      };
+    });
+    final payload = jsonEncode({
+      'bilan': {
+        'quizTitle': widget.sessionTitle,
+        'date': date,
+        'score': widget.score,
+        'total': widget.total,
+        'correct': widget.correctCount,
+        'wrong': widget.wrongCount,
+        'unanswered': widget.unansweredCount,
+      },
+      'questions': questions,
+    });
+    final safeName = widget.sessionTitle
+        .replaceAll(RegExp(r'[^\w\s-]'), '')
+        .replaceAll(' ', '_')
+        .toLowerCase();
+    await EskoliaFolderService.instance.saveFile(
+      EskoliaFolder.bilans,
+      'bilan_${safeName}_$date.json',
+      payload,
+      mimeType: 'application/json',
+    );
+  }
+
   Widget _buildBottomButtons(BuildContext context) {
+    final next = _findNextModule();
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -482,16 +526,49 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       ),
       child: Column(
         children: [
+          if (next != null) ...[
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.go('/parcours');
+              },
+              style: FilledButton.styleFrom(backgroundColor: _violet, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+              icon: const Icon(Icons.arrow_forward_rounded),
+              label: Text(
+                next.title,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(backgroundColor: _violet, minimumSize: const Size.fromHeight(54), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+            style: FilledButton.styleFrom(
+              backgroundColor: next != null ? Colors.white.withValues(alpha: 0.08) : _violet,
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(54),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             child: const Text('REJOUER LA SESSION', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.1)),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: _downloadBilan,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: _cyan,
+              side: BorderSide(color: _cyan.withValues(alpha: 0.4)),
+              minimumSize: const Size.fromHeight(48),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            icon: const Icon(Icons.download_rounded, size: 18),
+            label: const Text('Sauvegarder mon bilan', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+          ),
+          const SizedBox(height: 10),
           TextButton(
             onPressed: () {
               final destination = widget.exitDestination == QuizResultExitDestination.soloMenu ? '/solo' : '/parcours';
-              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
               context.go(destination);
             },
             child: Text('RETOUR AU MENU', style: TextStyle(color: _slate, fontWeight: FontWeight.w700, fontSize: 13)),

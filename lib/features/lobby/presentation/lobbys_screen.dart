@@ -21,11 +21,13 @@ import '../../../data/repositories/user_repository.dart';
 import '../data/lobby_repository.dart';
 import '../data/models/custom_quiz_data.dart';
 import 'widgets/custom_quiz_import_widget.dart';
+import '../../ai/data/ai_key_repository.dart';
+import '../../notebook/data/note_ai_generator.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _surface = Color(0xFF1E293B);
 const Color _green = Color(0xFF10B981);
@@ -259,7 +261,14 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     final catalogFuture = TipQuizCatalog.loadChaptersWithQuiz();
     var questionCount = 15;
     var useCustomSource = false;
+    var useAiSource = false;
     CustomQuizData? customQuizData;
+    final aiThemeCtrl = TextEditingController();
+    var aiDifficulty = 'mixte';
+    var aiGenerating = false;
+    String? aiError;
+    final aiKeyRepo = AiKeyRepository();
+    final aiGenerator = NoteAiGenerator();
     final difficulties = <String>{
       'facile',
       'moyen',
@@ -410,22 +419,56 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                       ),
                       const SizedBox(height: 8),
                       // ── Source des questions ────────────────────────
-                      Row(
+                      Text('Sources des questions',
+                          style: TextStyle(color: _slateLight, fontSize: 12)),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
                         children: [
-                          Text('Sources des questions',
-                              style: TextStyle(color: _slateLight, fontSize: 12)),
-                          const Spacer(),
                           FilterChip(
-                            label: const Text('📂 Mon quiz'),
+                            label: const Text('Chapitres'),
+                            selected: !useCustomSource && !useAiSource,
+                            onSelected: (_) => setD(() {
+                              useCustomSource = false;
+                              useAiSource = false;
+                              customQuizData = null;
+                              aiError = null;
+                            }),
+                            selectedColor: _cyan.withValues(alpha: 0.2),
+                            checkmarkColor: _cyan,
+                            labelStyle: TextStyle(
+                              color: (!useCustomSource && !useAiSource) ? _cyan : _slateLight,
+                              fontSize: 12,
+                            ),
+                          ),
+                          FilterChip(
+                            label: const Text('Mon quiz .json'),
                             selected: useCustomSource,
                             onSelected: (v) => setD(() {
                               useCustomSource = v;
+                              if (v) useAiSource = false;
                               if (!v) customQuizData = null;
                             }),
                             selectedColor: _violet.withValues(alpha: 0.25),
                             checkmarkColor: Colors.white,
                             labelStyle: TextStyle(
                               color: useCustomSource ? Colors.white : _slateLight,
+                              fontSize: 12,
+                            ),
+                          ),
+                          FilterChip(
+                            label: const Text('IA'),
+                            selected: useAiSource,
+                            onSelected: (v) => setD(() {
+                              useAiSource = v;
+                              if (v) useCustomSource = false;
+                              customQuizData = null;
+                              aiError = null;
+                            }),
+                            selectedColor: const Color(0xFFFFC107).withValues(alpha: 0.25),
+                            checkmarkColor: Colors.white,
+                            labelStyle: TextStyle(
+                              color: useAiSource ? Colors.white : _slateLight,
                               fontSize: 12,
                             ),
                           ),
@@ -436,6 +479,50 @@ class _LobbyListScreenState extends State<LobbyListScreen>
                         CustomQuizImportWidget(
                           importedData: customQuizData,
                           onImported: (d) => setD(() => customQuizData = d),
+                        ),
+                      ] else if (useAiSource) ...[
+                        _buildAiQuizGenerator(
+                          setD: setD,
+                          themeCtrl: aiThemeCtrl,
+                          difficulty: aiDifficulty,
+                          onDifficultyChanged: (v) => setD(() => aiDifficulty = v),
+                          questionCount: questionCount,
+                          generating: aiGenerating,
+                          generatedData: customQuizData,
+                          error: aiError,
+                          onGenerate: () async {
+                            final theme = aiThemeCtrl.text.trim();
+                            if (theme.isEmpty) {
+                              setD(() => aiError = 'Saisis un theme avant de generer.');
+                              return;
+                            }
+                            setD(() { aiGenerating = true; aiError = null; customQuizData = null; });
+                            try {
+                              final aiState = await aiKeyRepo.watch().first;
+                              if (!aiState.isConnected) {
+                                setD(() { aiError = 'Connecte ton IA dans Profil > IA.'; aiGenerating = false; });
+                                return;
+                              }
+                              final buffer = StringBuffer();
+                              await for (final token in aiGenerator.streamQuizFromTheme(
+                                apiKey: aiState.apiKey!,
+                                provider: aiState.provider,
+                                theme: theme,
+                                questionCount: questionCount,
+                                difficulty: aiDifficulty,
+                              )) {
+                                buffer.write(token);
+                              }
+                              final raw = NoteAiGenerator.extractJson(buffer.toString());
+                              final data = CustomQuizData.fromJsonString(raw);
+                              setD(() { customQuizData = data; aiGenerating = false; });
+                            } on FormatException catch (e) {
+                              setD(() { aiError = 'Format invalide : ${e.message}'; aiGenerating = false; });
+                            } catch (e) {
+                              setD(() { aiError = e.toString(); aiGenerating = false; });
+                            }
+                          },
+                          onReset: () => setD(() { customQuizData = null; aiError = null; }),
                         ),
                       ] else ...[
                         Text(
@@ -523,10 +610,12 @@ class _LobbyListScreenState extends State<LobbyListScreen>
               FilledButton(
                 onPressed: () async {
                   // Validation selon la source active
-                  if (useCustomSource) {
+                  if (useCustomSource || useAiSource) {
                     if (customQuizData == null) {
                       ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('Importe un fichier .json avant de créer le lobby.')),
+                        SnackBar(content: Text(useAiSource
+                            ? 'Genere un quiz avec l\'IA avant de creer le lobby.'
+                            : 'Importe un fichier .json avant de creer le lobby.')),
                       );
                       return;
                     }
@@ -547,7 +636,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
 
                   try {
                     String lobbyId;
-                    if (useCustomSource && customQuizData != null) {
+                    if ((useCustomSource || useAiSource) && customQuizData != null) {
                       final data = customQuizData!;
                       // Convertir les questions au format tipJson
                       final qs = data.questions.asMap().entries.map((e) => {
@@ -631,17 +720,152 @@ class _LobbyListScreenState extends State<LobbyListScreen>
       },
     );
 
+    aiThemeCtrl.dispose();
     if (created != null && mounted) {
       context.push('/lobby/$created');
     }
   }
 
 
+  Widget _buildAiQuizGenerator({
+    required StateSetter setD,
+    required TextEditingController themeCtrl,
+    required String difficulty,
+    required ValueChanged<String> onDifficultyChanged,
+    required int questionCount,
+    required bool generating,
+    required CustomQuizData? generatedData,
+    required String? error,
+    required VoidCallback onGenerate,
+    required VoidCallback onReset,
+  }) {
+    const amber = Color(0xFFFFC107);
+    if (generatedData != null) {
+      final preview = generatedData.questions.take(3).toList();
+      final remaining = generatedData.questions.length - preview.length;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: amber.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: amber.withValues(alpha: 0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.auto_awesome_rounded, color: amber, size: 16),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '"${generatedData.title}" — ${generatedData.questions.length} questions',
+                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                for (int i = 0; i < preview.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Q${i + 1} ', style: TextStyle(color: _violet, fontSize: 10, fontWeight: FontWeight.w700)),
+                        Expanded(
+                          child: Text(
+                            preview[i].question,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: _slateLight.withValues(alpha: 0.9), fontSize: 11),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (remaining > 0)
+                  Text('+ $remaining autre${remaining > 1 ? 's' : ''} question${remaining > 1 ? 's' : ''}',
+                      style: TextStyle(color: _slateLight, fontSize: 11)),
+              ],
+            ),
+          ),
+          TextButton.icon(
+            onPressed: onReset,
+            style: TextButton.styleFrom(foregroundColor: _slateLight),
+            icon: const Icon(Icons.refresh_rounded, size: 16),
+            label: const Text('Regenerer'),
+          ),
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: themeCtrl,
+          style: const TextStyle(color: Colors.white, fontSize: 13),
+          decoration: InputDecoration(
+            hintText: 'Ex: Active Directory, VLAN, Securite reseau...',
+            hintStyle: TextStyle(color: _slateLight.withValues(alpha: 0.6), fontSize: 12),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.06),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text('Niveau', style: TextStyle(color: _slateLight, fontSize: 11)),
+        const SizedBox(height: 6),
+        SegmentedButton<String>(
+          showSelectedIcon: false,
+          style: const ButtonStyle(visualDensity: VisualDensity.compact),
+          segments: const [
+            ButtonSegment(value: 'facile', label: Text('Facile')),
+            ButtonSegment(value: 'moyen', label: Text('Moyen')),
+            ButtonSegment(value: 'difficile', label: Text('Difficile')),
+            ButtonSegment(value: 'mixte', label: Text('Mix')),
+          ],
+          selected: {difficulty},
+          onSelectionChanged: (s) { if (s.isNotEmpty) onDifficultyChanged(s.first); },
+        ),
+        if (error != null) ...[
+          const SizedBox(height: 8),
+          Text(error, style: TextStyle(color: Colors.red.shade300, fontSize: 11)),
+        ],
+        const SizedBox(height: 10),
+        FilledButton.icon(
+          onPressed: generating ? null : onGenerate,
+          style: FilledButton.styleFrom(
+            backgroundColor: amber,
+            foregroundColor: Colors.black87,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+          ),
+          icon: generating
+              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black54))
+              : const Icon(Icons.auto_awesome_rounded, size: 18),
+          label: Text(generating ? 'Generation en cours...' : 'Generer le quiz ($questionCount questions)'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.screenPaddingH;
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Multijoueur',

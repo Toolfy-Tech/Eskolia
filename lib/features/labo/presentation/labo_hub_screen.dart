@@ -30,7 +30,8 @@ class LaboHubScreen extends StatelessWidget {
         : UserRepository().getUserById(uid);
 
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Le Labo'),
       body: Stack(
         children: [

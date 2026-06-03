@@ -172,6 +172,36 @@ class QuizNotifier extends Notifier<QuizState> {
     }
   }
 
+  Future<void> revealAndScoreAssociation(Map<String, String> userPairings, List<List<String>> correctPairs) async {
+    if (state.isFlipped) return;
+    _timer?.cancel();
+
+    int correctCount = 0;
+    for (final pair in correctPairs) {
+      if (pair.length >= 2 && userPairings[pair[0]] == pair[1]) correctCount++;
+    }
+    final score = correctPairs.isEmpty ? 0.0 : correctCount / correctPairs.length;
+
+    final s = state.session!;
+    final idx = s.currentIndex;
+    final q = s.questions[idx];
+    final scores = List<double?>.from(s.userScores);
+    scores[idx] = score;
+
+    state = state.copyWith(
+      session: s.copyWith(userScores: scores),
+      isFlipped: true,
+      isValidated: true,
+      isTimedOut: false,
+    );
+
+    if (score >= 0.5) {
+      await _lacunesRepo.removeIfCorrect(q);
+    } else {
+      await _lacunesRepo.addWrong(q);
+    }
+  }
+
   void toggleTicketCheck(int index) {
     if (state.isValidated) return;
     final newChecks = List<bool>.from(state.ticketChecks);
@@ -197,9 +227,6 @@ class QuizNotifier extends Notifier<QuizState> {
 
     double finalScore = wasCorrect ? 1.0 : 0.0;
 
-    if (wasCorrect && q.type == 'diagnostic_indices' && state.revealedIndicesCount > 0) {
-      finalScore = (1.0 - (state.revealedIndicesCount * 0.25)).clamp(0.25, 1.0);
-    }
 
     if (wasCorrect && q.type == 'ticket' && state.ticketChecks.contains(false)) {
       final checkedCount = state.ticketChecks.where((c) => c).length;

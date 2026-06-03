@@ -7,6 +7,7 @@ import '../../../core/services/asset_cache_service.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../labo/data/labo_approved_question_repository.dart';
 import '../../labo/data/labo_question_draft.dart';
+import '../../lexique/data/lexique_data.dart';
 import '../../parcours/data/parcours_repository.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../models/quiz_models.dart';
@@ -23,6 +24,7 @@ class QuizRepository {
   static const String grandFinaleSessionId = 'grand_finale_tip';
   static const String optimusGrandFinaleSessionId = 'grand_finale_optimus';
   static const int grandFinaleOptimusMinQuestions = 40;
+  static const String lexiqueSentinelPrefix = 'lexique://';
 
   static QuizResultExitDestination resultExitDestination(QuizSession s) {
     if (s.runMode == QuizRunMode.survival) return QuizResultExitDestination.soloMenu;
@@ -62,16 +64,18 @@ class QuizRepository {
     dynamic track,
   }) => _buildDailyRandomSession();
 
-  /// Compose une session à partir d'une liste de chemins (assets ou sentinel Labo).
+  /// Compose une session à partir d'une liste de chemins (assets ou sentinel Labo/Lexique).
   Future<QuizSession> buildSoloComposeSession({
     required List<String> quizAssetPaths,
     Set<String> difficultyFilters = const {},
+    Set<String> typeFilters = const {},
     int maxQuestions = 15,
     bool timed = true,
   }) => _buildFromPaths(
         paths: quizAssetPaths,
         maxQuestions: maxQuestions,
         difficultyFilters: difficultyFilters,
+        typeFilters: typeFilters,
         sessionIdPrefix: 'solo',
       );
 
@@ -139,11 +143,12 @@ class QuizRepository {
   // --- LOGIQUE INTERNE ---
 
   /// Construit une session à partir d'une liste de chemins.
-  /// Gère les assets JSON standard, le sentinel Labo (Firestore) et les quiz du prof (teacher://).
+  /// Gère les assets JSON standard, Labo (Firestore), teacher://, lexique://.
   Future<QuizSession> _buildFromPaths({
     required List<String> paths,
     int maxQuestions = 15,
     Set<String> difficultyFilters = const {},
+    Set<String> typeFilters = const {},
     String sessionIdPrefix = 'quiz',
   }) async {
     if (paths.isEmpty) return _buildDailyRandomSession();
@@ -159,7 +164,10 @@ class QuizRepository {
     }
 
     final questions = <QuizQuestion>[];
-    final assetPaths = paths.where((p) => p != TipQuizCatalog.laboSentinelPath).toList();
+    final lexiquePaths = paths.where((p) => p.startsWith(lexiqueSentinelPrefix)).toList();
+    final assetPaths = paths.where((p) =>
+        p != TipQuizCatalog.laboSentinelPath &&
+        !p.startsWith(lexiqueSentinelPrefix)).toList();
     final includeLabo = paths.contains(TipQuizCatalog.laboSentinelPath);
 
     // 1. Charger les assets JSON
@@ -186,22 +194,60 @@ class QuizRepository {
       } catch (_) {}
     }
 
+    // 3. Injecter les questions Lexique si demandé
+    for (final lp in lexiquePaths) {
+      final key = lp.replaceFirst(lexiqueSentinelPrefix, '');
+      questions.addAll(_lexiqueToQuizQuestions(key));
+    }
+
     if (questions.isEmpty) return _buildDailyRandomSession();
 
-    // 3. Filtrer par difficulté si demandé
+    // 4. Filtrer par difficulté
     var filtered = difficultyFilters.isEmpty
         ? questions
         : questions.where((q) => difficultyFilters.contains(q.difficultyBucket)).toList();
     if (filtered.isEmpty) filtered = questions;
 
+    // 5. Filtrer par type de question
+    if (typeFilters.isNotEmpty) {
+      final byType = filtered.where((q) => typeFilters.contains(q.type)).toList();
+      if (byType.isNotEmpty) filtered = byType;
+    }
+
     filtered.shuffle();
     final limited = filtered.take(maxQuestions).toList();
 
+    final nonLexiquePaths = paths.where((p) => !p.startsWith(lexiqueSentinelPrefix)).toList();
+    final title = nonLexiquePaths.isNotEmpty
+        ? TipQuizCatalog.subjectLabelForPaths(nonLexiquePaths)
+        : 'Lexique IT';
+
     return _sessionFromQuestions(
       '${sessionIdPrefix}_${DateTime.now().millisecondsSinceEpoch}',
-      TipQuizCatalog.subjectLabelForPaths(paths),
+      title,
       limited,
     );
+  }
+
+  static List<QuizQuestion> _lexiqueToQuizQuestions(String categoryKey) {
+    final entries = categoryKey == 'all'
+        ? allLexique
+        : allLexique.where((e) => e.category == categoryKey).toList();
+    return entries.map((e) {
+      final catName = lexiqueCategories
+          .where((c) => c.key == e.category)
+          .map((c) => c.name)
+          .firstOrNull ?? 'Lexique';
+      return QuizQuestion(
+        id: 'lex_${e.term.toLowerCase().replaceAll(' ', '_')}',
+        type: 'classic',
+        question: 'Définis ce terme : ${e.term}',
+        answer: e.definition,
+        difficultyBucket: 'facile',
+        contextLine: 'Lexique · $catName',
+        categoryGroup: QuestionCategoryGroup.themes,
+      );
+    }).toList();
   }
 
   Future<QuizSession> _buildTeacherQuizSession({
@@ -245,6 +291,7 @@ class QuizRepository {
           indices: indices.isEmpty ? null : indices,
           answerSequence: items.isEmpty ? null : items,
           options: items.isEmpty ? null : items,
+          matchPairs: _parsePairs(q['pairs']),
         ));
       }
       if (questions.isEmpty) return _buildDailyRandomSession();
@@ -336,6 +383,12 @@ class QuizRepository {
         rawType = 'classic';
       }
 
+      // If AI declared 'association' but forgot pairs, downgrade.
+      final rawPairs = _parsePairs(q['pairs']);
+      if (rawType == 'association' && (rawPairs == null || rawPairs.isEmpty)) {
+        rawType = 'classic';
+      }
+
       questions.add(QuizQuestion(
         id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
         type: rawType,
@@ -347,6 +400,7 @@ class QuizRepository {
         indices: indices.isEmpty ? null : indices,
         answerSequence: items.isEmpty ? null : items,
         options: items.isEmpty ? null : items,
+        matchPairs: rawPairs,
         categoryGroup: QuestionCategoryGroup.themes,
       ));
     }
@@ -384,6 +438,21 @@ class QuizRepository {
       runMode: QuizRunMode.standard,
       timed: false,
     );
+  }
+
+  static List<List<String>>? _parsePairs(dynamic raw) {
+    if (raw is! List) return null;
+    final result = <List<String>>[];
+    for (final item in raw) {
+      if (item is Map) {
+        final left = item['left']?.toString() ?? '';
+        final right = item['right']?.toString() ?? '';
+        if (left.isNotEmpty && right.isNotEmpty) result.add([left, right]);
+      } else if (item is List && item.length >= 2) {
+        result.add([item[0].toString(), item[1].toString()]);
+      }
+    }
+    return result.isEmpty ? null : result;
   }
 
   /// Extracts ordered items from a numbered list in `text` (e.g. "1. Foo\n2. Bar").
@@ -427,6 +496,7 @@ class QuizRepository {
           answerSequence: m['answer'] is List
               ? List<String>.from(m['answer'] as List)
               : null,
+          matchPairs: _parsePairs(m['pairs']),
           explanation: (m['explanation'] ?? m['comment']) as String?,
           sourceAssetPath: sourceAssetPath,
           options: m['options'] is List ? List<String>.from(m['options']) : null,

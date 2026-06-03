@@ -1,0 +1,238 @@
+{
+  "id": "tp_pt_fondamentaux",
+  "title": "Fondamentaux Réseau",
+  "subtitle": "TechCorp — Infrastructure de base",
+  "emoji": "🌐",
+  "color": "#22D3EE",
+  "difficulty": "debutant",
+  "difficulty_label": "Débutant",
+  "description": "Construis le premier réseau de TechCorp depuis zéro sur Packet Tracer. Câblage, adressage IP et vérification de connectivité.",
+  "domain": "Réseau",
+  "type": "construction",
+  "company": "TechCorp",
+  "packet_tracer_version": "8.2",
+  "total_missions": 4,
+  "estimated_hours": "2h",
+  "prerequisite": null,
+  "context_intro": "TechCorp est une entreprise fictive spécialisée dans l'informatique. Tu vas construire son infrastructure réseau depuis zéro, en commençant par le plus simple : connecter des postes entre eux. Chaque mission fait évoluer le réseau, comme dans la réalité.",
+  "badges": [],
+  "levels": [
+    {
+      "id": "niveau_1",
+      "title": "Premier réseau",
+      "emoji": "🖥️",
+      "color": "#22D3EE",
+      "missions": [
+        {
+          "id": "PT-F-1",
+          "order": 1,
+          "title": "Prise en main de Packet Tracer",
+          "type": "construction",
+          "estimated_minutes": 15,
+          "objective": "Découvrir l'interface de Packet Tracer et placer les premiers équipements.",
+          "context": "Packet Tracer est un logiciel de simulation réseau de Cisco. Il permet de créer des topologies réseau virtuelles sans avoir besoin de vrai matériel. L'interface est divisée en deux zones principales : l'espace de travail en haut (où tu places les équipements) et la barre d'équipements en bas (où tu les sélectionnes).",
+          "steps": [
+            "Ouvre Packet Tracer et crée un nouveau projet vide (Fichier > Nouveau)",
+            "En bas de l'écran, clique sur la catégorie 'End Devices' (icône PC)",
+            "Fais glisser un PC-PT dans l'espace de travail — répète l'opération pour obtenir 4 PCs au total",
+            "Dans la catégorie 'Switches', fais glisser un switch 2960-24TT dans l'espace de travail",
+            "Clique sur l'icône 'Connexions' (éclair en bas), sélectionne le câble droit (ligne noire continue)",
+            "Connecte PC1 au switch : clique sur PC1 → sélectionne 'FastEthernet0' → clique sur le switch → sélectionne un port libre (ex: Fa0/1)",
+            "Répète l'opération pour PC2 (Fa0/2), PC3 (Fa0/3) et PC4 (Fa0/4)",
+            "Vérifie que les voyants des câbles passent au vert (peut prendre quelques secondes)"
+          ],
+          "ios_commands": [],
+          "help": {
+            "text": "Les voyants restent orange ?",
+            "where": "C'est normal au démarrage — le switch effectue la détection STP (Spanning Tree Protocol). Attends 30 secondes en simulation ou clique sur le bouton 'Fast Forward Time' (deux flèches vers la droite en bas à droite de l'écran)."
+          },
+          "expected_result": [
+            "4 PCs sont placés dans l'espace de travail",
+            "1 switch 2960 est connecté aux 4 PCs via des câbles droits",
+            "Les voyants des câbles sont verts des deux côtés"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Quel type de câble utilise-t-on pour connecter un PC à un switch ?",
+            "choices": ["Câble droit (straight-through)", "Câble croisé (crossover)", "Câble console", "Fibre optique"],
+            "expected_answer": "Câble droit (straight-through)",
+            "hint": "Un câble croisé s'utilise entre deux équipements de même type (PC-PC ou switch-switch)."
+          }
+        },
+        {
+          "id": "PT-F-2",
+          "order": 2,
+          "title": "Configuration IP des postes",
+          "type": "construction",
+          "estimated_minutes": 20,
+          "objective": "Configurer une adresse IP statique sur chaque PC et vérifier la connectivité par ping.",
+          "context": "Pour que deux machines puissent communiquer sur un réseau, elles doivent avoir des adresses IP dans le même sous-réseau. On utilise ici le réseau 192.168.1.0/24, qui appartient à la classe C. Le masque 255.255.255.0 signifie que les 24 premiers bits identifient le réseau — les adresses utilisables vont de 192.168.1.1 à 192.168.1.254.",
+          "steps": [
+            "Clique sur PC1 → onglet 'Desktop' → 'IP Configuration'",
+            "Sélectionne 'Static' et entre : IP Address = 192.168.1.1 | Subnet Mask = 255.255.255.0 | laisse Default Gateway vide pour l'instant",
+            "Ferme la fenêtre et répète pour PC2 : IP = 192.168.1.2 | Masque = 255.255.255.0",
+            "PC3 : IP = 192.168.1.3 | Masque = 255.255.255.0",
+            "PC4 : IP = 192.168.1.4 | Masque = 255.255.255.0",
+            "Sur PC1 : onglet 'Desktop' → 'Command Prompt'",
+            "Tape la commande : ping 192.168.1.2 et appuie sur Entrée",
+            "Vérifie que tu reçois 4 réponses 'Reply from 192.168.1.2'"
+          ],
+          "ios_commands": [
+            {
+              "device": "PC1",
+              "label": "Test de connectivité",
+              "commands": ["ping 192.168.1.2", "ping 192.168.1.3", "ping 192.168.1.4"]
+            }
+          ],
+          "help": {
+            "text": "Le ping échoue (Request timed out) ?",
+            "where": "Vérifie que les adresses IP sont bien dans le même sous-réseau (192.168.1.x avec le masque 255.255.255.0). Un chiffre de trop ou une faute de frappe suffit à bloquer la communication. Vérifie aussi que les câbles sont bien connectés (voyants verts)."
+          },
+          "expected_result": [
+            "PC1 a l'IP 192.168.1.1/24",
+            "PC2 a l'IP 192.168.1.2/24",
+            "PC3 a l'IP 192.168.1.3/24",
+            "PC4 a l'IP 192.168.1.4/24",
+            "PC1 ping PC2, PC3 et PC4 avec succès (4 Reply)"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Combien de réponses obtiens-tu quand tu fais un ping vers un autre PC (par défaut) ?",
+            "expected_answer": "4",
+            "hint": "Par défaut, la commande ping envoie toujours le même nombre de paquets ICMP."
+          }
+        }
+      ]
+    },
+    {
+      "id": "niveau_2",
+      "title": "Deux réseaux, un routeur",
+      "emoji": "🔀",
+      "color": "#6C63FF",
+      "missions": [
+        {
+          "id": "PT-F-3",
+          "order": 3,
+          "title": "Ajouter un deuxième réseau",
+          "type": "construction",
+          "estimated_minutes": 25,
+          "objective": "Créer un deuxième réseau (192.168.2.0/24) avec 4 PCs supplémentaires sur un second switch.",
+          "context": "TechCorp s'agrandit et ouvre un deuxième bureau. On va créer un second réseau indépendant du premier. Pour l'instant les deux réseaux ne pourront pas se parler — c'est normal, il faut un routeur pour ça. On s'en occupe à la prochaine mission.",
+          "steps": [
+            "Dans Packet Tracer, ajoute un second switch 2960 dans l'espace de travail",
+            "Ajoute 4 nouveaux PCs (PC5, PC6, PC7, PC8) et connecte-les au second switch (câbles droits)",
+            "Configure les IPs du deuxième réseau :",
+            "PC5 : IP = 192.168.2.1 | Masque = 255.255.255.0",
+            "PC6 : IP = 192.168.2.2 | Masque = 255.255.255.0",
+            "PC7 : IP = 192.168.2.3 | Masque = 255.255.255.0",
+            "PC8 : IP = 192.168.2.4 | Masque = 255.255.255.0",
+            "Vérifie que PC5 ping PC6, PC7 et PC8 (même réseau, doit fonctionner)",
+            "Essaie de faire pinger PC1 vers PC5 (192.168.2.1) — ça doit échouer, c'est voulu"
+          ],
+          "ios_commands": [
+            {
+              "device": "PC5",
+              "label": "Test intra-réseau (doit réussir)",
+              "commands": ["ping 192.168.2.2"]
+            },
+            {
+              "device": "PC1",
+              "label": "Test inter-réseau (doit échouer)",
+              "commands": ["ping 192.168.2.1"]
+            }
+          ],
+          "help": {
+            "text": "PC5 ne ping pas PC6 sur le même réseau ?",
+            "where": "Vérifie que les câbles sont connectés au bon switch (le deuxième, pas le premier). Vérifie aussi que les IPs sont bien en 192.168.2.x et non 192.168.1.x."
+          },
+          "expected_result": [
+            "8 PCs sont présents dans la topologie (4 sur chaque switch)",
+            "PC5 ping PC6, PC7 et PC8 avec succès",
+            "PC1 ne peut pas joindre PC5 (réseaux différents, pas de routeur)"
+          ],
+          "validation": {
+            "type": "qcm",
+            "question": "Pourquoi PC1 (192.168.1.1) ne peut pas ping PC5 (192.168.2.1) ?",
+            "choices": [
+              "Les deux adresses ne sont pas dans le même sous-réseau et il n'y a pas de routeur",
+              "Le câble entre les deux switches est manquant",
+              "Le masque de sous-réseau est incorrect",
+              "Packet Tracer ne supporte pas les pings entre switches différents"
+            ],
+            "expected_answer": "Les deux adresses ne sont pas dans le même sous-réseau et il n'y a pas de routeur",
+            "hint": "Le rôle du routeur est précisément d'interconnecter des réseaux différents."
+          }
+        },
+        {
+          "id": "PT-F-4",
+          "order": 4,
+          "title": "Routage statique entre les deux réseaux",
+          "type": "construction",
+          "estimated_minutes": 30,
+          "objective": "Ajouter un routeur entre les deux réseaux et configurer les routes statiques pour permettre la communication.",
+          "context": "Un routeur est l'équipement qui permet à des réseaux différents de communiquer. Chaque interface du routeur appartient à un réseau distinct. Les PCs doivent configurer le routeur comme 'passerelle par défaut' — c'est l'adresse à contacter quand ils veulent joindre quelqu'un en dehors de leur réseau.",
+          "steps": [
+            "Ajoute un routeur 1941 dans l'espace de travail (catégorie 'Routers')",
+            "Connecte le routeur au premier switch avec un câble droit : routeur GigabitEthernet0/0 → Switch1",
+            "Connecte le routeur au second switch : routeur GigabitEthernet0/1 → Switch2",
+            "Clique sur le routeur → onglet 'CLI' → appuie sur Entrée pour passer en mode utilisateur",
+            "Entre les commandes de configuration de l'interface G0/0 :",
+            "  enable → conf t → interface GigabitEthernet0/0 → ip address 192.168.1.254 255.255.255.0 → no shutdown → exit",
+            "Configure l'interface G0/1 :",
+            "  interface GigabitEthernet0/1 → ip address 192.168.2.254 255.255.255.0 → no shutdown → exit",
+            "Tape 'end' puis 'show ip interface brief' pour vérifier que les deux interfaces sont 'up/up'",
+            "Sur chaque PC du réseau 1 (PC1 à PC4), configure la Default Gateway : 192.168.1.254",
+            "Sur chaque PC du réseau 2 (PC5 à PC8), configure la Default Gateway : 192.168.2.254",
+            "Teste : PC1 doit maintenant pouvoir ping PC5 (192.168.2.1)"
+          ],
+          "ios_commands": [
+            {
+              "device": "Routeur R1",
+              "label": "Configuration interface réseau 1",
+              "commands": [
+                "enable",
+                "conf t",
+                "interface GigabitEthernet0/0",
+                "ip address 192.168.1.254 255.255.255.0",
+                "no shutdown",
+                "exit"
+              ]
+            },
+            {
+              "device": "Routeur R1",
+              "label": "Configuration interface réseau 2",
+              "commands": [
+                "interface GigabitEthernet0/1",
+                "ip address 192.168.2.254 255.255.255.0",
+                "no shutdown",
+                "end"
+              ]
+            },
+            {
+              "device": "Routeur R1",
+              "label": "Vérification",
+              "commands": ["show ip interface brief"]
+            }
+          ],
+          "help": {
+            "text": "Le ping entre les deux réseaux échoue toujours ?",
+            "where": "Vérifie en priorité : (1) la Default Gateway sur les PCs — elle doit pointer vers l'IP du routeur sur leur réseau (192.168.1.254 pour le réseau 1, 192.168.2.254 pour le réseau 2). (2) Les interfaces du routeur sont bien 'up/up' avec 'show ip interface brief'. (3) Les câbles connectent bien le routeur aux bons switches."
+          },
+          "expected_result": [
+            "Le routeur a l'IP 192.168.1.254 sur G0/0 (réseau 1) et 192.168.2.254 sur G0/1 (réseau 2)",
+            "Les interfaces G0/0 et G0/1 sont en état 'up/up'",
+            "PC1 à PC4 ont la passerelle 192.168.1.254",
+            "PC5 à PC8 ont la passerelle 192.168.2.254",
+            "PC1 ping PC5 avec succès (communication entre les deux réseaux)"
+          ],
+          "validation": {
+            "type": "text",
+            "question": "Quelle commande Cisco IOS permet de vérifier l'état des interfaces d'un routeur ?",
+            "expected_answer": "show ip interface brief",
+            "hint": "Cette commande affiche un résumé de toutes les interfaces avec leur IP et leur état (up/up ou down)."
+          }
+        }
+      ]
+    }
+  ]
+}

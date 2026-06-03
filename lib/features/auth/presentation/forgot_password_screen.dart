@@ -13,7 +13,7 @@ import '../data/auth_repository.dart';
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _blue = Color(0xFF3B82F6);
 const Color _violet = Color(0xFF7C3AED);
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _fieldBg = Color(0xFF1E293B);
 const Color _fieldBorder = Color(0xFF334155);
 
@@ -77,7 +77,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.deferToChild,
       child: Scaffold(
-        backgroundColor: _bg,
+        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),

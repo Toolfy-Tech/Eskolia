@@ -20,7 +20,8 @@ class ReseauHubScreen extends StatelessWidget {
     final hPad = EskoliaLayout.screenPaddingH;
 
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Réseau & Adressage IP',

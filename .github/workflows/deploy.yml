@@ -13,11 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
+      - name: Setup Flutter (stable)
+        run: |
+          ARCHIVE=$(curl -fsSL https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json | python3 -c "import sys,json; d=json.load(sys.stdin); r=next(r for r in d['releases'] if r['channel']=='stable'); print(d['base_url']+'/'+r['archive'])")
+          curl -fsSL "$ARCHIVE" -o flutter.tar.xz
+          tar xf flutter.tar.xz -C "$HOME"
+          echo "$HOME/flutter/bin" >> "$GITHUB_PATH"
+
+      - name: Flutter version + disable analytics
+        run: |
+          flutter --version
+          flutter config --no-analytics
 
       - name: Install dependencies
         run: flutter pub get

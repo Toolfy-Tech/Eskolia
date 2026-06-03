@@ -18,9 +18,10 @@ class AdminHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StaffGateScaffold(
-      title: 'Modération',
+            title: 'Modération',
       child: Scaffold(
-        backgroundColor: _bg,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
         appBar: EskoliaAppBar.standard(context, title: 'Modération'),
         body: Stack(
           children: [

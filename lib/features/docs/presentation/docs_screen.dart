@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/widgets/bottom_nav.dart';
@@ -42,7 +44,8 @@ class DocsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: '\u{1F4CB} Docs métier',
@@ -70,6 +73,8 @@ class DocsScreen extends StatelessWidget {
                     height: 1.4,
                   ),
                 ),
+                const SizedBox(height: 16),
+                const _MesCoursCard(),
                 const SizedBox(height: 16),
                 _DocSectionCard(
                   title: 'RGPD (UE)',
@@ -208,6 +213,173 @@ const String _technicianBody = '• Moindre privilège et comptes nominatifs (é
     '• Pas de copie de bases de prod sur poste non sécurisé.\n'
     '• Chiffrement des supports nomades et des canaux sensibles.\n'
     '• En cas d\'incident : préserver les preuves, escalader, ne pas improviser seul.';
+
+class _MesCoursCard extends StatefulWidget {
+  const _MesCoursCard();
+
+  @override
+  State<_MesCoursCard> createState() => _MesCoursCardState();
+}
+
+class _MesCoursCardState extends State<_MesCoursCard> {
+  Future<void> _pick() async {
+    final fs = EskoliaFolderService.instance;
+    final files = await fs.listFiles(EskoliaFolder.cours);
+    if (!mounted) return;
+    if (files.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aucun cours dans Eskolia/Cours/. Genere des cours depuis le Notebook.')),
+      );
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: const Color(0xFF1E293B),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _CoursFilePicker(files: files),
+    );
+    if (picked == null || !mounted) return;
+    final content = await fs.readFile(EskoliaFolder.cours, picked);
+    if (content == null) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Impossible de lire ce cours.')));
+      return;
+    }
+    if (!mounted) return;
+    final title = picked.replaceAll('cours_', '').replaceAll('.md', '').replaceAll('_', ' ');
+    _openCours(title, content);
+  }
+
+  void _openCours(String title, String content) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E293B),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+        ),
+        titlePadding: const EdgeInsets.fromLTRB(20, 20, 12, 0),
+        contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+        title: Row(
+          children: [
+            Expanded(child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700))),
+            IconButton(icon: const Icon(Icons.close, color: Colors.white54, size: 20), onPressed: () => Navigator.of(ctx).pop()),
+          ],
+        ),
+        content: SizedBox(
+          width: 600,
+          child: SingleChildScrollView(
+            child: MarkdownBody(
+              data: content,
+              styleSheet: MarkdownStyleSheet(
+                h1: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                h2: const TextStyle(color: Color(0xFF00BCD4), fontSize: 15, fontWeight: FontWeight.w600),
+                h3: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
+                p: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+                listBullet: const TextStyle(color: Color(0xFF94A3B8)),
+                strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                code: const TextStyle(color: Color(0xFF43E97B), fontFamily: 'monospace', fontSize: 12, backgroundColor: Color(0xFF0F172A)),
+                blockquote: const TextStyle(color: Color(0xFFFFC107), fontStyle: FontStyle.italic),
+              ),
+            ),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Fermer', style: TextStyle(color: Color(0xFF94A3B8))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GradientBorderCard(
+      gradientColors: [
+        const Color(0xFF6C63FF).withValues(alpha: 0.6),
+        const Color(0xFF00BCD4).withValues(alpha: 0.3),
+      ],
+      glowColor: const Color(0xFF6C63FF).withValues(alpha: 0.25),
+      borderRadius: 18,
+      innerBlurSigma: 12,
+      innerColor: const Color(0xFF101820),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Text('\u{1F4D6}', style: TextStyle(fontSize: 22)),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Mes cours sauvegardés',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Lis les cours .md que tu as generés depuis le Notebook et sauvegardes dans Eskolia/Cours/.',
+            style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 12, height: 1.4),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: _pick,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF6C63FF),
+              side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+            ),
+            icon: const Icon(Icons.folder_open_rounded, size: 16),
+            label: const Text('Ouvrir un cours'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoursFilePicker extends StatelessWidget {
+  const _CoursFilePicker({required this.files});
+  final List<String> files;
+
+  String _label(String f) => f.replaceAll('cours_', '').replaceAll('.md', '').replaceAll('_', ' ');
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Container(width: 36, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2))),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text('Choisir un cours', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+        ),
+        const SizedBox(height: 8),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: files.length,
+            itemBuilder: (_, i) => ListTile(
+              leading: const Icon(Icons.description_rounded, color: Color(0xFF6C63FF)),
+              title: Text(_label(files[i]), style: const TextStyle(color: Colors.white, fontSize: 14)),
+              subtitle: Text(files[i], style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11)),
+              onTap: () => Navigator.of(context).pop(files[i]),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+}
 
 class _DocSectionCard extends StatelessWidget {
   const _DocSectionCard({

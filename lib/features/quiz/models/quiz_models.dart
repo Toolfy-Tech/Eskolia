@@ -26,6 +26,7 @@ class QuizQuestion {
     required this.question,
     required this.answer,
     this.answerSequence,
+    this.matchPairs,
     this.explanation,
     this.sourceAssetPath,
     this.difficultyBucket = 'unknown',
@@ -45,6 +46,8 @@ class QuizQuestion {
   final String answer;
   /// Pour type == 'sequence' : ordre correct des étapes.
   final List<String>? answerSequence;
+  /// Pour type == 'association' : paires correctes [[gauche, droite], ...].
+  final List<List<String>>? matchPairs;
   final String? explanation;
   final String? sourceAssetPath;
   final String difficultyBucket;
@@ -68,6 +71,7 @@ class QuizQuestion {
     'question': question,
     'answer': answer,
     'answerSequence': answerSequence,
+    'matchPairs': matchPairs,
     'explanation': explanation,
     'sourceAssetPath': sourceAssetPath,
     'difficultyBucket': difficultyBucket,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
+import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../feedback/data/models/question_feedback.dart';
@@ -79,21 +80,11 @@ class _AdminFeedbackScreenState extends State<AdminFeedbackScreen>
     return StaffGateScaffold(
       title: 'Feedback questions',
       child: Scaffold(
-        backgroundColor: _bg,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          foregroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.pop(),
-          ),
-          title: const Text(
-            'Feedback questions',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 17),
-          ),
-          centerTitle: true,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        appBar: EskoliaAppBar.standard(
+          context,
+          title: 'Feedback questions',
           bottom: TabBar(
             controller: _tabs,
             labelColor: Colors.white,

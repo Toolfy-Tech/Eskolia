@@ -7,6 +7,7 @@ import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/true_false_repository.dart';
 
 const Color _slate = Color(0xFF94A3B8);
@@ -201,7 +202,8 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
     final greenBg = _dragX > 0;
 
     return Scaffold(
-      backgroundColor: EskoliaVisual.bgDeep,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Vrai / Faux',
@@ -221,77 +223,79 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
               ),
             ),
           ),
-          if (_busyLoad)
-            const Center(
-              child: CircularProgressIndicator(color: Color(0xFF00BCD4)),
-            )
-          else if (_loadError != null)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Impossible de charger les affirmations.\n$_loadError',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: _slate),
-                    ),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: _load,
-                      child: const Text('Réessayer'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (_round.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Aucune affirmation disponible pour le moment.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: _slate, fontSize: 15),
-                    ),
-                    const SizedBox(height: 20),
-                    FilledButton(
-                      onPressed: () => context.pop(),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: EskoliaVisual.neonViolet,
-                      ),
-                      child: const Text('Retour'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (_roundOver)
-            _EndCard(
-              score: _score,
-              total: _round.length,
-              bestStreak: _bestStreak,
-              onReplay: _load,
-              onClose: () => context.pop(),
-            )
-          else
-            _PlayArea(
-              dragX: _dragX,
-              shake: _shake,
-              current: _current!,
-              index: _index,
-              total: _round.length,
-              score: _score,
-              streak: _streak,
-              onDragUpdate: (dx) => setState(() => _dragX += dx),
-              onDragEnd: _onDragEnd,
-              onTapFalse: () => _onAnswer(false),
-              onTapTrue: () => _onAnswer(true),
-            ),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: _busyLoad
+                ? const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF00BCD4)),
+                  )
+                : _loadError != null
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Impossible de charger les affirmations.\n$_loadError',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: _slate),
+                              ),
+                              const SizedBox(height: 16),
+                              FilledButton(
+                                onPressed: _load,
+                                child: const Text('Réessayer'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : _round.isEmpty
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Aucune affirmation disponible pour le moment.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: _slate, fontSize: 15),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  FilledButton(
+                                    onPressed: () => context.pop(),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: EskoliaVisual.neonViolet,
+                                    ),
+                                    child: const Text('Retour'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : _roundOver
+                            ? _EndCard(
+                                score: _score,
+                                total: _round.length,
+                                bestStreak: _bestStreak,
+                                onReplay: _load,
+                                onClose: () => context.pop(),
+                              )
+                            : _PlayArea(
+                                dragX: _dragX,
+                                shake: _shake,
+                                current: _current!,
+                                index: _index,
+                                total: _round.length,
+                                score: _score,
+                                streak: _streak,
+                                onDragUpdate: (dx) => setState(() => _dragX += dx),
+                                onDragEnd: _onDragEnd,
+                                onTapFalse: () => _onAnswer(false),
+                                onTapTrue: () => _onAnswer(true),
+                              ),
+          ),
         ],
       ),
     );

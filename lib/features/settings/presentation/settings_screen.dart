@@ -16,7 +16,7 @@ import '../data/settings_repository.dart';
 const Color _bg = EskoliaVisual.bgDeep;
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF64748B);
+const Color _slate = Color(0xFF94A3B8);
 const Color _slateLight = Color(0xFF94A3B8);
 const Color _danger = Color(0xFFE53935);
 const Color _dangerDark = Color(0xFFB71C1C);
@@ -78,7 +78,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
         title: 'Paramètres',

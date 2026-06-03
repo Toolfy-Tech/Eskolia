@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/note_model.dart';
 import '../data/notebook_repository.dart';
 
@@ -42,7 +43,8 @@ class _NotebookScreenState extends State<NotebookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _bg,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(context, title: 'Mon Carnet', showBack: false),
       floatingActionButton: FloatingActionButton(
         backgroundColor: _violet,
@@ -53,37 +55,40 @@ class _NotebookScreenState extends State<NotebookScreen> {
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
-          FutureBuilder<List<NoteModel>>(
-            future: _notesFuture,
-            builder: (context, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(color: _violet),
+          EskoliaShellBody(
+            safeAreaTop: false,
+            child: FutureBuilder<List<NoteModel>>(
+              future: _notesFuture,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: _violet),
+                  );
+                }
+                final notes = snap.data ?? const [];
+                if (notes.isEmpty) {
+                  return _EmptyState(onTap: () => _openEditor(null));
+                }
+                return RefreshIndicator(
+                  color: _violet,
+                  onRefresh: () async => _load(),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+                    itemCount: notes.length,
+                    itemBuilder: (context, index) {
+                      final note = notes[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _NoteCard(
+                          note: note,
+                          onTap: () => _openEditor(note),
+                        ),
+                      );
+                    },
+                  ),
                 );
-              }
-              final notes = snap.data ?? const [];
-              if (notes.isEmpty) {
-                return _EmptyState(onTap: () => _openEditor(null));
-              }
-              return RefreshIndicator(
-                color: _violet,
-                onRefresh: () async => _load(),
-                child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-                  itemCount: notes.length,
-                  itemBuilder: (context, index) {
-                    final note = notes[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _NoteCard(
-                        note: note,
-                        onTap: () => _openEditor(note),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
+              },
+            ),
           ),
         ],
       ),
