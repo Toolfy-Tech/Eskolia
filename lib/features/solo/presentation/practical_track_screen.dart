@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/widgets/bottom_nav.dart';
@@ -14,7 +15,7 @@ import '../data/practical_catalog_repository.dart';
 import '../data/practical_track_models.dart';
 import 'practical_markdown_screen.dart';
 
-const Color _slate = Color(0xFF94A3B8);
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Un theme « Exercices pratiques » : tutoriels, liste de TP, QCM.
 class PracticalTrackScreen extends StatefulWidget {
@@ -126,7 +127,7 @@ class _PracticalTrackScreenState extends State<PracticalTrackScreen> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),

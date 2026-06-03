@@ -3,6 +3,7 @@ import 'dart:math' show Random, min;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -14,9 +15,9 @@ import '../../flashcards/presentation/flashcard_session_screen.dart';
 import '../../quiz/data/quiz_repository.dart';
 import '../../quiz/presentation/revision_pool_launch_mode.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _green = Color(0xFF43E97B);
-const Color _teal = Color(0xFF1DE9B6);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _green = EskoliaTokens.success;
+const Color _teal = EskoliaTokens.cyan;
 
 /// Hub : pool 📌 épinglé + paquet SRS, chacun en quiz QCM ou flashcards.
 class SoloRevisionMenuScreen extends StatefulWidget {

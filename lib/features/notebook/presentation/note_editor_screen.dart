@@ -62,10 +62,10 @@ class _SubjectResult {
 
   List<(int, String, Color)> get typeSummary {
     const labels = <String, (String, Color)>{
-      'classic':            ('Q&R',        Color(0xFF6C63FF)),
-      'ticket':             ('Ticket',     Color(0xFF00BCD4)),
-      'diagnostic_indices': ('Diagnostic', Color(0xFFFFC107)),
-      'sequence':           ('Sequence',   Color(0xFF4CAF50)),
+      'classic':            ('Q&R',        EskoliaTokens.violetSoft),
+      'ticket':             ('Ticket',     EskoliaTokens.cyan),
+      'diagnostic_indices': ('Diagnostic', EskoliaTokens.amber),
+      'sequence':           ('Sequence',   EskoliaTokens.success),
     };
     try {
       final data = jsonDecode(quizJson) as Map<String, dynamic>;
@@ -1035,7 +1035,7 @@ class _CourseSheet extends StatelessWidget {
                     h2: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w700),
                     h3: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),
                     code: TextStyle(
-                      color: const Color(0xFF00BCD4),
+                      color: EskoliaTokens.cyan,
                       backgroundColor: Colors.white.withValues(alpha: 0.06),
                       fontSize: 12,
                       fontFamily: 'monospace',
@@ -1045,12 +1045,12 @@ class _CourseSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     blockquote: const TextStyle(
-                      color: Color(0xFF94A3B8),
+                      color: EskoliaTokens.textSecondary,
                       fontSize: 13,
                       fontStyle: FontStyle.italic,
                       height: 1.5,
                     ),
-                    listBullet: const TextStyle(color: Color(0xFF6C63FF), fontSize: 13),
+                    listBullet: const TextStyle(color: EskoliaTokens.violetSoft, fontSize: 13),
                     tableBody: const TextStyle(color: Colors.white70, fontSize: 12),
                     tableHead: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
                   ),

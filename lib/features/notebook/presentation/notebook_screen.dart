@@ -7,10 +7,11 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/note_model.dart';
 import '../data/notebook_repository.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _bg = Color(0xFF0B1120);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _bg = EskoliaTokens.bgBase;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class NotebookScreen extends StatefulWidget {
   const NotebookScreen({super.key});

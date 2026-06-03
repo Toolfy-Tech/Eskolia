@@ -449,8 +449,8 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     switch (difficulty.toLowerCase()) {
       case 'debutant': return const Color(0xFF43E97B);
       case 'intermediaire': return const Color(0xFFEF9F27);
-      case 'avance': return const Color(0xFFEF4444);
-      default: return _slate;
+      case 'avance': return EskoliaTokens.error;
+      default: return EskoliaTokens.textSecondary;
     }
   }
 
@@ -748,7 +748,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF22D3EE).withValues(alpha: 0.08),
+              color: EskoliaTokens.cyan.withValues(alpha: 0.08),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
             ),
             child: Row(
@@ -757,12 +757,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 const SizedBox(width: 6),
                 Text(
                   device.isNotEmpty ? device : label,
-                  style: const TextStyle(color: Color(0xFF22D3EE), fontSize: 11, fontWeight: FontWeight.w600),
+                  style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w600),
                 ),
                 if (device.isNotEmpty && label.isNotEmpty) ...[
-                  const Text(' — ', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                  const Text(' — ', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
                   Expanded(
-                    child: Text(label, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+                    child: Text(label, style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
                   ),
                 ],
               ],
