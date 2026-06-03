@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const Color _cyan  = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
-const Color _bg    = Color(0xFF0F172A);
-const Color _card  = Color(0xFF1E293B);
+import '../../../../core/constants/eskolia_tokens.dart';
 
 // ---------------------------------------------------------------------------
 // NetworkCalculatorSheet

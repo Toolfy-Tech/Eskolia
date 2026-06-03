@@ -140,7 +140,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 12),
                 GradientBorderCard(
-                  gradientColors: const [_green, Color(0xFF6C63FF)],
+                  gradientColors: const [_green, EskoliaTokens.violetSoft],
                   glowColor: _green,
                   padding: const EdgeInsets.all(18),
                   child: Column(
@@ -210,7 +210,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                 ),
                 const SizedBox(height: 16),
                 GradientBorderCard(
-                  gradientColors: const [_teal, Color(0xFF6C63FF)],
+                  gradientColors: const [_teal, EskoliaTokens.violetSoft],
                   glowColor: _teal,
                   padding: const EdgeInsets.all(18),
                   child: Column(

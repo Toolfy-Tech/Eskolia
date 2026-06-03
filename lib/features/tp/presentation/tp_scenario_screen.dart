@@ -458,7 +458,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
     try {
       return Color(int.parse(hex.replaceFirst('#', '0xFF')));
     } catch (_) {
-      return const Color(0xFF6C63FF);
+      return EskoliaTokens.violet;
     }
   }
 }

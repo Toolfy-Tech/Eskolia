@@ -135,7 +135,7 @@ class _NoteCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF0F1A2E),
+            color: EskoliaTokens.surface1,
             borderRadius: BorderRadius.circular(14),
             border: const Border(
               left: BorderSide(color: _violet, width: 3),
