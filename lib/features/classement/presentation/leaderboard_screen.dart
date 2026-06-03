@@ -14,8 +14,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/gradient_border_card.dart';
-
-const Color _slate = Color(0xFF94A3B8);
+import '../../../core/constants/eskolia_tokens.dart';
 
 enum _BoardTab {
   weekXp,
@@ -80,7 +79,7 @@ const List<_TabVisual> _kTabVisuals = [
     pickerSubtitle: 'Victoires multijoueur',
     headline: 'Duels remportés',
     accent: EskoliaVisual.neonCyan,
-    borderColors: [Color(0xFF22D3EE), Color(0xFF06B6D4)],
+    borderColors: [EskoliaTokens.cyan, EskoliaTokens.cyan],
   ),
   _TabVisual(
     tab: _BoardTab.quizWins,
@@ -89,7 +88,7 @@ const List<_TabVisual> _kTabVisuals = [
     pickerSubtitle: 'Parcours & solo',
     headline: 'Quiz réussis',
     accent: Color(0xFFA78BFA),
-    borderColors: [Color(0xFFC4B5FD), Color(0xFF7C3AED)],
+    borderColors: const [Color(0xFFC4B5FD), Color(0xFF7C3AED)],
   ),
 ];
 
@@ -230,7 +229,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               '$err',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: _slate.withValues(alpha: 0.85),
+                color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                 fontSize: 12,
               ),
             ),
@@ -276,7 +275,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           Text(
             'Cinq classements distincts — XP, défi du jour, duels et régularité au quiz.',
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.92),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.92),
               fontSize: 12,
               height: 1.35,
             ),
@@ -332,7 +331,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         glowColor: v.accent.withValues(alpha: 0.45),
         borderRadius: 20,
         innerBlurSigma: 14,
-        innerColor: const Color(0xFF0C1018),
+        innerColor: EskoliaTokens.bgBase,
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +355,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Text(
                     _descriptionForTab(),
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.95),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                       fontSize: 12,
                       height: 1.4,
                     ),
@@ -404,7 +403,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               SliverToBoxAdapter(child: _buildModePickerGrid()),
               SliverToBoxAdapter(child: _buildActiveBanner()),
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator(color: Color(0xFF00BCD4))),
+                child: Center(child: CircularProgressIndicator(color: EskoliaTokens.cyan)),
               ),
             ],
           );
@@ -440,7 +439,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           'Lance le quiz du jour et décroche la première place !',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: _slate.withValues(alpha: 0.85),
+                            color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                             fontSize: 13,
                             height: 1.4,
                           ),
@@ -474,7 +473,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           entry: podium[0],
                           heightFrac: 0.72,
                           medal: '\u{1F948}',
-                          borderColors: const [Color(0xFFC0C0C0), Color(0xFF94A3B8)],
+                          borderColors: const [Color(0xFFC0C0C0), EskoliaTokens.textSecondary],
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -544,7 +543,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               SliverToBoxAdapter(child: _buildModePickerGrid()),
               SliverToBoxAdapter(child: _buildActiveBanner()),
               const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator(color: Color(0xFF00BCD4))),
+                child: Center(child: CircularProgressIndicator(color: EskoliaTokens.cyan)),
               ),
             ],
           );
@@ -580,7 +579,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           'Sois le premier à gagner de l\'XP\net à apparaître ici !',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: _slate.withValues(alpha: 0.85),
+                            color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                             fontSize: 13,
                             height: 1.4,
                           ),
@@ -616,7 +615,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           metricUnit: _metricUnit(),
                           heightFrac: 0.72,
                           medal: '\u{1F948}',
-                          borderColors: const [Color(0xFFC0C0C0), Color(0xFF94A3B8)],
+                          borderColors: const [Color(0xFFC0C0C0), EskoliaTokens.textSecondary],
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -753,7 +752,7 @@ class _ModePickerTile extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: _slate.withValues(alpha: selected ? 0.95 : 0.65),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: selected ? 0.95 : 0.65),
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
@@ -802,11 +801,11 @@ class _PodiumSlot extends StatelessWidget {
         glowColor: glow,
         borderRadius: 18,
         innerBlurSigma: 12,
-        innerColor: const Color(0xFF101820),
+        innerColor: EskoliaTokens.surface1,
         padding: const EdgeInsets.all(10),
         child: e == null
             ? Center(
-                child: Text('—', style: TextStyle(color: _slate.withValues(alpha: 0.5))),
+                child: Text('—', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5))),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -827,7 +826,7 @@ class _PodiumSlot extends StatelessWidget {
                   Text(
                     '${metric(e)} $metricUnit',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.95),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                     ),
@@ -865,11 +864,11 @@ class _DailyPodiumSlot extends StatelessWidget {
         glowColor: glow,
         borderRadius: 18,
         innerBlurSigma: 12,
-        innerColor: const Color(0xFF101820),
+        innerColor: EskoliaTokens.surface1,
         padding: const EdgeInsets.all(10),
         child: e == null
             ? Center(
-                child: Text('—', style: TextStyle(color: _slate.withValues(alpha: 0.5))),
+                child: Text('—', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5))),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -890,7 +889,7 @@ class _DailyPodiumSlot extends StatelessWidget {
                   Text(
                     '${e.score}/${e.total}',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.95),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                     ),
@@ -920,15 +919,15 @@ class _ListRow extends StatelessWidget {
     final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
     return GradientBorderCard(
       gradientColors: isSelf
-          ? const [Color(0xFF3B82F6), Color(0xFF6366F1)]
+          ? const [EskoliaTokens.info, Color(0xFF6366F1)]
           : [
               Colors.white.withValues(alpha: 0.14),
               Colors.white.withValues(alpha: 0.06),
             ],
-      glowColor: isSelf ? const Color(0xFF3B82F6) : null,
+      glowColor: isSelf ? EskoliaTokens.info : null,
       borderRadius: 16,
       innerBlurSigma: 10,
-      innerColor: const Color(0xFF121A28),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
@@ -937,7 +936,7 @@ class _ListRow extends StatelessWidget {
             child: Text(
               '${entry.rank}',
               style: TextStyle(
-                color: isSelf ? Colors.white : _slate,
+                color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -945,7 +944,7 @@ class _ListRow extends StatelessWidget {
           CircleAvatar(
             radius: 18,
             backgroundColor: isSelf
-                ? const Color(0xFF3B82F6).withValues(alpha: 0.4)
+                ? EskoliaTokens.info.withValues(alpha: 0.4)
                 : Colors.white12,
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : '?',
@@ -974,7 +973,7 @@ class _ListRow extends StatelessWidget {
                   Text(
                     subtitleLine,
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.9),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                       fontSize: 11,
                     ),
                   ),
@@ -984,7 +983,7 @@ class _ListRow extends StatelessWidget {
           Text(
             trailingValue,
             style: TextStyle(
-              color: isSelf ? Colors.white : _slate,
+              color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
               fontWeight: FontWeight.w800,
               fontSize: 13,
             ),
@@ -1009,15 +1008,15 @@ class _DailyListRow extends StatelessWidget {
     final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
     return GradientBorderCard(
       gradientColors: isSelf
-          ? const [Color(0xFF3B82F6), Color(0xFF6366F1)]
+          ? const [EskoliaTokens.info, Color(0xFF6366F1)]
           : [
               Colors.white.withValues(alpha: 0.14),
               Colors.white.withValues(alpha: 0.06),
             ],
-      glowColor: isSelf ? const Color(0xFF3B82F6) : null,
+      glowColor: isSelf ? EskoliaTokens.info : null,
       borderRadius: 16,
       innerBlurSigma: 10,
-      innerColor: const Color(0xFF121A28),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
@@ -1026,7 +1025,7 @@ class _DailyListRow extends StatelessWidget {
             child: Text(
               '${entry.rank}',
               style: TextStyle(
-                color: isSelf ? Colors.white : _slate,
+                color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -1034,7 +1033,7 @@ class _DailyListRow extends StatelessWidget {
           CircleAvatar(
             radius: 18,
             backgroundColor: isSelf
-                ? const Color(0xFF3B82F6).withValues(alpha: 0.4)
+                ? EskoliaTokens.info.withValues(alpha: 0.4)
                 : Colors.white12,
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : '?',
@@ -1060,7 +1059,7 @@ class _DailyListRow extends StatelessWidget {
           Text(
             '${entry.score}/${entry.total}',
             style: TextStyle(
-              color: isSelf ? Colors.white : _slate,
+              color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
               fontWeight: FontWeight.w800,
               fontSize: 13,
             ),

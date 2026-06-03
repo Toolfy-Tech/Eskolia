@@ -96,7 +96,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '🏥',
                       difficulty: 'Avancé',
                       missionCount: 16,
-                      accentColor: const Color(0xFFE74C3C),
+                      accentColor: EskoliaTokens.error,
                     ),
                     const SizedBox(height: 32),
                     Container(
@@ -122,7 +122,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{1F4BB}',
                       difficulty: 'Débutant',
                       missionCount: 16,
-                      accentColor: const Color(0xFF3B82F6),
+                      accentColor: EskoliaTokens.info,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(
@@ -132,7 +132,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{2699}\u{FE0F}',
                       difficulty: 'Intermédiaire',
                       missionCount: 16,
-                      accentColor: const Color(0xFF8B5CF6),
+                      accentColor: const Color(0xFF8B5CF6), // purple — no token equivalent
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(

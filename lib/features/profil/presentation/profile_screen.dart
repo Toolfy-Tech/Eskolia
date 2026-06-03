@@ -15,14 +15,7 @@ import '../../parcours/data/parcours_repository.dart';
 import '../../parcours/data/tip_progress_repository.dart';
 import '../../quiz/services/revision_pool_repository.dart';
 import '../data/profile_repository.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
-const Color _amber = Color(0xFFFFC107);
-const Color _red = Color(0xFFEF4444);
-const Color _green = Color(0xFF43E97B);
+import '../../../core/constants/eskolia_tokens.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.uid = ''});
@@ -83,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               future: _future,
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: _violet));
+                  return const Center(child: CircularProgressIndicator(color: EskoliaTokens.violet));
                 }
                 if (snap.hasError) {
                   return _buildErrorState(snap.error.toString());
@@ -134,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return GradientBorderCard(
       gradientColors: EskoliaVisual.borderPrimary,
-      glowColor: _violet,
+      glowColor: EskoliaTokens.violet,
       borderRadius: 22,
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -148,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundColor: _violet.withValues(alpha: 0.2),
+                    backgroundColor: EskoliaTokens.violet.withValues(alpha: 0.2),
                     child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
                   ),
                   if (aiConnected)
@@ -187,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: LinearProgressIndicator(
               value: levelProgress,
               backgroundColor: Colors.white10,
-              color: _violet,
+              color: EskoliaTokens.violet,
               minHeight: 6,
             ),
           ),
@@ -287,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final s = slots[idx];
                       Color dotColor;
                       if (s.isToday && s.isActive) {
-                        dotColor = _violet;
+                        dotColor = EskoliaTokens.violet;
                       } else if (s.isActive) {
                         dotColor = _cyan.withValues(alpha: 0.75);
                       } else {
@@ -300,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: dotColor,
                           borderRadius: BorderRadius.circular(6),
                           border: s.isToday
-                              ? Border.all(color: _violet.withValues(alpha: 0.6), width: 1.5)
+                              ? Border.all(color: EskoliaTokens.violet.withValues(alpha: 0.6), width: 1.5)
                               : null,
                         ),
                         alignment: Alignment.center,
@@ -455,9 +448,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         const Text('EXPLORER', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
         const SizedBox(height: 12),
-        _ExplorerTile(icon: Icons.psychology_rounded, label: 'Mon IA', route: '/ai/setup', color: _violet),
+        _ExplorerTile(icon: Icons.psychology_rounded, label: 'Mon IA', route: '/ai/setup', color: EskoliaTokens.violet),
         _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: _amber),
-        _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: _violet),
+        _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: EskoliaTokens.violet),
         _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: _green),
         _ExplorerTile(icon: Icons.settings_rounded, label: 'Réglages', route: '/settings', color: _slate),
       ],
