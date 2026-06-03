@@ -170,7 +170,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                             child: Text(
                               e.key,
                               style: TextStyle(
-                                color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.9),
+                                color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
                               ),
@@ -286,7 +286,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             Text(
               msg,
               textAlign: TextAlign.center,
-              style: TextStyle(color: EskoliaTokens.textSecondaryLight),
+              style: TextStyle(color: EskoliaTokens.textSecondary),
             ),
             const SizedBox(height: 16),
             FilledButton(
@@ -406,7 +406,7 @@ class _NotificationDismissTile extends StatelessWidget {
                                   Text(
                                     n.body,
                                     style: TextStyle(
-                                      color: EskoliaTokens.textSecondaryLight
+                                      color: EskoliaTokens.textSecondary
                                           .withValues(alpha: 0.95),
                                       fontSize: 13,
                                       height: 1.35,

@@ -279,7 +279,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
                 p: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
                 listBullet: const TextStyle(color: EskoliaTokens.textSecondary),
                 strong: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                code: const TextStyle(color: Color(0xFF43E97B), fontFamily: 'monospace', fontSize: 12, backgroundColor: EskoliaTokens.bgBase),
+                code: const TextStyle(color: EskoliaVisual.neonGreen, fontFamily: 'monospace', fontSize: 12, backgroundColor: EskoliaTokens.bgBase),
                 blockquote: const TextStyle(color: Color(0xFFFFC107), fontStyle: FontStyle.italic),
               ),
             ),

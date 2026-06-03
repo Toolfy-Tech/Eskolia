@@ -132,7 +132,7 @@ class _TpHubScreenState extends State<TpHubScreen> {
                       emoji: '\u{2699}\u{FE0F}',
                       difficulty: 'Intermédiaire',
                       missionCount: 16,
-                      accentColor: const Color(0xFF8B5CF6),
+                      accentColor: EskoliaTokens.violet,
                     ),
                     const SizedBox(height: 12),
                     _buildScenarioCard(

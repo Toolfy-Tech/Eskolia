@@ -211,7 +211,7 @@ class _OllamaSetupCardState extends State<OllamaSetupCard> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.warningEskoliaTokens.amber_rounded, color: EskoliaTokens.amber, size: 13),
+              const Icon(Icons.warning_amber_rounded, color: EskoliaTokens.amber, size: 13),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(

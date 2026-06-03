@@ -469,7 +469,7 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
             child: Ink(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [_violet, Color(0xFF8B5CF6)],
+                  colors: [_violet, EskoliaTokens.violet],
                 ),
               ),
               child: Container(

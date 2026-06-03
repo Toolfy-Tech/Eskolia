@@ -84,7 +84,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
                       '${String.fromCharCode(65 + i)}. ${opts[i]}'
                       '${i == _correct ? '  ✓' : ''}',
                       style: TextStyle(
-                        color: i == _correct ? const EskoliaTokens.success : Colors.white70,
+                        color: i == _correct ? EskoliaTokens.success : Colors.white70,
                         fontSize: 13,
                       ),
                     ),

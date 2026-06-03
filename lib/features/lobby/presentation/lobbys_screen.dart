@@ -1269,7 +1269,7 @@ class LobbyCard extends StatelessWidget {
   (Color, Color) _diff() {
     final d = lobby.difficulty.toLowerCase();
     if (d == 'progressive') {
-      return (_red.withValues(alpha: 0.2), const Color(0xFFFF6B6B));
+      return (_red.withValues(alpha: 0.2), EskoliaTokens.error);
     }
     if (d == 'mixte' || d.contains('+')) {
       return (_orange.withValues(alpha: 0.2), _orange);
@@ -1288,7 +1288,7 @@ class LobbyCard extends StatelessWidget {
     if (lobby.isSurvival) {
       return (
         _red.withValues(alpha: 0.22),
-        const Color(0xFFFF6B6B),
+        EskoliaTokens.error,
       );
     }
     return (
@@ -1350,7 +1350,7 @@ class LobbyCard extends StatelessWidget {
         : 0.0;
     final modeEmoji = lobby.isSurvival ? '\u{1F6E1}' : '\u{1F3AF}';
     final accent = ms.$2;
-    final progressColor = lobby.isSurvival ? const Color(0xFFFF6B6B) : _cyan;
+    final progressColor = lobby.isSurvival ? EskoliaTokens.error : _cyan;
 
     return Material(
       color: Colors.transparent,
