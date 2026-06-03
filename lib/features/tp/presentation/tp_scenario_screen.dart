@@ -547,7 +547,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
       builder: (ctx, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF151B2E),
+            color: EskoliaTokens.surface1,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Column(
@@ -574,17 +574,17 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                         children: [
                           Text(
                             'Mission ${widget.flatIndex + 1}',
-                            style: const TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w600),
+                            style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
                           Text(title, style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
                           if (minutes > 0)
-                            Text('⏱ $minutes min', style: const TextStyle(color: _slate, fontSize: 12)),
+                            Text('⏱ $minutes min', style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: _slate),
+                      icon: const Icon(Icons.close_rounded, color: EskoliaTokens.textSecondary),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],

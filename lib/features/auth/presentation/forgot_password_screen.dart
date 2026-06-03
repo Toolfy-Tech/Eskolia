@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/app_theme_extensions.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -11,11 +12,11 @@ import '../../../shared/widgets/gradient_border_card.dart';
 import '../data/auth_repository.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _blue = Color(0xFF3B82F6);
-const Color _violet = Color(0xFF7C3AED);
-const Color _slate = Color(0xFF94A3B8);
-const Color _fieldBg = Color(0xFF1E293B);
-const Color _fieldBorder = Color(0xFF334155);
+const Color _blue = EskoliaTokens.info;
+const Color _violet = EskoliaTokens.violet;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _fieldBg = EskoliaTokens.surface2;
+const Color _fieldBorder = EskoliaTokens.textDisabled;
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key, this.authRepository});
@@ -227,10 +228,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         borderSide: BorderSide(color: focusColor, width: 1.5),
       ),
       errorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444)),
+        borderSide: const BorderSide(color: EskoliaTokens.error),
       ),
       focusedErrorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+        borderSide: const BorderSide(color: EskoliaTokens.error, width: 1.5),
       ),
     );
   }

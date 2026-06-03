@@ -696,7 +696,9 @@ class LobbyRepository {
         try {
           final decoded = jsonDecode(p.lastAnswerText ?? '[]');
           if (decoded is List) playerOrder = List<String>.from(decoded);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[LobbyRepository.judgeSequenceAnswers] $e');
+        }
 
         double score = 0.0;
         if (correct.isNotEmpty) {

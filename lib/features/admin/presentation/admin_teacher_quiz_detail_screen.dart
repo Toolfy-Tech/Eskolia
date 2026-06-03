@@ -94,7 +94,7 @@ class _AdminTeacherQuizDetailScreenState
                 ? null
                 : FloatingActionButton.extended(
                     onPressed: () => _addQuestion(quiz),
-                    backgroundColor: _violet,
+                    backgroundColor: EskoliaTokens.violetSoft,
                     icon: const Icon(Icons.add_rounded, color: Colors.white),
                     label: const Text('Ajouter une question',
                         style: TextStyle(
@@ -138,12 +138,12 @@ class _AdminTeacherQuizDetailScreenState
                         if (quiz.description.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(quiz.description,
-                              style: TextStyle(color: _slate, fontSize: 12)),
+                              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
                         ],
                         const SizedBox(height: 4),
                         Text(
                           'Par ${quiz.authorName} · ${quiz.questions.length} question${quiz.questions.length > 1 ? "s" : ""}',
-                          style: TextStyle(color: _slate, fontSize: 11),
+                          style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
                         ),
                       ],
                     ),
@@ -153,13 +153,13 @@ class _AdminTeacherQuizDetailScreenState
                       Switch(
                         value: quiz.isPublished,
                         onChanged: (v) => _repo.togglePublished(quiz.id, v),
-                        activeColor: _green,
+                        activeColor: EskoliaTokens.success,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         quiz.isPublished ? 'Publié' : 'Brouillon',
                         style: TextStyle(
-                          color: quiz.isPublished ? _green : _slate,
+                          color: quiz.isPublished ? EskoliaTokens.success : EskoliaTokens.textSecondary,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -188,7 +188,7 @@ class _AdminTeacherQuizDetailScreenState
               child: Text(
                 'Aucune question — appuyez sur "Ajouter" pour commencer.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _slate, fontSize: 13),
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13),
               ),
             ),
           )
@@ -231,13 +231,13 @@ class _QuestionTile extends StatelessWidget {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.12),
+              color: EskoliaTokens.violetSoft.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               '${index + 1}',
               style: const TextStyle(
-                color: _violet,
+                color: EskoliaTokens.violetSoft,
                 fontWeight: FontWeight.w800,
                 fontSize: 11,
               ),
@@ -257,16 +257,16 @@ class _QuestionTile extends StatelessWidget {
                   question.answer,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: _green.withValues(alpha: 0.8), fontSize: 11),
+                  style: TextStyle(color: EskoliaTokens.success.withValues(alpha: 0.8), fontSize: 11),
                 ),
                 const SizedBox(height: 4),
                 Wrap(
                   spacing: 6,
                   children: [
-                    _chip(question.difficulty, _slate),
-                    _chip(question.type, _slate),
+                    _chip(question.difficulty, EskoliaTokens.textSecondary),
+                    _chip(question.type, EskoliaTokens.textSecondary),
                     if (question.contextLine != null)
-                      _chip(question.contextLine!, _slate),
+                      _chip(question.contextLine!, EskoliaTokens.textSecondary),
                   ],
                 ),
               ],
@@ -275,7 +275,7 @@ class _QuestionTile extends StatelessWidget {
           IconButton(
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline_rounded, size: 18),
-            color: _red.withValues(alpha: 0.7),
+            color: EskoliaTokens.error.withValues(alpha: 0.7),
             tooltip: 'Supprimer',
           ),
         ],
@@ -339,7 +339,7 @@ class _AddQuestionDialogState extends State<_AddQuestionDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: EskoliaTokens.surface1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: SingleChildScrollView(
@@ -387,7 +387,7 @@ class _AddQuestionDialogState extends State<_AddQuestionDialog> {
                     options: const ['facile', 'moyen', 'difficile'],
                     labels: const ['Facile', 'Moyen', 'Difficile'],
                     onChanged: (v) => setState(() => _difficulty = v),
-                    activeColor: _orange,
+                    activeColor: EskoliaTokens.orange,
                   ),
                 ),
               ],
@@ -399,7 +399,7 @@ class _AddQuestionDialogState extends State<_AddQuestionDialog> {
               options: const ['classic', 'ticket', 'diagnostic_indices'],
               labels: const ['Classique', 'Ticket', 'Indices'],
               onChanged: (v) => setState(() => _type = v),
-              activeColor: _violet,
+              activeColor: EskoliaTokens.violetSoft,
             ),
             const SizedBox(height: 20),
             Row(
@@ -451,7 +451,7 @@ class _SegmentRow<T> extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: _slate, fontSize: 11)),
+        Text(label, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
         const SizedBox(height: 6),
         Row(
           children: List.generate(options.length, (i) {
@@ -477,7 +477,7 @@ class _SegmentRow<T> extends StatelessWidget {
                   child: Text(
                     labels[i],
                     style: TextStyle(
-                      color: active ? activeColor : _slate,
+                      color: active ? activeColor : EskoliaTokens.textSecondary,
                       fontSize: 11,
                       fontWeight: active ? FontWeight.w700 : FontWeight.normal,
                     ),
@@ -497,10 +497,10 @@ Future<bool> _confirmDialog(
   return await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          backgroundColor: const Color(0xFF1A1A2E),
+          backgroundColor: EskoliaTokens.surface1,
           title: Text(title,
               style: const TextStyle(color: Colors.white, fontSize: 16)),
-          content: Text(body, style: TextStyle(color: _slate)),
+          content: Text(body, style: TextStyle(color: EskoliaTokens.textSecondary)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -509,7 +509,7 @@ Future<bool> _confirmDialog(
             TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text('Confirmer',
-                  style: TextStyle(color: _red, fontWeight: FontWeight.w700)),
+                  style: TextStyle(color: EskoliaTokens.error, fontWeight: FontWeight.w700)),
             ),
           ],
         ),

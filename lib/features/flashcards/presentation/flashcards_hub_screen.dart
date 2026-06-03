@@ -261,7 +261,7 @@ class _EskoliaFlashcardsCard extends StatelessWidget {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _FlashcardFilePicker(files: files),
     );

@@ -289,7 +289,7 @@ class _MesCoursCardState extends State<_MesCoursCard> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Fermer', style: TextStyle(color: Color(0xFF94A3B8))),
+            child: const Text('Fermer', style: TextStyle(color: EskoliaTokens.textSecondary)),
           ),
         ],
       ),
@@ -300,13 +300,13 @@ class _MesCoursCardState extends State<_MesCoursCard> {
   Widget build(BuildContext context) {
     return GradientBorderCard(
       gradientColors: [
-        const Color(0xFF6C63FF).withValues(alpha: 0.6),
-        const Color(0xFF00BCD4).withValues(alpha: 0.3),
+        EskoliaTokens.violetSoft.withValues(alpha: 0.6),
+        EskoliaTokens.cyan.withValues(alpha: 0.3),
       ],
-      glowColor: const Color(0xFF6C63FF).withValues(alpha: 0.25),
+      glowColor: EskoliaTokens.violetSoft.withValues(alpha: 0.25),
       borderRadius: 18,
       innerBlurSigma: 12,
-      innerColor: const Color(0xFF101820),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -332,8 +332,8 @@ class _MesCoursCardState extends State<_MesCoursCard> {
           OutlinedButton.icon(
             onPressed: _pick,
             style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF6C63FF),
-              side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+              foregroundColor: EskoliaTokens.violetSoft,
+              side: BorderSide(color: EskoliaTokens.violetSoft.withValues(alpha: 0.5)),
               padding: const EdgeInsets.symmetric(vertical: 10),
             ),
             icon: const Icon(Icons.folder_open_rounded, size: 16),
@@ -369,7 +369,7 @@ class _CoursFilePicker extends StatelessWidget {
             shrinkWrap: true,
             itemCount: files.length,
             itemBuilder: (_, i) => ListTile(
-              leading: const Icon(Icons.description_rounded, color: Color(0xFF6C63FF)),
+              leading: const Icon(Icons.description_rounded, color: EskoliaTokens.violetSoft),
               title: Text(_label(files[i]), style: const TextStyle(color: Colors.white, fontSize: 14)),
               subtitle: Text(files[i], style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 11)),
               onTap: () => Navigator.of(context).pop(files[i]),
@@ -411,7 +411,7 @@ class _DocSectionCard extends StatelessWidget {
       glowColor: accent.withValues(alpha: 0.35),
       borderRadius: 18,
       innerBlurSigma: 12,
-      innerColor: const Color(0xFF101820),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
