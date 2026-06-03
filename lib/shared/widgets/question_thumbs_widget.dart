@@ -32,7 +32,7 @@ class QuestionThumbsWidget extends StatefulWidget {
 }
 
 class _QuestionThumbsWidgetState extends State<QuestionThumbsWidget> {
-  final _repo = QuestionFeedbackRepository();
+  static final _repo = QuestionFeedbackRepository();
   int? _vote; // +1, -1 ou null
   bool _busy = false;
 
