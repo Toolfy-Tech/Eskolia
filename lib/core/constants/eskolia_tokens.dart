@@ -30,13 +30,13 @@ abstract final class EskoliaTokens {
   static const Color violetSoft = Color(0xFF6C63FF);
 
   /// Cyan — quiz, cours, actions secondaires.
-  static const Color cyan = Color(0xFF06B6D4);
+  static const Color cyan = Color(0xFF00D4E8);
 
   /// Cyan atténué — backgrounds légers.
-  static const Color cyanSoft = Color(0xFF00BCD4);
+  static const Color cyanSoft = Color(0xFF00D4E8);
 
   /// Or — badges, achievements, streaks.
-  static const Color gold = Color(0xFFFFD700);
+  static const Color gold = Color(0xFFF5C842);
 
   /// Ambre — notifications, avertissements doux.
   static const Color amber = Color(0xFFF59E0B);
@@ -111,11 +111,11 @@ abstract final class EskoliaTokens {
 
   // ─── SHADOWS / GLOWS ─────────────────────────────────────────────────────
 
-  static List<BoxShadow> glow(Color c, {double blur = 20, double alpha = 0.25}) =>
+  static List<BoxShadow> glow(Color c, {double blur = 20, double alpha = 0.20}) =>
       [BoxShadow(color: c.withValues(alpha: alpha), blurRadius: blur, spreadRadius: -4)];
 
-  static List<BoxShadow> get glowViolet => glow(violet);
-  static List<BoxShadow> get glowCyan => glow(cyan);
-  static List<BoxShadow> get glowGold => glow(gold, alpha: 0.35);
-  static List<BoxShadow> get glowError => glow(error, alpha: 0.30);
+  static List<BoxShadow> get glowViolet => glow(violet, blur: 24, alpha: 0.20);
+  static List<BoxShadow> get glowCyan => glow(cyan, blur: 16, alpha: 0.15);
+  static List<BoxShadow> get glowGold => glow(gold, blur: 20, alpha: 0.25);
+  static List<BoxShadow> get glowError => glow(error, blur: 20, alpha: 0.30);
 }
