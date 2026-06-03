@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
 import '../../../../core/constants/eskolia_tokens.dart';
+import 'support_viewer.dart';
 
 const Color _orange = EskoliaTokens.orange;
 const Color _slate = EskoliaTokens.textSecondary;
@@ -135,8 +135,7 @@ class _SupportTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => launchUrl(Uri.parse(item.url),
-            mode: LaunchMode.externalApplication),
+        onTap: () => openSupportItem(context, item),
         borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -195,9 +194,13 @@ class _SupportTile extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 2, left: 8),
-                child: Icon(Icons.open_in_new_rounded,
-                    size: 13,
-                    color: _slate.withValues(alpha: 0.60)),
+                child: Icon(
+                  item.type == 'image'
+                      ? Icons.fullscreen_rounded
+                      : Icons.open_in_new_rounded,
+                  size: 13,
+                  color: _slate.withValues(alpha: 0.60),
+                ),
               ),
             ],
           ),
