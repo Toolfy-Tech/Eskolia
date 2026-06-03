@@ -1,0 +1,29 @@
+{
+  "module": "M08",
+  "specific": [
+    {
+      "title": "L'IA pour automatiser des scripts PowerShell",
+      "creator": "Brikoforward",
+      "url": "https://www.youtube.com/watch?v=Orka4IJGFGs",
+      "chapterSlug": "M08-CH02-utiliser-en-informatique"
+    },
+    {
+      "title": "IA et précautions pour les données personnelles",
+      "creator": "CNIL",
+      "url": "https://www.cnil.fr/fr/intelligence-artificielle-quelles-precautions-pour-les-donnees-personnelles",
+      "chapterSlug": "M08-CH03-pieges-securite-ia"
+    }
+  ],
+  "veille": [
+    {
+      "title": "Brikoforward (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@brikoforward",
+      "description": "Veille excellente sur l'automatisation des tâches IT via l'Intelligence Artificielle."
+    },
+    {
+      "title": "CNIL (Site Web)",
+      "url": "https://www.cnil.fr/",
+      "description": "Pour rester informé sur les limites légales de l'IA en entreprise."
+    }
+  ]
+}

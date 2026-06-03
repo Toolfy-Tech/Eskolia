@@ -1,0 +1,63 @@
+{
+  "module": "M07",
+  "specific": [
+    {
+      "title": "Les ransomwares expliqués",
+      "creator": "Balthazar",
+      "url": "https://www.youtube.com/watch?v=cVC5TW-XGyQ",
+      "chapterSlug": "M07-CH01-malwares"
+    },
+    {
+      "title": "Le phishing : comment se faire pirater",
+      "creator": "Underscore_",
+      "url": "https://www.youtube.com/watch?v=cVC5TW-XGyQ",
+      "chapterSlug": "M07-CH04-ingenierie-sociale"
+    },
+    {
+      "title": "Distribution des malwares",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/malwares-comment-virus-sont-distribues/",
+      "chapterSlug": "M07-CH01-malwares"
+    },
+    {
+      "title": "MOOC SecNumacadémie (ANSSI)",
+      "creator": "SecNumacadémie",
+      "url": "https://secnumacademie.gouv.fr/",
+      "chapterSlug": null
+    },
+    {
+      "title": "Sécurité physique des locaux",
+      "creator": "ANSSI",
+      "url": "https://www.youtube.com/watch?v=rRBhBhr51pI",
+      "chapterSlug": "M07-CH05-securite-physique"
+    },
+    {
+      "title": "Guide de sécurité des données personnelles",
+      "creator": "CNIL",
+      "url": "https://www.cnil.fr/fr/la-securite-des-donnees-personnelles",
+      "chapterSlug": "M07-CH06-rgpd-protection-donnees"
+    }
+  ],
+  "veille": [
+    {
+      "title": "SecNumacadémie / ANSSI (Plateforme)",
+      "url": "https://secnumacademie.gouv.fr/",
+      "description": "Le MOOC officiel de l'Agence Nationale de la Sécurité des Systèmes d'Information."
+    },
+    {
+      "title": "Underscore_ & Balthazar (Chaînes YouTube)",
+      "url": "https://www.youtube.com/@Underscore_",
+      "description": "Médias d'actualité et d'analyse cyber, incontournables pour la veille sur les menaces."
+    },
+    {
+      "title": "CNIL (Site Web)",
+      "url": "https://www.cnil.fr/",
+      "description": "Référence absolue pour la conformité RGPD."
+    },
+    {
+      "title": "ZATAZ (Site Web)",
+      "url": "https://www.zataz.com/",
+      "description": "Le blog d'investigation de référence pour la veille sur les cyberattaques."
+    }
+  ]
+}

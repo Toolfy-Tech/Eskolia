@@ -1,0 +1,45 @@
+{
+  "module": "M05",
+  "terms": [
+    {
+      "term": "Backup / Règle du 3-2-1",
+      "definition": "Stratégie de sauvegarde optimale : 3 copies des données, sur 2 supports de technologies différentes, dont 1 copie hors site (Cloud).",
+      "chapterSlug": "M05-CH01-backup-definition-3210"
+    },
+    {
+      "term": "Clonage / Image système",
+      "definition": "Création d'une copie conforme bit à bit d'un disque dur (OS, logiciels, données inclus). Utilisé pour déployer plusieurs PC identiques ou remplacer un disque défaillant.",
+      "chapterSlug": "M05-CH02-supports-sauvegarde"
+    },
+    {
+      "term": "DEEE (Déchets d'Équipements Électriques)",
+      "definition": "Cadre légal obligeant les entreprises à confier le matériel informatique obsolète à des filières de dépollution et de recyclage agréées.",
+      "chapterSlug": "M05-CH07-deee-fin-de-vie"
+    },
+    {
+      "term": "NAS (Network Attached Storage)",
+      "definition": "Boîtier contenant plusieurs disques durs, branché sur le réseau local. Il agit comme un mini-serveur de fichiers et de sauvegardes autonome.",
+      "chapterSlug": "M05-CH02-supports-sauvegarde"
+    },
+    {
+      "term": "Onduleur (UPS)",
+      "definition": "Équipement doté d'une batterie, placé entre la prise murale et le matériel critique pour lisser la tension et fournir du courant en cas de coupure de secteur.",
+      "chapterSlug": "M05-CH06-raid-protection-systeme"
+    },
+    {
+      "term": "RAID (0, 1, 5, 10)",
+      "definition": "Grappe de disques durs. Le RAID 1 duplique les données (miroir). Le RAID 5 répartit les données et informations de parité sur au moins 3 disques, tolérant la perte d'un disque.",
+      "chapterSlug": "M05-CH06-raid-protection-systeme"
+    },
+    {
+      "term": "Restauration Bare-Metal",
+      "definition": "Opération consistant à restaurer l'intégralité d'un système (OS et données) sur un matériel totalement vierge suite à un crash total.",
+      "chapterSlug": "M05-CH04-plan-rpo-rto-snapshot"
+    },
+    {
+      "term": "Snapshot (Instantané)",
+      "definition": "Capture de l'état exact (données et mémoire) d'une machine virtuelle à un instant T. Permet un retour en arrière immédiat en cas d'erreur de manipulation.",
+      "chapterSlug": "M05-CH04-plan-rpo-rto-snapshot"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "module": "M03",
+  "specific": [
+    {
+      "title": "Comprendre les OS en 13 minutes",
+      "creator": "Formip",
+      "url": "https://www.youtube.com/watch?v=5iO5g3NgFqo",
+      "chapterSlug": "M03-CH01-differents-os"
+    },
+    {
+      "title": "Créer une clé USB bootable Windows 11 avec Rufus",
+      "creator": "Malekal",
+      "url": "https://www.malekal.com/creer-cle-usb-bootable-windows-11-rufus/",
+      "chapterSlug": "M03-CH02-installer-windows"
+    },
+    {
+      "title": "Contournement des prérequis TPM 2.0",
+      "creator": "IT-Connect",
+      "url": "https://www.it-connect.fr/windows-11-comment-contourner-les-prerequis-tpm-2-0-et-cpu/",
+      "chapterSlug": "M03-CH02-installer-windows"
+    },
+    {
+      "title": "VirtualBox : prise en main",
+      "creator": "Tech2Tech",
+      "url": "https://www.youtube.com/watch?v=05B8VaSN7xE",
+      "chapterSlug": "M03-CH03-virtualisation"
+    },
+    {
+      "title": "Proxmox : virtualisation de type 1",
+      "creator": "Xavki",
+      "url": "https://www.youtube.com/watch?v=1EcNuo-YrnM",
+      "chapterSlug": "M03-CH03-virtualisation"
+    },
+    {
+      "title": "Pourquoi Linux ?",
+      "creator": "Micode",
+      "url": "https://www.youtube.com/watch?v=xLhCOFWaY_M",
+      "chapterSlug": "M03-CH04-linux-essentiel"
+    },
+    {
+      "title": "Commandes de base Linux",
+      "creator": "Adrien Linuxtrick",
+      "url": "https://www.youtube.com/@linuxtricks",
+      "chapterSlug": "M03-CH04-linux-essentiel"
+    },
+    {
+      "title": "Droits et utilisateurs Linux",
+      "creator": "Xavki",
+      "url": "https://www.youtube.com/@xavki-linux",
+      "chapterSlug": "M03-CH04-linux-essentiel"
+    },
+    {
+      "title": "Encyclopédie Ubuntu/Linux",
+      "creator": "Ubuntu Doc",
+      "url": "https://doc.ubuntu-fr.org/",
+      "chapterSlug": "M03-CH04-linux-essentiel"
+    },
+    {
+      "title": "Accessibilité Windows 11",
+      "creator": "Microsoft",
+      "url": "https://www.youtube.com/watch?v=v6YqBxZ6CFM",
+      "chapterSlug": "M03-CH05-accessibilite-numerique"
+    },
+    {
+      "title": "Guide d'accessibilité Windows détaillé",
+      "creator": "Microsoft Support",
+      "url": "https://support.microsoft.com/fr-fr/windows/rendre-votre-windows-plus-facile-a-utiliser-1755a73d-9d41-e945-3129-ef925c4ef997",
+      "chapterSlug": "M03-CH05-accessibilite-numerique"
+    },
+    {
+      "title": "Guide de survie macOS",
+      "creator": "Cookie Connecté",
+      "url": "https://www.youtube.com/watch?v=zQDf5FWBMpU",
+      "chapterSlug": "M03-CH06-macos-apercu"
+    },
+    {
+      "title": "MDM Android en entreprise",
+      "creator": "Android Enterprise",
+      "url": "https://www.youtube.com/watch?v=xLhCOFWaY_M",
+      "chapterSlug": "M03-CH07-os-mobiles"
+    },
+    {
+      "title": "MDM pour Mac et iOS (Apple Business)",
+      "creator": "Apple Business",
+      "url": "https://support.apple.com/fr-fr/guide/mdm/welcome/web",
+      "chapterSlug": "M03-CH07-os-mobiles"
+    }
+  ],
+  "veille": [
+    {
+      "title": "Micode (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@Micode",
+      "description": "Média de vulgarisation parfait pour comprendre les enjeux globaux et l'importance de Linux."
+    },
+    {
+      "title": "Adrien Linuxtrick (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@linuxtricks",
+      "description": "La référence absolue pour débuter et apprendre les commandes de base en environnement Linux."
+    },
+    {
+      "title": "Xavki (Chaîne YouTube)",
+      "url": "https://www.youtube.com/@xavki-linux",
+      "description": "Ressources très pointues pour aborder la virtualisation de type 1 avec Proxmox."
+    },
+    {
+      "title": "Microsoft Support & Apple Business (Documentations)",
+      "url": "https://support.microsoft.com/fr-fr",
+      "description": "Les bases de connaissances officielles incontournables."
+    }
+  ]
+}

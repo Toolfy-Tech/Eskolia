@@ -1,0 +1,40 @@
+{
+  "module": "M08",
+  "terms": [
+    {
+      "term": "Context Window (Fenêtre de contexte)",
+      "definition": "La limite de mémoire à court terme d'une IA. C'est le nombre maximum de tokens que le modèle peut prendre en compte dans une même conversation avant de commencer à oublier.",
+      "chapterSlug": "M08-CH01-roct-contexte"
+    },
+    {
+      "term": "Hallucination",
+      "definition": "Phénomène où un modèle de langage génère une information fausse, invente une commande inexistante, ou cite une documentation fictive, tout en gardant un ton très affirmatif.",
+      "chapterSlug": "M08-CH03-pieges-securite-ia"
+    },
+    {
+      "term": "IA Générative",
+      "definition": "Branche de l'IA qui ne se contente pas d'analyser des données, mais génère du contenu inédit (du code, du texte, du son) de manière probabiliste.",
+      "chapterSlug": "M08-CH01-roct-contexte"
+    },
+    {
+      "term": "LLM (Large Language Model)",
+      "definition": "Modèle de langage massif entraîné sur des milliards de textes pour comprendre et générer du langage humain naturel.",
+      "chapterSlug": "M08-CH01-roct-contexte"
+    },
+    {
+      "term": "Méthode R.C.O.P. (ou R.O.C.T.)",
+      "definition": "Framework de base pour rédiger un bon prompt. Il faut définir un Rôle à l'IA, lui donner le Contexte, préciser l'Objectif, et fixer les Paramètres (format de sortie attendu).",
+      "chapterSlug": "M08-CH01-roct-contexte"
+    },
+    {
+      "term": "Prompting (Ingénierie de prompt)",
+      "definition": "Compétence consistant à formuler des instructions précises, donner du contexte et définir un format de sortie attendu pour tirer le meilleur parti d'une IA générative.",
+      "chapterSlug": "M08-CH02-utiliser-en-informatique"
+    },
+    {
+      "term": "Tokens",
+      "definition": "Les briques de base que lit et facture l'IA. Un token ne correspond pas toujours à un mot entier, mais souvent à des morceaux de mots ou de code (environ 4 caractères en moyenne).",
+      "chapterSlug": "M08-CH01-roct-contexte"
+    }
+  ]
+}

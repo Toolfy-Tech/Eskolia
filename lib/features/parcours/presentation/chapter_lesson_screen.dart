@@ -11,8 +11,11 @@ import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
+import '../data/optimus_content_models.dart';
 import '../data/parcours_repository.dart';
 import '../data/tip_progress_repository.dart';
+import 'widgets/lexique_section.dart';
+import 'widgets/mediatheque_section.dart';
 
 const Color _cyan = Color(0xFF00BCD4);
 const Color _violet = Color(0xFF6C63FF);
@@ -35,11 +38,74 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   Podcast? _podcast;
   final ScrollController _scrollController = ScrollController();
 
+  // Lexique / médiathèque
+  List<LexiqueEntry> _chapterTerms = const [];
+  List<LexiqueEntry> _moduleTerms = const [];
+  List<MediathequeItem> _chapterResources = const [];
+  List<MediathequeItem> _moduleResources = const [];
+  List<VeilleItem> _moduleVeille = const [];
+  bool _isLastChapter = false;
+
+  /// Extrait le moduleId Optimus (ex. "M01") depuis l'id du module.
+  /// Format attendu : "optimus_M01_M01-CH05-..." → parts[1] = "M01"
+  static String? _sectionId(String moduleId) {
+    final parts = moduleId.split('_');
+    return parts.length >= 2 ? parts[1] : null;
+  }
+
+  /// Extrait le slug du chapitre depuis l'id du module.
+  /// Format : "optimus_M01_M01-CH05-outils-..." → parts[2] = "M01-CH05-..."
+  static String? _chapterSlug(String moduleId) {
+    final parts = moduleId.split('_');
+    return parts.length >= 3 ? parts[2] : null;
+  }
+
   @override
   void initState() {
     super.initState();
     _load();
     _loadPodcast();
+    _loadContent();
+  }
+
+  Future<void> _loadContent() async {
+    final secId = _sectionId(widget.moduleId);
+    final slug = _chapterSlug(widget.moduleId);
+    if (secId == null || slug == null) return;
+
+    // Vérifie si c'est le dernier chapitre de la section
+    final loc = ParcoursRepository.moduleLocation[widget.moduleId];
+    if (loc != null) {
+      final section = ParcoursRepository
+          .sectionByCompoundKey['${loc.formationId}::${loc.sectionId}'];
+      if (section != null && section.modules.isNotEmpty) {
+        _isLastChapter = section.modules.last.id == widget.moduleId;
+      }
+    }
+
+    final chTerms = await OptimusLexiqueRepository.forChapter(secId, slug);
+    final chItems =
+        await OptimusMediathequeRepository.specificForChapter(secId, slug);
+
+    List<LexiqueEntry> modTerms = const [];
+    List<MediathequeItem> modItems = const [];
+    List<VeilleItem> modVeille = const [];
+    if (_isLastChapter) {
+      final modLex = await OptimusLexiqueRepository.loadModule(secId);
+      final modMed = await OptimusMediathequeRepository.loadModule(secId);
+      modTerms = modLex.terms;
+      modItems = modMed.specific;
+      modVeille = modMed.veille;
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _chapterTerms = chTerms;
+      _chapterResources = chItems;
+      _moduleTerms = modTerms;
+      _moduleResources = modItems;
+      _moduleVeille = modVeille;
+    });
   }
 
   Future<void> _load() async {
@@ -201,6 +267,40 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                     lessonAssetPath: _lessonAssetPath,
                   ),
                 ),
+                // Termes clés liés à ce chapitre spécifiquement
+                if (_chapterTerms.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  LexiqueSection(
+                    terms: _chapterTerms,
+                    title: 'Termes clés du chapitre',
+                  ),
+                ],
+                // Ressources liées à ce chapitre spécifiquement
+                if (_chapterResources.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  MediathequeSection(
+                    specific: _chapterResources,
+                    title: 'Ressources du chapitre',
+                  ),
+                ],
+                // Dernier chapitre du module → tout le lexique + médiathèque
+                if (_isLastChapter && _moduleTerms.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  LexiqueSection(
+                    terms: _moduleTerms,
+                    title: 'Lexique complet du module',
+                  ),
+                ],
+                if (_isLastChapter &&
+                    (_moduleResources.isNotEmpty ||
+                        _moduleVeille.isNotEmpty)) ...[
+                  const SizedBox(height: 12),
+                  MediathequeSection(
+                    specific: _moduleResources,
+                    veille: _moduleVeille,
+                    title: 'Médiathèque du module',
+                  ),
+                ],
                 if (hasQuiz && quizModuleId != null) ...[
                   const SizedBox(height: 22),
                   EskoliaCardContent(

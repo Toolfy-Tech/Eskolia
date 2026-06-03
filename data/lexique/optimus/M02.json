@@ -1,0 +1,60 @@
+{
+  "module": "M02",
+  "terms": [
+    {
+      "term": "BIOS / UEFI",
+      "definition": "Firmware intégré à la carte mère responsable de l'initialisation du matériel au démarrage. L'UEFI est son successeur moderne, supportant le Secure Boot et les disques de plus de 2 To.",
+      "chapterSlug": "M02-CH11-bios-uefi"
+    },
+    {
+      "term": "Chipset",
+      "definition": "Jeu de puces soudé sur la carte mère qui coordonne les échanges de données entre le processeur, la mémoire et les périphériques. Il détermine les capacités d'évolution du PC.",
+      "chapterSlug": "M02-CH02-carte-mere"
+    },
+    {
+      "term": "CPU (Central Processing Unit)",
+      "definition": "Le processeur. Il exécute les instructions logicielles. Sa puissance dépend de sa fréquence (GHz), de son nombre de coeurs et de sa mémoire cache.",
+      "chapterSlug": "M02-CH03-cpu-processeur"
+    },
+    {
+      "term": "Facteur de forme (Form Factor)",
+      "definition": "Norme définissant les dimensions physiques d'une carte mère et d'un boîtier (ex : ATX, Micro-ATX, Mini-ITX), garantissant la compatibilité des composants.",
+      "chapterSlug": "M02-CH01-boitiers"
+    },
+    {
+      "term": "GPU (Graphics Processing Unit)",
+      "definition": "Puce spécialisée dans les calculs d'affichage et le traitement parallèle intensif. Peut être intégrée au CPU (iGPU) ou dédiée sur une carte graphique.",
+      "chapterSlug": "M02-CH06-gpu-npu"
+    },
+    {
+      "term": "Pâte thermique",
+      "definition": "Substance conductrice appliquée entre le CPU et son système de refroidissement pour éliminer les micro-bulles d'air et maximiser le transfert de chaleur.",
+      "chapterSlug": "M02-CH10-refroidissement"
+    },
+    {
+      "term": "PCIe (Peripheral Component Interconnect Express)",
+      "definition": "Bus de communication local à très haut débit. Ses lignes (x1, x4, x8, x16) connectent directement la carte graphique ou les SSD NVMe au processeur.",
+      "chapterSlug": "M02-CH09-bus-slots-extension"
+    },
+    {
+      "term": "PSU (Power Supply Unit)",
+      "definition": "Bloc d'alimentation. Convertit le courant alternatif 230V en tensions continues (12V, 5V, 3.3V). Sa qualité est certifiée par la norme 80 PLUS.",
+      "chapterSlug": "M02-CH07-alimentation-psu"
+    },
+    {
+      "term": "RAM (Random Access Memory)",
+      "definition": "Mémoire de travail volatile et ultra-rapide. Elle stocke les données des programmes en cours d'exécution pour éviter au CPU d'attendre le disque de stockage.",
+      "chapterSlug": "M02-CH04-ram-memoire-vive"
+    },
+    {
+      "term": "SSD (SATA vs NVMe)",
+      "definition": "Support de stockage à mémoire flash. Le SATA est limité par l'ancienne interface des disques durs, le NVMe utilise le bus PCIe pour des débits bien supérieurs.",
+      "chapterSlug": "M02-CH05-stockage-hdd-ssd-nvme"
+    },
+    {
+      "term": "Ventirad / Watercooling",
+      "definition": "Systèmes de refroidissement du CPU. Le ventirad utilise un radiateur et un ventilateur (air), le watercooling utilise un liquide caloporteur en circuit fermé ou ouvert.",
+      "chapterSlug": "M02-CH10-refroidissement"
+    }
+  ]
+}

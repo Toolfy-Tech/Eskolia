@@ -381,6 +381,10 @@ class _FormationCardState extends State<_FormationCard> {
                       const SizedBox(height: 14),
                       _GrandFinaleParcoursSection(formation: f),
                     ],
+                    if (f.id == 'optimus') ...[
+                      const SizedBox(height: 14),
+                      _MegaContentCards(),
+                    ],
                   ],
                 ),
               ),
@@ -755,6 +759,7 @@ class _ModuleTile extends StatelessWidget {
   }
 }
 
+
 class _SkeletonLoader extends StatelessWidget {
   const _SkeletonLoader({required this.pulse});
 
@@ -843,6 +848,7 @@ class _ErrorState extends StatelessWidget {
     );
   }
 }
+
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({
@@ -952,6 +958,7 @@ class _PodcastsCard extends StatelessWidget {
   }
 }
 
+
 class _DocsMetierCard extends StatelessWidget {
   const _DocsMetierCard();
 
@@ -1021,6 +1028,117 @@ class _DocsMetierCard extends StatelessWidget {
                 Icons.chevron_right_rounded,
                 color: Colors.white.withValues(alpha: 0.4),
                 size: 22,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MegaContentCards extends StatelessWidget {
+  const _MegaContentCards();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _MegaCard(
+          icon: Icons.menu_book_rounded,
+          color: const Color(0xFF00BCD4),
+          title: 'Méga Lexique',
+          subtitle: 'Tous les termes clés des 8 modules en un seul endroit.',
+          onTap: () => context.push('/lexique-optimus'),
+        ),
+        const SizedBox(height: 10),
+        _MegaCard(
+          icon: Icons.play_lesson_rounded,
+          color: const Color(0xFF6C63FF),
+          title: 'Médiathèque complète',
+          subtitle: 'Toutes les ressources et veille des 8 modules.',
+          onTap: () => context.push('/mediatheque-optimus'),
+        ),
+      ],
+    );
+  }
+}
+
+class _MegaCard extends StatelessWidget {
+  const _MegaCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                color.withValues(alpha: 0.12),
+                color.withValues(alpha: 0.05),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withValues(alpha: 0.30)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        color: Color(0xFF94A3B8),
+                        fontSize: 12,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.white.withValues(alpha: 0.35),
+                size: 20,
               ),
             ],
           ),

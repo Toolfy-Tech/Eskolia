@@ -72,6 +72,8 @@ import '../../features/notebook/presentation/note_editor_screen.dart';
 import '../../features/notebook/data/note_model.dart';
 import '../../features/lexique/presentation/lexique_screen.dart';
 import '../../features/podcasts/presentation/podcasts_screen.dart';
+import '../../features/parcours/presentation/mega_lexique_screen.dart';
+import '../../features/parcours/presentation/mega_mediatheque_screen.dart';
 import '../widgets/bottom_nav.dart';
 import 'eskolia_page_transitions.dart';
 
@@ -340,6 +342,14 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/lexique',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const LexiqueScreen()),
+        ),
+        GoRoute(
+          path: '/lexique-optimus',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const MegaLexiqueScreen()),
+        ),
+        GoRoute(
+          path: '/mediatheque-optimus',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const MegaMediathequeScreen()),
         ),
         GoRoute(
           path: '/podcasts',

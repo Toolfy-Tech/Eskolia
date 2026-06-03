@@ -1,0 +1,50 @@
+{
+  "module": "M01",
+  "terms": [
+    {
+      "term": "Base de connaissances (KB)",
+      "definition": "Bibliothèque centralisée d'articles, de tutoriels et de procédures permettant aux techniciens de résoudre rapidement des problèmes connus.",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "term": "Centre de services (Service Desk)",
+      "definition": "Le point de contact unique (SPOC) entre les utilisateurs et le service informatique. Il gère les incidents, les demandes et la communication.",
+      "chapterSlug": "M01-CH01-itil-cadre-gestion"
+    },
+    {
+      "term": "CMDB (Configuration Management Database)",
+      "definition": "Base de données contenant toutes les informations sur les composants du système d'information et les relations entre eux.",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "term": "Escalade (N1, N2, N3)",
+      "definition": "Transfert d'un ticket vers un niveau d'expertise supérieur. N1 qualifie et résout les problèmes basiques, N2 gère les problèmes complexes nécessitant des droits admin, N3 fait appel aux experts ou éditeurs.",
+      "chapterSlug": "M01-CH06-diagnostic-resolution-escalade"
+    },
+    {
+      "term": "GLPI",
+      "definition": "Outil ITSM open-source combinant un système de ticketing (helpdesk) et un gestionnaire d'inventaire de parc informatique.",
+      "chapterSlug": "M01-CH05-outils-ticketing-parc"
+    },
+    {
+      "term": "ITIL (Information Technology Infrastructure Library)",
+      "definition": "Référentiel mondial des bonnes pratiques pour la gestion des services informatiques, visant à aligner l'IT sur les besoins de l'entreprise.",
+      "chapterSlug": "M01-CH01-itil-cadre-gestion"
+    },
+    {
+      "term": "SLA / GTI / GTR",
+      "definition": "Le SLA est le contrat de service global. Il inclut la GTI (délai max pour prendre en charge le ticket) et la GTR (délai max pour résoudre la panne).",
+      "chapterSlug": "M01-CH04-sla-engagements"
+    },
+    {
+      "term": "Ticket",
+      "definition": "Dossier numérique tracé et horodaté décrivant l'incident ou la demande de service d'un utilisateur, de sa création jusqu'à sa clôture.",
+      "chapterSlug": "M01-CH02-cycle-vie-ticket"
+    },
+    {
+      "term": "Workflow (Flux de travail)",
+      "definition": "Suite d'étapes automatisées ou manuelles par lesquelles passe un ticket ou une demande (ex : Demande matériel → Validation Manager → Commande IT → Déploiement).",
+      "chapterSlug": "M01-CH02-cycle-vie-ticket"
+    }
+  ]
+}

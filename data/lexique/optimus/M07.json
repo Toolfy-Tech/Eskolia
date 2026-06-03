@@ -1,0 +1,45 @@
+{
+  "module": "M07",
+  "terms": [
+    {
+      "term": "Antivirus / EDR (Endpoint Detection and Response)",
+      "definition": "L'antivirus classique bloque les menaces connues. L'EDR analyse les comportements suspects sur les postes et isole automatiquement la machine infectée du réseau.",
+      "chapterSlug": "M07-CH02-detection-analyse"
+    },
+    {
+      "term": "Brute Force (Force brute)",
+      "definition": "Méthode d'attaque consistant à tester automatiquement toutes les combinaisons possibles de mots de passe jusqu'à trouver le bon.",
+      "chapterSlug": "M07-CH01-malwares"
+    },
+    {
+      "term": "Chiffrement (BitLocker)",
+      "definition": "Procédé rendant des données illisibles sans une clé de déchiffrement. BitLocker est l'outil Microsoft chiffrant l'intégralité du disque dur, protégeant les données en cas de vol.",
+      "chapterSlug": "M07-CH03-defense-maintenance"
+    },
+    {
+      "term": "Ingénierie Sociale / Phishing",
+      "definition": "L'art de pirater le facteur humain. Le pirate manipule sa cible par e-mail (Phishing) ou par téléphone (Vishing) pour lui faire divulguer un mot de passe.",
+      "chapterSlug": "M07-CH04-ingenierie-sociale"
+    },
+    {
+      "term": "Malware / Ransomware",
+      "definition": "Logiciel malveillant. Le Ransomware chiffre toutes les données de l'entreprise et réclame un paiement pour restituer l'accès.",
+      "chapterSlug": "M07-CH01-malwares"
+    },
+    {
+      "term": "MFA (Multi-Factor Authentication)",
+      "definition": "Méthode de sécurisation exigeant deux preuves d'identité ou plus pour se connecter (ex : mot de passe + notification sur Microsoft Authenticator).",
+      "chapterSlug": "M07-CH03-defense-maintenance"
+    },
+    {
+      "term": "Pare-feu (Firewall)",
+      "definition": "Équipement matériel ou logiciel agissant comme un poste frontière. Il inspecte le trafic entrant et sortant du réseau et le bloque selon des règles de sécurité prédéfinies.",
+      "chapterSlug": "M07-CH03-defense-maintenance"
+    },
+    {
+      "term": "RGPD",
+      "definition": "Règlement européen sur la protection des données. Impose aux entreprises de protéger les données personnelles, de notifier les failles à la CNIL, et de respecter le droit à l'effacement.",
+      "chapterSlug": "M07-CH06-rgpd-protection-donnees"
+    }
+  ]
+}
