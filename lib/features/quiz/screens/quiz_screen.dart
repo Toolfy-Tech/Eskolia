@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/router/quiz_play_session.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -19,13 +20,13 @@ import '../viewmodels/quiz_notifier.dart';
 import 'quiz_result_screen.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
-const Color _green = Color(0xFF4CAF50);
-const Color _red = Color(0xFFF44336);
-const Color _orange = Color(0xFFFF9800);
-const Color _surface = Color(0xFF1E293B);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _green = EskoliaTokens.success;
+const Color _red = EskoliaTokens.error;
+const Color _orange = EskoliaTokens.orange;
+const Color _surface = EskoliaTokens.surface2;
 
 class QuizScreen extends ConsumerStatefulWidget {
   const QuizScreen({
@@ -273,7 +274,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           animation: _pulseController,
           builder: (context, child) {
             final t = _pulseController.value;
-            final c = Color.lerp(_surface, const Color(0xFF2D3748), t)!;
+            final c = Color.lerp(_surface, EskoliaTokens.surface3, t)!;
             return AnimatedContainer(
               duration: Duration.zero,
               height: 220,

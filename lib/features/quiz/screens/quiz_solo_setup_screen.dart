@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -15,10 +16,10 @@ import '../services/quiz_repository.dart';
 import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
 
-const Color _violet = Color(0xFF6C63FF);
-const Color _green = Color(0xFF4CAF50);
-const Color _amber = Color(0xFFFFB74D);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _green = EskoliaTokens.success;
+const Color _amber = EskoliaTokens.amber;
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Compose un quiz solo (Mode Maîtrise).
 class QuizSoloSetupScreen extends StatefulWidget {

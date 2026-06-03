@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 import '../../../data/repositories/user_repository.dart';
@@ -301,7 +302,8 @@ class QuizRepository {
         title,
         questions.take(maxQuestions).toList(),
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[QuizRepository._buildTeacherQuizSession] $e');
       return _buildDailyRandomSession();
     }
   }
@@ -342,7 +344,8 @@ class QuizRepository {
     final Map<String, dynamic> data;
     try {
       data = jsonDecode(rawJson) as Map<String, dynamic>;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[QuizRepository.buildFromNotebookQuizJson] $e');
       throw FormatException('Le JSON genere est mal forme. Regenere le quiz.');
     }
 

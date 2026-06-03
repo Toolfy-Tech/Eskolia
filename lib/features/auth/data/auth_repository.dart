@@ -230,7 +230,9 @@ class AuthRepository {
     } catch (e) {
       try {
         await cred.user?.delete();
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[AuthRepository.signUpWithEmail] $e');
+      }
       if (e is FirebaseException) {
         throw AuthFailure(
           'Impossible d’enregistrer le profil. Réessaie ou contacte le support.',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -15,9 +16,9 @@ import '../components/quiz_catalog_track_selector.dart';
 import '../components/quiz_scope_picker.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Hub quiz : « du jour » ou composition à partir des sections / chapitres.
 class QuizSetupScreen extends StatefulWidget {
@@ -52,7 +53,7 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
     }
     final picked = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: const Color(0xFF1E293B),
+      backgroundColor: EskoliaTokens.surface2,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => _EskoliaQuizFilePicker(files: files),
     );

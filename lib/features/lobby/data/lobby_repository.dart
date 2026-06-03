@@ -335,7 +335,8 @@ class LobbyRepository {
       name = (username != null && username.isNotEmpty)
           ? username
           : (u.displayName ?? u.email?.split('@').first ?? 'Joueur');
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[LobbyRepository.joinLobby] $e');
       name = u.displayName ?? u.email?.split('@').first ?? 'Joueur';
     }
     final avatar = '\u{1F464}';

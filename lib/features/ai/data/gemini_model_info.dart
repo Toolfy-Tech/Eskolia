@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
+
 /// Metadonnees enrichies d'un modele Gemini — tier, label, couleur, nom simplifie.
 class GeminiModelInfo {
   const GeminiModelInfo({
@@ -32,11 +34,6 @@ class GeminiModelInfo {
   /// Ordre de tri : 0 = S, 1 = A, 2 = B, 3 = C.
   final int sortOrder;
 
-  static const Color _violet = Color(0xFF9C27B0);
-  static const Color _green  = Color(0xFF4CAF50);
-  static const Color _orange = Color(0xFFFF7043);
-  static const Color _grey   = Color(0xFF78909C);
-
   /// Classe un modele depuis son nom brut (avec ou sans prefixe 'models/').
   factory GeminiModelInfo.from(String name) {
     final rawName = name.startsWith('models/') ? name : 'models/$name';
@@ -48,27 +45,27 @@ class GeminiModelInfo {
       return GeminiModelInfo(
         rawName: rawName, modelId: modelId, simpleName: simple,
         tier: 'S', tierLabel: 'Puissant (Cout eleve)',
-        tierColor: _violet, sortOrder: 0,
+        tierColor: EskoliaTokens.violet, sortOrder: 0,
       );
     }
     if (lower.contains('flash') && !lower.contains('lite')) {
       return GeminiModelInfo(
         rawName: rawName, modelId: modelId, simpleName: simple,
         tier: 'A', tierLabel: 'Equilibre (Recommande)',
-        tierColor: _green, sortOrder: 1,
+        tierColor: EskoliaTokens.success, sortOrder: 1,
       );
     }
     if (lower.contains('lite')) {
       return GeminiModelInfo(
         rawName: rawName, modelId: modelId, simpleName: simple,
         tier: 'B', tierLabel: 'Rapide & Econome',
-        tierColor: _orange, sortOrder: 2,
+        tierColor: EskoliaTokens.orange, sortOrder: 2,
       );
     }
     return GeminiModelInfo(
       rawName: rawName, modelId: modelId, simpleName: simple,
       tier: 'C', tierLabel: 'Experimental',
-      tierColor: _grey, sortOrder: 3,
+      tierColor: EskoliaTokens.textDisabled, sortOrder: 3,
     );
   }
 

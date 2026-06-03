@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
+
 import '../../features/feedback/data/question_feedback_repository.dart';
 
 /// Boutons 👍 / 👎 affichés en haut à droite de chaque carte de question.
@@ -95,7 +97,7 @@ class _QuestionThumbsWidgetState extends State<QuestionThumbsWidget> {
         _ThumbButton(
           icon: Icons.thumb_down_rounded,
           active: _vote == -1,
-          activeColor: const Color(0xFFE53935),
+          activeColor: EskoliaTokens.error,
           onTap: _busy ? null : () => _castVote(-1),
         ),
       ],

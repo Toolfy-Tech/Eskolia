@@ -23,13 +23,14 @@ import '../data/parcours_repository.dart';
 import '../data/tip_progress_repository.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violetBrand = Color(0xFF6C63FF);
+const Color _cyan = EskoliaTokens.cyan;
+const Color _violetBrand = EskoliaTokens.violetSoft;
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _slateLight = EskoliaTokens.textSecondary;
+const Color _surface = EskoliaTokens.surface2;
 
 class ParcoursScreen extends StatefulWidget {
   const ParcoursScreen({super.key, this.expandFormationId});
@@ -273,7 +274,7 @@ class _FormationCardState extends State<_FormationCard> {
       glowColor: glow,
       borderRadius: 20,
       innerBlurSigma: 14,
-      innerColor: const Color(0xFF0E1520),
+      innerColor: EskoliaTokens.bgBase,
       padding: const EdgeInsets.all(16),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -544,12 +545,12 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
     final borderColors = unlocked
         ? (isTip
             ? const [Color(0xFFFFB74D), Color(0xFFE040FB)]
-            : const [Color(0xFF00BCD4), Color(0xFF6C63FF)])
+            : [EskoliaTokens.cyan, EskoliaTokens.violetSoft])
         : [
             Colors.white.withValues(alpha: 0.14),
             Colors.white.withValues(alpha: 0.06),
           ];
-    final accent = isTip ? const Color(0xFFFFB74D) : const Color(0xFF00BCD4);
+    final accent = isTip ? const Color(0xFFFFB74D) : EskoliaTokens.cyan;
 
     return GradientBorderCard(
       gradientColors: borderColors,

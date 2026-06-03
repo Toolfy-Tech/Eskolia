@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/colors.dart';
+import '../../core/constants/eskolia_tokens.dart';
 import '../../core/constants/typography.dart';
 import '../../core/theme/eskolia_visual.dart';
 
@@ -43,7 +43,7 @@ class EskoliaLessonMarkdown extends StatelessWidget {
   }
 
   static MarkdownStyleSheet _sheet() {
-    final body = EskoliaTypography.body(Colors.white.withValues(alpha: 0.9));
+    final body = EskoliaTypography.body(EskoliaTokens.textPrimary.withValues(alpha: 0.9));
     final paragraph = body.copyWith(height: 1.58, fontSize: 15);
     final codeText = GoogleFonts.jetBrainsMono(
       fontSize: 12.5,
@@ -58,13 +58,13 @@ class EskoliaLessonMarkdown extends StatelessWidget {
       h1: EskoliaTypography.h1().copyWith(
         fontSize: 22,
         height: 1.22,
-        color: Colors.white,
+        color: EskoliaTokens.textPrimary,
       ),
       h1Padding: const EdgeInsets.only(top: 4, bottom: 18),
       h2: EskoliaTypography.h2().copyWith(
         fontSize: 17,
         height: 1.28,
-        color: Colors.white.withValues(alpha: 0.96),
+        color: EskoliaTokens.textPrimary.withValues(alpha: 0.96),
         fontWeight: FontWeight.w600,
       ),
       h2Padding: const EdgeInsets.only(top: 8, bottom: 14),
@@ -75,7 +75,7 @@ class EskoliaLessonMarkdown extends StatelessWidget {
       ),
       h3Padding: const EdgeInsets.only(top: 22, bottom: 10),
       h4Align: WrapAlignment.start,
-      h4: EskoliaTypography.label(Colors.white.withValues(alpha: 0.95)).copyWith(
+      h4: EskoliaTypography.label(EskoliaTokens.textPrimary.withValues(alpha: 0.95)).copyWith(
         fontSize: 14,
         height: 1.35,
         fontWeight: FontWeight.w700,
@@ -85,14 +85,14 @@ class EskoliaLessonMarkdown extends StatelessWidget {
       h5Align: WrapAlignment.start,
       h5: paragraph.copyWith(
         fontWeight: FontWeight.w700,
-        color: textSecondary,
+        color: EskoliaTokens.textSecondary,
         fontSize: 13,
       ),
       h5Padding: const EdgeInsets.only(top: 10, bottom: 6),
       h6Align: WrapAlignment.start,
       h6: paragraph.copyWith(
         fontWeight: FontWeight.w600,
-        color: textSecondary,
+        color: EskoliaTokens.textSecondary,
         fontSize: 12.5,
       ),
       h6Padding: const EdgeInsets.only(top: 8, bottom: 4),
@@ -100,11 +100,11 @@ class EskoliaLessonMarkdown extends StatelessWidget {
       pPadding: const EdgeInsets.only(bottom: 10),
       strong: paragraph.copyWith(
         fontWeight: FontWeight.w700,
-        color: Colors.white,
+        color: EskoliaTokens.textPrimary,
       ),
       em: paragraph.copyWith(
         fontStyle: FontStyle.italic,
-        color: textSecondary,
+        color: EskoliaTokens.textSecondary,
       ),
       a: paragraph.copyWith(
         color: EskoliaVisual.neonCyan,
@@ -112,12 +112,12 @@ class EskoliaLessonMarkdown extends StatelessWidget {
         decorationColor: EskoliaVisual.neonCyan.withValues(alpha: 0.45),
       ),
       code: codeText.copyWith(
-        backgroundColor: const Color(0xFF1A2436),
+        backgroundColor: EskoliaTokens.surface2,
       ),
       codeblockDecoration: BoxDecoration(
-        color: const Color(0xFF0E1522),
+        color: EskoliaTokens.bgBase,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: Border.all(color: EskoliaTokens.borderSubtle),
       ),
       codeblockPadding: const EdgeInsets.all(14),
       blockSpacing: 10,
@@ -130,12 +130,12 @@ class EskoliaLessonMarkdown extends StatelessWidget {
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: Colors.white.withValues(alpha: 0.14),
+            color: EskoliaTokens.borderGlass,
             width: 1,
           ),
         ),
       ),
-      blockquote: paragraph.copyWith(color: textSecondary),
+      blockquote: paragraph.copyWith(color: EskoliaTokens.textSecondary),
       blockquoteDecoration: BoxDecoration(
         border: Border(
           left: BorderSide(
@@ -143,17 +143,17 @@ class EskoliaLessonMarkdown extends StatelessWidget {
             width: 3,
           ),
         ),
-        color: Colors.white.withValues(alpha: 0.04),
+        color: EskoliaTokens.textPrimary.withValues(alpha: 0.04),
       ),
       blockquotePadding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
       tableHead: paragraph.copyWith(
         fontWeight: FontWeight.w700,
-        color: Colors.white,
+        color: EskoliaTokens.textPrimary,
         fontSize: 13.5,
       ),
       tableBody: paragraph.copyWith(fontSize: 13.5),
       tableBorder: TableBorder.all(
-        color: Colors.white.withValues(alpha: 0.12),
+        color: EskoliaTokens.borderGlass,
       ),
       tableCellsPadding: const EdgeInsets.symmetric(
         horizontal: 10,
@@ -192,7 +192,7 @@ class EskoliaLessonMarkdown extends StatelessWidget {
                 child: Text(
                   'Image introuvable : $assetKey',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.55),
+                    color: EskoliaTokens.textPrimary.withValues(alpha: 0.55),
                     fontSize: 13,
                   ),
                 ),
