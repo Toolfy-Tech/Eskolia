@@ -125,7 +125,7 @@ abstract final class OptimusLexiqueRepository {
 
 class SupportItem {
   const SupportItem({
-    required this.chapterSlug,
+    required this.chapterSlugs,
     required this.type,
     required this.title,
     required this.filename,
@@ -133,7 +133,8 @@ class SupportItem {
     required this.releaseBaseUrl,
   });
 
-  final String chapterSlug;
+  /// Un ou plusieurs slugs de chapitres concernés par ce support.
+  final List<String> chapterSlugs;
 
   /// 'image' | 'pdf' | 'video'
   final String type;
@@ -144,15 +145,28 @@ class SupportItem {
 
   String get url => '$releaseBaseUrl$filename';
 
-  factory SupportItem.fromJson(Map<dynamic, dynamic> j, String baseUrl) =>
-      SupportItem(
-        chapterSlug: j['chapterSlug'] as String,
-        type: j['type'] as String,
-        title: j['title'] as String,
-        filename: j['filename'] as String,
-        description: j['description'] as String,
-        releaseBaseUrl: baseUrl,
-      );
+  bool matchesChapter(String slug) => chapterSlugs.contains(slug);
+
+  factory SupportItem.fromJson(Map<dynamic, dynamic> j, String baseUrl) {
+    final single = j['chapterSlug'];
+    final multi = j['chapterSlugs'];
+    final List<String> slugs;
+    if (multi is List) {
+      slugs = multi.whereType<String>().toList();
+    } else if (single is String) {
+      slugs = [single];
+    } else {
+      slugs = const [];
+    }
+    return SupportItem(
+      chapterSlugs: slugs,
+      type: j['type'] as String,
+      title: j['title'] as String,
+      filename: j['filename'] as String,
+      description: j['description'] as String,
+      releaseBaseUrl: baseUrl,
+    );
+  }
 }
 
 class ModuleSupports {
@@ -192,7 +206,7 @@ abstract final class OptimusSupportsRepository {
       String moduleId, String chapterSlug) async {
     try {
       final mod = await loadModule(moduleId);
-      return mod.items.where((i) => i.chapterSlug == chapterSlug).toList();
+      return mod.items.where((i) => i.matchesChapter(chapterSlug)).toList();
     } catch (_) {
       return const [];
     }

@@ -3,7 +3,13 @@
   "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support05/",
   "supports": [
     {
-      "chapterSlug": "M05-CH01-backup-definition-3210",
+      "chapterSlugs": [
+        "M05-CH01-backup-definition-3210",
+        "M05-CH02-supports-sauvegarde",
+        "M05-CH03-typologie-sauvegardes",
+        "M05-CH04-plan-rpo-rto-snapshot",
+        "M05-CH05-solutions-sauvegarde"
+      ],
       "type": "image",
       "title": "Guide de Sauvegarde et Continuité",
       "filename": "M05_C01-05_Guide.de.sauvegarde.et.continuite.png",

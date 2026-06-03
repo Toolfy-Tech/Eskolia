@@ -10,7 +10,10 @@
       "description": "Taxonomie des malwares : virus, vers, ransomware, trojans, spyware, rootkits — vecteurs d'attaque et impacts"
     },
     {
-      "chapterSlug": "M07-CH02-detection-analyse",
+      "chapterSlugs": [
+        "M07-CH02-detection-analyse",
+        "M07-CH03-defense-maintenance"
+      ],
       "type": "pdf",
       "title": "Cyber Defense Manual",
       "filename": "M07_C02-03_Cyber.Defense.Manual.pdf",

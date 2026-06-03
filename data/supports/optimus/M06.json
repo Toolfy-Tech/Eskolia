@@ -31,14 +31,22 @@
       "description": "WSUS : synchronisation, groupes d'ordinateurs, approbation des mises à jour, rapports de conformité"
     },
     {
-      "chapterSlug": "M06-CH05-bureau-a-distance-rdp",
+      "chapterSlugs": [
+        "M06-CH05-bureau-a-distance-rdp",
+        "M06-CH06-bitlocker-chiffrement",
+        "M06-CH07-ntfs-droits-partages"
+      ],
       "type": "pdf",
       "title": "Windows Security Blueprint",
       "filename": "M06_C05-07_Windows.Security.Blueprint.pdf",
       "description": "Référence CH05–CH07 : RDP sécurisé, BitLocker, chiffrement EFS, NTFS et partages, stratégies de sécurité"
     },
     {
-      "chapterSlug": "M06-CH08-observateur-evenements",
+      "chapterSlugs": [
+        "M06-CH08-observateur-evenements",
+        "M06-CH09-gestionnaire-taches-performances",
+        "M06-CH10-registre-windows"
+      ],
       "type": "image",
       "title": "Diagnostic et Supervision du Système",
       "filename": "M06_C08-10_Diagnostic.et.supervision.du.systeme.png",
@@ -52,7 +60,10 @@
       "description": "Réparation Windows : SFC /scannow, DISM /RestoreHealth, ordre d'exécution et interprétation des résultats"
     },
     {
-      "chapterSlug": "M06-CH12-planificateur-taches",
+      "chapterSlugs": [
+        "M06-CH12-planificateur-taches",
+        "M06-CH13-powershell-introduction"
+      ],
       "type": "pdf",
       "title": "Windows Automation Blueprint",
       "filename": "M06_C12-13_Windows.Automation.Blueprint.pdf",
