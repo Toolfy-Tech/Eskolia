@@ -181,7 +181,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                               icon: const Icon(Icons.quiz_outlined, size: 20),
                               label: const Text('Quiz'),
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF6C63FF),
+                                backgroundColor: EskoliaTokens.violetSoft,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
@@ -262,7 +262,7 @@ class _SoloRevisionMenuScreenState extends State<SoloRevisionMenuScreen> {
                                 busy ? 'Préparation…' : 'Quiz',
                               ),
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF6C63FF),
+                                backgroundColor: EskoliaTokens.violetSoft,
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),

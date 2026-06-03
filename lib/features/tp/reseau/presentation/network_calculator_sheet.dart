@@ -150,7 +150,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
         child: Text(
           text,
           style: const TextStyle(
-            color: _slate,
+            color: EskoliaTokens.textSecondary,
             fontSize: 10,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.2,
@@ -168,7 +168,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
               child: Text(
                 value,
                 style: const TextStyle(
-                  color: _cyan,
+                  color: EskoliaTokens.cyan,
                   fontSize: 13,
                   fontFamily: 'monospace',
                   fontWeight: FontWeight.w600,
@@ -213,7 +213,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _cyan, width: 1.5),
+          borderSide: const BorderSide(color: EskoliaTokens.cyan, width: 1.5),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         isDense: true,
@@ -300,7 +300,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
                   child: Text(
                     '.',
                     style: const TextStyle(
-                      color: _slate,
+                      color: EskoliaTokens.textSecondary,
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
                     ),
@@ -343,7 +343,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
           children: [
             Text(
               'Dec : ',
-              style: TextStyle(color: _slate, fontSize: 13),
+              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13),
             ),
             Text(
               '$_decValue',
@@ -356,12 +356,12 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
             const SizedBox(width: 24),
             Text(
               'Bin : ',
-              style: TextStyle(color: _slate, fontSize: 13),
+              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13),
             ),
             Text(
               _decValue.toRadixString(2).padLeft(8, '0'),
               style: const TextStyle(
-                color: _cyan,
+                color: EskoliaTokens.cyan,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'monospace',
@@ -397,11 +397,11 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Decimal : ', style: TextStyle(color: _slate, fontSize: 14)),
+            Text('Decimal : ', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 14)),
             Text(
               '$_binValue',
               style: const TextStyle(
-                color: _cyan,
+                color: EskoliaTokens.cyan,
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
               ),
@@ -431,7 +431,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
           Text(
             'Representation 32 bits',
             textAlign: TextAlign.center,
-            style: TextStyle(color: _slate, fontSize: 11),
+            style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
           ),
           const SizedBox(height: 6),
           Text(
@@ -441,7 +441,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
             ).join('.'),
             textAlign: TextAlign.center,
             style: const TextStyle(
-              color: _cyan,
+              color: EskoliaTokens.cyan,
               fontSize: 13,
               fontFamily: 'monospace',
               fontWeight: FontWeight.w600,
@@ -485,7 +485,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
             Text(
               '/$_subnetCidr',
               style: const TextStyle(
-                color: _cyan,
+                color: EskoliaTokens.cyan,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'monospace',
@@ -519,7 +519,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
         const SizedBox(height: 6),
         Row(
           children: [
-            Text('Masque : ', style: TextStyle(color: _slate, fontSize: 13)),
+            Text('Masque : ', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 13)),
             Text(
               maskStr,
               style: const TextStyle(
@@ -593,7 +593,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
     return Container(
       constraints: BoxConstraints(maxHeight: screenH * 0.85),
       decoration: const BoxDecoration(
-        color: _bg,
+        color: EskoliaTokens.bgBase,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
@@ -637,7 +637,7 @@ class _NetworkCalculatorSheetState extends State<NetworkCalculatorSheet>
                 controller: _tabController,
                 dividerColor: Colors.transparent,
                 indicator: BoxDecoration(
-                  color: _cyan,
+                  color: EskoliaTokens.cyan,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
