@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
+
 // ────────────────────────────────────────────────────────────────────────────
 // Système de 3 niveaux de cartes — Eskolia Design System
 //
 // L1 Hero    : max 1 par écran — fond violet 8%, border violet 35%, radius 20
-// L2 Content : cartes standard — fond #1A1A2E, border blanc 10%, radius 16
+// L2 Content : cartes standard — fond surface1, border blanc 10%, radius 16
 // L3 ListItem: items de liste  — transparent, border-bottom blanc 8%, radius 0
 // ────────────────────────────────────────────────────────────────────────────
-
-const Color _kSurface = Color(0xFF1E1E38);
-const Color _kViolet = Color(0xFF6C63FF);
 
 /// Carte L1 — Hero (maximum 1 par écran, action principale mise en avant).
 class EskoliaCardHero extends StatelessWidget {
   const EskoliaCardHero({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.all(EskoliaTokens.spaceLg - 4),
     this.onTap,
   });
 
@@ -28,18 +27,18 @@ class EskoliaCardHero extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        splashColor: _kViolet.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
+        splashColor: EskoliaTokens.violet.withValues(alpha: 0.12),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: _kViolet.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(20),
+            color: EskoliaTokens.violet.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
             border: Border.all(
-              color: _kViolet.withValues(alpha: 0.35),
+              color: EskoliaTokens.violet.withValues(alpha: 0.35),
               width: 1.0,
             ),
           ),
@@ -55,7 +54,7 @@ class EskoliaCardContent extends StatelessWidget {
   const EskoliaCardContent({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(EskoliaTokens.spaceMd),
     this.onTap,
     this.accentBorderColor,
   });
@@ -68,29 +67,30 @@ class EskoliaCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BoxDecoration with non-uniform border widths cannot use borderRadius —
-    // Flutter's Border.paint() assertion forbids it. Use ClipRRect for radius instead.
     final decoration = accentBorderColor != null
         ? BoxDecoration(
-            color: _kSurface,
+            color: EskoliaTokens.surface1,
             border: Border(
               left: BorderSide(color: accentBorderColor!, width: 3),
-              top: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
-              right: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
-              bottom: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
+              top: BorderSide(
+                  color: EskoliaTokens.borderSubtle, width: 0.5),
+              right: BorderSide(
+                  color: EskoliaTokens.borderSubtle, width: 0.5),
+              bottom: BorderSide(
+                  color: EskoliaTokens.borderSubtle, width: 0.5),
             ),
           )
         : BoxDecoration(
-            color: _kSurface,
-            borderRadius: BorderRadius.circular(16),
+            color: EskoliaTokens.surface1,
+            borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.10),
+              color: EskoliaTokens.borderSubtle,
               width: 0.5,
             ),
           );
 
     final container = ClipRRect(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
       child: Container(
         padding: padding,
         decoration: decoration,
@@ -102,11 +102,11 @@ class EskoliaCardContent extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        splashColor: Colors.white.withValues(alpha: 0.06),
+        splashColor: EskoliaTokens.borderSubtle,
         child: container,
       ),
     );
@@ -118,7 +118,7 @@ class EskoliaCardListItem extends StatelessWidget {
   const EskoliaCardListItem({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.symmetric(vertical: 12),
+    this.padding = const EdgeInsets.symmetric(vertical: EskoliaTokens.spaceMd - 4),
     this.onTap,
   });
 
@@ -133,7 +133,7 @@ class EskoliaCardListItem extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withValues(alpha: 0.08),
+            color: EskoliaTokens.borderSubtle,
             width: 0.5,
           ),
         ),
@@ -145,7 +145,7 @@ class EskoliaCardListItem extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      splashColor: Colors.white.withValues(alpha: 0.05),
+      splashColor: EskoliaTokens.borderSubtle,
       child: content,
     );
   }
@@ -157,8 +157,8 @@ class EskoliaCard extends StatelessWidget {
   const EskoliaCard({
     super.key,
     required this.child,
-    this.borderRadius = 16,
-    this.padding = const EdgeInsets.all(16),
+    this.borderRadius = EskoliaTokens.radiusLg,
+    this.padding = const EdgeInsets.all(EskoliaTokens.spaceMd),
     this.margin,
     this.onTap,
   });

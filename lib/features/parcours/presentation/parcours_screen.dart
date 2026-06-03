@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/repositories/user_repository.dart';
 import '../../../core/theme/eskolia_layout.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/tip_section_theme.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -24,12 +25,6 @@ import '../data/tip_progress_repository.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violetBrand = Color(0xFF6C63FF);
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _surface = Color(0xFF1E293B);
 
 class ParcoursScreen extends StatefulWidget {
   const ParcoursScreen({super.key, this.expandFormationId});
@@ -185,7 +180,7 @@ class _ParcoursScreenState extends State<ParcoursScreen>
           IconButton(
             icon: Icon(
               Icons.menu_book_rounded,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: EskoliaTokens.textPrimary.withValues(alpha: 0.85),
             ),
             tooltip: 'Docs métier',
             onPressed: () => context.push('/docs'),
@@ -195,7 +190,7 @@ class _ParcoursScreenState extends State<ParcoursScreen>
               'Mes Parcours',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
+                color: EskoliaTokens.textPrimary,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
@@ -204,7 +199,7 @@ class _ParcoursScreenState extends State<ParcoursScreen>
           IconButton(
             icon: Icon(
               Icons.filter_list_rounded,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: EskoliaTokens.textPrimary.withValues(alpha: 0.85),
             ),
             onPressed: () {},
           ),
@@ -259,11 +254,11 @@ class _FormationCardState extends State<_FormationCard> {
       glow = EskoliaVisual.neonGreen;
     } else if (started) {
       borderGrad = EskoliaVisual.borderPrimary;
-      glow = _violetBrand;
+      glow = EskoliaTokens.violetSoft;
     } else {
       borderGrad = [
-        Colors.white.withValues(alpha: 0.22),
-        Colors.white.withValues(alpha: 0.08),
+        EskoliaTokens.textPrimary.withValues(alpha: 0.22),
+        EskoliaTokens.textPrimary.withValues(alpha: 0.08),
       ];
       glow = null;
     }
@@ -273,7 +268,7 @@ class _FormationCardState extends State<_FormationCard> {
       glowColor: glow,
       borderRadius: 20,
       innerBlurSigma: 14,
-      innerColor: const Color(0xFF0E1520),
+      innerColor: EskoliaTokens.bgBase,
       padding: const EdgeInsets.all(16),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -281,7 +276,7 @@ class _FormationCardState extends State<_FormationCard> {
             InkWell(
               onTap: () => setState(() => _expanded = !_expanded),
               borderRadius: BorderRadius.circular(12),
-              splashColor: _violetBrand.withValues(alpha: 0.2),
+              splashColor: EskoliaTokens.violetSoft.withValues(alpha: 0.2),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -297,7 +292,7 @@ class _FormationCardState extends State<_FormationCard> {
                         Text(
                           f.title,
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: EskoliaTokens.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -306,7 +301,7 @@ class _FormationCardState extends State<_FormationCard> {
                         Text(
                           f.description,
                           style: TextStyle(
-                            color: _slateLight.withValues(alpha: 0.95),
+                            color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.95),
                             fontSize: 12,
                             height: 1.35,
                           ),
@@ -319,14 +314,14 @@ class _FormationCardState extends State<_FormationCard> {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                Container(color: _surface),
+                                Container(color: EskoliaTokens.surface2),
                                 FractionallySizedBox(
                                   alignment: Alignment.centerLeft,
                                   widthFactor: ratio,
                                   child: Container(
                                     decoration: const BoxDecoration(
                                       gradient: LinearGradient(
-                                        colors: [_violetBrand, _cyan],
+                                        colors: [EskoliaTokens.violetSoft, EskoliaTokens.cyanSoft],
                                       ),
                                     ),
                                   ),
@@ -342,7 +337,7 @@ class _FormationCardState extends State<_FormationCard> {
                             Text(
                               '${f.completedModules} / ${f.totalModules} modules',
                               style: TextStyle(
-                                color: _slate.withValues(alpha: 0.95),
+                                color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                                 fontSize: 11,
                               ),
                             ),
@@ -356,7 +351,7 @@ class _FormationCardState extends State<_FormationCard> {
                     duration: const Duration(milliseconds: 300),
                     child: Icon(
                       Icons.expand_more_rounded,
-                      color: _slateLight.withValues(alpha: 0.9),
+                      color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -482,7 +477,7 @@ class _SectionTileState extends State<_SectionTile> {
                 child: Text(
                   widget.section.title,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.98),
+                    color: EskoliaTokens.textPrimary.withValues(alpha: 0.98),
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -568,19 +563,19 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
     final borderColors = unlocked
         ? (isTip
             ? const [Color(0xFFFFB74D), Color(0xFFE040FB)]
-            : const [Color(0xFF00BCD4), Color(0xFF6C63FF)])
+            : [EskoliaTokens.cyanSoft, EskoliaTokens.violetSoft])
         : [
-            Colors.white.withValues(alpha: 0.14),
-            Colors.white.withValues(alpha: 0.06),
+            EskoliaTokens.textPrimary.withValues(alpha: 0.14),
+            EskoliaTokens.textPrimary.withValues(alpha: 0.06),
           ];
-    final accent = isTip ? const Color(0xFFFFB74D) : const Color(0xFF00BCD4);
+    final accent = isTip ? const Color(0xFFFFB74D) : EskoliaTokens.cyanSoft;
 
     return GradientBorderCard(
       gradientColors: borderColors,
       glowColor: unlocked ? accent : null,
       borderRadius: 16,
       innerBlurSigma: 12,
-      innerColor: const Color(0xFF121A28),
+      innerColor: EskoliaTokens.surface1,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -594,7 +589,7 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: unlocked ? 1 : 0.65),
+                    color: EskoliaTokens.textPrimary.withValues(alpha: unlocked ? 1 : 0.65),
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
                   ),
@@ -604,7 +599,7 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
                 Text(
                   '\u{2705} Réussie',
                   style: TextStyle(
-                    color: _slateLight.withValues(alpha: 0.95),
+                    color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.95),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -626,7 +621,7 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
                     : 'Termine d’abord toutes les évaluations finales de section '
                         '(O01–O06).'),
             style: TextStyle(
-              color: _slateLight.withValues(alpha: unlocked ? 0.9 : 0.65),
+              color: EskoliaTokens.textSecondaryLight.withValues(alpha: unlocked ? 0.9 : 0.65),
               fontSize: 12,
               height: 1.35,
             ),
@@ -637,9 +632,9 @@ class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection
             style: FilledButton.styleFrom(
               backgroundColor: accent,
               foregroundColor:
-                  isTip ? const Color(0xFF1A1206) : const Color(0xFF0A1628),
-              disabledBackgroundColor: Colors.white.withValues(alpha: 0.08),
-              disabledForegroundColor: _slate,
+                  EskoliaTokens.bgBase,
+              disabledBackgroundColor: EskoliaTokens.textPrimary.withValues(alpha: 0.08),
+              disabledForegroundColor: EskoliaTokens.textSecondary,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             child: Text(
@@ -771,8 +766,8 @@ class _ModuleTile extends StatelessWidget {
                           module.title,
                           style: TextStyle(
                             color: completed
-                                ? _slateLight.withValues(alpha: 0.55)
-                                : Colors.white.withValues(alpha: 0.92),
+                                ? EskoliaTokens.textSecondaryLight.withValues(alpha: 0.55)
+                                : EskoliaTokens.textPrimary.withValues(alpha: 0.92),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -793,7 +788,7 @@ class _ModuleTile extends StatelessWidget {
                       Text(
                         'Terminé',
                         style: TextStyle(
-                          color: _slate,
+                          color: EskoliaTokens.textSecondary,
                           fontSize: 11,
                         ),
                       ),
@@ -830,7 +825,7 @@ class _SkeletonLoader extends StatelessWidget {
             animation: pulse,
             builder: (context, child) {
               final t = pulse.value;
-              final c = Color.lerp(_surface, const Color(0xFF2D3748), t)!;
+              final c = Color.lerp(EskoliaTokens.surface2, const Color(0xFF2D3748), t)!;
               return AnimatedContainer(
                 duration: Duration.zero,
                 height: 140,
@@ -864,10 +859,10 @@ class _ErrorState extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: EskoliaTokens.textPrimary.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.1),
+              color: EskoliaTokens.textPrimary.withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -882,7 +877,7 @@ class _ErrorState extends StatelessWidget {
                 message,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: _slateLight.withValues(alpha: 0.95),
+                  color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.95),
                   fontSize: 13,
                 ),
               ),
@@ -890,8 +885,8 @@ class _ErrorState extends StatelessWidget {
               FilledButton(
                 onPressed: onRetry,
                 style: FilledButton.styleFrom(
-                  backgroundColor: _violetBrand,
-                  foregroundColor: Colors.white,
+                  backgroundColor: EskoliaTokens.violetSoft,
+                  foregroundColor: EskoliaTokens.textPrimary,
                 ),
                 child: const Text('Réessayer'),
               ),
@@ -924,7 +919,7 @@ class _EmptyState extends StatelessWidget {
           Text(
             message,
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.95),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
               fontSize: 15,
             ),
           ),
@@ -952,12 +947,12 @@ class _PodcastsCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF6C63FF).withValues(alpha: 0.20),
-                const Color(0xFF00BCD4).withValues(alpha: 0.12),
+                const EskoliaTokens.violetSoft.withValues(alpha: 0.20),
+                const EskoliaTokens.cyanSoft.withValues(alpha: 0.12),
               ],
             ),
             border: Border.all(
-              color: const Color(0xFF6C63FF).withValues(alpha: 0.35),
+              color: const EskoliaTokens.violetSoft.withValues(alpha: 0.35),
             ),
           ),
           child: Row(
@@ -965,12 +960,12 @@ class _PodcastsCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
+                  color: const EskoliaTokens.violetSoft.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.headphones_rounded,
-                  color: Color(0xFF6C63FF),
+                  color: EskoliaTokens.violetSoft,
                   size: 24,
                 ),
               ),
@@ -982,7 +977,7 @@ class _PodcastsCard extends StatelessWidget {
                     Text(
                       'Podcasts',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: EskoliaTokens.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
@@ -991,7 +986,7 @@ class _PodcastsCard extends StatelessWidget {
                     Text(
                       'Une analyse audio par module — a ecouter avant de lire le cours.',
                       style: TextStyle(
-                        color: Color(0xFF94A3B8),
+                        color: EskoliaTokens.textSecondary,
                         fontSize: 12,
                         height: 1.3,
                       ),
@@ -1001,7 +996,7 @@ class _PodcastsCard extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.4),
+                color: EskoliaTokens.textPrimary.withValues(alpha: 0.4),
                 size: 22,
               ),
             ],
@@ -1031,12 +1026,12 @@ class _DocsMetierCard extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF00BCD4).withValues(alpha: 0.18),
-                const Color(0xFF6C63FF).withValues(alpha: 0.12),
+                const EskoliaTokens.cyanSoft.withValues(alpha: 0.18),
+                const EskoliaTokens.violetSoft.withValues(alpha: 0.12),
               ],
             ),
             border: Border.all(
-              color: const Color(0xFF00BCD4).withValues(alpha: 0.35),
+              color: const EskoliaTokens.cyanSoft.withValues(alpha: 0.35),
             ),
           ),
           child: Row(
@@ -1044,12 +1039,12 @@ class _DocsMetierCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00BCD4).withValues(alpha: 0.15),
+                  color: const EskoliaTokens.cyanSoft.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.menu_book_rounded,
-                  color: Color(0xFF00BCD4),
+                  color: EskoliaTokens.cyanSoft,
                   size: 24,
                 ),
               ),
@@ -1061,7 +1056,7 @@ class _DocsMetierCard extends StatelessWidget {
                     Text(
                       'Docs Metier',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: EskoliaTokens.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1070,7 +1065,7 @@ class _DocsMetierCard extends StatelessWidget {
                     Text(
                       'RGPD, CNIL, ANSSI, ITIL, OSI — references et mini-formations.',
                       style: TextStyle(
-                        color: Color(0xFF94A3B8),
+                        color: EskoliaTokens.textSecondary,
                         fontSize: 12,
                         height: 1.3,
                       ),
@@ -1080,7 +1075,7 @@ class _DocsMetierCard extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.4),
+                color: EskoliaTokens.textPrimary.withValues(alpha: 0.4),
                 size: 22,
               ),
             ],
@@ -1101,7 +1096,7 @@ class _MegaContentCards extends StatelessWidget {
       children: [
         _MegaCard(
           icon: Icons.menu_book_rounded,
-          color: const Color(0xFF00BCD4),
+          color: const EskoliaTokens.cyanSoft,
           title: 'Méga Lexique',
           subtitle: 'Tous les termes clés des 8 modules en un seul endroit.',
           onTap: () => context.push('/lexique-optimus'),
@@ -1109,7 +1104,7 @@ class _MegaContentCards extends StatelessWidget {
         const SizedBox(height: 10),
         _MegaCard(
           icon: Icons.play_lesson_rounded,
-          color: const Color(0xFF6C63FF),
+          color: const EskoliaTokens.violetSoft,
           title: 'Médiathèque complète',
           subtitle: 'Toutes les ressources et veille des 8 modules.',
           onTap: () => context.push('/mediatheque-optimus'),
@@ -1172,7 +1167,7 @@ class _MegaCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: EskoliaTokens.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1181,7 +1176,7 @@ class _MegaCard extends StatelessWidget {
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: Color(0xFF94A3B8),
+                        color: EskoliaTokens.textSecondary,
                         fontSize: 12,
                         height: 1.3,
                       ),
@@ -1191,7 +1186,7 @@ class _MegaCard extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.35),
+                color: EskoliaTokens.textPrimary.withValues(alpha: 0.35),
                 size: 20,
               ),
             ],

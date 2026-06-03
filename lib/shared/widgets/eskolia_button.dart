@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/eskolia_tokens.dart';
+
 enum EskoliaButtonVariant {
-  /// Bouton principal — fond violet #6C63FF. Maximum 1 par écran.
+  /// Bouton principal — fond violet. Maximum 1 par écran.
   primary,
   /// Bouton secondaire — outlined, couleur contextuelle. Maximum 2 par écran.
   secondary,
@@ -10,10 +12,6 @@ enum EskoliaButtonVariant {
   /// Action destructrice — texte rouge discret, jamais prominent.
   destructive,
 }
-
-const Color _kPrimary = Color(0xFF6C63FF);
-const Color _kDestructive = Color(0xFFEF4444);
-const double _kRadius = 12;
 
 /// Bouton Eskolia — 4 variantes sémantiques.
 class EskoliaButton extends StatefulWidget {
@@ -35,7 +33,7 @@ class EskoliaButton extends StatefulWidget {
   final bool expand;
   /// Couleur de fond (primary/secondary) ou de texte (ghost) — override optionnel.
   final Color? color;
-  /// Couleur du texte — override optionnel (ex: texte sombre sur fond clair).
+  /// Couleur du texte — override optionnel.
   final Color? textColor;
 
   @override
@@ -70,10 +68,14 @@ class _EskoliaButtonState extends State<EskoliaButton> {
   }
 
   Widget _buildButton(BuildContext context) {
-    final bg = widget.color ?? _kPrimary;
-    final fg = widget.textColor ?? Colors.white;
+    final bg = widget.color ?? EskoliaTokens.violet;
+    final fg = widget.textColor ?? EskoliaTokens.textPrimary;
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(_kRadius),
+      borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
+    );
+    const vPad = EdgeInsets.symmetric(
+      horizontal: EskoliaTokens.spaceMd,
+      vertical: EskoliaTokens.spaceSm + 4,
     );
 
     switch (widget.variant) {
@@ -84,20 +86,20 @@ class _EskoliaButtonState extends State<EskoliaButton> {
             backgroundColor: bg,
             foregroundColor: fg,
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: vPad,
           ),
           child: _buildContent(),
         );
 
       case EskoliaButtonVariant.secondary:
-        final accent = widget.color ?? _kPrimary;
+        final accent = widget.color ?? EskoliaTokens.violet;
         return OutlinedButton(
           onPressed: widget.onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: widget.textColor ?? accent,
             side: BorderSide(color: accent.withValues(alpha: 0.6)),
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: vPad,
           ),
           child: _buildContent(),
         );
@@ -106,9 +108,12 @@ class _EskoliaButtonState extends State<EskoliaButton> {
         return TextButton(
           onPressed: widget.onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: widget.textColor ?? (widget.color ?? _kPrimary),
+            foregroundColor:
+                widget.textColor ?? (widget.color ?? EskoliaTokens.violet),
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+                horizontal: EskoliaTokens.spaceMd - 4,
+                vertical: EskoliaTokens.spaceSm + 2),
           ),
           child: _buildContent(),
         );
@@ -117,9 +122,11 @@ class _EskoliaButtonState extends State<EskoliaButton> {
         return TextButton(
           onPressed: widget.onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: _kDestructive,
+            foregroundColor: EskoliaTokens.error,
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+                horizontal: EskoliaTokens.spaceMd - 4,
+                vertical: EskoliaTokens.spaceSm + 2),
           ),
           child: _buildContent(),
         );
@@ -129,9 +136,11 @@ class _EskoliaButtonState extends State<EskoliaButton> {
   @override
   Widget build(BuildContext context) {
     final button = _buildButton(context);
-    final sized = widget.expand ? SizedBox(width: double.infinity, child: button) : button;
+    final sized =
+        widget.expand ? SizedBox(width: double.infinity, child: button) : button;
     return Listener(
-      onPointerDown: widget.onPressed != null ? (_) => setState(() => _pressed = true) : null,
+      onPointerDown:
+          widget.onPressed != null ? (_) => setState(() => _pressed = true) : null,
       onPointerUp: (_) => setState(() => _pressed = false),
       onPointerCancel: (_) => setState(() => _pressed = false),
       child: AnimatedScale(

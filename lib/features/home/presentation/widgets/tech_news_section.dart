@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../../../shared/widgets/eskolia_card.dart';
 import '../../data/tech_news_models.dart';
 import '../../data/tech_news_repository.dart';
-
-const Color _slate = Color(0xFF94A3B8);
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _cyan = Color(0xFF00BCD4);
 
 /// Bloc veille RSS (dont sources pro Windows / infra) pour le hub accueil.
 class TechNewsSection extends StatefulWidget {
@@ -76,7 +73,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                 child: Text(
                   'Veille IT pro',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: EskoliaTokens.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
@@ -91,12 +88,12 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                         height: 22,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: _cyan,
+                          color: EskoliaTokens.cyanSoft,
                         ),
                       )
                     : Icon(
                         Icons.refresh_rounded,
-                        color: _slateLight.withValues(alpha: 0.95),
+                        color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.95),
                       ),
               ),
             ],
@@ -104,7 +101,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
           Text(
             'Windows, AD, réseau, virtualisation… — flux RSS externes, ouverture dans le navigateur',
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.95),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
               fontSize: 11,
               height: 1.2,
             ),
@@ -119,7 +116,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                   height: 28,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
-                    color: _cyan,
+                    color: EskoliaTokens.cyanSoft,
                   ),
                 ),
               ),
@@ -133,18 +130,18 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                   Text(
                     _error!,
                     style: TextStyle(
-                      color: _slateLight.withValues(alpha: 0.92),
+                      color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.92),
                       fontSize: 13,
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextButton.icon(
                     onPressed: _load,
-                    icon: const Icon(Icons.replay_rounded, color: _cyan),
+                    icon: const Icon(Icons.replay_rounded, color: EskoliaTokens.cyanSoft),
                     label: const Text(
                       'Réessayer',
                       style: TextStyle(
-                        color: _cyan,
+                        color: EskoliaTokens.cyanSoft,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -159,7 +156,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
               itemCount: _items.length,
               separatorBuilder: (_, __) => Divider(
                 height: 1,
-                color: Colors.white.withValues(alpha: 0.06),
+                color: EskoliaTokens.textPrimary.withValues(alpha: 0.06),
               ),
               itemBuilder: (context, index) {
                 final item = _items[index];
@@ -182,7 +179,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: EskoliaTokens.textPrimary,
                                     fontSize: 13.5,
                                     fontWeight: FontWeight.w600,
                                     height: 1.25,
@@ -196,7 +193,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: _slate.withValues(alpha: 0.95),
+                                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                                       fontSize: 11,
                                     ),
                                   ),
@@ -215,15 +212,15 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
-                                  color: _cyan.withValues(alpha: 0.12),
+                                  color: EskoliaTokens.cyanSoft.withValues(alpha: 0.12),
                                   border: Border.all(
-                                    color: _cyan.withValues(alpha: 0.35),
+                                    color: EskoliaTokens.cyanSoft.withValues(alpha: 0.35),
                                   ),
                                 ),
                                 child: Text(
                                   item.sourceLabel,
                                   style: const TextStyle(
-                                    color: _cyan,
+                                    color: EskoliaTokens.cyanSoft,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 0.2,
@@ -234,7 +231,7 @@ class _TechNewsSectionState extends State<TechNewsSection> {
                               Icon(
                                 Icons.open_in_new_rounded,
                                 size: 16,
-                                color: _slateLight.withValues(alpha: 0.75),
+                                color: EskoliaTokens.textSecondaryLight.withValues(alpha: 0.75),
                               ),
                             ],
                           ),

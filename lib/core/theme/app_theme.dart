@@ -3,32 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../constants/colors.dart';
+import '../constants/eskolia_tokens.dart';
 import '../constants/typography.dart';
 import 'app_theme_extensions.dart';
 import 'eskolia_layout.dart';
+
+export '../constants/eskolia_tokens.dart';
 
 abstract final class AppTheme {
   AppTheme._();
 
   static ThemeData get dark {
-    const overlay = Color(0x14FFFFFF);
-    const borderGlass = Color(0x33FFFFFF);
-    const borderGlassFocused = Color(0x806C3CE1);
-
     final colorScheme = ColorScheme.dark(
-      primary: primary,
-      onPrimary: textPrimary,
-      secondary: secondary,
-      onSecondary: textPrimary,
-      tertiary: accent,
-      onTertiary: background,
-      surface: surface,
-      onSurface: textPrimary,
-      error: Color(0xFFFF5252),
-      onError: textPrimary,
-      outline: borderGlass,
- );
+      primary: EskoliaTokens.violet,
+      onPrimary: EskoliaTokens.textPrimary,
+      secondary: const Color(0xFFFF6584),
+      onSecondary: EskoliaTokens.textPrimary,
+      tertiary: EskoliaTokens.success,
+      onTertiary: EskoliaTokens.bgBase,
+      surface: EskoliaTokens.surface1,
+      onSurface: EskoliaTokens.textPrimary,
+      error: EskoliaTokens.error,
+      onError: EskoliaTokens.textPrimary,
+      outline: EskoliaTokens.borderGlass,
+    );
 
     final base = ThemeData(
       useMaterial3: true,
@@ -37,23 +35,23 @@ abstract final class AppTheme {
       fontFamily: GoogleFonts.inter().fontFamily,
       extensions: <ThemeExtension<dynamic>>[
         GlassmorphismTheme(
-          glassColor: surface.withValues(alpha: 0.12),
-          borderColor: primary.withValues(alpha: 0.35),
+          glassColor: EskoliaTokens.surface1.withValues(alpha: 0.12),
+          borderColor: EskoliaTokens.violet.withValues(alpha: 0.35),
           blur: 14,
         ),
         NeonTheme(
-          neonColor: primary,
-          shadowColor: primary,
+          neonColor: EskoliaTokens.violet,
+          shadowColor: EskoliaTokens.violet,
           intensity: 1.0,
         ),
       ],
-      scaffoldBackgroundColor: background,
-      canvasColor: background,
+      scaffoldBackgroundColor: EskoliaTokens.bgBase,
+      canvasColor: EskoliaTokens.bgBase,
       textTheme: EskoliaTypography.textTheme(),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
           minimumSize: const Size(EskoliaLayout.minTouchTarget, EskoliaLayout.minTouchTarget),
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(EskoliaTokens.spaceSm),
         ),
       ),
       listTileTheme: ListTileThemeData(
@@ -62,82 +60,88 @@ abstract final class AppTheme {
           vertical: 10,
         ),
         minVerticalPadding: 12,
-        iconColor: textSecondary,
-        textColor: textPrimary,
+        iconColor: EskoliaTokens.textSecondary,
+        textColor: EskoliaTokens.textPrimary,
         titleTextStyle: EskoliaTypography.body(),
-        subtitleTextStyle: EskoliaTypography.body(textSecondary),
+        subtitleTextStyle: EskoliaTypography.body(EskoliaTokens.textSecondary),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: accent,
-        linearTrackColor: Color(0x22FFFFFF),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: EskoliaTokens.cyan,
+        linearTrackColor: EskoliaTokens.borderSubtle,
       ),
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
-        foregroundColor: textPrimary,
+        foregroundColor: EskoliaTokens.textPrimary,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         titleTextStyle: EskoliaTypography.h3(),
-        iconTheme: const IconThemeData(color: textPrimary, size: 24),
-        actionsIconTheme: const IconThemeData(color: textPrimary, size: 24),
+        iconTheme: const IconThemeData(color: EskoliaTokens.textPrimary, size: 24),
+        actionsIconTheme: const IconThemeData(color: EskoliaTokens.textPrimary, size: 24),
       ),
       cardTheme: CardThemeData(
-        color: surface,
+        color: EskoliaTokens.surface1,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
         ),
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
       ),
       dividerTheme: DividerThemeData(
-        color: textSecondary.withValues(alpha: 0.25),
+        color: EskoliaTokens.textSecondary.withValues(alpha: 0.25),
         thickness: 1,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: surface,
+        backgroundColor: EskoliaTokens.surface2,
         contentTextStyle: EskoliaTypography.body(),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: surface,
+        backgroundColor: EskoliaTokens.surface1,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl)),
         titleTextStyle: EskoliaTypography.h2(),
-        contentTextStyle: EskoliaTypography.body(textSecondary),
+        contentTextStyle: EskoliaTypography.body(EskoliaTokens.textSecondary),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: overlay,
-        hoverColor: overlay,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        hintStyle: EskoliaTypography.body(textSecondary),
-        labelStyle: EskoliaTypography.label(textSecondary),
-        floatingLabelStyle: EskoliaTypography.label(primary),
-        prefixIconColor: textSecondary,
-        suffixIconColor: textSecondary,
+        fillColor: EskoliaTokens.borderSubtle,
+        hoverColor: EskoliaTokens.borderSubtle,
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: EskoliaTokens.spaceMd + 2,
+            vertical: EskoliaTokens.spaceMd),
+        hintStyle: EskoliaTypography.body(EskoliaTokens.textSecondary),
+        labelStyle: EskoliaTypography.label(EskoliaTokens.textSecondary),
+        floatingLabelStyle: EskoliaTypography.label(EskoliaTokens.violet),
+        prefixIconColor: EskoliaTokens.textSecondary,
+        suffixIconColor: EskoliaTokens.textSecondary,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: borderGlass, width: 1),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
+          borderSide: const BorderSide(color: EskoliaTokens.borderGlass, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: borderGlass, width: 1),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
+          borderSide: const BorderSide(color: EskoliaTokens.borderGlass, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: borderGlassFocused, width: 1.5),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
+          borderSide:
+              const BorderSide(color: EskoliaTokens.borderFocus, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.error.withValues(alpha: 0.9)),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
+          borderSide:
+              BorderSide(color: EskoliaTokens.error.withValues(alpha: 0.9)),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: colorScheme.error, width: 1.5),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusLg),
+          borderSide: const BorderSide(color: EskoliaTokens.error, width: 1.5),
         ),
       ),
     );
@@ -147,13 +151,16 @@ abstract final class AppTheme {
         style: ButtonStyle(
           elevation: const WidgetStatePropertyAll(0),
           shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-          foregroundColor: const WidgetStatePropertyAll(textPrimary),
-          backgroundColor: const WidgetStatePropertyAll(primary),
+          foregroundColor: const WidgetStatePropertyAll(EskoliaTokens.textPrimary),
+          backgroundColor: const WidgetStatePropertyAll(EskoliaTokens.violet),
           padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            EdgeInsets.symmetric(
+                horizontal: EskoliaTokens.spaceLg,
+                vertical: EskoliaTokens.spaceMd - 2),
           ),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
           ),
           textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
         ),
@@ -161,32 +168,38 @@ abstract final class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           elevation: const WidgetStatePropertyAll(0),
-          foregroundColor: const WidgetStatePropertyAll(textPrimary),
-          backgroundColor: const WidgetStatePropertyAll(secondary),
+          foregroundColor: const WidgetStatePropertyAll(EskoliaTokens.textPrimary),
+          backgroundColor: const WidgetStatePropertyAll(Color(0xFFFF6584)),
           padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            EdgeInsets.symmetric(
+                horizontal: EskoliaTokens.spaceLg, vertical: EskoliaTokens.spaceMd),
           ),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
           ),
           textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: const WidgetStatePropertyAll(textPrimary),
+          foregroundColor: const WidgetStatePropertyAll(EskoliaTokens.textPrimary),
           padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            EdgeInsets.symmetric(
+                horizontal: EskoliaTokens.spaceLg,
+                vertical: EskoliaTokens.spaceMd - 2),
           ),
           side: WidgetStateProperty.resolveWith((states) {
             final pressed = states.contains(WidgetState.pressed);
             return BorderSide(
-              color: textSecondary.withValues(alpha: pressed ? 0.65 : 0.45),
+              color: EskoliaTokens.textSecondary
+                  .withValues(alpha: pressed ? 0.65 : 0.45),
               width: 1.25,
             );
           }),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
           ),
           textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
           backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
@@ -196,11 +209,12 @@ abstract final class AppTheme {
         style: ButtonStyle(
           foregroundColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.disabled)) {
-              return textSecondary.withValues(alpha: 0.4);
+              return EskoliaTokens.textSecondary.withValues(alpha: 0.4);
             }
-            return primary;
+            return EskoliaTokens.violet;
           }),
-          textStyle: WidgetStatePropertyAll(EskoliaTypography.label(primary)),
+          textStyle:
+              WidgetStatePropertyAll(EskoliaTypography.label(EskoliaTokens.violet)),
         ),
       ),
     );

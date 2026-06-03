@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 import '../../../core/theme/eskolia_layout.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
@@ -18,9 +19,6 @@ import 'widgets/lexique_section.dart';
 import 'widgets/mediatheque_section.dart';
 import 'widgets/support_section.dart';
 
-const Color _cyan = Color(0xFF00BCD4);
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
 
 /// Affiche le cours depuis [ModuleModel.lessonAssetPath] (fichier .md rendu en texte riche).
 class ChapterLessonScreen extends StatefulWidget {
@@ -196,8 +194,8 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.3,
                     ),
-                    backgroundColor: _cyan,
-                    foregroundColor: const Color(0xFF0B1220),
+                    backgroundColor: EskoliaTokens.cyanSoft,
+                    foregroundColor: EskoliaTokens.bgBase,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -231,14 +229,14 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
           child: Text(
             _error.toString(),
             textAlign: TextAlign.center,
-            style: const TextStyle(color: _slate),
+            style: const TextStyle(color: EskoliaTokens.textSecondary),
           ),
         ),
       );
     }
     if (_text == null) {
       return const Center(
-        child: CircularProgressIndicator(color: _cyan),
+        child: CircularProgressIndicator(color: EskoliaTokens.cyanSoft),
       );
     }
     return Scrollbar(
@@ -324,7 +322,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                           children: [
                             Icon(
                               Icons.flag_rounded,
-                              color: _cyan.withValues(alpha: 0.95),
+                              color: EskoliaTokens.cyanSoft.withValues(alpha: 0.95),
                               size: 26,
                             ),
                             const SizedBox(width: 12),
@@ -332,7 +330,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                               child: Text(
                                 'Étape suivante',
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.98),
+                                  color: EskoliaTokens.textPrimary.withValues(alpha: 0.98),
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -345,7 +343,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                           'Tu as fini la lecture : valide tes acquis avec le questionnaire '
                           'du module (Maîtrise).',
                           style: TextStyle(
-                            color: _slate.withValues(alpha: 0.95),
+                            color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                             fontSize: 14,
                             height: 1.4,
                           ),
@@ -386,9 +384,9 @@ class _PodcastIntro extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           decoration: BoxDecoration(
-            color: _violet.withValues(alpha: 0.12),
+            color: EskoliaTokens.violetSoft.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _violet.withValues(alpha: 0.30)),
+            border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.30)),
           ),
           child: Row(
             children: [
@@ -398,7 +396,7 @@ class _PodcastIntro extends StatelessWidget {
                 child: Text(
                   'Ecoute le podcast avant de lire — il vulgarise le cours en profondeur.',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.92),
+                    color: EskoliaTokens.textPrimary.withValues(alpha: 0.92),
                     fontSize: 13,
                     height: 1.35,
                     fontWeight: FontWeight.w600,

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../data/podcast_model.dart';
 import 'podcast_player_card.dart';
-
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
 
 class PodcastsScreen extends StatefulWidget {
   const PodcastsScreen({super.key});
@@ -35,7 +33,7 @@ class _PodcastsScreenState extends State<PodcastsScreen> {
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(color: _cyan),
+                    child: CircularProgressIndicator(color: EskoliaTokens.cyanSoft),
                   );
                 }
                 if (snap.hasError) {
@@ -74,7 +72,7 @@ class _PodcastsScreenState extends State<PodcastsScreen> {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: _slate, fontSize: 14),
+            style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 14),
           ),
         ),
       );
@@ -93,7 +91,7 @@ class _Header extends StatelessWidget {
           const Text(
             'Podcasts du parcours',
             style: TextStyle(
-              color: Colors.white,
+              color: EskoliaTokens.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.w700,
             ),
@@ -103,7 +101,7 @@ class _Header extends StatelessWidget {
             'Une analyse audio par module. A ecouter avant de lire le cours '
             'pour preparer le terrain.',
             style: TextStyle(
-              color: _slate.withValues(alpha: 0.95),
+              color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
               fontSize: 13,
               height: 1.4,
             ),

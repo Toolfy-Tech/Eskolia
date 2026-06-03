@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../data/optimus_content_models.dart';
-
-const Color _orange = Color(0xFFFF9800);
-const Color _slate = Color(0xFF94A3B8);
 
 class SupportSection extends StatefulWidget {
   const SupportSection({
@@ -37,9 +35,9 @@ class _SupportSectionState extends State<SupportSection> {
 
     return Container(
       decoration: BoxDecoration(
-        color: _orange.withValues(alpha: 0.05),
+        color: EskoliaTokens.orange.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _orange.withValues(alpha: 0.22)),
+        border: Border.all(color: EskoliaTokens.orange.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,13 +52,13 @@ class _SupportSectionState extends State<SupportSection> {
               child: Row(
                 children: [
                   Icon(Icons.school_rounded,
-                      color: _orange.withValues(alpha: 0.85), size: 18),
+                      color: EskoliaTokens.orange.withValues(alpha: 0.85), size: 18),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       widget.title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: EskoliaTokens.textPrimary.withValues(alpha: 0.95),
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -68,14 +66,14 @@ class _SupportSectionState extends State<SupportSection> {
                   ),
                   Text(
                     '${widget.items.length} fichier${widget.items.length > 1 ? 's' : ''}',
-                    style: TextStyle(color: _slate, fontSize: 12),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                   ),
                   const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: _expanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 240),
                     child: Icon(Icons.expand_more_rounded,
-                        color: _slate, size: 20),
+                        color: EskoliaTokens.textSecondary, size: 20),
                   ),
                 ],
               ),
@@ -92,7 +90,7 @@ class _SupportSectionState extends State<SupportSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Divider(color: _orange.withValues(alpha: 0.18), height: 1),
+                  Divider(color: EskoliaTokens.orange.withValues(alpha: 0.18), height: 1),
                   const SizedBox(height: 10),
                   ...widget.items.map((e) => _SupportTile(item: e)),
                 ],
@@ -117,9 +115,9 @@ class _SupportTile extends StatelessWidget {
       };
 
   static Color _colorFor(String type) => switch (type) {
-        'pdf' => const Color(0xFFEF5350),
-        'video' => const Color(0xFF42A5F5),
-        _ => _orange,
+        'pdf' => EskoliaTokens.error,
+        'video' => EskoliaTokens.info,
+        _ => EskoliaTokens.orange,
       };
 
   static String _labelFor(String type) => switch (type) {
@@ -175,7 +173,7 @@ class _SupportTile extends StatelessWidget {
                     Text(
                       item.title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.92),
+                        color: EskoliaTokens.textPrimary.withValues(alpha: 0.92),
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -184,7 +182,7 @@ class _SupportTile extends StatelessWidget {
                     Text(
                       item.description,
                       style: TextStyle(
-                        color: _slate.withValues(alpha: 0.90),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.90),
                         fontSize: 11.5,
                         height: 1.35,
                       ),
@@ -196,7 +194,7 @@ class _SupportTile extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 2, left: 8),
                 child: Icon(Icons.open_in_new_rounded,
                     size: 13,
-                    color: _slate.withValues(alpha: 0.60)),
+                    color: EskoliaTokens.textSecondary.withValues(alpha: 0.60)),
               ),
             ],
           ),

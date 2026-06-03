@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../data/optimus_content_models.dart';
-
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
 
 class LexiqueSection extends StatefulWidget {
   const LexiqueSection({
@@ -36,9 +34,9 @@ class _LexiqueSectionState extends State<LexiqueSection> {
 
     return Container(
       decoration: BoxDecoration(
-        color: _cyan.withValues(alpha: 0.05),
+        color: EskoliaTokens.cyanSoft.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _cyan.withValues(alpha: 0.22)),
+        border: Border.all(color: EskoliaTokens.cyanSoft.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,13 +51,13 @@ class _LexiqueSectionState extends State<LexiqueSection> {
               child: Row(
                 children: [
                   Icon(Icons.menu_book_rounded,
-                      color: _cyan.withValues(alpha: 0.85), size: 18),
+                      color: EskoliaTokens.cyanSoft.withValues(alpha: 0.85), size: 18),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       widget.title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: EskoliaTokens.textPrimary.withValues(alpha: 0.95),
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -67,14 +65,14 @@ class _LexiqueSectionState extends State<LexiqueSection> {
                   ),
                   Text(
                     '${widget.terms.length} terme${widget.terms.length > 1 ? 's' : ''}',
-                    style: TextStyle(color: _slate, fontSize: 12),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                   ),
                   const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: _expanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 240),
                     child: Icon(Icons.expand_more_rounded,
-                        color: _slate, size: 20),
+                        color: EskoliaTokens.textSecondary, size: 20),
                   ),
                 ],
               ),
@@ -91,7 +89,7 @@ class _LexiqueSectionState extends State<LexiqueSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Divider(color: _cyan.withValues(alpha: 0.18), height: 1),
+                  Divider(color: EskoliaTokens.cyanSoft.withValues(alpha: 0.18), height: 1),
                   const SizedBox(height: 10),
                   ...widget.terms.map((e) => _TermTile(entry: e)),
                 ],
@@ -119,7 +117,7 @@ class _TermTile extends StatelessWidget {
           Text(
             entry.term,
             style: TextStyle(
-              color: _cyan.withValues(alpha: 0.95),
+              color: EskoliaTokens.cyanSoft.withValues(alpha: 0.95),
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
@@ -128,7 +126,7 @@ class _TermTile extends StatelessWidget {
           Text(
             entry.definition,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.80),
+              color: EskoliaTokens.textPrimary.withValues(alpha: 0.80),
               fontSize: 12.5,
               height: 1.45,
             ),

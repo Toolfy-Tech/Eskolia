@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -16,13 +17,6 @@ import '../data/ai_provider.dart';
 import 'gemini_model_selector.dart';
 import 'ollama_setup_card.dart';
 
-const Color _bg     = EskoliaVisual.bgDeep;
-const Color _slate  = Color(0xFF94A3B8);
-const Color _green  = Color(0xFF4CAF50);
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan   = Color(0xFF00BCD4);
-const Color _amber  = Color(0xFFFFC107);
-const Color _purple = Color(0xFFB57BFF);
 
 // ── Données providers ─────────────────────────────────────────────────────────
 
@@ -67,7 +61,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.gemini,
     section: 'free',
     priceBadge: 'GRATUIT',
-    priceBadgeColor: _green,
+    priceBadgeColor: EskoliaTokens.success,
     tagline: '1 million tokens/jour — Recommande Eskolia',
     qualityCours: 4,
     qualityQuiz: 4,
@@ -97,7 +91,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.groq,
     section: 'free',
     priceBadge: 'GRATUIT',
-    priceBadgeColor: _green,
+    priceBadgeColor: EskoliaTokens.success,
     tagline: '14 400 requetes gratuites par jour — ultra-rapide',
     qualityCours: 3,
     qualityQuiz: 3,
@@ -125,7 +119,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.mistral,
     section: 'free',
     priceBadge: 'BETA GRATUIT',
-    priceBadgeColor: _cyan,
+    priceBadgeColor: EskoliaTokens.cyanSoft,
     tagline: 'Modele europeen open source — RGPD natif',
     qualityCours: 3,
     qualityQuiz: 3,
@@ -153,7 +147,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.ollama,
     section: 'local',
     priceBadge: 'GRATUIT',
-    priceBadgeColor: _amber,
+    priceBadgeColor: EskoliaTokens.amber,
     tagline: 'Modeles locaux sur ton PC — 100% prive, illimite',
     qualityCours: 3,
     qualityQuiz: 3,
@@ -179,7 +173,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.anthropic,
     section: 'paid',
     priceBadge: '~0,001 EUR/quiz',
-    priceBadgeColor: _purple,
+    priceBadgeColor: EskoliaTokens.violet,
     tagline: 'Meilleure qualite pedagogique — Claude Sonnet',
     qualityCours: 5,
     qualityQuiz: 5,
@@ -205,7 +199,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.openai,
     section: 'paid',
     priceBadge: '~0,001 EUR/quiz',
-    priceBadgeColor: _purple,
+    priceBadgeColor: EskoliaTokens.violet,
     tagline: 'GPT-4o-mini — fiable, JSON mode officiel',
     qualityCours: 5,
     qualityQuiz: 5,
@@ -231,7 +225,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.perplexity,
     section: 'paid',
     priceBadge: '~20 EUR/mois',
-    priceBadgeColor: _amber,
+    priceBadgeColor: EskoliaTokens.amber,
     tagline: 'Acces internet temps reel — sujets tech recents',
     qualityCours: 3,
     qualityQuiz: 2,
@@ -257,7 +251,7 @@ const _providerData = <_AiProviderData>[
     provider: AiProvider.xai,
     section: 'paid',
     priceBadge: 'PAYANT',
-    priceBadgeColor: _amber,
+    priceBadgeColor: EskoliaTokens.amber,
     tagline: 'Grok — modele xAI en developpement actif',
     qualityCours: 2,
     qualityQuiz: 2,
@@ -392,7 +386,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
           EskoliaShellBody(
             safeAreaTop: false,
             child: _loading
-                ? const Center(child: CircularProgressIndicator(color: _violet))
+                ? const Center(child: CircularProgressIndicator(color: EskoliaTokens.violetSoft))
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(
                       EskoliaLayout.screenPaddingH, 16,
@@ -451,17 +445,17 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: _green.withValues(alpha: 0.1),
+          color: EskoliaTokens.success.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: _green.withValues(alpha: 0.4)),
+          border: Border.all(color: EskoliaTokens.success.withValues(alpha: 0.4)),
         ),
         child: Row(children: [
           const Text('\u{1F7E2}', style: TextStyle(fontSize: 20)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('IA connectee', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-              Text(_state.provider.displayName, style: TextStyle(color: _slate, fontSize: 12)),
+              const Text('IA connectee', style: TextStyle(color: EskoliaTokens.textPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
+              Text(_state.provider.displayName, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
             ]),
           ),
           Text(_state.provider.emoji, style: const TextStyle(fontSize: 22)),
@@ -471,17 +465,17 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: EskoliaTokens.textPrimary.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(color: EskoliaTokens.textPrimary.withValues(alpha: 0.1)),
       ),
       child: Row(children: [
         const Text('\u{26AA}', style: TextStyle(fontSize: 20)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Aucune IA connectee', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-            Text('Entre ta cle API ci-dessous', style: TextStyle(color: _slate, fontSize: 12)),
+            const Text('Aucune IA connectee', style: TextStyle(color: EskoliaTokens.textPrimary, fontWeight: FontWeight.w700, fontSize: 14)),
+            Text('Entre ta cle API ci-dessous', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12)),
           ]),
         ),
       ]),
@@ -495,12 +489,12 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(children: [
-          const Text('CLE API', style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1)),
+          const Text('CLE API', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1)),
           const SizedBox(width: 8),
           if (_detected != AiProvider.unknown) ...[
             Text(_detected.emoji, style: const TextStyle(fontSize: 14)),
             const SizedBox(width: 4),
-            Text(_detected.displayName, style: TextStyle(color: _violet.withValues(alpha: 0.9), fontSize: 11, fontWeight: FontWeight.w700)),
+            Text(_detected.displayName, style: TextStyle(color: EskoliaTokens.violetSoft.withValues(alpha: 0.9), fontSize: 11, fontWeight: FontWeight.w700)),
           ],
         ]),
         const SizedBox(height: 8),
@@ -510,13 +504,13 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
           obscureText: _obscure,
           onChanged: _onKeyChanged,
           suffixIcon: IconButton(
-            icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: _slate, size: 20),
+            icon: Icon(_obscure ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: EskoliaTokens.textSecondary, size: 20),
             onPressed: () => setState(() => _obscure = !_obscure),
           ),
         ),
         if (_detected != AiProvider.unknown) ...[
           const SizedBox(height: 6),
-          Text('Provider detecte automatiquement', style: TextStyle(color: _green.withValues(alpha: 0.85), fontSize: 11)),
+          Text('Provider detecte automatiquement', style: TextStyle(color: EskoliaTokens.success.withValues(alpha: 0.85), fontSize: 11)),
         ],
       ],
     );
@@ -549,9 +543,9 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _amber.withValues(alpha: 0.06),
+        color: EskoliaTokens.amber.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _amber.withValues(alpha: 0.25)),
+        border: Border.all(color: EskoliaTokens.amber.withValues(alpha: 0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -559,8 +553,8 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
           Checkbox(
             value: _privacyConsent,
             onChanged: (v) => setState(() => _privacyConsent = v ?? false),
-            activeColor: _violet,
-            side: BorderSide(color: _slate.withValues(alpha: 0.4)),
+            activeColor: EskoliaTokens.violetSoft,
+            side: BorderSide(color: EskoliaTokens.textSecondary.withValues(alpha: 0.4)),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.compact,
           ),
@@ -572,7 +566,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
                 'J\'ai compris qu\'en utilisant une cle API Cloud, mes requetes peuvent etre analysees par le fournisseur. '
                 'Je m\'engage a ne partager aucune donnee personnelle.',
                 style: TextStyle(
-                  color: _slate.withValues(alpha: 0.85),
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
                   fontSize: 12,
                   height: 1.5,
                 ),
@@ -592,15 +586,15 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       children: [
         const Text(
           'CHOISIR SON IA',
-          style: TextStyle(color: _slate, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
+          style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2),
         ),
         const SizedBox(height: 4),
         Text(
           'Clique sur un provider pour voir le tuto et obtenir ta cle API gratuitement ou avec abonnement.',
-          style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 12, height: 1.4),
+          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 12, height: 1.4),
         ),
         const SizedBox(height: 16),
-        _TierHeader(label: 'GRATUIT — Recommande pour commencer', color: _green),
+        _TierHeader(label: 'GRATUIT — Recommande pour commencer', color: EskoliaTokens.success),
         const SizedBox(height: 8),
         for (final data in _providerData.where((d) => d.section == 'free'))
           Padding(
@@ -616,7 +610,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
             ),
           ),
         const SizedBox(height: 12),
-        _TierHeader(label: 'LOCAL — GRATUIT & ILLIMITE', color: _amber),
+        _TierHeader(label: 'LOCAL — GRATUIT & ILLIMITE', color: EskoliaTokens.amber),
         const SizedBox(height: 8),
         for (final data in _providerData.where((d) => d.section == 'local'))
           Padding(
@@ -641,7 +635,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
             ),
           ),
         const SizedBox(height: 12),
-        _TierHeader(label: 'PAYANT — Meilleure qualite pedagogique', color: _purple),
+        _TierHeader(label: 'PAYANT — Meilleure qualite pedagogique', color: EskoliaTokens.violet),
         const SizedBox(height: 8),
         for (final data in _providerData.where((d) => d.section == 'paid'))
           Padding(
@@ -660,20 +654,20 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: _violet.withValues(alpha: 0.08),
+            color: EskoliaTokens.violetSoft.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _violet.withValues(alpha: 0.2)),
+            border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.2)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.lock_outline_rounded, color: _violet, size: 16),
+              const Icon(Icons.lock_outline_rounded, color: EskoliaTokens.violetSoft, size: 16),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Ta cle est stockee uniquement dans ton profil Firestore — jamais en clair cote serveur Eskolia. '
                   'Elle est utilisee uniquement pour les requetes IA que tu declenches.',
-                  style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 11, height: 1.5),
+                  style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 11, height: 1.5),
                 ),
               ),
             ],
@@ -736,16 +730,16 @@ class _AiAccordionCard extends StatelessWidget {
   final Widget? extraContent;
 
   Color get _sectionColor => switch (data.section) {
-    'free'  => _green,
-    'local' => _amber,
-    _       => _purple,
+    'free'  => EskoliaTokens.success,
+    'local' => EskoliaTokens.amber,
+    _       => EskoliaTokens.violet,
   };
 
   @override
   Widget build(BuildContext context) {
     final accentColor = isConnected
-        ? _green
-        : (data.isRecommended ? _violet : _sectionColor);
+        ? EskoliaTokens.success
+        : (data.isRecommended ? EskoliaTokens.violetSoft : _sectionColor);
 
     return EskoliaCardContent(
       accentBorderColor: accentColor,
@@ -774,19 +768,19 @@ class _AiAccordionCard extends StatelessWidget {
                             Text(
                               data.provider.displayName,
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: EskoliaTokens.textPrimary,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
                               ),
                             ),
-                            if (isConnected) _Chip(label: 'CONNECTE', color: _green),
-                            if (data.isRecommended) _Chip(label: 'RECOMMANDE ESKOLIA', color: _violet),
+                            if (isConnected) _Chip(label: 'CONNECTE', color: EskoliaTokens.success),
+                            if (data.isRecommended) _Chip(label: 'RECOMMANDE ESKOLIA', color: EskoliaTokens.violetSoft),
                           ],
                         ),
                         const SizedBox(height: 2),
                         Text(
                           data.tagline,
-                          style: TextStyle(color: _slate.withValues(alpha: 0.7), fontSize: 11),
+                          style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), fontSize: 11),
                         ),
                       ],
                     ),
@@ -812,7 +806,7 @@ class _AiAccordionCard extends StatelessWidget {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.expand_more_rounded, color: _slate.withValues(alpha: 0.7), size: 20),
+                    child: Icon(Icons.expand_more_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.7), size: 20),
                   ),
                 ],
               ),
@@ -820,7 +814,7 @@ class _AiAccordionCard extends StatelessWidget {
           ),
           // Body expanded
           if (isExpanded) ...[
-            Divider(height: 1, color: Colors.white.withValues(alpha: 0.08)),
+            Divider(height: 1, color: EskoliaTokens.textPrimary.withValues(alpha: 0.08)),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
               child: Column(
@@ -839,7 +833,7 @@ class _AiAccordionCard extends StatelessWidget {
                         Icon(Icons.check_rounded, color: _sectionColor, size: 13),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: Text(p, style: TextStyle(color: _slate.withValues(alpha: 0.85), fontSize: 11, height: 1.4)),
+                          child: Text(p, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 11, height: 1.4)),
                         ),
                       ]),
                     ),
@@ -848,7 +842,7 @@ class _AiAccordionCard extends StatelessWidget {
                   Text(
                     data.section == 'local' ? 'COMMENT INSTALLER' : 'COMMENT OBTENIR SA CLE',
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.6),
+                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.6),
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.8,
@@ -861,12 +855,12 @@ class _AiAccordionCard extends StatelessWidget {
                   if (data.warning != null) ...[
                     const SizedBox(height: 8),
                     Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      const Icon(Icons.info_outline_rounded, color: _amber, size: 13),
+                      const Icon(Icons.info_outline_rounded, color: EskoliaTokens.amber, size: 13),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           data.warning!,
-                          style: TextStyle(color: _amber.withValues(alpha: 0.8), fontSize: 11, height: 1.4),
+                          style: TextStyle(color: EskoliaTokens.amber.withValues(alpha: 0.8), fontSize: 11, height: 1.4),
                         ),
                       ),
                     ]),
@@ -901,13 +895,13 @@ class _StepRow extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.2),
+              color: EskoliaTokens.violetSoft.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 '$num',
-                style: const TextStyle(color: _violet, fontSize: 10, fontWeight: FontWeight.w800),
+                style: const TextStyle(color: EskoliaTokens.violetSoft, fontSize: 10, fontWeight: FontWeight.w800),
               ),
             ),
           ),
@@ -918,7 +912,7 @@ class _StepRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(step.text, style: TextStyle(color: _slate.withValues(alpha: 0.9), fontSize: 11, height: 1.4)),
+                  Text(step.text, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.9), fontSize: 11, height: 1.4)),
                   if (step.linkUrl != null) ...[
                     const SizedBox(height: 3),
                     GestureDetector(
@@ -926,10 +920,10 @@ class _StepRow extends StatelessWidget {
                       child: Text(
                         step.linkLabel ?? step.linkUrl!,
                         style: TextStyle(
-                          color: _violet.withValues(alpha: 0.9),
+                          color: EskoliaTokens.violetSoft.withValues(alpha: 0.9),
                           fontSize: 11,
                           decoration: TextDecoration.underline,
-                          decorationColor: _violet.withValues(alpha: 0.5),
+                          decorationColor: EskoliaTokens.violetSoft.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
@@ -950,17 +944,17 @@ class _QualityBar extends StatelessWidget {
   final int score;
 
   static const _colors = [
-    Color(0xFFE53935),
-    Color(0xFFFF7043),
-    Color(0xFFFFC107),
-    Color(0xFF66BB6A),
-    Color(0xFF4CAF50),
+    EskoliaTokens.error,
+    EskoliaTokens.orange,
+    EskoliaTokens.amber,
+    const Color(0xFF66BB6A),
+    EskoliaTokens.success,
   ];
 
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(label, style: TextStyle(color: _slate.withValues(alpha: 0.6), fontSize: 10)),
+      Text(label, style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.6), fontSize: 10)),
       const SizedBox(width: 6),
       Row(
         children: List.generate(5, (i) {
@@ -970,7 +964,7 @@ class _QualityBar extends StatelessWidget {
             height: 5,
             margin: const EdgeInsets.only(right: 2),
             decoration: BoxDecoration(
-              color: filled ? _colors[score - 1] : Colors.white.withValues(alpha: 0.1),
+              color: filled ? _colors[score - 1] : EskoliaTokens.textPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(3),
             ),
           );

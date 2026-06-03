@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/preferences/onboarding_prefs.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../core/theme/eskolia_layout.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_button.dart';
@@ -16,8 +17,6 @@ import '../../economy/data/achievement_triggers.dart';
 import '../data/home_repository.dart';
 import 'widgets/tech_news_section.dart';
 
-const Color _surfaceBar = Color(0xFF1E293B);
-const Color _redStreak = Color(0xFFEF4444);
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -187,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: height,
       width: width == double.infinity ? null : width,
       decoration: BoxDecoration(
-        color: _surfaceBar,
+        color: EskoliaTokens.surface2,
         borderRadius: BorderRadius.circular(radius),
       ),
     );
@@ -198,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, color: _redStreak, size: 48),
+          const Icon(Icons.error_outline, color: EskoliaTokens.error, size: 48),
           Text(_errorMessage ?? 'Erreur'),
           EskoliaButton(label: 'Reessayer', onPressed: _loadData),
         ],
@@ -260,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     '$greeting\u{1F44B}',
                     style: GoogleFonts.poppins(
-                      color: Colors.white.withValues(alpha: 0.55),
+                      color: EskoliaTokens.textPrimary.withValues(alpha: 0.55),
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -269,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       name,
                       style: GoogleFonts.poppins(
-                        color: Colors.white,
+                        color: EskoliaTokens.textPrimary,
                         fontSize: 24,
                         fontWeight: FontWeight.w800,
                         height: 1.15,
@@ -303,12 +302,12 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-                  const Color(0xFFFF6B35).withValues(alpha: 0.2),
-                  const Color(0xFFFF9F0A).withValues(alpha: 0.1),
+                  EskoliaTokens.orange.withValues(alpha: 0.2),
+                  EskoliaTokens.amber.withValues(alpha: 0.1),
                 ]),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: const Color(0xFFFF9F0A).withValues(alpha: 0.4),
+                  color: EskoliaTokens.amber.withValues(alpha: 0.4),
                 ),
               ),
               child: Row(
@@ -319,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     '${user.streak} jours de serie — continue !',
                     style: GoogleFonts.inter(
-                      color: const Color(0xFFFF9F0A),
+                      color: EskoliaTokens.amber,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -342,7 +341,7 @@ class _IconAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white.withValues(alpha: 0.07),
+      color: EskoliaTokens.textPrimary.withValues(alpha: 0.07),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -353,7 +352,7 @@ class _IconAction extends StatelessWidget {
           alignment: Alignment.center,
           child: Icon(
             icon,
-            color: Colors.white.withValues(alpha: 0.8),
+            color: EskoliaTokens.textPrimary.withValues(alpha: 0.8),
             size: 20,
           ),
         ),

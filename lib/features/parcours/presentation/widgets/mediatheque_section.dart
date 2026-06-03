@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/constants/eskolia_tokens.dart';
 import '../../data/optimus_content_models.dart';
-
-const Color _violet = Color(0xFF6C63FF);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _slate = Color(0xFF94A3B8);
 
 class MediathequeSection extends StatefulWidget {
   const MediathequeSection({
@@ -42,9 +39,9 @@ class _MediathequeSectionState extends State<MediathequeSection> {
 
     return Container(
       decoration: BoxDecoration(
-        color: _violet.withValues(alpha: 0.05),
+        color: EskoliaTokens.violetSoft.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _violet.withValues(alpha: 0.22)),
+        border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,13 +56,13 @@ class _MediathequeSectionState extends State<MediathequeSection> {
               child: Row(
                 children: [
                   Icon(Icons.play_lesson_rounded,
-                      color: _violet.withValues(alpha: 0.85), size: 18),
+                      color: EskoliaTokens.violetSoft.withValues(alpha: 0.85), size: 18),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       widget.title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: EskoliaTokens.textPrimary.withValues(alpha: 0.95),
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -73,14 +70,14 @@ class _MediathequeSectionState extends State<MediathequeSection> {
                   ),
                   Text(
                     '$_total lien${_total > 1 ? 's' : ''}',
-                    style: TextStyle(color: _slate, fontSize: 12),
+                    style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
                   ),
                   const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: _expanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 240),
                     child: Icon(Icons.expand_more_rounded,
-                        color: _slate, size: 20),
+                        color: EskoliaTokens.textSecondary, size: 20),
                   ),
                 ],
               ),
@@ -97,27 +94,27 @@ class _MediathequeSectionState extends State<MediathequeSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Divider(color: _violet.withValues(alpha: 0.18), height: 1),
+                  Divider(color: EskoliaTokens.violetSoft.withValues(alpha: 0.18), height: 1),
                   if (widget.specific.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    _SectionLabel(label: 'Ressources specifiques', color: _violet),
+                    _SectionLabel(label: 'Ressources specifiques', color: EskoliaTokens.violetSoft),
                     const SizedBox(height: 6),
                     ...widget.specific.map((e) => _ResourceTile(
                           title: e.title,
                           subtitle: e.creator,
                           url: e.url,
-                          accent: _violet,
+                          accent: EskoliaTokens.violetSoft,
                         )),
                   ],
                   if (widget.veille.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    _SectionLabel(label: 'Annuaire de veille', color: _cyan),
+                    _SectionLabel(label: 'Annuaire de veille', color: EskoliaTokens.cyanSoft),
                     const SizedBox(height: 6),
                     ...widget.veille.map((e) => _ResourceTile(
                           title: e.title,
                           subtitle: e.description,
                           url: e.url,
-                          accent: _cyan,
+                          accent: EskoliaTokens.cyanSoft,
                         )),
                   ],
                 ],
@@ -205,7 +202,7 @@ class _ResourceTile extends StatelessWidget {
                     Text(
                       title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.92),
+                        color: EskoliaTokens.textPrimary.withValues(alpha: 0.92),
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -214,7 +211,7 @@ class _ResourceTile extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        color: _slate.withValues(alpha: 0.90),
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.90),
                         fontSize: 11.5,
                         height: 1.35,
                       ),
