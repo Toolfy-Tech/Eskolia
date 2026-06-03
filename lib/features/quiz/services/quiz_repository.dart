@@ -177,7 +177,9 @@ class QuizRepository {
         final raw = await AssetCacheService.loadString(path);
         final qs = tipJsonToQuizQuestions(raw, sourceAssetPath: path);
         questions.addAll(qs);
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[QuizRepository._buildFromPaths] $e');
+      }
     }
 
     // 2. Injecter les questions Labo (Firestore) si demandé
@@ -192,7 +194,9 @@ class QuizRepository {
         for (final d in drafts.take(cap)) {
           questions.add(_laboToQuizQuestion(d));
         }
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('[QuizRepository._buildFromPaths.labo] $e');
+      }
     }
 
     // 3. Injecter les questions Lexique si demandé

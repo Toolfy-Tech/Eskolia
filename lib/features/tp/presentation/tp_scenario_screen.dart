@@ -804,15 +804,15 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
         color: _validationPassed
             ? const Color(0xFF43E97B).withValues(alpha: 0.08)
             : _validationWrong
-                ? const Color(0xFFEF4444).withValues(alpha: 0.08)
-                : const Color(0xFF6C63FF).withValues(alpha: 0.08),
+                ? EskoliaTokens.error.withValues(alpha: 0.08)
+                : EskoliaTokens.violet.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _validationPassed
               ? const Color(0xFF43E97B).withValues(alpha: 0.4)
               : _validationWrong
-                  ? const Color(0xFFEF4444).withValues(alpha: 0.4)
-                  : const Color(0xFF6C63FF).withValues(alpha: 0.4),
+                  ? EskoliaTokens.error.withValues(alpha: 0.4)
+                  : EskoliaTokens.violet.withValues(alpha: 0.4),
         ),
       ),
       child: Column(
@@ -857,7 +857,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFF6C63FF)),
+                  borderSide: const BorderSide(color: EskoliaTokens.violet),
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               ),
@@ -867,7 +867,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
             const SizedBox(height: 8),
             Text(
               '\u{1F4A1} $hint',
-              style: TextStyle(color: const Color(0xFFFF9800).withValues(alpha: 0.9), fontSize: 12, height: 1.4),
+              style: TextStyle(color: EskoliaTokens.amber.withValues(alpha: 0.9), fontSize: 12, height: 1.4),
             ),
           ],
           if (_validationPassed) ...[
@@ -883,12 +883,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
               child: ElevatedButton(
                 onPressed: _checkAnswer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
-                  foregroundColor: const Color(0xFF6C63FF),
+                  backgroundColor: EskoliaTokens.violet.withValues(alpha: 0.2),
+                  foregroundColor: EskoliaTokens.violet,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.5)),
+                    side: BorderSide(color: EskoliaTokens.violet.withValues(alpha: 0.5)),
                   ),
                 ),
                 child: const Text('Valider ma réponse', style: TextStyle(fontWeight: FontWeight.w600)),
@@ -912,12 +912,12 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF6C63FF).withValues(alpha: 0.15)
+              ? EskoliaTokens.violet.withValues(alpha: 0.15)
               : Colors.white.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF6C63FF).withValues(alpha: 0.6)
+                ? EskoliaTokens.violet.withValues(alpha: 0.6)
                 : Colors.white.withValues(alpha: 0.08),
           ),
         ),
@@ -929,10 +929,10 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF6C63FF) : Colors.white30,
+                  color: isSelected ? EskoliaTokens.violet : Colors.white30,
                   width: 2,
                 ),
-                color: isSelected ? const Color(0xFF6C63FF) : Colors.transparent,
+                color: isSelected ? EskoliaTokens.violet : Colors.transparent,
               ),
               child: isSelected
                   ? const Icon(Icons.check, size: 11, color: Colors.white)
@@ -963,7 +963,7 @@ class _MissionDetailSheetState extends State<_MissionDetailSheet> {
                 Expanded(child: _sectionTitle(title)),
                 Icon(
                   isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                  color: const Color(0xFF94A3B8),
+                  color: EskoliaTokens.textSecondary,
                   size: 20,
                 ),
               ],

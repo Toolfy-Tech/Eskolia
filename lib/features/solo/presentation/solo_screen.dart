@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 
-const Color _slateLight = Color(0xFF94A3B8);
-const Color _cyan = Color(0xFF00BCD4);
-const Color _green = Color(0xFF43E97B);
-const Color _violet = Color(0xFF6C63FF);
-const Color _orange = Color(0xFFFF9800);
+const Color _slateLight = EskoliaTokens.textSecondary;
+const Color _cyan = EskoliaTokens.cyan;
+const Color _green = EskoliaTokens.success;
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _orange = EskoliaTokens.orange;
 
 class SoloScreen extends StatelessWidget {
   const SoloScreen({super.key});
@@ -45,7 +46,7 @@ class SoloScreen extends StatelessWidget {
                     children: [
                       const _CategoryHeader(
                         title: 'QUIZ SOLO',
-                        color: Color(0xFF22D3EE),
+                        color: EskoliaTokens.cyan,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
@@ -68,7 +69,7 @@ class SoloScreen extends StatelessWidget {
                       const SizedBox(height: 32),
                       const _CategoryHeader(
                         title: 'CONTENU OFFICIEL',
-                        color: Color(0xFF6C63FF),
+                        color: EskoliaTokens.violetSoft,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
@@ -82,7 +83,7 @@ class SoloScreen extends StatelessWidget {
                       const SizedBox(height: 32),
                       const _CategoryHeader(
                         title: 'ENTRAINEMENT LIBRE',
-                        color: Color(0xFF22D3EE),
+                        color: EskoliaTokens.cyan,
                       ),
                       const SizedBox(height: 12),
                       _SoloMenuCard(
@@ -140,7 +141,7 @@ class _CategoryHeader extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          color: const Color(0xFF94A3B8),
+          color: EskoliaTokens.textSecondary,
           fontSize: 11,
           fontWeight: FontWeight.w600,
           letterSpacing: 11 * 0.08,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
@@ -32,7 +33,7 @@ class StaffGateScaffold extends StatelessWidget {
             backgroundColor: EskoliaVisual.bgDeep,
             appBar: EskoliaAppBar.standard(context, title: title),
             body: const Center(
-              child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
+              child: CircularProgressIndicator(color: EskoliaTokens.violetSoft),
             ),
           );
         }

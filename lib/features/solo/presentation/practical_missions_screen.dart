@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/widgets/bottom_nav.dart';
@@ -13,7 +14,7 @@ import '../data/practical_catalog_repository.dart';
 import '../data/practical_missions_progress_repository.dart';
 import '../data/practical_track_models.dart';
 
-const Color _slate = Color(0xFF94A3B8);
+const Color _slate = EskoliaTokens.textSecondary;
 
 /// Parcours missions sur VM : texte + étapes, validation manuelle, mission suivante.
 class PracticalMissionsScreen extends StatefulWidget {

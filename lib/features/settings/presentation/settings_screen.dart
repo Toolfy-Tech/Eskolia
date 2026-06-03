@@ -407,7 +407,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setD) => AlertDialog(
-          backgroundColor: const Color(0xFF151B2E),
+          backgroundColor: EskoliaTokens.surface1,
           title: const Text(
             'Supprimer le compte ?',
             style: TextStyle(color: Colors.white),
@@ -476,7 +476,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setD) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF151B2E),
+              backgroundColor: EskoliaTokens.surface1,
               title: const Text(
                 'Objectif quotidien',
                 style: TextStyle(color: Colors.white),
@@ -521,7 +521,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return StatefulBuilder(
           builder: (context, setD) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF151B2E),
+              backgroundColor: EskoliaTokens.surface1,
               title: const Text(
                 'Langue',
                 style: TextStyle(color: Colors.white),
@@ -588,8 +588,8 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
   bool _loading = true;
   String? _folderName;
 
-  static const _teal = Color(0xFF00BCD4);
-  static const _amber = Color(0xFFFFC107);
+  static const _teal = EskoliaTokens.cyan;
+  static const _amber = EskoliaTokens.amber;
 
   @override
   void initState() {

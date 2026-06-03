@@ -9,10 +9,11 @@ import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../economy/data/achievement_rewards.dart';
 import '../data/labo_question_draft_repository.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 
 class LaboCreateQuestionScreen extends StatefulWidget {
   const LaboCreateQuestionScreen({super.key});
@@ -51,7 +52,7 @@ class _LaboCreateQuestionScreenState extends State<LaboCreateQuestionScreen> {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text('Aperçu', style: TextStyle(color: Colors.white)),
         content: SingleChildScrollView(

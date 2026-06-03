@@ -10,10 +10,11 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../economy/data/achievement_rewards.dart';
 import '../data/community_tip_repository.dart';
 import '../data/labo_tip_kind.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _bg = EskoliaVisual.bgDeep;
-const Color _violet = Color(0xFF6C63FF);
-const Color _slate = Color(0xFF94A3B8);
+const Color _violet = EskoliaTokens.violetSoft;
+const Color _slate = EskoliaTokens.textSecondary;
 const Color _pink = Color(0xFFFF6584);
 
 class LaboCreateTipScreen extends StatefulWidget {
