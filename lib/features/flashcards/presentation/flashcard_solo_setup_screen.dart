@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -13,8 +14,8 @@ import '../../quiz/presentation/widgets/quiz_scope_picker.dart';
 import '../data/flashcard_deck_repository.dart';
 import 'flashcard_session_screen.dart';
 
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _violet = EskoliaTokens.violet;
 
 /// Flashcards solo : série rapide 10 cartes ou composition (mêmes choix que quiz solo + survival optionnel).
 class FlashcardSoloSetupScreen extends StatefulWidget {

@@ -307,7 +307,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: _surface,
+        color: EskoliaTokens.surface1,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
@@ -377,7 +377,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
                     ? const Icon(Icons.check_circle_rounded, color: Color(0xFF43E97B), size: 18)
                     : isCurrent
                         ? Icon(Icons.radio_button_checked_rounded, color: accentColor, size: 18)
-                        : const Icon(Icons.lock_rounded, color: _slate, size: 16),
+                        : const Icon(Icons.lock_rounded, color: EskoliaTokens.textSecondary, size: 16),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -399,13 +399,13 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
                     if (minutes > 0)
                       Text(
                         '$minutes min',
-                        style: TextStyle(color: _slate.withValues(alpha: 0.8), fontSize: 11),
+                        style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.8), fontSize: 11),
                       ),
                   ],
                 ),
               ),
               if (tappable)
-                Icon(Icons.chevron_right_rounded, color: _slate.withValues(alpha: 0.5), size: 16),
+                Icon(Icons.chevron_right_rounded, color: EskoliaTokens.textSecondary.withValues(alpha: 0.5), size: 16),
             ],
           ),
         ),

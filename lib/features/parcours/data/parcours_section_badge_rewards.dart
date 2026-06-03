@@ -39,6 +39,8 @@ class ParcoursSectionBadgeRewards {
     );
     try {
       await _users.addBadge(uid, badgeId);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[ParcoursSectionBadgeRewards.tryAwardSectionBadge] $e');
+    }
   }
 }

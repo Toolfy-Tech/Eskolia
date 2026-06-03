@@ -117,7 +117,7 @@ class _AdminReportTile extends StatelessWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF151B2E),
+        backgroundColor: EskoliaTokens.surface1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text('Supprimer définitivement ?',
             style: TextStyle(color: Colors.white)),
@@ -197,7 +197,7 @@ class _AdminReportTile extends StatelessWidget {
               ),
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert, color: Colors.white54),
-                color: const Color(0xFF1A1F2E),
+                color: EskoliaTokens.surface1,
                 onSelected: (st) async {
                   try {
                     await onSetStatus(st);

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 
+import 'package:flutter/foundation.dart';
+
 enum EskoliaFolder {
   quiz('Quiz'),
   flashcards('Flashcards'),

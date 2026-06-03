@@ -326,10 +326,10 @@ class _LoginScreenState extends State<LoginScreen> {
         borderSide: BorderSide(color: focusColor, width: 1.5),
       ),
       errorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444)),
+        borderSide: const BorderSide(color: EskoliaTokens.error),
       ),
       focusedErrorBorder: border.copyWith(
-        borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+        borderSide: const BorderSide(color: EskoliaTokens.error, width: 1.5),
       ),
     );
   }
@@ -399,9 +399,9 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF7F1D1D).withValues(alpha: 0.3),
+        color: EskoliaTokens.error.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEF4444)),
+        border: Border.all(color: EskoliaTokens.error),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +409,7 @@ class _ErrorBanner extends StatelessWidget {
           Icon(
             Icons.warning_amber_rounded,
             size: 18,
-            color: const Color(0xFFFCA5A5).withValues(alpha: 0.9),
+            color: EskoliaTokens.error.withValues(alpha: 0.9),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -417,7 +417,7 @@ class _ErrorBanner extends StatelessWidget {
               message,
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFFFCA5A5),
+                color: EskoliaTokens.textPrimary,
               ),
             ),
           ),

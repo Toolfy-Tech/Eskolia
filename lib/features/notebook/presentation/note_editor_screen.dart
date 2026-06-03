@@ -604,7 +604,9 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     try {
       final data = jsonDecode(json) as Map<String, dynamic>;
       count = (data['questions'] as List?)?.length ?? 0;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[NoteEditorScreen._buildFlashcardDownloadRow] $e');
+    }
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(

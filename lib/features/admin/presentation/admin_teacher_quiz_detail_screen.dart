@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
@@ -12,13 +13,6 @@ import '../../../shared/widgets/eskolia_text_field.dart';
 import '../data/models/teacher_quiz.dart';
 import '../data/teacher_quiz_repository.dart';
 import 'staff_gate_scaffold.dart';
-
-const Color _bg = EskoliaVisual.bgDeep;
-const Color _slate = Color(0xFF94A3B8);
-const Color _violet = Color(0xFF6C63FF);
-const Color _green = Color(0xFF43E97B);
-const Color _red = Color(0xFFE53935);
-const Color _orange = Color(0xFFFF9800);
 
 class AdminTeacherQuizDetailScreen extends StatefulWidget {
   const AdminTeacherQuizDetailScreen({super.key, required this.quizId});
