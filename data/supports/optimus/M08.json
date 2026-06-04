@@ -1,0 +1,34 @@
+{
+  "moduleId": "M08",
+  "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support08/",
+  "supports": [
+    {
+      "chapterSlug": "M08-CH01-roct-contexte",
+      "type": "image",
+      "title": "La Méthode R.O.C.T.",
+      "filename": "M08_C01_La.methode.R.O.C.T.png",
+      "description": "Rôle, Objectif, Contexte, Tâche — cadre de communication structuré pour formuler des prompts efficaces avec l'IA"
+    },
+    {
+      "chapterSlug": "M08-CH02-utiliser-en-informatique",
+      "type": "pdf",
+      "title": "The Augmented IT Technician",
+      "filename": "M08_C02_The.Augmented.IT.Technician.pdf",
+      "description": "Guide complet d'utilisation de l'IA en informatique : cas d'usage, outils et bonnes pratiques pour les techniciens de proximité"
+    },
+    {
+      "chapterSlug": "M08-CH03-pieges-securite-ia",
+      "type": "image",
+      "title": "Guide de Vigilance IA pour Techniciens",
+      "filename": "M08_C03_Guide.vigilance.IA.pour.techniciens.png",
+      "description": "Pièges à éviter, hallucinations, données confidentielles et bonnes pratiques de sécurité lors de l'utilisation de l'IA"
+    },
+    {
+      "chapterSlug": "M08-CH04-veille-apprentissage",
+      "type": "pdf",
+      "title": "Tactical Information Mastery",
+      "filename": "M08_C04_Tactical.Information.Mastery.pdf",
+      "description": "Méthodes de veille technologique, apprentissage continu et maîtrise de l'anglais technique pour le technicien IT"
+    }
+  ]
+}
