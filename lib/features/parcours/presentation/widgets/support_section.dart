@@ -160,7 +160,11 @@ class _InlineSupportState extends State<_InlineSupport> {
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          SizedBox(height: 260, child: buildImageViewer(widget.item.url, _viewId)),
+          SizedBox(
+            width: double.infinity,
+            height: 260,
+            child: buildImageViewer(widget.item.url, _viewId),
+          ),
           Container(
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -191,6 +195,7 @@ class _InlineSupportState extends State<_InlineSupport> {
 
   Widget _video() {
     return SizedBox(
+      width: double.infinity,
       height: 220,
       child: buildVideoViewer(widget.item.url, _viewId),
     );
@@ -198,6 +203,7 @@ class _InlineSupportState extends State<_InlineSupport> {
 
   Widget _pdf() {
     return SizedBox(
+      width: double.infinity,
       height: 520,
       child: buildPdfViewer(widget.item.url, _viewId),
     );
