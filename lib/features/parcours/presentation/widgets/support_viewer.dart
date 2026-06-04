@@ -1,8 +1,6 @@
 import 'dart:math' show Random;
-import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,8 +12,6 @@ import 'support_media.dart';
 const Color _orange = EskoliaTokens.orange;
 const Color _slate  = EskoliaTokens.textSecondary;
 
-/// Ouvre le bon viewer selon le type :
-/// image → plein écran inline, PDF/vidéo → overlay dédié.
 void openSupportItem(BuildContext context, SupportItem item) {
   if (item.type == 'image') {
     Navigator.of(context).push<void>(
@@ -30,7 +26,6 @@ void openSupportItem(BuildContext context, SupportItem item) {
   }
 }
 
-/// Ouvre l'overlay de tous les supports en un tap.
 void showSupportViewer(BuildContext context, List<SupportItem> items) {
   showModalBottomSheet<void>(
     context: context,
@@ -40,7 +35,6 @@ void showSupportViewer(BuildContext context, List<SupportItem> items) {
   );
 }
 
-/// Bouton pill flottant — à placer via [Positioned] dans un [Stack].
 class SupportViewerFab extends StatelessWidget {
   const SupportViewerFab({super.key, required this.items});
 
@@ -219,7 +213,7 @@ class _SupportViewerItem extends StatelessWidget {
       };
   static String _labelFor(String type) => switch (type) {
         'pdf'   => 'PDF',
-        'video' => 'Vidéo',
+        'video' => 'Video',
         _       => 'Image',
       };
 
@@ -294,93 +288,58 @@ class _SupportViewerItem extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Image inline — chargement natif via <img>, sans XHR
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _InlineImage extends StatefulWidget {
+class _InlineImage extends StatelessWidget {
   const _InlineImage({required this.url, required this.onTap});
 
   final String url;
   final VoidCallback onTap;
 
   @override
-  State<_InlineImage> createState() => _InlineImageState();
-}
-
-class _InlineImageState extends State<_InlineImage> {
-  static final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(minutes: 3),
-  ));
-
-  Uint8List? _bytes;
-  bool _error = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    try {
-      final resp = await _dio.get<List<int>>(
-        widget.url,
-        options: Options(responseType: ResponseType.bytes),
-      );
-      final bytes = Uint8List.fromList(resp.data!);
-      if (mounted) setState(() => _bytes = bytes);
-    } catch (e) {
-      debugPrint('[InlineImage._load] $e url=${widget.url}');
-      if (mounted) setState(() => _error = true);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    Widget content;
-    if (_error) {
-      content = _placeholder(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.broken_image_rounded, color: _slate, size: 22),
-            const SizedBox(width: 8),
-            Text('Image indisponible',
-                style: TextStyle(color: _slate, fontSize: 12)),
-          ],
-        ),
-      );
-    } else if (_bytes == null) {
-      content = _placeholder(
-        CircularProgressIndicator(color: _orange, strokeWidth: 2),
-      );
-    } else {
-      content = GestureDetector(
-        onTap: widget.onTap,
-        child: Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.memory(
-                _bytes!,
-                fit: BoxFit.contain,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              url,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => _placeholder(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.broken_image_rounded, color: _slate, size: 22),
+                    const SizedBox(width: 8),
+                    Text('Image indisponible',
+                        style: TextStyle(color: _slate, fontSize: 12)),
+                  ],
+                ),
               ),
+              loadingBuilder: (_, child, progress) => progress == null
+                  ? child
+                  : _placeholder(
+                      CircularProgressIndicator(color: _orange, strokeWidth: 2),
+                    ),
             ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.55),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Icon(Icons.fullscreen_rounded,
-                  color: Colors.white70, size: 16),
+          ),
+          Container(
+            margin: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(6),
             ),
-          ],
-        ),
-      );
-    }
-    return content;
+            child: const Icon(Icons.fullscreen_rounded,
+                color: Colors.white70, size: 16),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _placeholder(Widget child) => Container(
@@ -395,10 +354,8 @@ class _InlineImageState extends State<_InlineImage> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Chargeur + viewer inline pour PDF et vidéo
+// Viewer inline pour PDF et vidéo — URL directe dans l'élément natif
 // ─────────────────────────────────────────────────────────────────────────────
-
-enum _LoadState { idle, loading, loaded, error }
 
 class _MediaViewer extends StatefulWidget {
   const _MediaViewer({required this.item});
@@ -410,63 +367,17 @@ class _MediaViewer extends StatefulWidget {
 }
 
 class _MediaViewerState extends State<_MediaViewer> {
-  static final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(minutes: 5),
-  ));
+  bool _loaded = false;
+  final String _viewId = 'eskolia-media-${Random().nextInt(999999999)}';
 
-  _LoadState _state = _LoadState.idle;
-  double? _progress;
-  String? _blobUrl;
-  // Chaque instance a un viewId unique pour platformViewRegistry.
-  final String _viewId =
-      'eskolia-media-${Random().nextInt(999999999)}';
-
-  @override
-  void dispose() {
-    if (_blobUrl != null) revokeBlobUrl(_blobUrl!);
-    super.dispose();
-  }
-
-  Future<void> _load() async {
-    setState(() {
-      _state = _LoadState.loading;
-      _progress = null;
-    });
-    try {
-      final resp = await _dio.get<List<int>>(
-        widget.item.url,
-        options: Options(responseType: ResponseType.bytes),
-        onReceiveProgress: (received, total) {
-          if (total > 0 && mounted) {
-            setState(() => _progress = received / total);
-          }
-        },
-      );
-      final bytes = Uint8List.fromList(resp.data!);
-      final mimeType =
-          widget.item.type == 'pdf' ? 'application/pdf' : 'video/mp4';
-      final url = createBlobUrl(bytes, mimeType);
-      if (mounted) {
-        setState(() {
-          _blobUrl = url;
-          _state = _LoadState.loaded;
-        });
-      }
-    } catch (e) {
-      debugPrint('[SupportViewer._load] $e url=${widget.item.url}');
-      if (mounted) setState(() => _state = _LoadState.error);
-    }
+  void _load() {
+    setState(() => _loaded = true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return switch (_state) {
-      _LoadState.idle    => _buildIdleButton(),
-      _LoadState.loading => _buildProgress(),
-      _LoadState.loaded  => _buildViewer(),
-      _LoadState.error   => _buildError(),
-    };
+    if (!_loaded) return _buildIdleButton();
+    return _buildViewer();
   }
 
   Widget _buildIdleButton() {
@@ -475,7 +386,7 @@ class _MediaViewerState extends State<_MediaViewer> {
     final icon  = isPdf
         ? Icons.picture_as_pdf_rounded
         : Icons.play_circle_filled_rounded;
-    final label = isPdf ? 'Afficher le PDF' : 'Lire la vidéo';
+    final label = isPdf ? 'Afficher le PDF' : 'Lire la video';
     return FilledButton.icon(
       onPressed: kIsWeb
           ? _load
@@ -494,89 +405,17 @@ class _MediaViewerState extends State<_MediaViewer> {
     );
   }
 
-  Widget _buildProgress() {
-    final isPdf = widget.item.type == 'pdf';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isPdf ? 'Chargement du PDF...' : 'Chargement de la vidéo...',
-            style: TextStyle(color: _slate, fontSize: 12),
-          ),
-          const SizedBox(height: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: _progress,
-              backgroundColor: Colors.white.withValues(alpha: 0.08),
-              color: _orange,
-              minHeight: 4,
-            ),
-          ),
-          if (_progress != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              '${(_progress! * 100).toStringAsFixed(0)} %',
-              style: TextStyle(color: _slate, fontSize: 11),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
   Widget _buildViewer() {
-    if (_blobUrl == null) return _buildIdleButton();
-    final isPdf  = widget.item.type == 'pdf';
-    final height = isPdf ? 540.0 : 260.0;
+    final isPdf   = widget.item.type == 'pdf';
+    final height  = isPdf ? 540.0 : 260.0;
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: SizedBox(
         height: height,
         child: isPdf
-            ? buildPdfViewer(_blobUrl!, _viewId)
-            : buildVideoViewer(_blobUrl!, _viewId),
+            ? buildPdfViewer(widget.item.url, _viewId)
+            : buildVideoViewer(widget.item.url, _viewId),
       ),
-    );
-  }
-
-  Widget _buildError() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: EskoliaTokens.error.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            'Chargement impossible — verifie ta connexion.',
-            style: TextStyle(
-                color: EskoliaTokens.error.withValues(alpha: 0.85),
-                fontSize: 12),
-          ),
-        ),
-        const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed: () => launchUrl(Uri.parse(widget.item.url),
-              mode: LaunchMode.externalApplication),
-          icon: const Icon(Icons.open_in_new_rounded, size: 15),
-          label: Text(widget.item.type == 'pdf'
-              ? 'Ouvrir dans le navigateur'
-              : 'Voir la vidéo'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.white60,
-            side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -585,44 +424,11 @@ class _MediaViewerState extends State<_MediaViewer> {
 // Visionneuse plein écran avec zoom
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _FullscreenImageViewer extends StatefulWidget {
+class _FullscreenImageViewer extends StatelessWidget {
   const _FullscreenImageViewer({required this.url, required this.title});
 
   final String url;
   final String title;
-
-  @override
-  State<_FullscreenImageViewer> createState() => _FullscreenImageViewerState();
-}
-
-class _FullscreenImageViewerState extends State<_FullscreenImageViewer> {
-  static final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(minutes: 3),
-  ));
-
-  Uint8List? _bytes;
-  bool _error = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    try {
-      final resp = await _dio.get<List<int>>(
-        widget.url,
-        options: Options(responseType: ResponseType.bytes),
-      );
-      final bytes = Uint8List.fromList(resp.data!);
-      if (mounted) setState(() => _bytes = bytes);
-    } catch (e) {
-      debugPrint('[FullscreenImageViewer._load] $e');
-      if (mounted) setState(() => _error = true);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -632,7 +438,7 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer> {
         backgroundColor: Colors.black87,
         foregroundColor: Colors.white,
         title: Text(
-          widget.title,
+          title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
@@ -640,16 +446,21 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer> {
         elevation: 0,
       ),
       body: Center(
-        child: _error
-            ? Icon(Icons.broken_image_rounded, color: Colors.white24, size: 48)
-            : _bytes == null
-                ? const CircularProgressIndicator(
-                    color: Colors.white54, strokeWidth: 2)
-                : InteractiveViewer(
-                    maxScale: 6.0,
-                    minScale: 0.5,
-                    child: Image.memory(_bytes!, fit: BoxFit.contain),
-                  ),
+        child: InteractiveViewer(
+          maxScale: 6.0,
+          minScale: 0.5,
+          child: Image.network(
+            url,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.broken_image_rounded,
+                    color: Colors.white24, size: 48),
+            loadingBuilder: (_, child, progress) => progress == null
+                ? child
+                : const CircularProgressIndicator(
+                    color: Colors.white54, strokeWidth: 2),
+          ),
+        ),
       ),
     );
   }
