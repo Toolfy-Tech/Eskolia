@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,18 +51,10 @@ class PodcastPlayerState {
 }
 
 class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
-  // Non-web: utilise audioplayers.
   AudioPlayer? _player;
   final List<StreamSubscription<dynamic>> _subs = [];
 
-  // Web: utilise dart:html AudioElement via WebPodcastPlayer.
   final _webPlayer = WebPodcastPlayer();
-  final _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(minutes: 5),
-  ));
-  final Map<String, Uint8List> _bytesCache = {};
-  String? _activeBlobUrl;
 
   @override
   PodcastPlayerState build() {
@@ -97,9 +87,6 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
       _subs.clear();
       _player?.dispose();
       _webPlayer.dispose();
-      if (_activeBlobUrl != null) {
-        revokeAudioBlobUrl(_activeBlobUrl!);
-      }
     });
 
     return const PodcastPlayerState();
@@ -125,24 +112,9 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
 
     if (kIsWeb) {
       try {
-        Uint8List? bytes = _bytesCache[podcast.url];
-        if (bytes == null) {
-          final resp = await _dio.get<List<int>>(
-            podcast.url,
-            options: Options(responseType: ResponseType.bytes),
-          );
-          bytes = Uint8List.fromList(resp.data!);
-          _bytesCache[podcast.url] = bytes;
-        }
-
         _webPlayer.stop();
-        if (_activeBlobUrl != null) {
-          revokeAudioBlobUrl(_activeBlobUrl!);
-        }
-        _activeBlobUrl = createAudioBlobUrl(bytes);
-
         await _webPlayer.play(
-          _activeBlobUrl!,
+          podcast.url,
           onPlayState: (playing) {
             state = state.copyWith(
               playState: playing ? PlayerState.playing : PlayerState.paused,

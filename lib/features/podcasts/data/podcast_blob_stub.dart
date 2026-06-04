@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:typed_data';
-
-String createAudioBlobUrl(Uint8List bytes) => '';
-void revokeAudioBlobUrl(String url) {}
 
 class WebPodcastPlayer {
   Future<void> play(
-    String blobUrl, {
+    String url, {
     required void Function(bool playing) onPlayState,
     required void Function(Duration) onPosition,
     required void Function(Duration) onDuration,

@@ -1,12 +1,6 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:typed_data';
-
-String createAudioBlobUrl(Uint8List bytes) =>
-    html.Url.createObjectUrl(html.Blob([bytes], 'audio/mp4'));
-
-void revokeAudioBlobUrl(String url) => html.Url.revokeObjectUrl(url);
 
 /// Lecteur audio web via HTMLAudioElement — contourne les limitations
 /// de AudioContext (audioplayers v6) pour les sources AAC/m4a.
@@ -15,7 +9,7 @@ class WebPodcastPlayer {
   final List<StreamSubscription<dynamic>> _subs = [];
 
   Future<void> play(
-    String blobUrl, {
+    String url, {
     required void Function(bool playing) onPlayState,
     required void Function(Duration) onPosition,
     required void Function(Duration) onDuration,
@@ -23,7 +17,7 @@ class WebPodcastPlayer {
     required void Function(String) onError,
   }) async {
     _clear();
-    final el = html.AudioElement(blobUrl);
+    final el = html.AudioElement(url);
     _audio = el;
 
     _subs.add(el.onPlay.listen((_) => onPlayState(true)));
