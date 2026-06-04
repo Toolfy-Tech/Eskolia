@@ -89,17 +89,35 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     if (_saved) return;
     _saved = true;
     final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    // Sauvegardes locales (SharedPreferences) — toujours executees, independantes du reseau.
+    await _autoPoolWrongAnswers();
+    String? moduleMarkedPassed;
     try {
-      String? moduleMarkedPassed;
-      if (uid != null) {
-        // QuizRepository dispose maintenant de la méthode saveResult
+      final pct = widget.total <= 0 ? 0.0 : widget.score / widget.total;
+      final mod = ParcoursRepository.moduleById(widget.sessionId);
+      if (mod != null) {
+        final threshold = mod.type == 'exam'
+            ? OptimusProgressRepository.sectionFinalExamPassRatio
+            : OptimusProgressRepository.passScoreRatio;
+        if (pct >= threshold) {
+          await OptimusProgressRepository().markModulePassed(widget.sessionId);
+          moduleMarkedPassed = widget.sessionId;
+        }
+      }
+    } catch (e) {
+      debugPrint('[QuizResultScreen._saveOnce] local=$e');
+    }
+
+    // Sauvegardes reseau (Firestore/XP) — echec sans impact sur les saves locales.
+    if (uid != null) {
+      try {
         await QuizRepository().saveResult(
           uid,
           widget.sessionId,
           widget.score,
           widget.total,
         );
-        
         await DailyQuestRewardService().onQuizCompleted(uid);
         await AchievementTriggers(
           onUnlocked: (emoji, title) {
@@ -113,28 +131,13 @@ class _QuizResultScreenState extends State<QuizResultScreen>
           survivalRun: widget.survivalRun,
           survivalEliminated: widget.survivalEliminated,
         );
-      }
-      await _autoPoolWrongAnswers();
-      
-      final pct = widget.total <= 0 ? 0.0 : widget.score / widget.total;
-      
-      final mod = ParcoursRepository.moduleById(widget.sessionId);
-      if (mod != null) {
-        final threshold = mod.type == 'exam'
-            ? OptimusProgressRepository.sectionFinalExamPassRatio
-            : OptimusProgressRepository.passScoreRatio;
-        if (pct >= threshold) {
-          await OptimusProgressRepository().markModulePassed(widget.sessionId);
-          moduleMarkedPassed = widget.sessionId;
+        final passedId = moduleMarkedPassed;
+        if (passedId != null) {
+          await ParcoursSectionBadgeRewards().tryAwardSectionBadge(uid, passedId);
         }
+      } catch (e) {
+        debugPrint('[QuizResultScreen._saveOnce] remote=$e');
       }
-
-      final passedId = moduleMarkedPassed;
-      if (uid != null && passedId != null) {
-        await ParcoursSectionBadgeRewards().tryAwardSectionBadge(uid, passedId);
-      }
-    } catch (e) {
-      debugPrint('[QuizResultScreen._saveOnce] $e');
     }
   }
 
