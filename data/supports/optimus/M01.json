@@ -3,7 +3,7 @@
   "releaseBaseUrl": "https://github.com/Toolfy-Tech/Eskolia/releases/download/support01/",
   "supports": [
     {
-      "chapterSlug": "M01-CH01-itil",
+      "chapterSlug": "M01-CH01-itil-cadre-gestion",
       "type": "image",
       "title": "La Structure ITIL : Au Coeur du Support Utilisateur",
       "filename": "M01_C01_Structure.du.Support.Utilisateur.png",
@@ -59,7 +59,7 @@
       "description": "Règles d'or de l'intervention + leviers psychologiques des attaquants (ingénierie sociale) : Autorité, Urgence, Serviabilité"
     },
     {
-      "chapterSlug": "M01-CH09-veille-amelioration-continue",
+      "chapterSlug": "M01-CH09-veille-amelioration",
       "type": "image",
       "title": "La Veille Technologique du Technicien IT",
       "filename": "M01_C09_Veille.technologique.du.technicien.IT.png",
