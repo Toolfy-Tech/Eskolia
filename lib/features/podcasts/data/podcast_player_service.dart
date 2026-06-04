@@ -6,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'podcast_blob_stub.dart'
+    if (dart.library.html) 'podcast_blob_web.dart';
 import 'podcast_model.dart';
 
 class PodcastPlayerState {
@@ -57,8 +59,8 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(minutes: 5),
   ));
-  // Cache bytes en session pour éviter de re-télécharger
   final Map<String, Uint8List> _bytesCache = {};
+  String? _activeBlobUrl;
 
   @override
   PodcastPlayerState build() {
@@ -88,6 +90,9 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
       }
       _subs.clear();
       _player.dispose();
+      if (_activeBlobUrl != null) {
+        revokeAudioBlobUrl(_activeBlobUrl!);
+      }
     });
 
     return const PodcastPlayerState();
@@ -110,10 +115,9 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
       clearDuration: true,
     );
     try {
-      // Sur Flutter Web, GitHub releases retourne Content-Type: application/octet-stream
-      // avec X-Content-Type-Options: nosniff — le navigateur bloque la lecture audio.
-      // On télécharge les bytes via dio (suit la redirection) et on joue via BytesSource.
       if (kIsWeb) {
+        // GitHub releases: Content-Type application/octet-stream + nosniff bloque <audio>.
+        // On télécharge les bytes via dio, crée un blob URL audio/mp4, joue via UrlSource.
         Uint8List? bytes = _bytesCache[podcast.url];
         if (bytes == null) {
           final resp = await _dio.get<List<int>>(
@@ -123,7 +127,11 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
           bytes = Uint8List.fromList(resp.data!);
           _bytesCache[podcast.url] = bytes;
         }
-        await _player.play(BytesSource(bytes));
+        if (_activeBlobUrl != null) {
+          revokeAudioBlobUrl(_activeBlobUrl!);
+        }
+        _activeBlobUrl = createAudioBlobUrl(bytes);
+        await _player.play(UrlSource(_activeBlobUrl!));
       } else {
         await _player.play(UrlSource(podcast.url));
       }

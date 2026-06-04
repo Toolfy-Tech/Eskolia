@@ -12,25 +12,33 @@ String createBlobUrl(Uint8List bytes, String mimeType) {
 
 void revokeBlobUrl(String url) => html.Url.revokeObjectUrl(url);
 
+// platformViewRegistry allows only one factory per viewId — guard against
+// redundant build() calls that would throw "already registered".
+final _registeredViews = <String>{};
+
 Widget buildPdfViewer(String blobUrl, String viewId) {
-  ui.platformViewRegistry.registerViewFactory(viewId, (_) {
-    return html.IFrameElement()
-      ..src = blobUrl
-      ..style.border = 'none'
-      ..style.width = '100%'
-      ..style.height = '100%';
-  });
+  if (_registeredViews.add(viewId)) {
+    ui.platformViewRegistry.registerViewFactory(viewId, (_) {
+      return html.IFrameElement()
+        ..src = blobUrl
+        ..style.border = 'none'
+        ..style.width = '100%'
+        ..style.height = '100%';
+    });
+  }
   return HtmlElementView(viewType: viewId);
 }
 
 Widget buildVideoViewer(String blobUrl, String viewId) {
-  ui.platformViewRegistry.registerViewFactory(viewId, (_) {
-    return html.VideoElement()
-      ..src = blobUrl
-      ..controls = true
-      ..style.width = '100%'
-      ..style.height = '100%'
-      ..style.backgroundColor = '#000000';
-  });
+  if (_registeredViews.add(viewId)) {
+    ui.platformViewRegistry.registerViewFactory(viewId, (_) {
+      return html.VideoElement()
+        ..src = blobUrl
+        ..controls = true
+        ..style.width = '100%'
+        ..style.height = '100%'
+        ..style.backgroundColor = '#000000';
+    });
+  }
   return HtmlElementView(viewType: viewId);
 }
