@@ -295,65 +295,92 @@ class _SupportViewerItem extends StatelessWidget {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _InlineImage extends StatelessWidget {
+class _InlineImage extends StatefulWidget {
   const _InlineImage({required this.url, required this.onTap});
 
   final String url;
   final VoidCallback onTap;
 
   @override
+  State<_InlineImage> createState() => _InlineImageState();
+}
+
+class _InlineImageState extends State<_InlineImage> {
+  static final _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(minutes: 3),
+  ));
+
+  Uint8List? _bytes;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final resp = await _dio.get<List<int>>(
+        widget.url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final bytes = Uint8List.fromList(resp.data!);
+      if (mounted) setState(() => _bytes = bytes);
+    } catch (e) {
+      debugPrint('[InlineImage._load] $e url=${widget.url}');
+      if (mounted) setState(() => _error = true);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              url,
-              fit: BoxFit.contain,
-              loadingBuilder: (_, child, progress) {
-                if (progress == null) return child;
-                return _placeholder(
-                  CircularProgressIndicator(
-                    value: progress.expectedTotalBytes != null
-                        ? progress.cumulativeBytesLoaded /
-                            progress.expectedTotalBytes!
-                        : null,
-                    color: _orange,
-                    strokeWidth: 2,
-                  ),
-                );
-              },
-              errorBuilder: (_, __, ___) => _placeholder(
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.broken_image_rounded,
-                        color: _slate, size: 22),
-                    const SizedBox(width: 8),
-                    Text('Image indisponible',
-                        style: TextStyle(color: _slate, fontSize: 12)),
-                  ],
-                ),
+    Widget content;
+    if (_error) {
+      content = _placeholder(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.broken_image_rounded, color: _slate, size: 22),
+            const SizedBox(width: 8),
+            Text('Image indisponible',
+                style: TextStyle(color: _slate, fontSize: 12)),
+          ],
+        ),
+      );
+    } else if (_bytes == null) {
+      content = _placeholder(
+        CircularProgressIndicator(color: _orange, strokeWidth: 2),
+      );
+    } else {
+      content = GestureDetector(
+        onTap: widget.onTap,
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.memory(
+                _bytes!,
+                fit: BoxFit.contain,
               ),
             ),
-          ),
-          // Hint plein écran
-          Container(
-            margin: const EdgeInsets.all(8),
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.55),
-              borderRadius: BorderRadius.circular(6),
+            Container(
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(Icons.fullscreen_rounded,
+                  color: Colors.white70, size: 16),
             ),
-            child: const Icon(Icons.fullscreen_rounded,
-                color: Colors.white70, size: 16),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
+    return content;
   }
 
   Widget _placeholder(Widget child) => Container(
@@ -558,11 +585,44 @@ class _MediaViewerState extends State<_MediaViewer> {
 // Visionneuse plein écran avec zoom
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _FullscreenImageViewer extends StatelessWidget {
+class _FullscreenImageViewer extends StatefulWidget {
   const _FullscreenImageViewer({required this.url, required this.title});
 
   final String url;
   final String title;
+
+  @override
+  State<_FullscreenImageViewer> createState() => _FullscreenImageViewerState();
+}
+
+class _FullscreenImageViewerState extends State<_FullscreenImageViewer> {
+  static final _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(minutes: 3),
+  ));
+
+  Uint8List? _bytes;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final resp = await _dio.get<List<int>>(
+        widget.url,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final bytes = Uint8List.fromList(resp.data!);
+      if (mounted) setState(() => _bytes = bytes);
+    } catch (e) {
+      debugPrint('[FullscreenImageViewer._load] $e');
+      if (mounted) setState(() => _error = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -572,34 +632,24 @@ class _FullscreenImageViewer extends StatelessWidget {
         backgroundColor: Colors.black87,
         foregroundColor: Colors.white,
         title: Text(
-          title,
+          widget.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         elevation: 0,
       ),
-      body: InteractiveViewer(
-        maxScale: 6.0,
-        minScale: 0.5,
-        child: Center(
-          child: Image.network(
-            url,
-            fit: BoxFit.contain,
-            loadingBuilder: (_, child, progress) {
-              if (progress == null) return child;
-              return const Center(
-                child: CircularProgressIndicator(
-                    color: Colors.white54, strokeWidth: 2),
-              );
-            },
-            errorBuilder: (_, __, ___) => Icon(
-              Icons.broken_image_rounded,
-              color: Colors.white24,
-              size: 48,
-            ),
-          ),
-        ),
+      body: Center(
+        child: _error
+            ? Icon(Icons.broken_image_rounded, color: Colors.white24, size: 48)
+            : _bytes == null
+                ? const CircularProgressIndicator(
+                    color: Colors.white54, strokeWidth: 2)
+                : InteractiveViewer(
+                    maxScale: 6.0,
+                    minScale: 0.5,
+                    child: Image.memory(_bytes!, fit: BoxFit.contain),
+                  ),
       ),
     );
   }
