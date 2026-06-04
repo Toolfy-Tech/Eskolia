@@ -115,22 +115,16 @@ class ParcoursRepository {
     for (var si = 0; si < f.sections.length; si++) {
       final sec = f.sections[si];
       final prevSection = si > 0 ? f.sections[si - 1] : null;
-      final prevSectionComplete = prevSection == null ||
-          prevSection.modules.every((m) => done.contains(m.id));
-
       final newMods = <ModuleModel>[];
       for (var mi = 0; mi < sec.modules.length; mi++) {
         final m = sec.modules[mi];
-        final prevMod = mi > 0 ? sec.modules[mi - 1] : null;
-        final sequentialOk = prevMod == null || done.contains(prevMod.id);
-        final unlocked = prevSectionComplete && sequentialOk;
         newMods.add(
           ModuleModel(
             id: m.id,
             title: m.title,
             type: m.type,
             isCompleted: done.contains(m.id),
-            isLocked: !unlocked,
+            isLocked: false,
             quizAssetPath: m.quizAssetPath,
             lessonAssetPath: m.lessonAssetPath,
           ),

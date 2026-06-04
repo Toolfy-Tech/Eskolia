@@ -53,8 +53,12 @@ class PodcastPlayerState {
 }
 
 class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
-  late final AudioPlayer _player;
+  // Non-web: utilise audioplayers.
+  AudioPlayer? _player;
   final List<StreamSubscription<dynamic>> _subs = [];
+
+  // Web: utilise dart:html AudioElement via WebPodcastPlayer.
+  final _webPlayer = WebPodcastPlayer();
   final _dio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(minutes: 5),
@@ -64,32 +68,35 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
 
   @override
   PodcastPlayerState build() {
-    _player = AudioPlayer();
-    _player.setReleaseMode(ReleaseMode.stop);
+    if (!kIsWeb) {
+      _player = AudioPlayer();
+      _player!.setReleaseMode(ReleaseMode.stop);
 
-    _subs.add(_player.onPlayerStateChanged.listen((s) {
-      state = state.copyWith(playState: s, loading: false);
-    }));
-    _subs.add(_player.onDurationChanged.listen((d) {
-      state = state.copyWith(duration: d);
-    }));
-    _subs.add(_player.onPositionChanged.listen((p) {
-      state = state.copyWith(position: p);
-    }));
-    _subs.add(_player.onPlayerComplete.listen((_) {
-      state = state.copyWith(
-        playState: PlayerState.completed,
-        position: Duration.zero,
-        loading: false,
-      );
-    }));
+      _subs.add(_player!.onPlayerStateChanged.listen((s) {
+        state = state.copyWith(playState: s, loading: false);
+      }));
+      _subs.add(_player!.onDurationChanged.listen((d) {
+        state = state.copyWith(duration: d);
+      }));
+      _subs.add(_player!.onPositionChanged.listen((p) {
+        state = state.copyWith(position: p);
+      }));
+      _subs.add(_player!.onPlayerComplete.listen((_) {
+        state = state.copyWith(
+          playState: PlayerState.completed,
+          position: Duration.zero,
+          loading: false,
+        );
+      }));
+    }
 
     ref.onDispose(() {
       for (final s in _subs) {
         s.cancel();
       }
       _subs.clear();
-      _player.dispose();
+      _player?.dispose();
+      _webPlayer.dispose();
       if (_activeBlobUrl != null) {
         revokeAudioBlobUrl(_activeBlobUrl!);
       }
@@ -101,12 +108,13 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
   Future<void> play(Podcast podcast) async {
     if (state.podcast?.url == podcast.url) {
       if (state.isPlaying) {
-        await _player.pause();
+        _pauseAudio();
       } else {
-        await _player.resume();
+        _resumeAudio();
       }
       return;
     }
+
     state = state.copyWith(
       podcast: podcast,
       loading: true,
@@ -114,10 +122,9 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
       position: Duration.zero,
       clearDuration: true,
     );
-    try {
-      if (kIsWeb) {
-        // GitHub releases: Content-Type application/octet-stream + nosniff bloque <audio>.
-        // On télécharge les bytes via dio, crée un blob URL audio/mp4, joue via UrlSource.
+
+    if (kIsWeb) {
+      try {
         Uint8List? bytes = _bytesCache[podcast.url];
         if (bytes == null) {
           final resp = await _dio.get<List<int>>(
@@ -127,29 +134,88 @@ class PodcastPlayerNotifier extends Notifier<PodcastPlayerState> {
           bytes = Uint8List.fromList(resp.data!);
           _bytesCache[podcast.url] = bytes;
         }
+
+        _webPlayer.stop();
         if (_activeBlobUrl != null) {
           revokeAudioBlobUrl(_activeBlobUrl!);
         }
         _activeBlobUrl = createAudioBlobUrl(bytes);
-        await _player.play(UrlSource(_activeBlobUrl!));
-      } else {
-        await _player.play(UrlSource(podcast.url));
+
+        await _webPlayer.play(
+          _activeBlobUrl!,
+          onPlayState: (playing) {
+            state = state.copyWith(
+              playState: playing ? PlayerState.playing : PlayerState.paused,
+              loading: false,
+            );
+          },
+          onPosition: (pos) {
+            state = state.copyWith(position: pos);
+          },
+          onDuration: (dur) {
+            state = state.copyWith(duration: dur);
+          },
+          onComplete: () {
+            state = state.copyWith(
+              playState: PlayerState.completed,
+              position: Duration.zero,
+              loading: false,
+            );
+          },
+          onError: (msg) {
+            state = state.copyWith(loading: false, error: msg);
+          },
+        );
+      } catch (e) {
+        debugPrint('[PodcastPlayer.play] error=$e url=${podcast.url}');
+        state = state.copyWith(
+          loading: false,
+          error: 'Lecture impossible. Verifie ta connexion.',
+        );
       }
-    } catch (e) {
-      debugPrint('[PodcastPlayer.play] error=$e url=${podcast.url}');
-      state = state.copyWith(
-        loading: false,
-        error: 'Lecture impossible. Verifie ta connexion.',
-      );
+    } else {
+      try {
+        await _player!.play(UrlSource(podcast.url));
+      } catch (e) {
+        debugPrint('[PodcastPlayer.play] error=$e url=${podcast.url}');
+        state = state.copyWith(
+          loading: false,
+          error: 'Lecture impossible. Verifie ta connexion.',
+        );
+      }
+    }
+  }
+
+  void _pauseAudio() {
+    if (kIsWeb) {
+      _webPlayer.pause();
+    } else {
+      _player?.pause();
+    }
+  }
+
+  void _resumeAudio() {
+    if (kIsWeb) {
+      _webPlayer.resume();
+    } else {
+      _player?.resume();
     }
   }
 
   Future<void> seek(Duration d) async {
-    await _player.seek(d);
+    if (kIsWeb) {
+      await _webPlayer.seek(d);
+    } else {
+      await _player?.seek(d);
+    }
   }
 
   void dismiss() {
-    _player.stop();
+    if (kIsWeb) {
+      _webPlayer.stop();
+    } else {
+      _player?.stop();
+    }
     state = const PodcastPlayerState();
   }
 }
