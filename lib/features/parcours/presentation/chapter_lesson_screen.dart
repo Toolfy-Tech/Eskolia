@@ -17,7 +17,6 @@ import '../data/tip_progress_repository.dart';
 import 'widgets/lexique_section.dart';
 import 'widgets/mediatheque_section.dart';
 import 'widgets/support_section.dart';
-import 'widgets/support_viewer.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 
 const Color _cyan = EskoliaTokens.cyan;
@@ -219,12 +218,6 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                 quizModuleId: hasQuiz ? m.id : null,
               ),
             ),
-            if (_chapterSupports.isNotEmpty)
-              Positioned(
-                right: 16,
-                bottom: 24,
-                child: SupportViewerFab(items: _chapterSupports),
-              ),
           ],
         ),
       ),

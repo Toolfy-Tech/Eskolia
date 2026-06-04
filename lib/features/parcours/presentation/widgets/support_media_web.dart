@@ -16,11 +16,28 @@ void revokeBlobUrl(String url) => html.Url.revokeObjectUrl(url);
 // redundant build() calls that would throw "already registered".
 final _registeredViews = <String>{};
 
-Widget buildPdfViewer(String blobUrl, String viewId) {
+Widget buildImageViewer(String url, String viewId) {
   if (_registeredViews.add(viewId)) {
     ui.platformViewRegistry.registerViewFactory(viewId, (_) {
+      return html.ImageElement()
+        ..src = url
+        ..style.width = '100%'
+        ..style.height = '100%'
+        ..style.objectFit = 'contain'
+        ..style.display = 'block';
+    });
+  }
+  return HtmlElementView(viewType: viewId);
+}
+
+Widget buildPdfViewer(String url, String viewId) {
+  if (_registeredViews.add(viewId)) {
+    // Google Docs Viewer contourne Content-Disposition: attachment de GitHub Releases.
+    final viewerUrl =
+        'https://docs.google.com/viewer?url=${Uri.encodeComponent(url)}&embedded=true';
+    ui.platformViewRegistry.registerViewFactory(viewId, (_) {
       return html.IFrameElement()
-        ..src = blobUrl
+        ..src = viewerUrl
         ..style.border = 'none'
         ..style.width = '100%'
         ..style.height = '100%';
@@ -29,11 +46,11 @@ Widget buildPdfViewer(String blobUrl, String viewId) {
   return HtmlElementView(viewType: viewId);
 }
 
-Widget buildVideoViewer(String blobUrl, String viewId) {
+Widget buildVideoViewer(String url, String viewId) {
   if (_registeredViews.add(viewId)) {
     ui.platformViewRegistry.registerViewFactory(viewId, (_) {
       return html.VideoElement()
-        ..src = blobUrl
+        ..src = url
         ..controls = true
         ..style.width = '100%'
         ..style.height = '100%'

@@ -1,13 +1,18 @@
+import 'dart:math' show Random;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
 import '../../../../core/constants/eskolia_tokens.dart';
-import 'support_viewer.dart';
+import 'support_media.dart';
 
 const Color _orange = EskoliaTokens.orange;
 const Color _slate = EskoliaTokens.textSecondary;
 
-class SupportSection extends StatefulWidget {
+/// Affiche les supports directement dans le cours — image, vidéo ou PDF intégré.
+class SupportSection extends StatelessWidget {
   const SupportSection({
     super.key,
     required this.items,
@@ -17,194 +22,247 @@ class SupportSection extends StatefulWidget {
 
   final List<SupportItem> items;
   final String title;
+  // ignore: unused_field — conservé pour compatibilité d'appel
   final bool initiallyExpanded;
 
   @override
-  State<SupportSection> createState() => _SupportSectionState();
+  Widget build(BuildContext context) {
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Header(title: title, count: items.length),
+        const SizedBox(height: 14),
+        ...items.map(
+          (item) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _InlineSupport(item: item),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _SupportSectionState extends State<SupportSection> {
-  late bool _expanded;
-
-  @override
-  void initState() {
-    super.initState();
-    _expanded = widget.initiallyExpanded;
-  }
+class _Header extends StatelessWidget {
+  const _Header({required this.title, required this.count});
+  final String title;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    if (widget.items.isEmpty) return const SizedBox.shrink();
+    return Row(
+      children: [
+        Icon(Icons.school_rounded,
+            color: _orange.withValues(alpha: 0.85), size: 18),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: _orange.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            '$count fichier${count > 1 ? 's' : ''}',
+            style: TextStyle(
+                color: _orange, fontSize: 11, fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
+class _InlineSupport extends StatefulWidget {
+  const _InlineSupport({required this.item});
+  final SupportItem item;
+
+  @override
+  State<_InlineSupport> createState() => _InlineSupportState();
+}
+
+class _InlineSupportState extends State<_InlineSupport> {
+  final String _viewId =
+      'eskolia-support-${Random().nextInt(999999999)}';
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: _orange.withValues(alpha: 0.05),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _orange.withValues(alpha: 0.22)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          InkWell(
-            onTap: () => setState(() => _expanded = !_expanded),
-            borderRadius: _expanded
-                ? const BorderRadius.vertical(top: Radius.circular(14))
-                : BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-              child: Row(
-                children: [
-                  Icon(Icons.school_rounded,
-                      color: _orange.withValues(alpha: 0.85), size: 18),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.95),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
+          _buildMedia(context),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _TypeBadge(type: widget.item.type),
+                const SizedBox(height: 6),
+                Text(
+                  widget.item.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (widget.item.description.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.item.description,
+                    style: TextStyle(
+                      color: _slate.withValues(alpha: 0.85),
+                      fontSize: 11.5,
+                      height: 1.35,
                     ),
                   ),
-                  Text(
-                    '${widget.items.length} fichier${widget.items.length > 1 ? 's' : ''}',
-                    style: TextStyle(color: _slate, fontSize: 12),
-                  ),
-                  const SizedBox(width: 8),
-                  AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 240),
-                    child: Icon(Icons.expand_more_rounded,
-                        color: _slate, size: 20),
-                  ),
                 ],
-              ),
-            ),
-          ),
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 240),
-            crossFadeState: _expanded
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Divider(color: _orange.withValues(alpha: 0.18), height: 1),
-                  const SizedBox(height: 10),
-                  ...widget.items.map((e) => _SupportTile(item: e)),
-                ],
-              ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildMedia(BuildContext context) {
+    if (!kIsWeb) return _fallback();
+    return switch (widget.item.type) {
+      'video' => _video(),
+      'pdf'   => _pdf(),
+      _       => _image(context),
+    };
+  }
+
+  Widget _image(BuildContext context) {
+    return GestureDetector(
+      onTap: () => launchUrl(
+        Uri.parse(widget.item.url),
+        webOnlyWindowName: '_blank',
+      ),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          SizedBox(height: 260, child: buildImageViewer(widget.item.url, _viewId)),
+          Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.60),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.open_in_new_rounded, color: Colors.white, size: 13),
+                SizedBox(width: 5),
+                Text(
+                  'Agrandir',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _video() {
+    return SizedBox(
+      height: 220,
+      child: buildVideoViewer(widget.item.url, _viewId),
+    );
+  }
+
+  Widget _pdf() {
+    return SizedBox(
+      height: 520,
+      child: buildPdfViewer(widget.item.url, _viewId),
+    );
+  }
+
+  Widget _fallback() {
+    final color = widget.item.type == 'pdf'
+        ? EskoliaTokens.error
+        : widget.item.type == 'video'
+            ? EskoliaTokens.info
+            : _orange;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 4),
+      child: OutlinedButton.icon(
+        onPressed: () => launchUrl(Uri.parse(widget.item.url),
+            mode: LaunchMode.externalApplication),
+        icon: const Icon(Icons.open_in_new_rounded, size: 15),
+        label: const Text('Ouvrir'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: color,
+          side: BorderSide(color: color.withValues(alpha: 0.3)),
+        ),
+      ),
+    );
+  }
 }
 
-class _SupportTile extends StatelessWidget {
-  const _SupportTile({required this.item});
+class _TypeBadge extends StatelessWidget {
+  const _TypeBadge({required this.type});
+  final String type;
 
-  final SupportItem item;
-
-  static IconData _iconFor(String type) => switch (type) {
-        'pdf' => Icons.picture_as_pdf_rounded,
-        'video' => Icons.play_circle_rounded,
-        _ => Icons.image_rounded,
-      };
-
-  static Color _colorFor(String type) => switch (type) {
-        'pdf' => EskoliaTokens.error,
+  static Color _c(String t) => switch (t) {
+        'pdf'   => EskoliaTokens.error,
         'video' => EskoliaTokens.info,
-        _ => _orange,
+        _       => _orange,
       };
-
-  static String _labelFor(String type) => switch (type) {
-        'pdf' => 'PDF',
-        'video' => 'Vidéo',
-        _ => 'Image',
+  static IconData _i(String t) => switch (t) {
+        'pdf'   => Icons.picture_as_pdf_rounded,
+        'video' => Icons.play_circle_rounded,
+        _       => Icons.image_rounded,
+      };
+  static String _l(String t) => switch (t) {
+        'pdf'   => 'PDF',
+        'video' => 'Video',
+        _       => 'Image',
       };
 
   @override
   Widget build(BuildContext context) {
-    final color = _colorFor(item.type);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => openSupportItem(context, item),
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 1),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(_iconFor(item.type), size: 13, color: color),
-                    const SizedBox(width: 4),
-                    Text(
-                      _labelFor(item.type),
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.title,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.92),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      item.description,
-                      style: TextStyle(
-                        color: _slate.withValues(alpha: 0.90),
-                        fontSize: 11.5,
-                        height: 1.35,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 2, left: 8),
-                child: Icon(
-                  item.type == 'image'
-                      ? Icons.fullscreen_rounded
-                      : Icons.open_in_new_rounded,
-                  size: 13,
-                  color: _slate.withValues(alpha: 0.60),
-                ),
-              ),
-            ],
-          ),
-        ),
+    final c = _c(type);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: c.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(_i(type), size: 11, color: c),
+          const SizedBox(width: 4),
+          Text(_l(type),
+              style: TextStyle(
+                  color: c, fontSize: 10, fontWeight: FontWeight.w800)),
+        ],
       ),
     );
   }
