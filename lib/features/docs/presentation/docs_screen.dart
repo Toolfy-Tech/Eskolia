@@ -810,6 +810,33 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
                           title: 'Profite de la sauvegarde en ligne',
                           subtitle: 'Si tu n\'as pas connecté de dossier sur ton PC, pas d\'inquiétude ! Tous tes contenus restent sauvegardés en mémoire dans l\'application.',
                         ),
+                        if (isCours) ...[
+                          const SizedBox(height: 18),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: displayAccentColor.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: displayAccentColor.withValues(alpha: 0.2)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text('✨', style: TextStyle(fontSize: 16)),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Un grand merci à Angélique pour la rédaction soignée des cours !',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.white.withValues(alpha: 0.9),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
