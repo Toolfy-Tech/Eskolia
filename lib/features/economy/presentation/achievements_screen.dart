@@ -151,64 +151,161 @@ class AchievementsScreen extends StatelessWidget {
                               ],
                             ),
                           )
-                        : Text(
-                            '$n / ${rows.length} débloqués',
-                            style: TextStyle(
-                              color: _slate.withValues(alpha: 0.95),
-                              fontSize: 13,
+                        : Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  EskoliaTokens.violet.withValues(alpha: 0.16),
+                                  EskoliaTokens.cyan.withValues(alpha: 0.04),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                width: 1.0,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: CircularProgressIndicator(
+                                        value: rows.isEmpty ? 0 : n / rows.length,
+                                        strokeWidth: 5,
+                                        backgroundColor: Colors.white10,
+                                        color: EskoliaTokens.cyan,
+                                      ),
+                                    ),
+                                    Text(
+                                      rows.isEmpty
+                                          ? '0%'
+                                          : '${((n / rows.length) * 100).toInt()}%',
+                                      style: GoogleFonts.outfit(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 18),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '$n / ${rows.length} Débloqués',
+                                        style: GoogleFonts.outfit(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Continue à résoudre des quiz et des duels pour collecter tous les hauts faits !',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
+                                          fontSize: 11,
+                                          height: 1.35,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     ...List.generate(rows.length, (index) {
                       final row = rows[index];
                       final d = row.$1;
                       final ok = row.$2;
                       final progressLabel = row.$3;
+
+                      double? progressPercent;
+                      if (progressLabel != null) {
+                        final parts = progressLabel.split('/');
+                        if (parts.length == 2) {
+                          final current = double.tryParse(parts[0].trim());
+                          final target = double.tryParse(parts[1].trim());
+                          if (current != null && target != null && target > 0) {
+                            progressPercent = current / target;
+                          }
+                        }
+                      }
+
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(bottom: 12),
                         child: Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(
-                              alpha: ok ? 0.1 : 0.05,
-                            ),
-                            borderRadius: BorderRadius.circular(16),
+                            color: ok
+                                ? Colors.white.withValues(alpha: 0.08)
+                                : Colors.white.withValues(alpha: 0.04),
+                            borderRadius: BorderRadius.circular(18),
                             border: Border.all(
                               color: ok
-                                  ? _violet.withValues(alpha: 0.45)
-                                  : Colors.white.withValues(alpha: 0.08),
+                                  ? EskoliaTokens.cyan.withValues(alpha: 0.45)
+                                  : Colors.white.withValues(alpha: 0.06),
+                              width: ok ? 1.4 : 1.0,
                             ),
+                            boxShadow: ok
+                                ? [
+                                    BoxShadow(
+                                      color: EskoliaTokens.cyan.withValues(alpha: 0.12),
+                                      blurRadius: 10,
+                                      spreadRadius: 1,
+                                    )
+                                  ]
+                                : null,
                           ),
                           child: Row(
                             children: [
-                              Text(
-                                d.emoji,
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.white.withValues(
-                                    alpha: ok ? 1 : 0.35,
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: ok
+                                      ? EskoliaTokens.cyan.withValues(alpha: 0.15)
+                                      : Colors.white.withValues(alpha: 0.05),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  d.emoji,
+                                  style: TextStyle(
+                                    fontSize: 26,
+                                    color: Colors.white.withValues(
+                                      alpha: ok ? 1 : 0.35,
+                                    ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 14),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       d.title,
-                                      style: TextStyle(
+                                      style: GoogleFonts.plusJakartaSans(
                                         color: Colors.white.withValues(
                                           alpha: ok ? 1 : 0.55,
                                         ),
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 14,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 3),
                                     Text(
                                       d.description,
-                                      style: TextStyle(
+                                      style: GoogleFonts.plusJakartaSans(
                                         color: _slate.withValues(
                                           alpha: ok ? 0.95 : 0.5,
                                         ),
@@ -217,26 +314,39 @@ class AchievementsScreen extends StatelessWidget {
                                       ),
                                     ),
                                     if (progressLabel != null) ...[
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Progression : $progressLabel',
-                                        style: TextStyle(
-                                          color: ok
-                                              ? EskoliaTokens.success
-                                                  .withValues(alpha: 0.95)
-                                              : _violet.withValues(alpha: 0.9),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 0.2,
-                                        ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(4),
+                                              child: LinearProgressIndicator(
+                                                value: progressPercent ?? 0.0,
+                                                minHeight: 4,
+                                                backgroundColor: Colors.white10,
+                                                color: ok ? EskoliaTokens.success : EskoliaTokens.cyan,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            progressLabel,
+                                            style: GoogleFonts.outfit(
+                                              color: ok
+                                                  ? EskoliaTokens.success.withValues(alpha: 0.95)
+                                                  : EskoliaTokens.cyan,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                     if (d.linkedBadgeId != null) ...[
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 10),
                                       Builder(
                                         builder: (context) {
-                                          final b =
-                                              resolveBadgeDef(d.linkedBadgeId!);
+                                          final b = resolveBadgeDef(d.linkedBadgeId!);
                                           final superStyle = b.isSuper;
                                           return Container(
                                             padding: const EdgeInsets.symmetric(
@@ -245,20 +355,13 @@ class AchievementsScreen extends StatelessWidget {
                                             ),
                                             decoration: BoxDecoration(
                                               color: superStyle
-                                                  ? EskoliaTokens.amber
-                                                      .withValues(alpha: 0.12)
-                                                  : _violet.withValues(
-                                                      alpha: 0.12,
-                                                    ),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  ? EskoliaTokens.amber.withValues(alpha: 0.12)
+                                                  : EskoliaTokens.violet.withValues(alpha: 0.12),
+                                              borderRadius: BorderRadius.circular(10),
                                               border: Border.all(
                                                 color: superStyle
-                                                    ? EskoliaTokens.amber
-                                                        .withValues(alpha: 0.45)
-                                                    : _violet.withValues(
-                                                        alpha: 0.35,
-                                                      ),
+                                                    ? EskoliaTokens.amber.withValues(alpha: 0.45)
+                                                    : EskoliaTokens.violet.withValues(alpha: 0.35),
                                               ),
                                             ),
                                             child: Row(
@@ -267,26 +370,20 @@ class AchievementsScreen extends StatelessWidget {
                                                 Text(
                                                   b.emoji,
                                                   style: const TextStyle(
-                                                    fontSize: 16,
+                                                    fontSize: 15,
                                                   ),
                                                 ),
-                                                const SizedBox(width: 8),
-                                                Expanded(
-                                                  child: Text(
-                                                    superStyle
-                                                        ? 'Super badge : ${b.title}'
-                                                        : 'Badge : ${b.title}',
-                                                    style: TextStyle(
-                                                      color: Colors.white
-                                                          .withValues(
-                                                        alpha:
-                                                            ok ? 0.92 : 0.45,
-                                                      ),
-                                                      fontSize: 11,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      height: 1.25,
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  superStyle
+                                                      ? 'Super badge : ${b.title}'
+                                                      : 'Badge : ${b.title}',
+                                                  style: GoogleFonts.plusJakartaSans(
+                                                    color: Colors.white.withValues(
+                                                      alpha: ok ? 0.92 : 0.45,
                                                     ),
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.w700,
                                                   ),
                                                 ),
                                               ],
@@ -298,11 +395,19 @@ class AchievementsScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: 8),
                               if (ok)
-                                const Icon(
-                                  Icons.check_circle_rounded,
-                                  color: EskoliaTokens.success,
-                                  size: 22,
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.greenDoubleExtraSoft,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.check_circle_rounded,
+                                    color: EskoliaTokens.success,
+                                    size: 22,
+                                  ),
                                 )
                               else
                                 Icon(

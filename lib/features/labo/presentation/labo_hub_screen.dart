@@ -89,59 +89,87 @@ class LaboHubScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-                FutureBuilder<UserModel?>(
+                              FutureBuilder<UserModel?>(
                   future: userFuture,
                   builder: (context, snap) {
                     final staff = userHasStaffAccess(snap.data, email);
                     if (!staff) return const SizedBox.shrink();
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
-                      child: Material(
-                        color: Colors.white.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(16),
-                        child: InkWell(
-                          onTap: () => context.push('/admin'),
-                          borderRadius: BorderRadius.circular(16),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 12,
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  '\u{1F6E1}\u{FE0F}',
-                                  style: TextStyle(fontSize: 22),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Espace modération',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Signalements & brouillons questions',
-                                        style: TextStyle(
-                                          color: _slate.withValues(alpha: 0.85),
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              EskoliaTokens.amber.withValues(alpha: 0.15),
+                              EskoliaTokens.error.withValues(alpha: 0.05),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: EskoliaTokens.amber.withValues(alpha: 0.4),
+                            width: 1.2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: EskoliaTokens.amber.withValues(alpha: 0.08),
+                              blurRadius: 12,
+                            )
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => context.push('/admin'),
+                            borderRadius: BorderRadius.circular(20),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: EskoliaTokens.amber.withValues(alpha: 0.2),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Text(
+                                      '\u{1F6E1}\u{FE0F}',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
                                   ),
-                                ),
-                                const Icon(
-                                  Icons.chevron_right,
-                                  color: Colors.white54,
-                                ),
-                              ],
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Espace modération',
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Signalements & gestion des questions',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white60,
+                                    size: 14,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -150,138 +178,240 @@ class LaboHubScreen extends StatelessWidget {
                   },
                 ),
                 Text(
-                  'Contribue à la qualité du contenu TIP : signale les erreurs, '
-                  'propose des questions (intégrées aux quiz une fois validées), '
-                  'partage des astuces.',
-                  style: TextStyle(
+                  'Contribue à la qualité du contenu TIP : signale les erreurs, propose des questions (intégrées aux quiz une fois validées), partage des astuces.',
+                  style: GoogleFonts.plusJakartaSans(
                     color: _slate.withValues(alpha: 0.95),
                     fontSize: 13,
-                    height: 1.4,
+                    height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 20),
-                EskoliaCardContent(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '\u{1F6A9} Remonter une erreur',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'À la fin d’un quiz, ouvre le détail d’une question et '
-                        'tape « Signaler ». Choisis le type (faute, mauvaise réponse, …) '
-                        'et envoie : ça part vers l’équipe.',
-                        style: TextStyle(
-                          color: _slate.withValues(alpha: 0.95),
-                          fontSize: 12,
-                          height: 1.35,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      FilledButton.icon(
-                        onPressed: uid.isEmpty
-                            ? null
-                            : () => context.push('/labo/reports'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _cyan,
-                          foregroundColor: Colors.black87,
-                        ),
-                        icon: const Icon(Icons.list_alt_rounded, size: 20),
-                        label: const Text('Mes signalements'),
-                      ),
-                      if (uid.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Text(
-                            'Connecte-toi pour voir ton historique.',
-                            style: TextStyle(
-                              color: _slate.withValues(alpha: 0.65),
-                              fontSize: 11,
+                const SizedBox(height: 22),
+                
+                // Card 1 : Remonter une erreur
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white.withValues(alpha: 0.05),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            width: 6,
+                            color: Colors.orangeAccent,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text('\u{1F6A9}', style: TextStyle(fontSize: 22)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Remonter une erreur',
+                                        style: GoogleFonts.outfit(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'À la fin d’un quiz, ouvre le détail d’une question et tape « Signaler ». Choisis le type (faute, mauvaise réponse, …) et envoie : ça part vers l’équipe.',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: _slate.withValues(alpha: 0.85),
+                                      fontSize: 12,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  FilledButton.icon(
+                                    onPressed: uid.isEmpty
+                                        ? null
+                                        : () => context.push('/labo/reports'),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.orangeAccent.withValues(alpha: 0.2),
+                                      foregroundColor: Colors.orangeAccent,
+                                      side: const BorderSide(color: Colors.orangeAccent, width: 1.2),
+                                      elevation: 0,
+                                    ),
+                                    icon: const Icon(Icons.list_alt_rounded, size: 18),
+                                    label: Text(
+                                      'Mes signalements',
+                                      style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 12),
+                                    ),
+                                  ),
+                                  if (uid.isEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8),
+                                      child: Text(
+                                        'Connecte-toi pour voir ton historique.',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: _slate.withValues(alpha: 0.6),
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 14),
-                EskoliaCardContent(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '\u{2795} Créer une question',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                        ),
+                const SizedBox(height: 16),
+
+                // Card 2 : Créer une question
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white.withValues(alpha: 0.05),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            width: 6,
+                            color: _cyan,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text('\u{2795}', style: TextStyle(fontSize: 22)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Créer une question',
+                                        style: GoogleFonts.outfit(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'QCM 4 choix, aperçu avant envoi. Après validation admin, la question est mélangée aux quiz (rapide, personnalisé, survival, examen blanc…) selon la section indiquée.',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: _slate.withValues(alpha: 0.85),
+                                      fontSize: 12,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  FilledButton.icon(
+                                    onPressed: () => context.push('/labo/create-question'),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: _cyan.withValues(alpha: 0.15),
+                                      foregroundColor: _cyan,
+                                      side: const BorderSide(color: _cyan, width: 1.2),
+                                      elevation: 0,
+                                    ),
+                                    icon: const Icon(Icons.edit_note_rounded, size: 20),
+                                    label: Text(
+                                      'Ouvrir le formulaire',
+                                      style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'QCM 4 choix, aperçu avant envoi. Après validation admin, la '
-                        'question est mélangée aux quiz (rapide, personnalisé, survival, '
-                        'examen blanc…) selon la section indiquée.',
-                        style: TextStyle(
-                          color: _slate.withValues(alpha: 0.95),
-                          fontSize: 12,
-                          height: 1.35,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      FilledButton.icon(
-                        onPressed: () => context.push('/labo/create-question'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _violet,
-                        ),
-                        icon: const Icon(Icons.edit_note_rounded, size: 22),
-                        label: const Text('Ouvrir le formulaire'),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                EskoliaCardContent(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '\u{1F4A1} Proposer un tip',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                        ),
+                const SizedBox(height: 16),
+
+                // Card 3 : Proposer un tip
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white.withValues(alpha: 0.05),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            width: 6,
+                            color: EskoliaTokens.pink,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text('\u{1F4A1}', style: TextStyle(fontSize: 22)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Proposer un tip',
+                                        style: GoogleFonts.outfit(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Astuce, piège, mnémotechnique… Liée à un module du parcours. Visible sur la page cours après validation.',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: _slate.withValues(alpha: 0.85),
+                                      fontSize: 12,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  FilledButton.icon(
+                                    onPressed: () => context.push('/labo/create-tip'),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: EskoliaTokens.pink.withValues(alpha: 0.15),
+                                      foregroundColor: EskoliaTokens.pink,
+                                      side: const BorderSide(color: EskoliaTokens.pink, width: 1.2),
+                                      elevation: 0,
+                                    ),
+                                    icon: const Icon(Icons.lightbulb_outline_rounded, size: 20),
+                                    label: Text(
+                                      'Proposer une astuce',
+                                      style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Astuce, piège, mnémotechnique… Liée à un module du parcours. '
-                        'Visible sur la page cours après validation.',
-                        style: TextStyle(
-                          color: _slate.withValues(alpha: 0.95),
-                          fontSize: 12,
-                          height: 1.35,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      FilledButton.icon(
-                        onPressed: () => context.push('/labo/create-tip'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: EskoliaTokens.pink,
-                          foregroundColor: Colors.white,
-                        ),
-                        icon: const Icon(Icons.lightbulb_outline_rounded, size: 22),
-                        label: const Text('Proposer une astuce'),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ],

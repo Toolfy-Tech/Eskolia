@@ -512,6 +512,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           entry: podium[0],
                           heightFrac: 0.72,
                           medal: '\u{1F948}',
+                          rankNumber: '2',
+                          accentColor: const Color(0xFFC0C0C0),
                           borderColors: const [Color(0xFFC0C0C0), EskoliaTokens.textSecondary],
                         ),
                       ),
@@ -519,8 +521,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       Expanded(
                         child: _DailyPodiumSlot(
                           entry: podium[1],
-                          heightFrac: 1,
+                          heightFrac: 1.0,
                           medal: '\u{1F451}',
+                          rankNumber: '1',
+                          accentColor: EskoliaVisual.neonGold,
                           borderColors: EskoliaVisual.borderGold,
                           glow: EskoliaVisual.neonGold,
                         ),
@@ -531,6 +535,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           entry: podium[2],
                           heightFrac: 0.65,
                           medal: '\u{1F949}',
+                          rankNumber: '3',
+                          accentColor: const Color(0xFFCD7F32),
                           borderColors: const [Color(0xFFCD7F32), Color(0xFF8B4513)],
                         ),
                       ),
@@ -654,6 +660,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           metricUnit: _metricUnit(),
                           heightFrac: 0.72,
                           medal: '\u{1F948}',
+                          rankNumber: '2',
+                          accentColor: const Color(0xFFC0C0C0),
                           borderColors: const [Color(0xFFC0C0C0), EskoliaTokens.textSecondary],
                         ),
                       ),
@@ -663,8 +671,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           entry: podium[1],
                           metric: _metric,
                           metricUnit: _metricUnit(),
-                          heightFrac: 1,
+                          heightFrac: 1.0,
                           medal: '\u{1F451}',
+                          rankNumber: '1',
+                          accentColor: EskoliaVisual.neonGold,
                           borderColors: EskoliaVisual.borderGold,
                           glow: EskoliaVisual.neonGold,
                         ),
@@ -677,6 +687,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           metricUnit: _metricUnit(),
                           heightFrac: 0.65,
                           medal: '\u{1F949}',
+                          rankNumber: '3',
+                          accentColor: const Color(0xFFCD7F32),
                           borderColors: const [Color(0xFFCD7F32), Color(0xFF8B4513)],
                         ),
                       ),
@@ -817,6 +829,8 @@ class _PodiumSlot extends StatelessWidget {
     required this.metricUnit,
     required this.heightFrac,
     required this.medal,
+    required this.rankNumber,
+    required this.accentColor,
     required this.borderColors,
     this.glow,
   });
@@ -826,52 +840,116 @@ class _PodiumSlot extends StatelessWidget {
   final String metricUnit;
   final double heightFrac;
   final String medal;
+  final String rankNumber;
+  final Color accentColor;
   final List<Color> borderColors;
   final Color? glow;
 
   @override
   Widget build(BuildContext context) {
     final e = entry;
+    final name = e != null ? (e.username.isNotEmpty ? e.username : 'Joueur') : '—';
+    final scoreStr = e != null ? '${metric(e)} $metricUnit' : '';
+
     return FractionallySizedBox(
       heightFactor: heightFrac,
       alignment: Alignment.bottomCenter,
-      child: GradientBorderCard(
-        gradientColors: borderColors,
-        glowColor: glow,
-        borderRadius: 18,
-        innerBlurSigma: 12,
-        innerColor: EskoliaTokens.surface1,
-        padding: const EdgeInsets.all(10),
-        child: e == null
-            ? Center(
-                child: Text('—', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5))),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(medal, style: const TextStyle(fontSize: 26)),
-                  const SizedBox(height: 4),
-                  Text(
-                    e.username.isNotEmpty ? e.username : 'Joueur',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    '${metric(e)} $metricUnit',
-                    style: TextStyle(
-                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (e != null) ...[
+            Text(medal, style: const TextStyle(fontSize: 24))
+                .animate(onPlay: (c) => c.repeat(reverse: true))
+                .slideY(begin: 0, end: -0.15, duration: 1000.ms, curve: Curves.easeInOut),
+            const SizedBox(height: 4),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: accentColor.withValues(alpha: 0.8),
+                  width: rankNumber == '1' ? 3.0 : 2.0,
+                ),
+                boxShadow: glow != null
+                    ? [
+                        BoxShadow(
+                          color: glow!.withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        )
+                      ]
+                    : null,
               ),
+              child: CircleAvatar(
+                radius: rankNumber == '1' ? 24 : 20,
+                backgroundColor: Colors.white12,
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: rankNumber == '1' ? 16 : 14,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              scoreStr,
+              style: GoogleFonts.outfit(
+                color: accentColor.withValues(alpha: 0.9),
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ] else ...[
+            const Text('—', style: TextStyle(color: Colors.white24, fontSize: 16)),
+            const SizedBox(height: 40),
+          ],
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.08),
+                    Colors.white.withValues(alpha: 0.01),
+                  ],
+                ),
+                border: Border(
+                  top: BorderSide(color: accentColor.withValues(alpha: 0.4), width: 1.5),
+                  left: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+                  right: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  '#$rankNumber',
+                  style: GoogleFonts.outfit(
+                    color: accentColor.withValues(alpha: 0.6),
+                    fontSize: rankNumber == '1' ? 36 : 28,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -882,6 +960,8 @@ class _DailyPodiumSlot extends StatelessWidget {
     required this.entry,
     required this.heightFrac,
     required this.medal,
+    required this.rankNumber,
+    required this.accentColor,
     required this.borderColors,
     this.glow,
   });
@@ -889,52 +969,116 @@ class _DailyPodiumSlot extends StatelessWidget {
   final DailyLeaderboardEntry? entry;
   final double heightFrac;
   final String medal;
+  final String rankNumber;
+  final Color accentColor;
   final List<Color> borderColors;
   final Color? glow;
 
   @override
   Widget build(BuildContext context) {
     final e = entry;
+    final name = e != null ? (e.username.isNotEmpty ? e.username : 'Joueur') : '—';
+    final scoreStr = e != null ? '${e.score}/${e.total}' : '';
+
     return FractionallySizedBox(
       heightFactor: heightFrac,
       alignment: Alignment.bottomCenter,
-      child: GradientBorderCard(
-        gradientColors: borderColors,
-        glowColor: glow,
-        borderRadius: 18,
-        innerBlurSigma: 12,
-        innerColor: EskoliaTokens.surface1,
-        padding: const EdgeInsets.all(10),
-        child: e == null
-            ? Center(
-                child: Text('—', style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.5))),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(medal, style: const TextStyle(fontSize: 26)),
-                  const SizedBox(height: 4),
-                  Text(
-                    e.username.isNotEmpty ? e.username : 'Joueur',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Text(
-                    '${e.score}/${e.total}',
-                    style: TextStyle(
-                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (e != null) ...[
+            Text(medal, style: const TextStyle(fontSize: 24))
+                .animate(onPlay: (c) => c.repeat(reverse: true))
+                .slideY(begin: 0, end: -0.15, duration: 1000.ms, curve: Curves.easeInOut),
+            const SizedBox(height: 4),
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: accentColor.withValues(alpha: 0.8),
+                  width: rankNumber == '1' ? 3.0 : 2.0,
+                ),
+                boxShadow: glow != null
+                    ? [
+                        BoxShadow(
+                          color: glow!.withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          spreadRadius: 2,
+                        )
+                      ]
+                    : null,
               ),
+              child: CircleAvatar(
+                radius: rankNumber == '1' ? 24 : 20,
+                backgroundColor: Colors.white12,
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : '?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: rankNumber == '1' ? 16 : 14,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              scoreStr,
+              style: GoogleFonts.outfit(
+                color: accentColor.withValues(alpha: 0.9),
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ] else ...[
+            const Text('—', style: TextStyle(color: Colors.white24, fontSize: 16)),
+            const SizedBox(height: 40),
+          ],
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.08),
+                    Colors.white.withValues(alpha: 0.01),
+                  ],
+                ),
+                border: Border(
+                  top: BorderSide(color: accentColor.withValues(alpha: 0.4), width: 1.5),
+                  left: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+                  right: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  '#$rankNumber',
+                  style: GoogleFonts.outfit(
+                    color: accentColor.withValues(alpha: 0.6),
+                    fontSize: rankNumber == '1' ? 36 : 28,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -958,33 +1102,44 @@ class _ListRow extends StatelessWidget {
     final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
     return GradientBorderCard(
       gradientColors: isSelf
-          ? const [EskoliaTokens.info, Color(0xFF6366F1)]
+          ? const [EskoliaTokens.cyan, EskoliaTokens.violetSoft]
           : [
-              Colors.white.withValues(alpha: 0.14),
-              Colors.white.withValues(alpha: 0.06),
+              Colors.white.withValues(alpha: 0.12),
+              Colors.white.withValues(alpha: 0.04),
             ],
-      glowColor: isSelf ? EskoliaTokens.info : null,
+      glowColor: isSelf ? EskoliaTokens.cyan.withValues(alpha: 0.3) : null,
       borderRadius: 16,
-      innerBlurSigma: 10,
-      innerColor: EskoliaTokens.surface1,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      innerBlurSigma: 8,
+      innerColor: isSelf ? Colors.white.withValues(alpha: 0.07) : EskoliaTokens.surface1,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
-          SizedBox(
+          Container(
             width: 28,
-            child: Text(
-              '${entry.rank}',
-              style: TextStyle(
-                color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
-                fontWeight: FontWeight.w800,
+            height: 28,
+            decoration: BoxDecoration(
+              color: isSelf
+                  ? EskoliaTokens.cyan.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.06),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '${entry.rank}',
+                style: GoogleFonts.outfit(
+                  color: isSelf ? EskoliaTokens.cyan : Colors.white70,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
+          const SizedBox(width: 12),
           CircleAvatar(
             radius: 18,
             backgroundColor: isSelf
-                ? EskoliaTokens.info.withValues(alpha: 0.4)
-                : Colors.white12,
+                ? EskoliaTokens.violetSoft.withValues(alpha: 0.35)
+                : Colors.white.withValues(alpha: 0.08),
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : '?',
               style: const TextStyle(
@@ -993,7 +1148,7 @@ class _ListRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1002,18 +1157,22 @@ class _ListRow extends StatelessWidget {
                   isSelf ? '$name (Toi)' : name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: GoogleFonts.plusJakartaSans(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),
                 ),
                 if (subtitleLine.isNotEmpty)
-                  Text(
-                    subtitleLine,
-                    style: TextStyle(
-                      color: EskoliaTokens.textSecondary.withValues(alpha: 0.9),
-                      fontSize: 11,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      subtitleLine,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
               ],
@@ -1021,8 +1180,8 @@ class _ListRow extends StatelessWidget {
           ),
           Text(
             trailingValue,
-            style: TextStyle(
-              color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
+            style: GoogleFonts.outfit(
+              color: isSelf ? EskoliaTokens.cyan : Colors.white,
               fontWeight: FontWeight.w800,
               fontSize: 13,
             ),
@@ -1047,33 +1206,44 @@ class _DailyListRow extends StatelessWidget {
     final name = entry.username.isNotEmpty ? entry.username : 'Joueur';
     return GradientBorderCard(
       gradientColors: isSelf
-          ? const [EskoliaTokens.info, Color(0xFF6366F1)]
+          ? const [EskoliaTokens.cyan, EskoliaTokens.violetSoft]
           : [
-              Colors.white.withValues(alpha: 0.14),
-              Colors.white.withValues(alpha: 0.06),
+              Colors.white.withValues(alpha: 0.12),
+              Colors.white.withValues(alpha: 0.04),
             ],
-      glowColor: isSelf ? EskoliaTokens.info : null,
+      glowColor: isSelf ? EskoliaTokens.cyan.withValues(alpha: 0.3) : null,
       borderRadius: 16,
-      innerBlurSigma: 10,
-      innerColor: EskoliaTokens.surface1,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      innerBlurSigma: 8,
+      innerColor: isSelf ? Colors.white.withValues(alpha: 0.07) : EskoliaTokens.surface1,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
-          SizedBox(
+          Container(
             width: 28,
-            child: Text(
-              '${entry.rank}',
-              style: TextStyle(
-                color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
-                fontWeight: FontWeight.w800,
+            height: 28,
+            decoration: BoxDecoration(
+              color: isSelf
+                  ? EskoliaTokens.cyan.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.06),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '${entry.rank}',
+                style: GoogleFonts.outfit(
+                  color: isSelf ? EskoliaTokens.cyan : Colors.white70,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
+          const SizedBox(width: 12),
           CircleAvatar(
             radius: 18,
             backgroundColor: isSelf
-                ? EskoliaTokens.info.withValues(alpha: 0.4)
-                : Colors.white12,
+                ? EskoliaTokens.violetSoft.withValues(alpha: 0.35)
+                : Colors.white.withValues(alpha: 0.08),
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : '?',
               style: const TextStyle(
@@ -1082,13 +1252,13 @@ class _DailyListRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               isSelf ? '$name (Toi)' : name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: GoogleFonts.plusJakartaSans(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
                 fontSize: 14,
@@ -1097,8 +1267,8 @@ class _DailyListRow extends StatelessWidget {
           ),
           Text(
             '${entry.score}/${entry.total}',
-            style: TextStyle(
-              color: isSelf ? Colors.white : EskoliaTokens.textSecondary,
+            style: GoogleFonts.outfit(
+              color: isSelf ? EskoliaTokens.cyan : Colors.white,
               fontWeight: FontWeight.w800,
               fontSize: 13,
             ),

@@ -134,40 +134,116 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                     ),
                                   ),
+                                ),                                 FutureBuilder<UserModel?>(
+                                  future: _staffProfileFuture,
+                                  builder: (context, snap) {
+                                    final user = snap.data;
+                                    final name = _username ?? user?.username ?? 'Utilisateur';
+                                    final level = user?.level ?? 1;
+                                    final xp = user?.xp ?? 0;
+                                    
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              EskoliaTokens.violetSoft.withValues(alpha: 0.15),
+                                              EskoliaTokens.cyan.withValues(alpha: 0.05),
+                                            ],
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(alpha: 0.08),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 28,
+                                              backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.2),
+                                              child: Text(
+                                                name.isNotEmpty ? name[0].toUpperCase() : '?',
+                                                style: GoogleFonts.outfit(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 22,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 16),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    name,
+                                                    style: GoogleFonts.outfit(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  Text(
+                                                    'Niveau $level · $xp XP',
+                                                    style: GoogleFonts.plusJakartaSans(
+                                                      color: EskoliaTokens.textSecondary,
+                                                      fontWeight: FontWeight.w700,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.edit_rounded, color: Colors.white70),
+                                              onPressed: () => context.push('/profil'),
+                                              tooltip: 'Modifier le profil',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                                 _sectionCard(
                                   title: 'Notifications',
                                   children: [
                                     SwitchListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Notifications push',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       value: _settings!.notificationsEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: EskoliaTokens.violetSoft,
+                                      activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(notificationsEnabled: v)),
                                     ),
                                     SwitchListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Sons',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       value: _settings!.soundEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: EskoliaTokens.violetSoft,
+                                      activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(
                                           _settings!.copyWith(soundEnabled: v)),
                                     ),
                                     SwitchListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Vibrations',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       value: _settings!.vibrationEnabled,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: EskoliaTokens.violetSoft,
+                                      activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(vibrationEnabled: v)),
                                     ),
@@ -178,24 +254,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   title: 'Profil & Confidentialité',
                                   children: [
                                     SwitchListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Profil public',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       value: _settings!.publicProfile,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: EskoliaTokens.violetSoft,
+                                      activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(publicProfile: v)),
                                     ),
                                     SwitchListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Afficher ma série',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       value: _settings!.showStreak,
                                       activeThumbColor: Colors.white,
-                                      activeTrackColor: EskoliaTokens.violetSoft,
+                                      activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(
                                           _settings!.copyWith(showStreak: v)),
                                     ),
@@ -206,26 +282,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   title: 'Apprentissage',
                                   children: [
                                     ListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Objectif quotidien',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       subtitle: Text(
                                         '${_settings!.dailyGoalMinutes} min/jour',
-                                        style: TextStyle(color: EskoliaTokens.textSecondary),
+                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
                                       ),
                                       onTap: () => _showGoalDialog(),
                                     ),
                                     ListTile(
-                                      title: const Text(
+                                      title: Text(
                                         'Langue',
-                                        style: TextStyle(color: Colors.white),
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                                       ),
                                       subtitle: Text(
                                         _settings!.language == 'en'
                                             ? '\u{1F1EC}\u{1F1E7} English'
                                             : '\u{1F1EB}\u{1F1F7} Français',
-                                        style: TextStyle(color: EskoliaTokens.textSecondary),
+                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
                                       ),
                                       onTap: () => _showLangDialog(),
                                     ),
@@ -627,16 +703,16 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 14, 16, 8),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
             child: Text(
               'Mes fichiers',
-              style: TextStyle(
+              style: GoogleFonts.outfit(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -650,23 +726,21 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: _amber.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: _amber.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(Icons.info_outline_rounded, color: _amber, size: 16),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Ton navigateur ne supporte pas le dossier Eskolia. '
-                        'Les fichiers seront telecharges dans ton dossier Telechargements. '
-                        'Utilise Chrome ou Edge pour cette fonctionnalite.',
-                        style: TextStyle(
+                        'Ton navigateur ne supporte pas la sélection de dossier local. Les fichiers seront sauvegardés dans l\'application ou dans ton dossier Téléchargements. Utilise Chrome ou Edge pour une expérience optimale.',
+                        style: GoogleFonts.plusJakartaSans(
                           color: _amber.withValues(alpha: 0.9),
-                          fontSize: 12,
-                          height: 1.4,
+                          fontSize: 11,
+                          height: 1.45,
                         ),
                       ),
                     ),
@@ -676,39 +750,70 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
             )
           else if (_loading)
             const Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 14),
+              padding: EdgeInsets.fromLTRB(16, 12, 16, 16),
               child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: _teal)),
             )
           else ...[
-             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
               child: Text(
-                'Tu peux configurer un dossier sur ton ordinateur pour y enregistrer tes cours, quiz et flashcards lorsque tu cliques sur le bouton de sauvegarde. Sinon, ils seront sauvegardés dans l\'application.',
-                style: TextStyle(
-                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
+                'Configure un dossier local Eskolia sur ton ordinateur pour y synchroniser tes cours, quiz et flashcards physiques.',
+                style: GoogleFonts.plusJakartaSans(
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
                   fontSize: 12,
                   height: 1.4,
                 ),
               ),
             ),
             if (_folderName != null)
-              ListTile(
-                leading: const Icon(Icons.folder_rounded, color: _teal),
-                title: Text(
-                  _folderName!,
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                ),
-                subtitle: Text(
-                  'Dossier actif',
-                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
-                ),
-                trailing: TextButton(
-                  onPressed: _forget,
-                  style: TextButton.styleFrom(
-                    foregroundColor: EskoliaTokens.error,
-                    textStyle: const TextStyle(fontSize: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _teal.withValues(alpha: 0.3)),
                   ),
-                  child: const Text('Oublier'),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: _teal.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.folder_open_rounded, color: _teal, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _folderName!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              'Dossier actif configuré',
+                              style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11),
+                            ),
+                          ],
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: _forget,
+                        style: TextButton.styleFrom(
+                          foregroundColor: EskoliaTokens.error,
+                          textStyle: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700),
+                        ),
+                        child: const Text('Oublier'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ListTile(
@@ -720,26 +825,26 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
               ),
               title: Text(
                 _folderName != null ? 'Modifier le dossier' : 'Choisir mon dossier Eskolia',
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
               ),
-              trailing: const Icon(Icons.chevron_right, color: EskoliaTokens.textSecondary),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, color: EskoliaTokens.textSecondary, size: 14),
               onTap: _pick,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
               child: Wrap(
-                spacing: 6,
-                runSpacing: 4,
+                spacing: 8,
+                runSpacing: 6,
                 children: EskoliaFolder.values.map((f) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: _teal.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: _teal.withValues(alpha: 0.2)),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: _teal.withValues(alpha: 0.15)),
                   ),
                   child: Text(
                     f.folderName,
-                    style: TextStyle(color: _teal, fontSize: 10, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.plusJakartaSans(color: _teal, fontSize: 10, fontWeight: FontWeight.w700),
                   ),
                 )).toList(),
               ),
