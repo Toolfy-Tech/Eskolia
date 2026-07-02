@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
@@ -11,6 +12,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../home/presentation/providers/home_providers.dart';
 import '../data/flashcard_deck_repository.dart';
 import 'flashcard_session_screen.dart';
 
@@ -65,7 +67,31 @@ class _FlashcardsHubScreenState extends State<FlashcardsHubScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Flashcards'),
+      appBar: EskoliaAppBar.standard(
+        context,
+        title: 'Flashcards',
+        actions: [
+          Consumer(
+            builder: (context, ref, child) {
+              final isAddedToHome = ref.watch(homeCardsOrderProvider).contains('feature:flashcards_deck');
+              return IconButton(
+                icon: Icon(
+                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
+                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white54,
+                ),
+                onPressed: () {
+                  if (isAddedToHome) {
+                    ref.read(homeCardsOrderProvider.notifier).removeCard('feature:flashcards_deck');
+                  } else {
+                    ref.read(homeCardsOrderProvider.notifier).addCard('feature:flashcards_deck');
+                  }
+                },
+                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
+              );
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

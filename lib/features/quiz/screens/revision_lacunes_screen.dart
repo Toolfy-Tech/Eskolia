@@ -68,7 +68,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
       backgroundColor: Colors.transparent,
       appBar: EskoliaAppBar.standard(
         context,
-        title: 'Lacunes',
+        title: 'Mes fautes',
       ),
       body: Stack(
         children: [
@@ -84,10 +84,10 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
               ),
               children: [
                 Text(
-                  'Les lacunes, ce sont les questions où tu as eu faux '
-                  '(parcours, quiz solo ou multijoueur). Elles restent en file '
-                  'jusqu’à ce que tu répondes juste ici — en quiz Maîtrise, '
-                  'jusqu’à 10 questions par session (moins si tu as moins de lacunes).',
+                  'Retrouve ici toutes les questions où tu as fait une erreur '
+                  '(parcours, quiz solo ou multijoueur). Elles restent dans cette file '
+                  'jusqu’à ce que tu répondes juste ici en quiz Maîtrise '
+                  '(10 questions maximum par session, ou moins s’il y a moins de fautes).',
                   style: TextStyle(
                     color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
                     fontSize: 13,
@@ -122,7 +122,7 @@ class _RevisionLacunesScreenState extends State<RevisionLacunesScreen> {
                   const SizedBox(height: 16),
                 ],
                 EskoliaButton(
-                  label: _busy ? 'Préparation…' : 'Lancer le quiz lacunes',
+                  label: _busy ? 'Préparation…' : 'Lancer le quiz correctif',
                   variant: EskoliaButtonVariant.primary,
                   expand: true,
                   onPressed: _busy ? null : _startQuiz,

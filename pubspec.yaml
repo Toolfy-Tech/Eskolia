@@ -26,7 +26,8 @@ dependencies:
   url_launcher: ^6.3.2
   file_picker: ^8.1.7
   audioplayers: ^6.1.0
-
+  youtube_player_iframe: ^6.0.2
+  lucide_icons_flutter: ^3.1.14+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

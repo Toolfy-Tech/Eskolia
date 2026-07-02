@@ -1,16 +1,16 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/eskolia_tokens.dart';
 
 // ────────────────────────────────────────────────────────────────────────────
-// Système de 3 niveaux de cartes — Eskolia Design System
+// Système de 3 niveaux de cartes — Eskolia Design System (Premium Néo-Glassmorphic)
 //
-// L1 Hero    : max 1 par écran — fond violet 8%, border violet 35%, radius 20
-// L2 Content : cartes standard — fond #1A1A2E, border blanc 10%, radius 16
-// L3 ListItem: items de liste  — transparent, border-bottom blanc 8%, radius 0
+// L1 Hero    : max 1 par écran — fond violet 6%, border violet 30%, radius Lg (20)
+// L2 Content : cartes standard — fond surface1 55% + blur 18, border blanc 8%, radius Md (16)
+// L3 ListItem: items de liste  — transparent, border-bottom blanc 6%, padding vertical
 // ────────────────────────────────────────────────────────────────────────────
 
-const Color _kSurface = EskoliaTokens.surface2;
 const Color _kViolet = EskoliaTokens.violet;
 
 /// Carte L1 — Hero (maximum 1 par écran, action principale mise en avant).
@@ -28,24 +28,31 @@ class EskoliaCardHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(EskoliaTokens.radiusLg);
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: radius,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: radius,
         splashColor: _kViolet.withValues(alpha: 0.12),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: _kViolet.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: _kViolet.withValues(alpha: 0.35),
-              width: 1.0,
+        child: ClipRRect(
+          borderRadius: radius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+            child: Container(
+              padding: padding,
+              decoration: BoxDecoration(
+                color: _kViolet.withValues(alpha: 0.06),
+                borderRadius: radius,
+                border: Border.all(
+                  color: _kViolet.withValues(alpha: 0.3),
+                  width: 1.0,
+                ),
+              ),
+              child: child,
             ),
           ),
-          child: child,
         ),
       ),
     );
@@ -70,33 +77,39 @@ class EskoliaCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BoxDecoration with non-uniform border widths cannot use borderRadius —
-    // Flutter's Border.paint() assertion forbids it. Use ClipRRect for radius instead.
+    final radius = BorderRadius.circular(EskoliaTokens.radiusMd);
+    final borderCol = Colors.white.withValues(alpha: 0.08);
+
     final decoration = accentBorderColor != null
         ? BoxDecoration(
-            color: _kSurface,
-            border: Border(
-              left: BorderSide(color: accentBorderColor!, width: 3),
-              top: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
-              right: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
-              bottom: BorderSide(color: Colors.white.withValues(alpha: 0.10), width: 0.5),
+            color: Color.alphaBlend(
+              accentBorderColor!.withValues(alpha: 0.04),
+              EskoliaTokens.surface1.withValues(alpha: 0.55),
+            ),
+            borderRadius: radius,
+            border: Border.all(
+              color: accentBorderColor!,
+              width: 1.5,
             ),
           )
         : BoxDecoration(
-            color: _kSurface,
-            borderRadius: BorderRadius.circular(16),
+            color: EskoliaTokens.surface1.withValues(alpha: 0.55),
+            borderRadius: radius,
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.10),
-              width: 0.5,
+              color: borderCol,
+              width: 0.8,
             ),
           );
 
     final container = ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: padding,
-        decoration: decoration,
-        child: child,
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Container(
+          padding: padding,
+          decoration: decoration,
+          child: child,
+        ),
       ),
     );
 
@@ -104,7 +117,7 @@ class EskoliaCardContent extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: radius,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -135,8 +148,8 @@ class EskoliaCardListItem extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.white.withValues(alpha: 0.08),
-            width: 0.5,
+            color: Colors.white.withValues(alpha: 0.06),
+            width: 0.8,
           ),
         ),
       ),
@@ -176,6 +189,41 @@ class EskoliaCard extends StatelessWidget {
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: EskoliaCardContent(padding: padding, onTap: onTap, child: child),
+    );
+  }
+}
+
+class EskoliaCardSectionBadge extends StatelessWidget {
+  const EskoliaCardSectionBadge({
+    super.key,
+    required this.sectionName,
+    required this.color,
+  });
+
+  final String sectionName;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: color.withValues(alpha: 0.35),
+          width: 0.8,
+        ),
+      ),
+      child: Text(
+        sectionName.toUpperCase(),
+        style: TextStyle(
+          color: color,
+          fontSize: 8.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.8,
+        ),
+      ),
     );
   }
 }

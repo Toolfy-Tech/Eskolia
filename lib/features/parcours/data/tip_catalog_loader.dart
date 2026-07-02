@@ -10,19 +10,19 @@ typedef TipExamAsset = ({String title, String asset});
 class TipCatalogLoader {
   TipCatalogLoader._();
 
-  static final Map<String, bool> _existsCache = {};
+  static Set<String>? _assetsInManifest;
 
   static Future<bool> assetExists(String assetKey) async {
-    final cached = _existsCache[assetKey];
-    if (cached != null) return cached;
-    try {
-      await rootBundle.load(assetKey);
-      _existsCache[assetKey] = true;
-      return true;
-    } catch (_) {
-      _existsCache[assetKey] = false;
-      return false;
+    if (_assetsInManifest == null) {
+      try {
+        final manifestContent = await rootBundle.loadString('AssetManifest.json');
+        final Map<String, dynamic> manifestMap = jsonDecode(manifestContent);
+        _assetsInManifest = manifestMap.keys.toSet();
+      } catch (_) {
+        _assetsInManifest = {};
+      }
     }
+    return _assetsInManifest!.contains(assetKey);
   }
 
   /// Charge la formation Optimus en utilisant les chemins définis dans l'index.json
@@ -57,10 +57,6 @@ class TipCatalogLoader {
         String? quizPath = ch['mastery_quiz_path'] as String?;
         if (quizPath != null && quizPath.isNotEmpty) {
           quizPath = 'data/$quizPath';
-          // On vérifie si l'asset existe vraiment
-          if (!await assetExists(quizPath)) {
-            quizPath = null;
-          }
         }
 
         final lessonPath = path != null && path.isNotEmpty ? 'data/$path' : null;
@@ -102,7 +98,7 @@ class TipCatalogLoader {
       _loadFormationFromIndexJson(
         indexAssetPath: 'data/curriculum/optimus/index.json',
         formationId: 'optimus',
-        formationTitle: 'Formation TIP — Parcours Optimus Mastery',
+        formationTitle: 'Cours formation TIP',
         formationDescription: 'Maîtrisez le métier de Technicien Informatique de Proximité avec le contenu officiel Optimus.',
         iconEmoji: '\u{1F916}',
         moduleIdPrefix: 'optimus',

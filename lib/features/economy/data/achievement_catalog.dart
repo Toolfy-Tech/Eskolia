@@ -79,17 +79,17 @@ const List<AchievementDef> kAchievementCatalog = [
   AchievementDef(
     id: 'tip_grand_finale',
     emoji: '\u{1F393}',
-    title: 'Examen blanc TIP',
+    title: 'Validation TIP',
     description:
-        'Valider l’examen blanc de fin de formation : au moins 40 questions, 80 % de bonnes réponses, après les 10 sections. Débloque le super badge « Diplômé TIP ».',
+        'Réussir l’épreuve de validation de fin de formation : au moins 40 questions, 80 % de bonnes réponses, après les 10 sections. Débloque le super badge « Diplômé TIP ».',
     linkedBadgeId: 'super_badge_tip_diploma',
   ),
   AchievementDef(
     id: 'optimus_grand_finale',
     emoji: '\u{1F916}',
-    title: 'Examen blanc Optimus',
+    title: 'Validation Optimus',
     description:
-        'Valider l’épreuve finale Optimus (80 % de bonnes réponses) après les évaluations O01–O06. Débloque le super badge « Diplômé Optimus ».',
+        'Réussir l’épreuve de validation Optimus (80 % de bonnes réponses) après les évaluations O01–O06. Débloque le super badge « Diplômé Optimus ».',
     linkedBadgeId: 'super_badge_optimus_diploma',
   ),
   AchievementDef(

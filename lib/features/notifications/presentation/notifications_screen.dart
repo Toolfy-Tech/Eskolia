@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -80,34 +81,14 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(
-        context,
-        title: '\u{1F514} Notifications',
-        actions: [
-          StreamBuilder<List<AppNotification>>(
-            stream: _repo.watchNotifications(_uid),
-            builder: (context, snap) {
-              final list = snap.data ?? [];
-              final unread = list.where((n) => !n.isRead).length;
-              if (unread == 0) return const SizedBox.shrink();
-              return TextButton(
-                onPressed: () => _repo.markAllAsRead(_uid),
-                child: const Text(
-                  'Tout lire',
-                  style: TextStyle(color: EskoliaTokens.cyan),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -131,6 +112,38 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                           list.where((n) => !n.isRead).length;
                       final groups = _group(list);
                       final children = <Widget>[];
+                      children.add(
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 24, top: 8),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 48),
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    '🔔 Notifications',
+                                    style: GoogleFonts.outfit(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (unread > 0)
+                                TextButton(
+                                  onPressed: () => _repo.markAllAsRead(_uid),
+                                  child: const Text(
+                                    'Tout lire',
+                                    style: TextStyle(color: EskoliaTokens.cyan),
+                                  ),
+                                )
+                              else
+                                const SizedBox(width: 48),
+                            ],
+                          ),
+                        ),
+                      );
                       var index = 0;
                       if (unread > 0) {
                         children.add(
@@ -221,56 +234,90 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   Widget _skeleton() {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: List.generate(
-        4,
-        (i) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: AnimatedBuilder(
-            animation: _pulse,
-            builder: (context, child) {
-              final c =
-                  Color.lerp(EskoliaTokens.surface2, EskoliaTokens.surface3, _pulse.value)!;
-              return Container(
-                height: 88,
-                decoration: BoxDecoration(
-                  color: c,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              );
-            },
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24, top: 8),
+            child: Text(
+              '🔔 Notifications',
+              style: GoogleFonts.outfit(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ),
-      ),
+        ...List.generate(
+          4,
+          (i) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AnimatedBuilder(
+              animation: _pulse,
+              builder: (context, child) {
+                final c =
+                    Color.lerp(EskoliaTokens.surface2, EskoliaTokens.surface3, _pulse.value)!;
+                return Container(
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: c,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _empty() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('\u{1F515}', style: TextStyle(fontSize: 52)),
-          const SizedBox(height: 16),
-          const Text(
-            'Tout est calme ici',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24, top: 8),
+            child: Text(
+              '🔔 Notifications',
+              style: GoogleFonts.outfit(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Tu recevras des alertes pour les défis,\nles badges et les invitations multijoueur.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
-              fontSize: 13,
-              height: 1.4,
-            ),
+        ),
+        const SizedBox(height: 48),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('\u{1F515}', style: TextStyle(fontSize: 52)),
+              const SizedBox(height: 16),
+              const Text(
+                'Tout est calme ici',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tu recevras des alertes pour les défis,\nles badges et les invitations multijoueur.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
+                  fontSize: 13,
+                  height: 1.4,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

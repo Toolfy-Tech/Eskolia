@@ -176,7 +176,12 @@ class _BattleScreenState extends State<BattleScreen> {
         children: [
           const EskoliaAmbientBackground(),
           if (s == null) const Center(child: CircularProgressIndicator(color: _cyan))
-          else EskoliaShellBody(child: _buildPhase(context, s)),
+          else Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 850),
+              child: EskoliaShellBody(child: _buildPhase(context, s)),
+            ),
+          ),
         ],
       ),
     );

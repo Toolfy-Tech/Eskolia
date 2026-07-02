@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/repositories/user_repository.dart';
 import '../../../core/theme/eskolia_layout.dart';
@@ -11,42 +13,47 @@ import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/theme/tip_section_theme.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
-import '../../../shared/widgets/gradient_border_card.dart';
+import '../../../shared/widgets/eskolia_card.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../economy/data/achievement_triggers.dart';
 import '../../economy/data/daily_quest_reward_service.dart';
 import '../../home/data/daily_quests_repository.dart';
-import '../../quiz/data/quiz_repository.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
 import '../data/parcours_repository.dart';
-import '../data/tip_progress_repository.dart';
-import '../../podcasts/data/podcast_model.dart';
-import '../../podcasts/presentation/podcast_player_card.dart';
 import '../../../core/constants/eskolia_tokens.dart';
+import '../../../core/utils/feature_info_resolver.dart';
+import '../../../core/widgets/bottom_nav.dart';
+import '../../home/presentation/providers/home_providers.dart';
+import '../../home/presentation/widgets/home_card_settings_dialog.dart';
+import 'providers/parcours_providers.dart';
+import 'widgets/examen_blanc_card_body.dart';
+import 'widgets/mega_lexique_card_body.dart';
+import 'widgets/mega_mediatheque_card_body.dart';
 
-const Color _cyan = EskoliaTokens.cyan;
 const Color _violetBrand = EskoliaTokens.violetSoft;
-const Color _bg = EskoliaVisual.bgDeep;
 const Color _slate = EskoliaTokens.textSecondary;
 const Color _slateLight = EskoliaTokens.textSecondary;
 const Color _surface = EskoliaTokens.surface2;
 
-class ParcoursScreen extends StatefulWidget {
+class ParcoursScreen extends ConsumerStatefulWidget {
   const ParcoursScreen({super.key, this.expandFormationId});
 
   /// Si présent (`tip`, `optimus`, …), la carte du parcours correspondant s’ouvre dépliée.
   final String? expandFormationId;
 
   @override
-  State<ParcoursScreen> createState() => _ParcoursScreenState();
+  ConsumerState<ParcoursScreen> createState() => _ParcoursScreenState();
 }
 
-class _ParcoursScreenState extends State<ParcoursScreen>
+class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
     with SingleTickerProviderStateMixin {
   final ParcoursRepository _repo = ParcoursRepository();
   late AnimationController _pulseController;
   int _streamRetry = 0;
+
+  Timer? _dragDebounceTimer;
+  String? _hoveredDragKey;
 
   @override
   void initState() {
@@ -55,6 +62,7 @@ class _ParcoursScreenState extends State<ParcoursScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid != null) {
@@ -77,12 +85,535 @@ class _ParcoursScreenState extends State<ParcoursScreen>
   @override
   void dispose() {
     _pulseController.dispose();
+    _dragDebounceTimer?.cancel();
     super.dispose();
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 12),
+      child: Row(
+        children: [
+          const SizedBox(width: 4),
+          Text(
+            title.toUpperCase(),
+            style: GoogleFonts.outfit(
+              color: Colors.white60,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Divider(
+              color: Colors.white12,
+              thickness: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDraggableCard(String key, Widget child, double width) {
+    final isWebOrDesktop = kIsWeb || 
+        defaultTargetPlatform == TargetPlatform.macOS || 
+        defaultTargetPlatform == TargetPlatform.windows || 
+        defaultTargetPlatform == TargetPlatform.linux;
+
+    final feedbackWidget = Material(
+      color: Colors.transparent,
+      child: Transform.rotate(
+        angle: 0.035,
+        child: Transform.scale(
+          scale: 1.04,
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: EskoliaTokens.cyan.withValues(alpha: 0.45),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return DragTarget<String>(
+      key: ValueKey(key),
+      onWillAcceptWithDetails: (details) {
+        final dragKey = details.data;
+        if (dragKey != key) {
+          if (_hoveredDragKey != key) {
+            _hoveredDragKey = key;
+            _dragDebounceTimer?.cancel();
+            _dragDebounceTimer = Timer(const Duration(milliseconds: 150), () {
+              if (mounted && _hoveredDragKey == key) {
+                final pinned = ref.read(parcoursPinnedCardsProvider);
+                final isDragPinned = pinned.contains(dragKey);
+                final isTargetPinned = pinned.contains(key);
+
+                if (isDragPinned != isTargetPinned) {
+                  ref.read(parcoursPinnedCardsProvider.notifier).togglePin(dragKey);
+                }
+
+                final order = ref.read(parcoursCardsOrderProvider);
+                final oldIdx = order.indexOf(dragKey);
+                final newIdx = order.indexOf(key);
+                if (oldIdx != -1 && newIdx != -1) {
+                  ref.read(parcoursCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
+                }
+              }
+            });
+          }
+        }
+        return true;
+      },
+      onLeave: (data) {
+        if (_hoveredDragKey == key) {
+          _dragDebounceTimer?.cancel();
+          _hoveredDragKey = null;
+        }
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovered = candidateData.isNotEmpty;
+
+        final cardWidget = SizedBox(
+          width: width,
+          child: child,
+        );
+
+        Widget mainChild;
+        if (isWebOrDesktop) {
+          mainChild = Draggable<String>(
+            key: ValueKey(key),
+            data: key,
+            feedback: feedbackWidget,
+            childWhenDragging: Opacity(
+              opacity: 0.2,
+              child: cardWidget,
+            ),
+            child: cardWidget,
+          );
+        } else {
+          mainChild = LongPressDraggable<String>(
+            key: ValueKey(key),
+            data: key,
+            feedback: feedbackWidget,
+            childWhenDragging: Opacity(
+              opacity: 0.2,
+              child: cardWidget,
+            ),
+            child: cardWidget,
+          );
+        }
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
+              width: 2.0,
+            ),
+            boxShadow: isHovered
+                ? [
+                    BoxShadow(
+                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : [],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: mainChild,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInteractiveCard({
+    required String key,
+    required String title,
+    required String defaultEmoji,
+    required Color accentColor,
+    required Widget body,
+    bool disableCollapseAnimation = false,
+  }) {
+    final settingsMap = ref.watch(homeCardSettingsProvider);
+    final settings = settingsMap[key];
+    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
+    final isCollapsed = settings?.isCollapsed ?? false;
+    
+    final isPinned = ref.watch(parcoursPinnedCardsProvider).contains(key.startsWith('feature:') ? key.substring(8) : key);
+    final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
+    final displayAccentColor = settings != null
+        ? Color(settings.colorHex)
+        : (isPinned ? EskoliaTokens.cyan : accentColor);
+
+    return EskoliaCardContent(
+      accentBorderColor: displayAccentColor,
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              EskoliaCardSectionBadge(
+                sectionName: 'PARCOURS',
+                color: displayAccentColor,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+                        child: Text(
+                          displayTitle,
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (FeatureInfoResolver.getInfo(key) != null) ...[
+                      const SizedBox(width: 4),
+                      IconButton(
+                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(4),
+                        tooltip: 'Comment ça marche ?',
+                        onPressed: () => _showInfoDialog(context, key),
+                        icon: const Icon(
+                          Icons.info_outline_rounded,
+                          color: Colors.white60,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: isCollapsed ? Colors.white70 : displayAccentColor,
+                  size: 18,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: 'Personnaliser',
+                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
+                icon: const Icon(
+                  Icons.edit_note_rounded,
+                  color: Colors.white70,
+                  size: 20,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
+                onPressed: () => ref.read(parcoursPinnedCardsProvider.notifier).togglePin(key.startsWith('feature:') ? key.substring(8) : key),
+                icon: Icon(
+                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                  color: isPinned ? displayAccentColor : Colors.white38,
+                  size: 16,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
+                onPressed: () {
+                  if (isAddedToHome) {
+                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+                  } else {
+                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
+                  }
+                },
+                icon: Icon(
+                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
+                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
+                  size: 16,
+                ),
+              ),
+            ],
+          ),
+          disableCollapseAnimation
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: body,
+                )
+              : AnimatedCrossFade(
+                  firstChild: const SizedBox.shrink(),
+                  secondChild: Padding(
+                    padding: const EdgeInsets.only(top: 14),
+                    child: body,
+                  ),
+                  crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  duration: const Duration(milliseconds: 250),
+                ),
+        ],
+      ),
+    );
+  }
+
+  void _showInfoDialog(BuildContext context, String key) {
+    final info = FeatureInfoResolver.getInfo(key);
+    if (info == null) return;
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final isErrorAccent = key == 'feature:solo_lacunes' || key == 'feature:tp';
+        return AlertDialog(
+          backgroundColor: EskoliaTokens.surface1,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              if (info.emoji.isNotEmpty) ...[
+                Text(info.emoji, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 8),
+              ],
+              Expanded(
+                child: Text(
+                  info.title,
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: FeatureInfoResolver.buildRichDescription(
+            info.description,
+            const TextStyle(color: Colors.white70, fontSize: 13.5, height: 1.45),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                'Compris',
+                style: TextStyle(
+                  color: isErrorAccent ? EskoliaTokens.error : EskoliaTokens.cyan,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCardByKey(String key, FormationModel formation, double cardWidth) {
+    final settingsMap = ref.watch(homeCardSettingsProvider);
+    final settings = settingsMap['feature:$key'] ?? settingsMap[key];
+    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : '';
+    final isCollapsed = settings?.isCollapsed ?? false;
+
+    if (key == 'formation') {
+      return _buildDraggableCard(
+        key,
+        _buildInteractiveCard(
+          key: 'feature:parcours',
+          title: displayTitle.isNotEmpty ? displayTitle : formation.title,
+          defaultEmoji: '🎓',
+          accentColor: _violetBrand,
+          body: _FormationCardBody(formation: formation, accentColor: _violetBrand),
+        ),
+        cardWidth,
+      );
+    } else if (key == 'podcasts') {
+      return _buildDraggableCard(
+        key,
+        _buildInteractiveCard(
+          key: 'feature:podcasts',
+          title: displayTitle.isNotEmpty ? displayTitle : 'Podcast TIP',
+          defaultEmoji: '🎙️',
+          accentColor: EskoliaTokens.violet,
+          disableCollapseAnimation: true,
+          body: _PodcastsCardBody(isCollapsed: isCollapsed),
+        ),
+        cardWidth,
+      );
+    } else if (key == 'examen_blanc') {
+      return _buildDraggableCard(
+        key,
+        _buildInteractiveCard(
+          key: 'feature:examen_blanc',
+          title: displayTitle.isNotEmpty ? displayTitle : 'Validation TIP',
+          defaultEmoji: '🏆',
+          accentColor: EskoliaTokens.amber,
+          body: ExamenBlancCardBody(formation: formation),
+        ),
+        cardWidth,
+      );
+    } else if (key == 'lexique') {
+      final accent = settings != null ? Color(settings.colorHex) : EskoliaTokens.orange;
+      return _buildDraggableCard(
+        key,
+        _buildInteractiveCard(
+          key: 'feature:lexique',
+          title: displayTitle.isNotEmpty ? displayTitle : 'Lexique TIP',
+          defaultEmoji: '📖',
+          accentColor: accent,
+          body: MegaLexiqueCardBody(accentColor: accent),
+        ),
+        cardWidth,
+      );
+    } else if (key == 'mediatheque') {
+      final accent = settings != null ? Color(settings.colorHex) : EskoliaTokens.violetSoft;
+      return _buildDraggableCard(
+        key,
+        _buildInteractiveCard(
+          key: 'feature:mediatheque',
+          title: displayTitle.isNotEmpty ? displayTitle : 'Média TIP',
+          defaultEmoji: '📁',
+          accentColor: accent,
+          body: MegaMediathequeCardBody(accentColor: accent),
+        ),
+        cardWidth,
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  List<Widget> _addSpacing(List<Widget> list) {
+    if (list.isEmpty) return [];
+    final res = <Widget>[];
+    for (var i = 0; i < list.length; i++) {
+      res.add(list[i]);
+      if (i < list.length - 1) {
+        res.add(const SizedBox(height: 16));
+      }
+    }
+    return res;
+  }
+
+  Widget _buildCardsGrid(BuildContext context, FormationModel formation, double cardWidth, int numColumns) {
+    final rawOrder = ref.watch(parcoursCardsOrderProvider);
+    final pinned = ref.watch(parcoursPinnedCardsProvider);
+
+    Widget buildGrid(List<String> keys) {
+      final cards = keys.map((key) => _buildCardByKey(key, formation, cardWidth)).toList();
+
+      if (numColumns == 3) {
+        final col1 = <Widget>[];
+        final col2 = <Widget>[];
+        final col3 = <Widget>[];
+        for (var i = 0; i < keys.length; i++) {
+          if (i % 3 == 0) {
+            col1.add(cards[i]);
+          } else if (i % 3 == 1) {
+            col2.add(cards[i]);
+          } else {
+            col3.add(cards[i]);
+          }
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: _addSpacing(col1))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(col2))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(col3))),
+          ],
+        );
+      } else if (numColumns == 2) {
+        final col1 = <Widget>[];
+        final col2 = <Widget>[];
+        for (var i = 0; i < keys.length; i++) {
+          if (i % 2 == 0) {
+            col1.add(cards[i]);
+          } else {
+            col2.add(cards[i]);
+          }
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: _addSpacing(col1))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(col2))),
+          ],
+        );
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _addSpacing(cards),
+        );
+      }
+    }
+
+    if (pinned.isEmpty) {
+      return buildGrid(rawOrder);
+    } else {
+      final pinnedKeys = rawOrder.where((k) => pinned.contains(k)).toList();
+      final otherKeys = rawOrder.where((k) => !pinned.contains(k)).toList();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionHeader('Épinglées'),
+          buildGrid(pinnedKeys),
+          if (otherKeys.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            _buildSectionHeader('Autres'),
+            buildGrid(otherKeys),
+          ],
+        ],
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final isLargeScreen = screenWidth > 800;
+
+    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
+    final availableWidth = screenWidth - sidebarWidth - 48;
+
+    int numColumns;
+    if (screenWidth > 1200) {
+      numColumns = 3;
+    } else if (screenWidth > 800) {
+      numColumns = 2;
+    } else {
+      numColumns = 1;
+    }
+
+    final cardWidth = numColumns == 3
+        ? (availableWidth - 32) / 3
+        : (numColumns == 2 ? (availableWidth - 16) / 2 : (screenWidth - 40));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -90,124 +621,68 @@ class _ParcoursScreenState extends State<ParcoursScreen>
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildTopBar(context),
-                    Expanded(
-                      child: uid.isEmpty
-                          ? const _EmptyState(
-                              emoji: '\u{1F4ED}',
-                              message: 'Aucune formation disponible',
-                            )
-                          : StreamBuilder<List<FormationModel>>(
-                              key: ValueKey(_streamRetry),
-                              stream: _repo.watchFormations(uid),
-                              builder: (context, snap) {
-                                if (snap.hasError) {
-                                  return _ErrorState(
-                                    message: snap.error.toString(),
-                                    onRetry: () =>
-                                        setState(() => _streamRetry++),
-                                  );
-                                }
-                                if (snap.connectionState ==
-                                        ConnectionState.waiting &&
-                                    !snap.hasData) {
-                                  return _SkeletonLoader(
-                                    pulse: _pulseController,
-                                  );
-                                }
-                                if (!snap.hasData) {
-                                  return _SkeletonLoader(
-                                    pulse: _pulseController,
-                                  );
-                                }
-                                final list = snap.data!;
-                                if (list.isEmpty) {
-                                  return const _EmptyState(
-                                    emoji: '\u{1F4ED}',
-                                    message: 'Aucune formation disponible',
-                                  );
-                                }
-                                return ListView.builder(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    EskoliaLayout.screenPaddingH,
-                                    8,
-                                    EskoliaLayout.screenPaddingH,
-                                    100,
-                                  ),
-                                  itemCount: list.length + 1,
-                                  itemBuilder: (context, index) {
-                                    if (index == 0) {
-                                      return const Padding(
-                                        padding: EdgeInsets.only(bottom: 16),
-                                        child: Column(
-                                          children: [
-                                            _PodcastsCard(),
-                                            SizedBox(height: 16),
-                                            _DocsMetierCard(),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                    final formation = list[index - 1];
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 16,
-                                      ),
-                                      child: _FormationCard(
-                                        formation: formation,
-                                        index: index - 1,
-                                        initiallyExpanded: widget.expandFormationId !=
-                                                null &&
-                                            formation.id ==
-                                                widget.expandFormationId,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+            safeAreaTop: true,
+            child: uid.isEmpty
+                ? const _EmptyState(
+                    emoji: '📭',
+                    message: 'Aucune formation disponible',
+                  )
+                : StreamBuilder<List<FormationModel>>(
+                    key: ValueKey(_streamRetry),
+                    stream: _repo.watchFormations(uid),
+                    builder: (context, snap) {
+                      if (snap.hasError) {
+                        return _ErrorState(
+                          message: snap.error.toString(),
+                          onRetry: () => setState(() => _streamRetry++),
+                        );
+                      }
+                      if (snap.connectionState == ConnectionState.waiting && !snap.hasData) {
+                        return _SkeletonLoader(
+                          pulse: _pulseController,
+                        );
+                      }
+                      if (!snap.hasData) {
+                        return _SkeletonLoader(
+                          pulse: _pulseController,
+                        );
+                      }
+                      final list = snap.data!;
+                      if (list.isEmpty) {
+                        return const _EmptyState(
+                          emoji: '📭',
+                          message: 'Aucune formation disponible',
+                        );
+                      }
+
+                      final formation = list.first;
+
+                      return ListView(
+                        padding: const EdgeInsets.fromLTRB(
+                          EskoliaLayout.screenPaddingH,
+                          16,
+                          EskoliaLayout.screenPaddingH,
+                          120,
+                        ),
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 24, top: 8),
+                              child: Text(
+                                'Mon Syllabus',
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                             ),
-                    ),
-                  ],
-                ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.menu_book_rounded,
-              color: Colors.white.withValues(alpha: 0.85),
-            ),
-            tooltip: 'Docs métier',
-            onPressed: () => context.push('/docs'),
-          ),
-          const Expanded(
-            child: Text(
-              'Mes Parcours',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.filter_list_rounded,
-              color: Colors.white.withValues(alpha: 0.85),
-            ),
-            onPressed: () {},
+                          ),
+                          _buildCardsGrid(context, formation, cardWidth, numColumns),
+                        ],
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -215,80 +690,428 @@ class _ParcoursScreenState extends State<ParcoursScreen>
   }
 }
 
-class _FormationCard extends StatefulWidget {
-  const _FormationCard({
-    required this.formation,
-    required this.index,
-    this.initiallyExpanded = false,
-  });
-
+class _FormationCardBody extends StatefulWidget {
+  const _FormationCardBody({required this.formation, required this.accentColor});
   final FormationModel formation;
-  final int index;
-  final bool initiallyExpanded;
+  final Color accentColor;
 
   @override
-  State<_FormationCard> createState() => _FormationCardState();
+  State<_FormationCardBody> createState() => _FormationCardBodyState();
 }
 
-class _FormationCardState extends State<_FormationCard> {
-  late bool _expanded;
-
-  @override
-  void initState() {
-    super.initState();
-    _expanded = widget.initiallyExpanded;
-  }
-
-  @override
-  void didUpdateWidget(covariant _FormationCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.initiallyExpanded != oldWidget.initiallyExpanded) {
-      _expanded = widget.initiallyExpanded;
-    }
-  }
+class _FormationCardBodyState extends State<_FormationCardBody> {
+  int _selectedSectionIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final f = widget.formation;
     final ratio = f.progress.clamp(0.0, 1.0);
-    final done = ratio >= 0.999;
-    final started = ratio > 0.02;
-    final List<Color> borderGrad;
-    final Color? glow;
-    if (done) {
-      borderGrad = EskoliaVisual.borderLive;
-      glow = EskoliaVisual.neonGreen;
-    } else if (started) {
-      borderGrad = EskoliaVisual.borderPrimary;
-      glow = _violetBrand;
-    } else {
-      borderGrad = [
-        Colors.white.withValues(alpha: 0.22),
-        Colors.white.withValues(alpha: 0.08),
-      ];
-      glow = null;
-    }
 
-    Widget card = GradientBorderCard(
-      gradientColors: borderGrad,
-      glowColor: glow,
-      borderRadius: 20,
-      innerBlurSigma: 14,
-      innerColor: EskoliaTokens.bgBase,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            InkWell(
-              onTap: () => setState(() => _expanded = !_expanded),
-              borderRadius: BorderRadius.circular(12),
-              splashColor: _violetBrand.withValues(alpha: 0.2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          f.description,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: EskoliaTokens.textSecondary.withValues(alpha: 0.85),
+            fontSize: 11.5,
+            height: 1.3,
+          ),
+        ),
+        const SizedBox(height: 14),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.02),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    f.iconEmoji,
-                    style: const TextStyle(fontSize: 40),
+                    'Progression générale'.toUpperCase(),
+                    style: GoogleFonts.outfit(
+                      color: Colors.white70,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                  Text(
+                    '${f.completedModules} / ${f.totalModules} chapitres (${(ratio * 100).toInt()}%)',
+                    style: GoogleFonts.outfit(
+                      color: EskoliaTokens.cyan,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: SizedBox(
+                  height: 8,
+                  child: Stack(
+                    children: [
+                      Container(color: Colors.white.withValues(alpha: 0.05)),
+                      FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: ratio,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [EskoliaTokens.violetSoft, EskoliaTokens.cyan],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (f.sections.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          const Divider(color: Colors.white12, height: 1),
+          const SizedBox(height: 12),
+          _buildSyllabusCarousel(f),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSyllabusCarousel(FormationModel f) {
+    final section = f.sections[_selectedSectionIndex];
+    final t = TipSectionTheme.colorsFor(section.id);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left_rounded, color: EskoliaTokens.cyan),
+              onPressed: _selectedSectionIndex > 0
+                  ? () => setState(() => _selectedSectionIndex--)
+                  : null,
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: t.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: t.primary.withValues(alpha: 0.40)),
+                    ),
+                    child: Text(
+                      section.id,
+                      style: TextStyle(
+                        color: t.primary,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.6,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    section.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.chevron_right_rounded, color: EskoliaTokens.cyan),
+              onPressed: _selectedSectionIndex < f.sections.length - 1
+                  ? () => setState(() => _selectedSectionIndex++)
+                  : null,
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _SectionPodcastWidget(sectionId: section.id, accentColor: t.primary),
+        const SizedBox(height: 8),
+        for (var i = 0; i < section.modules.length; i++)
+          _ModuleTile(
+            module: section.modules[i],
+            sectionAccent: t.primary,
+            chapterIndex: i + 1,
+            isFirst: i == 0,
+            isLast: i == section.modules.length - 1,
+          ),
+      ],
+    );
+  }
+}
+
+class _CompactPodcastTile extends ConsumerWidget {
+  const _CompactPodcastTile({required this.podcast, required this.accentColor});
+  final Podcast podcast;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playerState = ref.watch(podcastPlayerProvider);
+    final isThis = playerState.podcast?.url == podcast.url;
+    final isPlaying = isThis && playerState.isPlaying;
+    final isLoading = isThis && playerState.loading;
+
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: accentColor.withValues(alpha: 0.15)),
+          color: Colors.white.withValues(alpha: 0.01),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          child: Row(
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: isLoading
+                      ? null
+                      : () => ref.read(podcastPlayerProvider.notifier).play(podcast),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: accentColor.withValues(alpha: 0.15),
+                    ),
+                    child: isLoading
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.5,
+                              color: accentColor,
+                            ),
+                          )
+                        : Icon(
+                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            color: accentColor,
+                            size: 18,
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: accentColor.withValues(alpha: 0.3),
+                    width: 0.6,
+                  ),
+                ),
+                child: Text(
+                  'PODCAST',
+                  style: TextStyle(
+                    color: accentColor.withValues(alpha: 0.85),
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  podcast.displayTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              if (isPlaying)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    Icons.volume_up_rounded,
+                    color: accentColor,
+                    size: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionPodcastWidget extends StatefulWidget {
+  const _SectionPodcastWidget({required this.sectionId, required this.accentColor});
+  final String sectionId;
+  final Color accentColor;
+
+  @override
+  State<_SectionPodcastWidget> createState() => _SectionPodcastWidgetState();
+}
+
+class _SectionPodcastWidgetState extends State<_SectionPodcastWidget> {
+  Podcast? _podcast;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPodcast();
+  }
+
+  @override
+  void didUpdateWidget(covariant _SectionPodcastWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.sectionId != oldWidget.sectionId) {
+      _loadPodcast();
+    }
+  }
+
+  Future<void> _loadPodcast() async {
+    setState(() => _loading = true);
+    final p = await PodcastCatalog.forSection(widget.sectionId);
+    if (!mounted) return;
+    setState(() {
+      _podcast = p;
+      _loading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return const SizedBox(
+        height: 40,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: EskoliaTokens.cyan)),
+      );
+    }
+    if (_podcast == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: _CompactPodcastTile(podcast: _podcast!, accentColor: widget.accentColor),
+    );
+  }
+}
+
+class _PodcastsCardBody extends ConsumerWidget {
+  const _PodcastsCardBody({required this.isCollapsed});
+  final bool isCollapsed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playerState = ref.watch(podcastPlayerProvider);
+    final podcastsSnap = ref.watch(allPodcastsProvider);
+
+    return podcastsSnap.when(
+      data: (podcasts) {
+        if (podcasts.isEmpty) {
+          return const Center(
+            child: Text(
+              'Aucun podcast disponible',
+              style: TextStyle(color: Colors.white60, fontSize: 12),
+            ),
+          );
+        }
+
+        final activePodcast = playerState.podcast ?? podcasts.first;
+        final isPlaying = playerState.podcast?.url == activePodcast.url && playerState.isPlaying;
+        final isLoading = playerState.podcast?.url == activePodcast.url && playerState.loading;
+
+        final total = playerState.podcast?.url == activePodcast.url ? (playerState.duration ?? Duration.zero) : Duration.zero;
+        final hasDuration = total.inMilliseconds > 0;
+        final pos = playerState.podcast?.url == activePodcast.url
+            ? playerState.position.inMilliseconds.clamp(0, hasDuration ? total.inMilliseconds : 0).toDouble()
+            : 0.0;
+
+        String fmt(Duration d) {
+          final m = d.inMinutes;
+          final s = d.inSeconds % 60;
+          return '$m:${s < 10 ? '0$s' : '$s'}';
+        }
+
+        void playNextPrev(bool next) {
+          final current = playerState.podcast ?? podcasts.first;
+          int idx = podcasts.indexWhere((p) => p.url == current.url);
+          if (idx == -1) idx = 0;
+          if (next) {
+            idx = (idx + 1) % podcasts.length;
+          } else {
+            idx = (idx - 1 + podcasts.length) % podcasts.length;
+          }
+          ref.read(podcastPlayerProvider.notifier).play(podcasts[idx]);
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.02),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Row(
+                children: [
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: isLoading
+                          ? null
+                          : () => ref.read(podcastPlayerProvider.notifier).play(activePodcast),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [EskoliaTokens.cyan, EskoliaTokens.violet],
+                          ),
+                        ),
+                        child: isLoading
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              )
+                            : Icon(
+                                isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                color: Colors.white,
+                                size: 24,
+                               ),
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -296,117 +1119,157 @@ class _FormationCardState extends State<_FormationCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          f.title,
+                          activePodcast.displayTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white,
+                            fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          f.description,
-                          style: TextStyle(
-                            color: _slateLight.withValues(alpha: 0.95),
-                            fontSize: 12,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
-                          child: SizedBox(
-                            height: 6,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Container(color: _surface),
-                                FractionallySizedBox(
-                                  alignment: Alignment.centerLeft,
-                                  widthFactor: ratio,
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [_violetBrand, _cyan],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                        if (activePodcast.subtitle != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            activePodcast.subtitle!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: EskoliaTokens.textSecondary,
+                              fontSize: 11,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            const Spacer(),
-                            Text(
-                              '${f.completedModules} / ${f.totalModules} modules',
-                              style: TextStyle(
-                                color: _slate.withValues(alpha: 0.95),
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
+                        ],
                       ],
                     ),
                   ),
-                  AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 300),
-                    child: Icon(
-                      Icons.expand_more_rounded,
-                      color: _slateLight.withValues(alpha: 0.9),
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.skip_previous_rounded, color: Colors.white70, size: 20),
+                    onPressed: () => playNextPrev(false),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next_rounded, color: Colors.white70, size: 20),
+                    onPressed: () => playNextPrev(true),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 2,
+                activeTrackColor: EskoliaTokens.cyan,
+                inactiveTrackColor: Colors.white12,
+                thumbColor: EskoliaTokens.cyan,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+                overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
+              ),
+              child: Slider(
+                value: pos,
+                max: hasDuration ? total.inMilliseconds.toDouble() : 1.0,
+                onChanged: hasDuration ? (v) {} : null,
+                onChangeEnd: hasDuration
+                    ? (v) => ref.read(podcastPlayerProvider.notifier).seek(Duration(milliseconds: v.round()))
+                    : null,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    playerState.podcast?.url == activePodcast.url ? fmt(playerState.position) : '0:00',
+                    style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 10),
+                  ),
+                  Text(
+                    hasDuration ? fmt(total) : '--:--',
+                    style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 10),
                   ),
                 ],
               ),
             ),
             AnimatedCrossFade(
-              duration: const Duration(milliseconds: 300),
-              crossFadeState: _expanded
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
               firstChild: const SizedBox.shrink(),
-              secondChild: Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (var i = 0; i < f.sections.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 8),
-                      _SectionTile(section: f.sections[i]),
-                    ],
-                    if (f.id == 'tip' || f.id == 'optimus') ...[
-                      const SizedBox(height: 14),
-                      _GrandFinaleParcoursSection(formation: f),
-                    ],
-                    if (f.id == 'optimus') ...[
-                      const SizedBox(height: 14),
-                      _MegaContentCards(),
-                    ],
-                  ],
-                ),
+              secondChild: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 16),
+                  const Divider(color: Colors.white10, height: 1),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Tous les podcasts',
+                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 180),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: podcasts.length,
+                      itemBuilder: (context, idx) {
+                        final p = podcasts[idx];
+                        final isCurrent = p.url == activePodcast.url;
+                        return ListTile(
+                          dense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                          leading: Icon(
+                            isCurrent ? Icons.volume_up_rounded : Icons.audiotrack_rounded,
+                            color: isCurrent ? EskoliaTokens.cyan : Colors.white38,
+                            size: 16,
+                          ),
+                          title: Text(
+                            p.displayTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: isCurrent ? EskoliaTokens.cyan : Colors.white70,
+                              fontSize: 12,
+                              fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
+                          subtitle: p.subtitle != null
+                              ? Text(
+                                  p.subtitle!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 10),
+                                )
+                              : null,
+                          onTap: () {
+                            ref.read(podcastPlayerProvider.notifier).play(p);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
+              crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 250),
             ),
           ],
-        ),
-    );
-
-    return card
-        .animate()
-        .fadeIn(
-          duration: 300.ms,
-          delay: (widget.index * 100).ms,
-          curve: Curves.easeOutCubic,
-        )
-        .slideY(
-          begin: 0.06,
-          duration: 300.ms,
-          delay: (widget.index * 100).ms,
-          curve: Curves.easeOutCubic,
         );
+      },
+      loading: () => const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2, color: EskoliaTokens.cyan),
+        ),
+      ),
+      error: (e, _) => Center(
+        child: Text(
+          'Erreur: $e',
+          style: const TextStyle(color: Colors.red, fontSize: 11),
+        ),
+      ),
+    );
   }
 }
 
@@ -460,13 +1323,11 @@ class _SectionTileState extends State<_SectionTile> {
               ),
               const SizedBox(width: 10),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: t.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(4),
-                  border:
-                      Border.all(color: t.primary.withValues(alpha: 0.40)),
+                  border: Border.all(color: t.primary.withValues(alpha: 0.40)),
                 ),
                 child: Text(
                   widget.section.id,
@@ -501,6 +1362,8 @@ class _SectionTileState extends State<_SectionTile> {
               module: widget.section.modules[i],
               sectionAccent: t.primary,
               chapterIndex: i + 1,
+              isFirst: i == 0,
+              isLast: i == widget.section.modules.length - 1,
             ),
         ],
       ),
@@ -508,176 +1371,34 @@ class _SectionTileState extends State<_SectionTile> {
   }
 }
 
-bool _formationAllSectionExamsCompleted(FormationModel f) {
-  for (final sec in f.sections) {
-    for (final m in sec.modules) {
-      if (m.type == 'exam' && !m.isCompleted) return false;
-    }
-  }
-  return true;
-}
-
-/// Carte « examen blanc » (TIP ou Optimus) — débloquée quand chaque section a son évaluation validée.
-class _GrandFinaleParcoursSection extends StatefulWidget {
-  const _GrandFinaleParcoursSection({required this.formation});
-
-  final FormationModel formation;
-
-  @override
-  State<_GrandFinaleParcoursSection> createState() =>
-      _GrandFinaleParcoursSectionState();
-}
-
-class _GrandFinaleParcoursSectionState extends State<_GrandFinaleParcoursSection> {
-  StreamSubscription<void>? _sub;
-  Set<String> _completed = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _reloadIds();
-    _sub = TipProgressRepository.updates.listen((_) => _reloadIds());
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _reloadIds() async {
-    final s = await TipProgressRepository().readCompletedIds();
-    if (mounted) setState(() => _completed = s);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final f = widget.formation;
-    final isTip = f.id == 'tip';
-    final progressId = isTip
-        ? QuizRepository.grandFinaleSessionId
-        : QuizRepository.optimusGrandFinaleSessionId;
-    final route = isTip
-        ? '/quiz/epreuve-finale-tip'
-        : '/quiz/epreuve-finale-optimus';
-    final title = isTip
-        ? 'Examen blanc — fin TIP'
-        : 'Examen blanc — fin Optimus';
-    final unlocked = _formationAllSectionExamsCompleted(f);
-    final grandDone = _completed.contains(progressId);
-
-    final borderColors = unlocked
-        ? (isTip
-            ? const [Color(0xFFFFB74D), Color(0xFFE040FB)]
-            : [EskoliaTokens.cyan, EskoliaTokens.violetSoft])
-        : [
-            Colors.white.withValues(alpha: 0.14),
-            Colors.white.withValues(alpha: 0.06),
-          ];
-    final accent = isTip ? const Color(0xFFFFB74D) : EskoliaTokens.cyan;
-
-    return GradientBorderCard(
-      gradientColors: borderColors,
-      glowColor: unlocked ? accent : null,
-      borderRadius: 16,
-      innerBlurSigma: 12,
-      innerColor: EskoliaTokens.surface1,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Text(isTip ? '\u{1F3C6}' : '\u{1F916}',
-                  style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: unlocked ? 1 : 0.65),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              if (grandDone)
-                Text(
-                  '\u{2705} Réussie',
-                  style: TextStyle(
-                    color: _slateLight.withValues(alpha: 0.95),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            unlocked
-                ? (isTip
-                    ? 'Au moins 40 questions (moyen + difficile sur tout le catalogue TIP ; '
-                        '« faciles » exclues sauf complément). Pour valider : 80 % de bonnes réponses.'
-                    : 'Au moins ${QuizRepository.grandFinaleOptimusMinQuestions} questions '
-                        '(moyen + difficile sur tout le catalogue Optimus ; « faciles » en complément). '
-                        'Pour valider : 80 % de bonnes réponses.')
-                : (isTip
-                    ? 'Termine d’abord toutes les évaluations finales de section '
-                        '(S01–S10).'
-                    : 'Termine d’abord toutes les évaluations finales de section '
-                        '(O01–O06).'),
-            style: TextStyle(
-              color: _slateLight.withValues(alpha: unlocked ? 0.9 : 0.65),
-              fontSize: 12,
-              height: 1.35,
-            ),
-          ),
-          const SizedBox(height: 14),
-          FilledButton(
-            onPressed: unlocked ? () => context.push(route) : null,
-            style: FilledButton.styleFrom(
-              backgroundColor: accent,
-              foregroundColor:
-                  isTip ? const Color(0xFF1A1206) : EskoliaTokens.bgBase,
-              disabledBackgroundColor: Colors.white.withValues(alpha: 0.08),
-              disabledForegroundColor: _slate,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            child: Text(
-              grandDone ? 'Repasser l’épreuve' : 'Lancer l’épreuve finale',
-              style: const TextStyle(fontWeight: FontWeight.w800),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _ModuleTile extends StatelessWidget {
   const _ModuleTile({
     required this.module,
     required this.sectionAccent,
     required this.chapterIndex,
+    required this.isFirst,
+    required this.isLast,
   });
 
   final ModuleModel module;
   final Color sectionAccent;
   final int chapterIndex;
+  final bool isFirst;
+  final bool isLast;
 
-  static String _iconForType(String type) {
+  IconData _iconForType(String type) {
     switch (type) {
       case 'exam':
-        return '\u{1F393}';
-      case 'chapitre':
-        return '\u{1F4D6}';
+        return Icons.school_rounded;
       case 'quiz':
-        return '\u{1F4DD}';
+        return Icons.quiz_rounded;
       case 'flashcard':
-        return '\u{1F0CF}';
+        return Icons.style_rounded;
+      case 'chapitre':
       case 'cours':
       default:
-        return '\u{1F4D6}';
+        return Icons.menu_book_rounded;
     }
   }
 
@@ -723,89 +1444,136 @@ class _ModuleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final locked = module.isLocked;
     final completed = module.isCompleted;
+    final typeIcon = _iconForType(module.type);
+    final typeColor = sectionAccent;
 
-    return Material(
-      color: Colors.transparent,
-      child: Opacity(
-        opacity: locked ? 0.4 : 1,
-        child: InkWell(
-          onTap: locked ? null : () => _onTap(context),
-          splashColor: sectionAccent.withValues(alpha: 0.35),
-          highlightColor: sectionAccent.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-            child: Row(
-              children: [
-                Text(
-                  _iconForType(module.type),
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (module.type != 'exam') ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 1),
-                          margin: const EdgeInsets.only(right: 7),
-                          decoration: BoxDecoration(
-                            color:
-                                sectionAccent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(3),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.02),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.05),
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: locked ? null : () => _onTap(context),
+            splashColor: typeColor.withValues(alpha: 0.08),
+            highlightColor: typeColor.withValues(alpha: 0.04),
+            child: Opacity(
+              opacity: locked ? 0.45 : 1.0,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Icon Container with glowing background
+                    Container(
+                      width: 38,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        color: typeColor.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: typeColor.withValues(alpha: 0.20),
+                          width: 1,
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          typeIcon,
+                          size: 20,
+                          color: typeColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Title and Badge
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              if (module.type != 'exam') ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                  margin: const EdgeInsets.only(right: 8),
+                                  decoration: BoxDecoration(
+                                    color: typeColor.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      color: typeColor.withValues(alpha: 0.3),
+                                      width: 0.6,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'CH.$chapterIndex',
+                                    style: TextStyle(
+                                      color: typeColor.withValues(alpha: 0.85),
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              Expanded(
+                                child: Text(
+                                  module.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: completed
+                                        ? _slateLight.withValues(alpha: 0.45)
+                                        : Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: Text(
-                            'Ch.$chapterIndex',
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (completed)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: EskoliaTokens.cyan.withValues(alpha: 0.8),
+                            size: 14,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Résolu',
                             style: TextStyle(
-                              color: sectionAccent.withValues(alpha: 0.75),
-                              fontSize: 10,
+                              color: EskoliaTokens.cyan,
+                              fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              letterSpacing: 0.3,
                             ),
                           ),
-                        ),
-                      ],
-                      Expanded(
-                        child: Text(
-                          module.title,
-                          style: TextStyle(
-                            color: completed
-                                ? _slateLight.withValues(alpha: 0.55)
-                                : Colors.white.withValues(alpha: 0.92),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        ],
+                      )
+                    else if (locked)
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        color: Colors.white.withValues(alpha: 0.25),
+                        size: 14,
                       ),
-                    ],
-                  ),
+                  ],
                 ),
-                if (completed)
-                  const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '\u{2705}',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        'Terminé',
-                        style: TextStyle(
-                          color: _slate,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  )
-                else if (locked)
-                  const Text(
-                    '\u{1F512}',
-                    style: TextStyle(fontSize: 14),
-                  ),
-              ],
+              ),
             ),
           ),
         ),
@@ -904,7 +1672,6 @@ class _ErrorState extends StatelessWidget {
   }
 }
 
-
 class _EmptyState extends StatelessWidget {
   const _EmptyState({
     required this.emoji,
@@ -930,274 +1697,6 @@ class _EmptyState extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PodcastsCard extends StatelessWidget {
-  const _PodcastsCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.push('/podcasts'),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                EskoliaTokens.violetSoft.withValues(alpha: 0.20),
-                EskoliaTokens.cyan.withValues(alpha: 0.12),
-              ],
-            ),
-            border: Border.all(
-              color: EskoliaTokens.violetSoft.withValues(alpha: 0.35),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: EskoliaTokens.violetSoft.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.headphones_rounded,
-                  color: EskoliaTokens.violetSoft,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Podcasts',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Une analyse audio par module — a ecouter avant de lire le cours.',
-                      style: TextStyle(
-                        color: EskoliaTokens.textSecondary,
-                        fontSize: 12,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.4),
-                size: 22,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class _DocsMetierCard extends StatelessWidget {
-  const _DocsMetierCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => context.push('/docs'),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                EskoliaTokens.cyan.withValues(alpha: 0.18),
-                EskoliaTokens.violetSoft.withValues(alpha: 0.12),
-              ],
-            ),
-            border: Border.all(
-              color: EskoliaTokens.cyan.withValues(alpha: 0.35),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.menu_book_rounded,
-                  color: EskoliaTokens.cyan,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 14),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Docs Metier',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'RGPD, CNIL, ANSSI, ITIL, OSI — references et mini-formations.',
-                      style: TextStyle(
-                        color: EskoliaTokens.textSecondary,
-                        fontSize: 12,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.4),
-                size: 22,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MegaContentCards extends StatelessWidget {
-  const _MegaContentCards();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _MegaCard(
-          icon: Icons.menu_book_rounded,
-          color: EskoliaTokens.cyan,
-          title: 'Méga Lexique',
-          subtitle: 'Tous les termes clés des 8 modules en un seul endroit.',
-          onTap: () => context.push('/lexique-optimus'),
-        ),
-        const SizedBox(height: 10),
-        _MegaCard(
-          icon: Icons.play_lesson_rounded,
-          color: EskoliaTokens.violetSoft,
-          title: 'Médiathèque complète',
-          subtitle: 'Toutes les ressources et veille des 8 modules.',
-          onTap: () => context.push('/mediatheque-optimus'),
-        ),
-      ],
-    );
-  }
-}
-
-class _MegaCard extends StatelessWidget {
-  const _MegaCard({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                color.withValues(alpha: 0.12),
-                color.withValues(alpha: 0.05),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: color.withValues(alpha: 0.30)),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        color: EskoliaTokens.textSecondary,
-                        fontSize: 12,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.white.withValues(alpha: 0.35),
-                size: 20,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
@@ -305,13 +306,13 @@ class _ExplanationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.info_outline_rounded, color: EskoliaTokens.cyan, size: 18),
-              SizedBox(width: 8),
+              const Icon(Icons.info_outline_rounded, color: EskoliaTokens.cyan, size: 18),
+              const SizedBox(width: 8),
               Text(
-                'Comment ca marche ?',
-                style: TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w700, fontSize: 14),
+                'Comment ça marche ?',
+                style: GoogleFonts.outfit(color: EskoliaTokens.cyan, fontWeight: FontWeight.w700, fontSize: 14),
               ),
             ],
           ),
@@ -401,7 +402,7 @@ class _FileSelector extends StatelessWidget {
           children: [
             Text(
               '${files.length} bilan(s) disponible(s)',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+              style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14.5),
             ),
             TextButton(
               onPressed: onSelectAll,

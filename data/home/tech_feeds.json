@@ -3,32 +3,50 @@
     {
       "id": "it_connect",
       "label": "IT-Connect",
-      "rssUrl": "https://www.it-connect.fr/feed/"
+      "rssUrl": "https://www.it-connect.fr/feed/",
+      "category": "it"
     },
     {
       "id": "le_crabe_info",
       "label": "Le Crabe Info",
-      "rssUrl": "https://lecrabeinfo.net/feed/"
-    },
-    {
-      "id": "malekal",
-      "label": "Malekal",
-      "rssUrl": "https://www.malekal.com/feed/"
+      "rssUrl": "https://lecrabeinfo.net/feed/",
+      "category": "hardware"
     },
     {
       "id": "rdr_it",
       "label": "RDR-IT",
-      "rssUrl": "https://rdr-it.com/feed/"
+      "rssUrl": "https://rdr-it.com/feed/",
+      "category": "software"
     },
     {
       "id": "syskb",
       "label": "SysKB",
-      "rssUrl": "https://www.syskb.com/feed/"
+      "rssUrl": "https://www.syskb.com/feed/",
+      "category": "it"
     },
     {
       "id": "tech2tech",
       "label": "Tech2Tech",
-      "rssUrl": "https://www.tech2tech.fr/feed/"
+      "rssUrl": "https://www.tech2tech.fr/feed/",
+      "category": "it"
+    },
+    {
+      "id": "malekal",
+      "label": "Malekal",
+      "rssUrl": "https://www.malekal.com/feed/",
+      "category": "security"
+    },
+    {
+      "id": "cert_fr",
+      "label": "CERT-FR",
+      "rssUrl": "https://www.cert.ssi.gouv.fr/feed/",
+      "category": "security"
+    },
+    {
+      "id": "zataz",
+      "label": "Zataz",
+      "rssUrl": "https://www.zataz.com/feed/",
+      "category": "security"
     }
   ],
   "maxItemsPerFeed": 5,

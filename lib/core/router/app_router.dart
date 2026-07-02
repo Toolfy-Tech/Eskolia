@@ -12,6 +12,7 @@ import '../../features/onboarding/presentation/formation_choice_screen.dart';
 import '../../features/profil/presentation/certificate_screen.dart';
 import '../../features/classement/presentation/leaderboard_screen.dart';
 import '../../features/home/home_screen.dart';
+import '../../features/veille/presentation/veille_screen.dart';
 import '../../features/solo/presentation/practical_missions_screen.dart';
 import '../../features/solo/presentation/practical_track_screen.dart';
 import '../../features/solo/presentation/solo_revision_menu_screen.dart';
@@ -140,33 +141,29 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // --- ROUTES PLEIN ÉCRAN (HORS SHELL) ---
-    GoRoute(
-      path: '/lobby/:id',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(child: LobbyDetailScreen(lobbyId: state.pathParameters['id']!)),
-    ),
-    GoRoute(
-      path: '/lobby/:id/battle',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(
-        child: BattleScreen(lobbyId: state.pathParameters['id']!),
-      ),
-    ),
-    GoRoute(
-      path: '/profil/:uid',
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (context, state) => eskoliaTransitionPage(
-        child: ProfileScreen(uid: state.pathParameters['uid']!),
-      ),
-    ),
+
     // --- SHELL ROUTE (AVEC BOTTOM NAV) ---
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) => MainShell(child: child),
       routes: [
         GoRoute(
+          path: '/lobby/:id',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: LobbyDetailScreen(lobbyId: state.pathParameters['id']!)),
+        ),
+        GoRoute(
+          path: '/lobby/:id/battle',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: BattleScreen(lobbyId: state.pathParameters['id']!),
+          ),
+        ),
+        GoRoute(
           path: '/home',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const HomeScreen()),
+        ),
+        GoRoute(
+          path: '/veille',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const VeilleScreen()),
         ),
         GoRoute(
           path: '/solo',
@@ -260,6 +257,12 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const ProfileScreen()),
         ),
         GoRoute(
+          path: '/profil/:uid',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: ProfileScreen(uid: state.pathParameters['uid']!),
+          ),
+        ),
+        GoRoute(
           path: '/settings',
           pageBuilder: (context, state) => eskoliaTransitionPage(child: const SettingsScreen()),
         ),
@@ -341,7 +344,15 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/lexique',
-          pageBuilder: (context, state) => eskoliaTransitionPage(child: const LexiqueScreen()),
+          pageBuilder: (context, state) {
+            final args = state.extra as Map<String, dynamic>?;
+            return eskoliaTransitionPage(
+              child: LexiqueScreen(
+                startWithCount: args?['count'] as int?,
+                startWithCategory: args?['category'] as String?,
+              ),
+            );
+          },
         ),
         GoRoute(
           path: '/lexique-optimus',
@@ -357,9 +368,26 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: '/notebook/edit',
-          pageBuilder: (context, state) => eskoliaTransitionPage(
-            child: NoteEditorScreen(note: state.extra as NoteModel?),
-          ),
+          pageBuilder: (context, state) {
+            final extra = state.extra;
+            if (extra is NoteModel) {
+              return eskoliaTransitionPage(
+                child: NoteEditorScreen(note: extra),
+              );
+            } else if (extra is Map<String, dynamic>) {
+              return eskoliaTransitionPage(
+                child: NoteEditorScreen(
+                  note: extra['note'] as NoteModel?,
+                  initialWantCours: extra['initialWantCours'] as bool? ?? true,
+                  initialWantQuiz: extra['initialWantQuiz'] as bool? ?? true,
+                  initialWantFlashcards: extra['initialWantFlashcards'] as bool? ?? false,
+                ),
+              );
+            }
+            return eskoliaTransitionPage(
+              child: const NoteEditorScreen(),
+            );
+          },
         ),
         GoRoute(
           path: '/tp/reseau',

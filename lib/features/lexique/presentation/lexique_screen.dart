@@ -22,7 +22,14 @@ class _FieldState {
 }
 
 class LexiqueScreen extends StatefulWidget {
-  const LexiqueScreen({super.key});
+  const LexiqueScreen({
+    super.key,
+    this.startWithCount,
+    this.startWithCategory,
+  });
+
+  final int? startWithCount;
+  final String? startWithCategory;
 
   @override
   State<LexiqueScreen> createState() => _LexiqueScreenState();
@@ -30,7 +37,7 @@ class LexiqueScreen extends StatefulWidget {
 
 class _LexiqueScreenState extends State<LexiqueScreen> {
   _Phase _phase = _Phase.intro;
-  int _count = 15;
+  late int _count;
   List<LexiqueEntry> _entries = [];
   List<_FieldState> _fields = [];
 
@@ -40,18 +47,34 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   int get _correctCount   => _fields.where((f) => f.selfValidated == true).length;
 
   @override
+  void initState() {
+    super.initState();
+    _count = widget.startWithCount ?? 15;
+    if (widget.startWithCount != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _start();
+      });
+    }
+  }
+
+  @override
   void dispose() {
     for (final f in _fields) f.dispose();
     super.dispose();
   }
 
   void _start() {
-    final all = allLexique.toList()..shuffle(_rng);
+    var all = allLexique.toList();
+    if (widget.startWithCategory != null && widget.startWithCategory != 'all') {
+      final keys = widget.startWithCategory!.split(',');
+      all = all.where((e) => keys.contains(e.category)).toList();
+    }
+    all.shuffle(_rng);
     final selected = all.take(_count).toList();
     for (final f in _fields) f.dispose();
     setState(() {
       _entries = selected;
-      _fields  = List.generate(_count, (_) => _FieldState());
+      _fields  = List.generate(selected.length, (_) => _FieldState());
       _phase   = _Phase.worksheet;
     });
   }
@@ -72,14 +95,14 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Lexique IT'),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: _phase != _Phase.intro,
             child: switch (_phase) {
               _Phase.intro      => _buildIntro(),
               _Phase.worksheet  => _buildWorksheet(corrected: false),
@@ -116,7 +139,7 @@ class _LexiqueScreenState extends State<LexiqueScreen> {
               const Text('🔤', style: TextStyle(fontSize: 48)),
               const SizedBox(height: 12),
               const Text(
-                'Lexique IT',
+                'Lexique TIP',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 22,

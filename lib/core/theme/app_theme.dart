@@ -23,7 +23,7 @@ abstract final class AppTheme {
 
   static ThemeData get dark {
     const overlay = Color(0x14FFFFFF);
-    const borderGlass = Color(0x33FFFFFF);
+    const borderGlass = Color(0x55FFFFFF);
     const borderGlassFocused = Color(0x806C3CE1);
 
     final colorScheme = ColorScheme.dark(
@@ -97,7 +97,7 @@ abstract final class AppTheme {
         elevation: 0,
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
         ),
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
@@ -110,12 +110,12 @@ abstract final class AppTheme {
         backgroundColor: _surface,
         contentTextStyle: EskoliaTypography.body(),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: _surface,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl)),
         titleTextStyle: EskoliaTypography.h2(),
         contentTextStyle: EskoliaTypography.body(_textSecondary),
       ),
@@ -130,23 +130,23 @@ abstract final class AppTheme {
         prefixIconColor: _textSecondary,
         suffixIconColor: _textSecondary,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
           borderSide: const BorderSide(color: borderGlass, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
           borderSide: const BorderSide(color: borderGlass, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
           borderSide: const BorderSide(color: borderGlassFocused, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
           borderSide: BorderSide(color: colorScheme.error.withValues(alpha: 0.9)),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
           borderSide: BorderSide(color: colorScheme.error, width: 1.5),
         ),
       ),

@@ -29,7 +29,7 @@ class NotebookRepository {
   /// Upsert : insere ou remplace la note par son id.
   Future<void> save(NoteModel note) async {
     final prefs = await SharedPreferences.getInstance();
-    final notes = await loadAll();
+    final notes = List<NoteModel>.from(await loadAll());
     final idx = notes.indexWhere((n) => n.id == note.id);
     if (idx >= 0) {
       notes[idx] = note;
@@ -42,7 +42,7 @@ class NotebookRepository {
   /// Supprime la note identifiee par [id].
   Future<void> delete(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    final notes = await loadAll();
+    final notes = List<NoteModel>.from(await loadAll());
     notes.removeWhere((n) => n.id == id);
     await prefs.setString(_key, jsonEncode(notes.map((n) => n.toJson()).toList()));
   }

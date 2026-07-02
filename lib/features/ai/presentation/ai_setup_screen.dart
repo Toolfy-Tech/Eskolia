@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
@@ -375,60 +376,80 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: '\u{1F916} Assistant IA'),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: false,
             child: _loading
                 ? const Center(child: CircularProgressIndicator(color: EskoliaTokens.violet))
-                : ListView(
-                    padding: const EdgeInsets.fromLTRB(
-                      EskoliaLayout.screenPaddingH, 16,
-                      EskoliaLayout.screenPaddingH, 60,
-                    ),
-                    children: [
-                      _buildStatusBanner(),
-                      Builder(builder: (_) {
-                        final connectedGemini =
-                            _state.isConnected && _state.provider == AiProvider.gemini;
-                        final typingGemini = _detected == AiProvider.gemini &&
-                            _keyController.text.trim().length >= 10;
-                        if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
-                        final apiKey = connectedGemini
-                            ? (_state.apiKey ?? _keyController.text.trim())
-                            : _keyController.text.trim();
-                        return Column(
-                          children: [
-                            const SizedBox(height: 12),
-                            GeminiModelSelector(
-                              key: ValueKey(apiKey),
-                              apiKey: apiKey,
-                              initialModel: _geminiModel,
-                              onChanged: (m) => setState(() => _geminiModel = m),
+                : Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: EskoliaLayout.lessonContentMaxWidth(context),
+                      ),
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(
+                          EskoliaLayout.screenPaddingH, 24,
+                          EskoliaLayout.screenPaddingH, 60,
+                        ),
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 24, top: 8),
+                              child: Text(
+                                '🤖 Assistant IA',
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                             ),
+                          ),
+                          _buildStatusBanner(),
+                          Builder(builder: (_) {
+                            final connectedGemini =
+                                _state.isConnected && _state.provider == AiProvider.gemini;
+                            final typingGemini = _detected == AiProvider.gemini &&
+                                _keyController.text.trim().length >= 10;
+                            if (!connectedGemini && !typingGemini) return const SizedBox.shrink();
+                            final apiKey = connectedGemini
+                                ? (_state.apiKey ?? _keyController.text.trim())
+                                : _keyController.text.trim();
+                            return Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                GeminiModelSelector(
+                                  key: ValueKey(apiKey),
+                                  apiKey: apiKey,
+                                  initialModel: _geminiModel,
+                                  onChanged: (m) => setState(() => _geminiModel = m),
+                                ),
+                              ],
+                            );
+                          }),
+                          const SizedBox(height: 16),
+                          _buildKeyInput(),
+                          const SizedBox(height: 14),
+                          if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
+                            const SizedBox(height: 14),
+                            _buildConsentCheckbox(),
+                            const SizedBox(height: 10),
                           ],
-                        );
-                      }),
-                      const SizedBox(height: 16),
-                      _buildKeyInput(),
-                      const SizedBox(height: 14),
-                      if (_detected != AiProvider.unknown && !_detected.isLocal) ...[
-                        const SizedBox(height: 14),
-                        _buildConsentCheckbox(),
-                        const SizedBox(height: 10),
-                      ],
-                      _buildSaveButton(),
-                      if (_state.isConnected) ...[
-                        const SizedBox(height: 10),
-                        _buildDisconnectButton(),
-                      ],
-                      const SizedBox(height: 32),
-                      _buildProviderSection(),
-                    ],
+                          _buildSaveButton(),
+                          if (_state.isConnected) ...[
+                            const SizedBox(height: 10),
+                            _buildDisconnectButton(),
+                          ],
+                          const SizedBox(height: 32),
+                          _buildProviderSection(),
+                        ],
+                      ),
+                    ),
                   ),
           ),
         ],
@@ -444,7 +465,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: EskoliaTokens.success.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(color: EskoliaTokens.success.withValues(alpha: 0.4)),
         ),
         child: Row(children: [
@@ -464,7 +485,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(children: [

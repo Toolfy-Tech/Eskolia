@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../home/presentation/providers/home_providers.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -256,6 +260,45 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20, top: 8),
+            child: Row(
+              children: [
+                const SizedBox(width: 48),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      '🏆 Classement',
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final isPinned = ref.watch(homeCardsOrderProvider).contains('feature:leaderboard_mini');
+                    return IconButton(
+                      icon: Icon(
+                        isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                        color: isPinned ? EskoliaTokens.cyan : Colors.white54,
+                      ),
+                      onPressed: () {
+                        if (isPinned) {
+                          ref.read(homeCardsOrderProvider.notifier).removeCard('feature:leaderboard_mini');
+                        } else {
+                          ref.read(homeCardsOrderProvider.notifier).addCard('feature:leaderboard_mini');
+                        }
+                      },
+                      tooltip: isPinned ? 'Désépingler de l\'accueil' : 'Épingler à l\'accueil',
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
           ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (bounds) => LinearGradient(
@@ -372,18 +415,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(
-        context,
-        title: '\u{1F3C6} Classement',
-        onBack: () => context.canPop() ? context.pop() : context.go('/home'),
-      ),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: false,
             child: _tab == _BoardTab.dailyQuiz ? _buildDailyBody() : _buildUserBody(),
           ),
         ],

@@ -47,143 +47,148 @@ class PodcastPlayerCard extends ConsumerWidget {
       fontWeight: FontWeight.w600,
     );
 
-    return EskoliaCardContent(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: EskoliaCardContent(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _PlayButton(
-                playing: playing,
-                loading: loading,
-                onTap: () =>
-                    ref.read(podcastPlayerProvider.notifier).play(podcast),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              Row(
+                children: [
+                  _PlayButton(
+                    playing: playing,
+                    loading: loading,
+                    onTap: () =>
+                        ref.read(podcastPlayerProvider.notifier).play(podcast),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (podcast.id.isNotEmpty) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  color: EskoliaTokens.cyan.withValues(alpha: 0.40)),
-                            ),
-                            child: Text(
-                              podcast.id,
-                              style: const TextStyle(
-                                color: EskoliaTokens.cyan,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.6,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (podcast.id.isNotEmpty) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                      color: EskoliaTokens.cyan.withValues(alpha: 0.40)),
+                                ),
+                                child: Text(
+                                  podcast.id,
+                                  style: const TextStyle(
+                                    color: EskoliaTokens.cyan,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.6,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Expanded(
+                              child: Text(
+                                podcast.displayTitle,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.25,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                        Expanded(
-                          child: Text(
-                            podcast.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              height: 1.25,
-                            ),
-                          ),
+                          ],
                         ),
+                        if (podcast.subtitle != null) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            podcast.subtitle!,
+                            style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
+                          ),
+                        ],
                       ],
                     ),
-                    if (podcast.subtitle != null) ...[
-                      const SizedBox(height: 3),
-                      Text(
-                        podcast.subtitle!,
-                        style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 12),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.download_rounded),
-                color: EskoliaTokens.textSecondary,
-                iconSize: 20,
-                tooltip: 'Telecharger',
-                padding: const EdgeInsets.all(8),
-                constraints: const BoxConstraints(),
-                visualDensity: VisualDensity.compact,
-                onPressed: () => launchUrl(
-                  Uri.parse(podcast.url),
-                  mode: LaunchMode.externalApplication,
-                ),
-              ),
-              const SizedBox(width: 2),
-              Icon(
-                Icons.graphic_eq_rounded,
-                color: EskoliaTokens.cyan.withValues(alpha: playing ? 0.95 : 0.35),
-                size: 20,
-              ),
-            ],
-          ),
-          if (isThis && (hasDuration || state.loading)) ...[
-            const SizedBox(height: 8),
-            SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                trackHeight: 3,
-                activeTrackColor: EskoliaTokens.cyan,
-                inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
-                thumbColor: EskoliaTokens.cyan,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                overlayShape:
-                    const RoundSliderOverlayShape(overlayRadius: 14),
-              ),
-              child: Slider(
-                value: pos,
-                max: hasDuration ? total.inMilliseconds.toDouble() : 1.0,
-                onChanged: hasDuration
-                    ? (v) {}
-                    : null,
-                onChangeEnd: hasDuration
-                    ? (v) => ref
-                        .read(podcastPlayerProvider.notifier)
-                        .seek(Duration(milliseconds: v.round()))
-                    : null,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    isThis ? _fmt(state.position) : '0:00',
-                    style: timeStyle,
                   ),
-                  Text(
-                    hasDuration ? _fmt(total) : '--:--',
-                    style: timeStyle,
+                  IconButton(
+                    icon: const Icon(Icons.download_rounded),
+                    color: EskoliaTokens.textSecondary,
+                    iconSize: 20,
+                    tooltip: 'Telecharger',
+                    padding: const EdgeInsets.all(8),
+                    constraints: const BoxConstraints(),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => launchUrl(
+                      Uri.parse(podcast.url),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+                  const SizedBox(width: 2),
+                  Icon(
+                    Icons.graphic_eq_rounded,
+                    color: EskoliaTokens.cyan.withValues(alpha: playing ? 0.95 : 0.35),
+                    size: 20,
                   ),
                 ],
               ),
-            ),
-          ],
-          if (error != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              error,
-              style: const TextStyle(color: EskoliaTokens.pink, fontSize: 12),
-            ),
-          ],
-        ],
+              if (isThis && (hasDuration || state.loading)) ...[
+                const SizedBox(height: 8),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 3,
+                    activeTrackColor: EskoliaTokens.cyan,
+                    inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
+                    thumbColor: EskoliaTokens.cyan,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                    overlayShape:
+                        const RoundSliderOverlayShape(overlayRadius: 14),
+                  ),
+                  child: Slider(
+                    value: pos,
+                    max: hasDuration ? total.inMilliseconds.toDouble() : 1.0,
+                    onChanged: hasDuration
+                        ? (v) {}
+                        : null,
+                    onChangeEnd: hasDuration
+                        ? (v) => ref
+                            .read(podcastPlayerProvider.notifier)
+                            .seek(Duration(milliseconds: v.round()))
+                        : null,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isThis ? _fmt(state.position) : '0:00',
+                        style: timeStyle,
+                      ),
+                      Text(
+                        hasDuration ? _fmt(total) : '--:--',
+                        style: timeStyle,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              if (error != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  error,
+                  style: const TextStyle(color: EskoliaTokens.pink, fontSize: 12),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/optimus_content_models.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/eskolia_tokens.dart';
+import '../../../../shared/widgets/eskolia_card.dart';
 import 'support_media.dart';
 
 const Color _orange = EskoliaTokens.orange;
@@ -95,42 +97,59 @@ class _InlineSupportState extends State<_InlineSupport> {
   final String _viewId =
       'eskolia-support-${Random().nextInt(999999999)}';
 
+  double _getImageHeight(String filename) {
+    final name = filename.toLowerCase();
+    if (name.contains('etapes') ||
+        name.contains('guide') ||
+        name.contains('6.regles') ||
+        name.contains('veille')) {
+      return 550.0;
+    }
+    return 300.0;
+  }
+
+  double _getImageAspectRatio(String filename) {
+    final name = filename.toLowerCase();
+    if (name.contains('etapes') ||
+        name.contains('guide') ||
+        name.contains('6.regles') ||
+        name.contains('veille')) {
+      return 0.67; // Portrait aspect ratio (width / height)
+    }
+    return 1.77; // Landscape aspect ratio (width / height)
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      clipBehavior: Clip.antiAlias,
+    return EskoliaCardContent(
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildMedia(context),
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _TypeBadge(type: widget.item.type),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   widget.item.title,
-                  style: const TextStyle(
+                  style: GoogleFonts.outfit(
                     color: Colors.white,
-                    fontSize: 13,
+                    fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 if (widget.item.description.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     widget.item.description,
                     style: TextStyle(
-                      color: _slate.withValues(alpha: 0.85),
-                      fontSize: 11.5,
-                      height: 1.35,
+                      color: _slate.withValues(alpha: 0.9),
+                      fontSize: 13,
+                      height: 1.4,
                     ),
                   ),
                 ],
@@ -152,37 +171,98 @@ class _InlineSupportState extends State<_InlineSupport> {
   }
 
   Widget _image(BuildContext context) {
+    final double aspect = _getImageAspectRatio(widget.item.filename);
     return GestureDetector(
-      onTap: () => launchUrl(
-        Uri.parse(widget.item.url),
-        webOnlyWindowName: '_blank',
-      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          barrierColor: Colors.black.withValues(alpha: 0.85),
+          builder: (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: InteractiveViewer(
+                    maxScale: 4.0,
+                    child: Center(
+                      child: Image.network(
+                        widget.item.url,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(
+                            child: CircularProgressIndicator(color: EskoliaTokens.cyan),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return buildImageViewer(widget.item.url, _viewId);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Material(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      icon: const Icon(Icons.close_rounded, color: Colors.white, size: 24),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          SizedBox(
-            width: double.infinity,
-            height: 260,
-            child: buildImageViewer(widget.item.url, _viewId),
+          AspectRatio(
+            aspectRatio: aspect,
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.15),
+              child: Image.network(
+                widget.item.url,
+                fit: BoxFit.contain,
+                width: double.infinity,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(color: EskoliaTokens.cyan),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return buildImageViewer(widget.item.url, _viewId);
+                },
+              ),
+            ),
           ),
           Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            margin: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.60),
+              color: Colors.black.withValues(alpha: 0.70),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.white12, width: 0.5),
             ),
-            child: Row(
+            child: const Row(
               mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.open_in_new_rounded, color: Colors.white, size: 13),
-                SizedBox(width: 5),
+              children: [
+                Icon(Icons.open_in_new_rounded, color: Colors.white, size: 12),
+                SizedBox(width: 6),
                 Text(
                   'Agrandir',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -194,9 +274,8 @@ class _InlineSupportState extends State<_InlineSupport> {
   }
 
   Widget _video() {
-    return SizedBox(
-      width: double.infinity,
-      height: 220,
+    return AspectRatio(
+      aspectRatio: 16 / 9,
       child: buildVideoViewer(widget.item.url, _viewId),
     );
   }
@@ -204,7 +283,7 @@ class _InlineSupportState extends State<_InlineSupport> {
   Widget _pdf() {
     return SizedBox(
       width: double.infinity,
-      height: 520,
+      height: 580,
       child: buildPdfViewer(widget.item.url, _viewId),
     );
   }

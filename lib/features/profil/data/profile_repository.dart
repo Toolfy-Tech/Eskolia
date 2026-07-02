@@ -18,6 +18,7 @@ class ProfileSnapshot {
     this.tpMissionsThisWeek = 0,
     this.badges = const [],
     this.activeDays = const [],
+    this.role = 'user',
   });
 
   final String uid;
@@ -35,6 +36,9 @@ class ProfileSnapshot {
   final List<String> badges;
   /// Jours d'activité YYYYMMDD pour le calendrier de série.
   final List<int> activeDays;
+  final String role;
+
+  bool get isStaff => role == 'admin' || role == 'moderator';
 
   factory ProfileSnapshot.fromUser(UserModel u) {
     return ProfileSnapshot(
@@ -51,6 +55,7 @@ class ProfileSnapshot {
       tpMissionsThisWeek: u.tpMissionsThisWeek,
       badges: List<String>.from(u.badges),
       activeDays: List<int>.from(u.activeDays),
+      role: u.role,
     );
   }
 
@@ -65,6 +70,7 @@ class ProfileSnapshot {
       totalQuizzesPlayed: 12,
       totalWins: 8,
       battleWins: 3,
+      role: 'user',
     );
   }
 }

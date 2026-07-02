@@ -420,7 +420,7 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => _MissionDetailSheet(
+      builder: (ctx) => TpMissionDetailSheet(
         mission: mission,
         flatIndex: flatIndex,
         trackId: widget.trackId,
@@ -465,8 +465,9 @@ class _TpScenarioScreenState extends State<TpScenarioScreen> {
   }
 }
 
-class _MissionDetailSheet extends StatefulWidget {
-  const _MissionDetailSheet({
+class TpMissionDetailSheet extends StatefulWidget {
+  const TpMissionDetailSheet({
+    super.key,
     required this.mission,
     required this.flatIndex,
     required this.trackId,
@@ -479,10 +480,10 @@ class _MissionDetailSheet extends StatefulWidget {
   final VoidCallback onComplete;
 
   @override
-  State<_MissionDetailSheet> createState() => _MissionDetailSheetState();
+  State<TpMissionDetailSheet> createState() => _TpMissionDetailSheetState();
 }
 
-class _MissionDetailSheetState extends State<_MissionDetailSheet> {
+class _TpMissionDetailSheetState extends State<TpMissionDetailSheet> {
   final Map<String, bool> _expanded = {
     'context':  false,
     'steps':    true,

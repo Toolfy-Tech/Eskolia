@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -24,14 +25,12 @@ class AchievementsScreen extends StatelessWidget {
     final repo = AchievementsRepository();
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Hauts faits', showBack: false),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
             child: FutureBuilder<List<(AchievementDef, bool, String?)>>(
               future: repo.listWithStateAndProgress(uid),
               builder: (context, snap) {
@@ -51,21 +50,36 @@ class AchievementsScreen extends StatelessWidget {
                       EskoliaLayout.screenPaddingH,
                       EskoliaLayout.screenPaddingBottom,
                     ),
-                    children: List.generate(
-                      5,
-                      (i) => Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Container(
-                          height: 88,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(16),
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 24, top: 8),
+                          child: Text(
+                            '🏅 Hauts faits',
+                            style: GoogleFonts.outfit(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        )
-                            .animate(onPlay: (c) => c.repeat(reverse: true))
-                            .shimmer(duration: 900.ms, color: Colors.white10),
+                        ),
                       ),
-                    ),
+                      ...List.generate(
+                        5,
+                        (i) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            height: 88,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.05),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          )
+                              .animate(onPlay: (c) => c.repeat(reverse: true))
+                              .shimmer(duration: 900.ms, color: Colors.white10),
+                        ),
+                      ),
+                    ],
                   );
                 }
                 final rows = snap.data!;
@@ -103,6 +117,19 @@ class AchievementsScreen extends StatelessWidget {
                     EskoliaLayout.screenPaddingBottom,
                   ),
                   children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 24, top: 8),
+                        child: Text(
+                          '🏅 Hauts faits',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
                     uid.isEmpty
                         ? Container(
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

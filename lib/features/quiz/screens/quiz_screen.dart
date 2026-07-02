@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/router/quiz_play_session.dart';
@@ -292,69 +293,75 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     final maxW = EskoliaLayout.lessonContentMaxWidth(context);
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: hPad),
-          child: _buildTopBar(context, state, s.currentIndex + 1, total),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 8),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: SizedBox(
-              height: 6,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(color: EskoliaTokens.surface2),
-                  FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: progress.clamp(0.0, 1.0),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: [EskoliaTokens.violetSoft, EskoliaTokens.cyan]),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 850),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPad),
+              child: _buildTopBar(context, state, s.currentIndex + 1, total),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(3),
+                child: SizedBox(
+                  height: 6,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Container(color: EskoliaTokens.surface2),
+                      FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: progress.clamp(0.0, 1.0),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(colors: [EskoliaTokens.violetSoft, EskoliaTokens.cyan]),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 20),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight - 28,
-                    maxWidth: maxW,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                        _dailyLeaderboardPanel(s),
-                        if (s.sessionId.startsWith('daily_')) const SizedBox(height: 12),
-                        EskoliaFlipCard(
-                          isFlipped: state.isFlipped,
-                          front: _buildFront(state, q),
-                          back: _buildBack(state, q),
-                        ),
-                        const SizedBox(height: 24),
-                        _buildActions(state),
-                        SizedBox(height: EskoliaLayout.screenPaddingBottom),
-                      ],
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 20),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight - 28,
+                        maxWidth: maxW,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _dailyLeaderboardPanel(s),
+                          if (s.sessionId.startsWith('daily_')) const SizedBox(height: 12),
+                          EskoliaFlipCard(
+                            isFlipped: state.isFlipped,
+                            useBlueprintStyle: true,
+                            front: _buildFront(state, q),
+                            back: _buildBack(state, q),
+                          ),
+                          const SizedBox(height: 24),
+                          _buildActions(state),
+                          SizedBox(height: EskoliaLayout.screenPaddingBottom),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-      ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -402,7 +409,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         ],
         SelectableText(
           q.question,
-          style: const TextStyle(
+          style: GoogleFonts.outfit(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -452,16 +459,6 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             autofocus: false,
             minLines: 4,
             maxLines: 8,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Effort de mémoire : écris avant de révéler !',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.4),
-              fontSize: 12,
-              fontStyle: FontStyle.italic,
-            ),
           ),
         ],
       ],
@@ -529,42 +526,59 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   }
 
   Widget _buildSequenceItem({required Key key, required int index, required String label}) {
-    return Container(
+    return Semantics(
       key: key,
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              color: EskoliaTokens.violetSoft.withValues(alpha: 0.25),
-              shape: BoxShape.circle,
+      label: "Étape numéro ${index + 1} de la séquence : $label.",
+      hint: "Glissez vers le haut ou le bas pour réorganiser cet élément dans la liste.",
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: EskoliaTokens.surface2.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.3)),
+          boxShadow: [
+            BoxShadow(
+              color: EskoliaTokens.cyan.withValues(alpha: 0.05),
+              blurRadius: 8,
+              spreadRadius: -2,
             ),
-            alignment: Alignment.center,
-            child: Text(
-              '${index + 1}',
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+          ],
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+                border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${index + 1}',
+                style: const TextStyle(
+                  color: EskoliaTokens.cyan,
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
+              ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.drag_handle_rounded, color: Colors.white30, size: 20),
-          ),
-        ],
+            const Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Icon(Icons.drag_handle_rounded, color: EskoliaTokens.cyan, size: 20),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -577,11 +591,11 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       children: [
         Row(
           children: [
-            const Icon(Icons.compare_arrows_rounded, color: EskoliaTokens.violetSoft, size: 16),
+            const Icon(Icons.compare_arrows_rounded, color: EskoliaTokens.cyan, size: 16),
             const SizedBox(width: 6),
             const Text(
               'GLISSE POUR ASSOCIER',
-              style: TextStyle(color: EskoliaTokens.violetSoft, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
+              style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
         ),
@@ -613,15 +627,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.07),
+                      color: EskoliaTokens.surface2.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
                     ),
                     child: Text(leftItem, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(Icons.arrow_forward_rounded, color: Colors.white30, size: 16),
+                const Icon(Icons.arrow_forward_rounded, color: EskoliaTokens.cyan, size: 16),
                 const SizedBox(width: 6),
                 Expanded(
                   child: DragTarget<String>(
@@ -647,14 +661,21 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                             decoration: BoxDecoration(
-                              color: EskoliaTokens.violetSoft.withValues(alpha: 0.15),
+                              color: EskoliaTokens.cyan.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: EskoliaTokens.violetSoft.withValues(alpha: 0.5)),
+                              border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.6)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                                  blurRadius: 8,
+                                  spreadRadius: -2,
+                                ),
+                              ],
                             ),
                             child: Row(
                               children: [
                                 Expanded(child: Text(placed, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3))),
-                                Icon(Icons.close_rounded, color: Colors.white.withValues(alpha: 0.4), size: 14),
+                                Icon(Icons.close_rounded, color: EskoliaTokens.cyan, size: 14),
                               ],
                             ),
                           ),
@@ -663,16 +684,16 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
-                          color: isHovered ? EskoliaTokens.violetSoft.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.03),
+                          color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.08) : Colors.white.withValues(alpha: 0.02),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: isHovered ? EskoliaTokens.violetSoft.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.1),
+                            color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.7) : Colors.white.withValues(alpha: 0.08),
                           ),
                         ),
                         child: Text(
                           'Dépose ici...',
                           style: TextStyle(
-                            color: isHovered ? EskoliaTokens.violetSoft : Colors.white.withValues(alpha: 0.3),
+                            color: isHovered ? EskoliaTokens.cyan : Colors.white.withValues(alpha: 0.25),
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
                           ),
@@ -696,21 +717,31 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         color: ghost
             ? Colors.white.withValues(alpha: 0.04)
             : dragging
-                ? EskoliaTokens.violetSoft.withValues(alpha: 0.9)
-                : Colors.white.withValues(alpha: 0.10),
+                ? EskoliaTokens.cyan.withValues(alpha: 0.8)
+                : EskoliaTokens.surface2.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: ghost
               ? Colors.white.withValues(alpha: 0.1)
-              : EskoliaTokens.violetSoft.withValues(alpha: dragging ? 1.0 : 0.4),
+              : EskoliaTokens.cyan.withValues(alpha: dragging ? 1.0 : 0.4),
         ),
+        boxShadow: dragging
+            ? [
+                BoxShadow(
+                  color: EskoliaTokens.cyan.withValues(alpha: 0.3),
+                  blurRadius: 12,
+                  spreadRadius: -2,
+                )
+              ]
+            : null,
       ),
       child: Text(
         item,
         style: TextStyle(
-          color: ghost ? Colors.white24 : Colors.white,
+          color: ghost ? Colors.white24 : (dragging ? Colors.black : Colors.white),
           fontSize: 12,
           fontWeight: FontWeight.w600,
+          fontFamily: 'monospace',
         ),
       ),
     );

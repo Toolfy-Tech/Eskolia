@@ -16,7 +16,7 @@ abstract final class EskoliaTypography {
   static const double _labelSize = 14;
   static const double _codeSize = 13;
 
-  static TextStyle display([Color? color]) => GoogleFonts.poppins(
+  static TextStyle display([Color? color]) => GoogleFonts.outfit(
         fontSize: _displaySize,
         fontWeight: FontWeight.w700,
         height: 1.15,
@@ -24,7 +24,7 @@ abstract final class EskoliaTypography {
         color: color ?? EskoliaTokens.textPrimary,
       );
 
-  static TextStyle h1([Color? color]) => GoogleFonts.poppins(
+  static TextStyle h1([Color? color]) => GoogleFonts.outfit(
         fontSize: _h1Size,
         fontWeight: FontWeight.w700,
         height: 1.2,
@@ -32,14 +32,14 @@ abstract final class EskoliaTypography {
         color: color ?? EskoliaTokens.textPrimary,
       );
 
-  static TextStyle h2([Color? color]) => GoogleFonts.poppins(
+  static TextStyle h2([Color? color]) => GoogleFonts.outfit(
         fontSize: _h2Size,
         fontWeight: FontWeight.w700,
         height: 1.25,
         color: color ?? EskoliaTokens.textPrimary,
       );
 
-  static TextStyle h3([Color? color]) => GoogleFonts.poppins(
+  static TextStyle h3([Color? color]) => GoogleFonts.outfit(
         fontSize: _h3Size,
         fontWeight: FontWeight.w700,
         height: 1.3,
@@ -60,7 +60,7 @@ abstract final class EskoliaTypography {
         color: color ?? EskoliaTokens.textSecondary,
       );
 
-  static TextStyle label([Color? color]) => GoogleFonts.poppins(
+  static TextStyle label([Color? color]) => GoogleFonts.outfit(
         fontSize: _labelSize,
         fontWeight: FontWeight.w600,
         height: 1.2,

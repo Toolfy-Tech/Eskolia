@@ -35,11 +35,19 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
   bool _busy = false;
   QuizCatalogTrack _catalogTrack = QuizCatalogTrack.optimusOnly;
   List<SavedNotebookQuiz> _savedQuizzes = [];
+  late final TextEditingController _questionsController;
 
   @override
   void initState() {
     super.initState();
+    _questionsController = TextEditingController(text: '$_questionCount');
     _load();
+  }
+
+  @override
+  void dispose() {
+    _questionsController.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -289,26 +297,68 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
         _buildSectionHeader('Options'),
         const SizedBox(height: 8),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Nombre de questions : $_questionCount',
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
+            const Text(
+              'Nombre max de questions (à l\'écrit)',
+              style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: _questionCount > 5
+                      ? () {
+                          setState(() {
+                            _questionCount--;
+                            _questionsController.text = '$_questionCount';
+                          });
+                        }
+                      : null,
+                  icon: const Icon(Icons.remove_circle_outline_rounded, color: EskoliaVisual.neonCyan),
+                ),
+                Container(
+                  width: 70,
+                  alignment: Alignment.center,
+                  child: TextFormField(
+                    controller: _questionsController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                      filled: true,
+                      fillColor: Colors.white.withValues(alpha: 0.05),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.white24),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: EskoliaVisual.neonCyan),
+                      ),
+                    ),
+                    onChanged: (val) {
+                      final parsed = int.tryParse(val);
+                      if (parsed != null && parsed >= 5 && parsed <= 100) {
+                        setState(() {
+                          _questionCount = parsed;
+                        });
+                      }
+                    },
                   ),
-                  Slider(
-                    value: _questionCount.toDouble(),
-                    min: 5,
-                    max: 30,
-                    divisions: 25,
-                    label: '$_questionCount',
-                    activeColor: EskoliaVisual.neonCyan,
-                    onChanged: (v) => setState(() => _questionCount = v.round()),
-                  ),
-                ],
-              ),
+                ),
+                IconButton(
+                  onPressed: _questionCount < 100
+                      ? () {
+                          setState(() {
+                            _questionCount++;
+                            _questionsController.text = '$_questionCount';
+                          });
+                        }
+                      : null,
+                  icon: const Icon(Icons.add_circle_outline_rounded, color: EskoliaVisual.neonCyan),
+                ),
+              ],
             ),
           ],
         ),
@@ -361,9 +411,9 @@ class _QuizSoloSetupScreenState extends State<QuizSoloSetupScreen> {
             onSelectionChanged: (s) => setState(() => _selectedPaths = {...s}),
           ),
         ],
-        // Lexique IT
+        // Lexique TIP
         const SizedBox(height: 4),
-        _buildSectionHeader('Lexique IT'),
+        _buildSectionHeader('Lexique TIP'),
         const SizedBox(height: 4),
         Text(
           'Questions flash sur les termes et définitions du lexique.',

@@ -15,7 +15,7 @@ enum EskoliaButtonVariant {
 
 const Color _kPrimary = EskoliaTokens.violet;
 const Color _kDestructive = EskoliaTokens.error;
-const double _kRadius = 12;
+const double _kRadius = EskoliaTokens.radiusMd;
 
 /// Bouton Eskolia — 4 variantes sémantiques.
 class EskoliaButton extends StatefulWidget {
@@ -54,7 +54,7 @@ class _EskoliaButtonState extends State<EskoliaButton> {
       children: [
         if (widget.icon != null) ...[
           Icon(widget.icon, size: 18),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
         ],
         if (widget.expand)
           Expanded(
@@ -72,7 +72,6 @@ class _EskoliaButtonState extends State<EskoliaButton> {
   }
 
   Widget _buildButton(BuildContext context) {
-    final bg = widget.color ?? _kPrimary;
     final fg = widget.textColor ?? EskoliaTokens.textPrimary;
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(_kRadius),
@@ -80,39 +79,101 @@ class _EskoliaButtonState extends State<EskoliaButton> {
 
     switch (widget.variant) {
       case EskoliaButtonVariant.primary:
-        return FilledButton(
-          onPressed: widget.onPressed,
-          style: FilledButton.styleFrom(
-            backgroundColor: bg,
-            foregroundColor: fg,
-            shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        final bool isEnabled = widget.onPressed != null;
+        final decoration = BoxDecoration(
+          borderRadius: BorderRadius.circular(_kRadius),
+          gradient: isEnabled
+              ? LinearGradient(
+                  colors: [
+                    EskoliaTokens.violet,
+                    Color.lerp(EskoliaTokens.violet, EskoliaTokens.pink, 0.45) ?? EskoliaTokens.violet,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isEnabled ? null : EskoliaTokens.textDisabled.withValues(alpha: 0.24),
+          boxShadow: isEnabled
+              ? [
+                  BoxShadow(
+                    color: EskoliaTokens.violet.withValues(alpha: 0.35),
+                    blurRadius: 16,
+                    spreadRadius: -2,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
+        );
+
+        return Container(
+          decoration: decoration,
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(_kRadius),
+            child: InkWell(
+              onTap: widget.onPressed,
+              borderRadius: BorderRadius.circular(_kRadius),
+              splashColor: Colors.white.withValues(alpha: 0.16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                child: DefaultTextStyle(
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.5,
+                  ),
+                  child: IconTheme(
+                    data: const IconThemeData(color: Colors.white, size: 18),
+                    child: _buildContent(),
+                  ),
+                ),
+              ),
+            ),
           ),
-          child: _buildContent(),
         );
 
       case EskoliaButtonVariant.secondary:
         final accent = widget.color ?? _kPrimary;
+        final isEnabled = widget.onPressed != null;
         return OutlinedButton(
           onPressed: widget.onPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: widget.textColor ?? accent,
-            side: BorderSide(color: accent.withValues(alpha: 0.6)),
+            foregroundColor: widget.textColor ?? (isEnabled ? accent : EskoliaTokens.textDisabled),
+            side: BorderSide(
+              color: isEnabled ? accent.withValues(alpha: 0.5) : EskoliaTokens.textDisabled.withValues(alpha: 0.25),
+              width: 1.25,
+            ),
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           ),
-          child: _buildContent(),
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            child: _buildContent(),
+          ),
         );
 
       case EskoliaButtonVariant.ghost:
+        final accent = widget.color ?? _kPrimary;
         return TextButton(
           onPressed: widget.onPressed,
           style: TextButton.styleFrom(
-            foregroundColor: widget.textColor ?? (widget.color ?? _kPrimary),
+            foregroundColor: widget.textColor ?? accent,
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
-          child: _buildContent(),
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            child: _buildContent(),
+          ),
         );
 
       case EskoliaButtonVariant.destructive:
@@ -121,9 +182,16 @@ class _EskoliaButtonState extends State<EskoliaButton> {
           style: TextButton.styleFrom(
             foregroundColor: _kDestructive,
             shape: shape,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
-          child: _buildContent(),
+          child: DefaultTextStyle(
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            child: _buildContent(),
+          ),
         );
     }
   }

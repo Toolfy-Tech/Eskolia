@@ -24,7 +24,7 @@ window.EskoliaFS = (function () {
     });
   }
 
-  async function getHandle() {
+  async function getHandle(requestIfPrompt) {
     var db = await openDb();
     var handle = await new Promise(function (resolve) {
       var tx = db.transaction(STORE, 'readonly');
@@ -33,6 +33,7 @@ window.EskoliaFS = (function () {
       req.onerror = function () { resolve(null); };
     });
     if (!handle) return null;
+    if (!requestIfPrompt) return handle;
     try {
       var perm = await handle.queryPermission({ mode: 'readwrite' });
       if (perm === 'granted') return handle;
@@ -41,6 +42,24 @@ window.EskoliaFS = (function () {
     } catch (e) {
       return null;
     }
+  }
+
+  async function getSubdirHandle(root, folderName) {
+    if (root.name.toLowerCase() === folderName.toLowerCase()) {
+      return root;
+    }
+    try {
+      return await root.getDirectoryHandle(folderName);
+    } catch (e) {}
+    try {
+      var targetLower = folderName.toLowerCase();
+      for await (var entry of root.values()) {
+        if (entry.kind === 'directory' && entry.name.toLowerCase() === targetLower) {
+          return entry;
+        }
+      }
+    } catch (e) {}
+    return await root.getDirectoryHandle(folderName, { create: true });
   }
 
   return {
@@ -59,19 +78,19 @@ window.EskoliaFS = (function () {
     },
 
     hasFolder: async function () {
-      var h = await getHandle();
+      var h = await getHandle(false);
       return h !== null;
     },
 
     getFolderName: async function () {
-      var h = await getHandle();
+      var h = await getHandle(false);
       return h ? h.name : null;
     },
 
     saveFile: async function (folder, filename, content) {
-      var root = await getHandle();
+      var root = await getHandle(true);
       if (!root) throw new Error('no_folder');
-      var sub = await root.getDirectoryHandle(folder, { create: true });
+      var sub = await getSubdirHandle(root, folder);
       var fh = await sub.getFileHandle(filename, { create: true });
       var w = await fh.createWritable();
       await w.write(content);
@@ -79,10 +98,10 @@ window.EskoliaFS = (function () {
     },
 
     listFiles: async function (folder) {
-      var root = await getHandle();
+      var root = await getHandle(true);
       if (!root) return [];
       try {
-        var sub = await root.getDirectoryHandle(folder);
+        var sub = await getSubdirHandle(root, folder);
         var names = [];
         for await (var entry of sub.values()) {
           if (entry.kind === 'file') names.push(entry.name);
@@ -94,10 +113,10 @@ window.EskoliaFS = (function () {
     },
 
     readFile: async function (folder, filename) {
-      var root = await getHandle();
+      var root = await getHandle(true);
       if (!root) return null;
       try {
-        var sub = await root.getDirectoryHandle(folder);
+        var sub = await getSubdirHandle(root, folder);
         var fh = await sub.getFileHandle(filename);
         var file = await fh.getFile();
         return await file.text();

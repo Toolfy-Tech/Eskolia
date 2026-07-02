@@ -22,6 +22,10 @@ class UserModel {
     required this.createdAt,
     this.role = 'user',
     this.activeDays = const [],
+    this.cardSettings = const {},
+    this.homeCardsOrder = const [],
+    this.homePinnedCards = const [],
+    this.subscribedSources = const [],
   });
 
   final String uid;
@@ -48,6 +52,10 @@ class UserModel {
   final String role;
   /// Jours d'activité sous forme YYYYMMDD (ex. 20260518), pour le calendrier de série.
   final List<int> activeDays;
+  final Map<String, dynamic> cardSettings;
+  final List<String> homeCardsOrder;
+  final List<String> homePinnedCards;
+  final List<String> subscribedSources;
 
   bool get isStaff => role == 'admin' || role == 'moderator';
 
@@ -94,6 +102,10 @@ class UserModel {
           ? (data['role'] as String).trim()
           : 'user',
       activeDays: _intList(data['activeDays']),
+      cardSettings: data['cardSettings'] as Map<String, dynamic>? ?? const {},
+      homeCardsOrder: _stringList(data['homeCardsOrder']),
+      homePinnedCards: _stringList(data['homePinnedCards']),
+      subscribedSources: _stringList(data['subscribedSources']),
     );
   }
 
@@ -117,6 +129,10 @@ class UserModel {
       if (lastLogin != null) 'lastLogin': Timestamp.fromDate(lastLogin!),
       'createdAt': Timestamp.fromDate(createdAt),
       'role': role,
+      'cardSettings': cardSettings,
+      'homeCardsOrder': homeCardsOrder,
+      'homePinnedCards': homePinnedCards,
+      'subscribedSources': subscribedSources,
     };
   }
 
@@ -141,6 +157,10 @@ class UserModel {
     bool clearLastLogin = false,
     DateTime? createdAt,
     String? role,
+    Map<String, dynamic>? cardSettings,
+    List<String>? homeCardsOrder,
+    List<String>? homePinnedCards,
+    List<String>? subscribedSources,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -162,6 +182,10 @@ class UserModel {
       lastLogin: clearLastLogin ? null : (lastLogin ?? this.lastLogin),
       createdAt: createdAt ?? this.createdAt,
       role: role ?? this.role,
+      cardSettings: cardSettings ?? this.cardSettings,
+      homeCardsOrder: homeCardsOrder ?? this.homeCardsOrder,
+      homePinnedCards: homePinnedCards ?? this.homePinnedCards,
+      subscribedSources: subscribedSources ?? this.subscribedSources,
     );
   }
 

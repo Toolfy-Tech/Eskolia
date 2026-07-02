@@ -24,6 +24,7 @@ Widget buildImageViewer(String url, String viewId) {
         ..style.width = '100%'
         ..style.height = '100%'
         ..style.objectFit = 'contain'
+        ..style.backgroundColor = 'transparent'
         ..style.display = 'block';
     });
   }
@@ -59,3 +60,17 @@ Widget buildVideoViewer(String url, String viewId) {
   }
   return HtmlElementView(viewType: viewId);
 }
+
+Widget buildIFrameViewer(String url, String viewId) {
+  if (_registeredViews.add(viewId)) {
+    ui.platformViewRegistry.registerViewFactory(viewId, (_) {
+      return html.IFrameElement()
+        ..src = url
+        ..style.border = 'none'
+        ..style.width = '100%'
+        ..style.height = '100%';
+    });
+  }
+  return HtmlElementView(viewType: viewId);
+}
+

@@ -4,37 +4,38 @@ abstract final class EskoliaTokens {
   EskoliaTokens._();
 
   // ─── FONDS ───────────────────────────────────────────────────────────────
-  static const Color bgBase    = Color(0xFF0B1120);
-  static const Color surface1  = Color(0xFF111827);
-  static const Color surface2  = Color(0xFF1E2A3B);
-  static const Color surface3  = Color(0xFF243044);
+  static const Color bgBase    = Color(0xFF071426); // Tardis Deep Blue
+  static const Color surface1  = Color(0xFF0C2545); // Tardis Surface 1
+  static const Color surface2  = Color(0xFF12345D); // Tardis Surface 2
+  static const Color surface3  = Color(0xFF174375); // Tardis Surface 3
 
   // ─── PRIMAIRES ───────────────────────────────────────────────────────────
-  static const Color violet     = Color(0xFF7C6FFF);
-  static const Color violetSoft = Color(0xFF6C63FF);
-  static const Color cyan       = Color(0xFF00D4E8);
-  static const Color cyanSoft   = Color(0xFF00D4E8);
-  static const Color gold       = Color(0xFFF5C842);
-  static const Color amber      = Color(0xFFF59E0B);
-  static const Color orange     = Color(0xFFFF9800);
-  static const Color pink       = Color(0xFFFF6584);
+  static const Color violet     = Color(0xFF00BFFF); // Deep Sky Blue (remplace violet)
+  static const Color violetSoft = Color(0xFF1E90FF); // Dodger Blue
+  static const Color cyan       = Color(0xFF00E5FF); // Hyper Cyan
+  static const Color cyanSoft   = Color(0xFF80F3FF); // Light Blueprint Cyan
+  static const Color gold       = Color(0xFFFFD700);
+  static const Color amber      = Color(0xFFFF9F0A);
+  static const Color orange     = Color(0xFFFF6B35);
+  static const Color pink       = Color(0xFFFE4A76); // Cyber Pink
+
 
   // ─── STATUTS ─────────────────────────────────────────────────────────────
-  static const Color success = Color(0xFF10B981);
+  static const Color success = Color(0xFF00E5A3); // Vert menthe premium
   static const Color error   = Color(0xFFEF4444);
-  static const Color warning = Color(0xFFF59E0B);
+  static const Color warning = Color(0xFFFF9F0A);
   static const Color info    = Color(0xFF3B82F6);
 
   // ─── TEXTES ───────────────────────────────────────────────────────────────
-  static const Color textPrimary   = Color(0xFFF1F5F9);
+  static const Color textPrimary   = Color(0xFFF8FAFC);
   static const Color textSecondary = Color(0xFF94A3B8);
   static const Color textDisabled  = Color(0xFF475569);
   static const Color slate         = textSecondary;
 
   // ─── BORDURES ─────────────────────────────────────────────────────────────
-  static const Color borderSubtle = Color(0x14FFFFFF);
-  static const Color borderGlass  = Color(0x33FFFFFF);
-  static const Color borderFocus  = Color(0x807C6FFF);
+  static const Color borderSubtle = Color(0x1AFFFFFF);
+  static const Color borderGlass  = Color(0x40FFFFFF);
+  static const Color borderFocus  = Color(0x997C5CFF);
 
   // ─── SPACING (grille 8pt) ─────────────────────────────────────────────────
   static const double spaceXs  = 4;
@@ -45,10 +46,10 @@ abstract final class EskoliaTokens {
   static const double spaceXxl = 48;
 
   // ─── BORDER RADIUS ────────────────────────────────────────────────────────
-  static const double radiusSm   = 8;
-  static const double radiusMd   = 12;
-  static const double radiusLg   = 16;
-  static const double radiusXl   = 20;
+  static const double radiusSm   = 10;
+  static const double radiusMd   = 16;
+  static const double radiusLg   = 20;
+  static const double radiusXl   = 28;
   static const double radiusFull = 999;
 
   // ─── GLOWS ────────────────────────────────────────────────────────────────

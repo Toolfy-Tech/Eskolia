@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/asset_cache_service.dart';
 import '../../../data/repositories/user_repository.dart';
@@ -10,11 +11,19 @@ import '../../labo/data/labo_approved_question_repository.dart';
 import '../../labo/data/labo_question_draft.dart';
 import '../../lexique/data/lexique_data.dart';
 import '../../parcours/data/parcours_repository.dart';
+import '../../parcours/data/optimus_content_models.dart' as ocm;
 import '../../parcours/data/tip_quiz_catalog.dart';
+import '../../parcours/data/tip_catalog_loader.dart';
 import '../models/quiz_models.dart';
 import 'revision_pool_repository.dart';
+import 'lacunes_repository.dart';
 
 export '../models/quiz_models.dart';
+
+final quizRepositoryProvider = Provider<QuizRepository>((ref) {
+  final userRepo = ref.watch(userRepositoryProvider);
+  return QuizRepository(userRepository: userRepo);
+});
 
 class QuizRepository {
   QuizRepository({UserRepository? userRepository})
@@ -38,6 +47,10 @@ class QuizRepository {
       if (sessionId == 'daily' || sessionId.startsWith('daily_')) {
         return await _buildDailyRandomSession();
       }
+      if (ParcoursRepository.moduleCatalog.isEmpty) {
+        final base = await TipCatalogLoader.loadOptimusFormation();
+        ParcoursRepository.registerModules(base);
+      }
       final mod = ParcoursRepository.moduleById(sessionId);
       if (mod?.quizAssetPath != null && mod!.quizAssetPath!.isNotEmpty) {
         return await _loadTipAssetSession(
@@ -50,7 +63,7 @@ class QuizRepository {
     } catch (e) {
       debugPrint('[QuizRepository.loadSession] sessionId=$sessionId erreur=$e');
       return await _loadTipAssetSession(
-        assetKey: 'data/quiz/optimus/section-01-hardware/part-01-fondations.json',
+        assetKey: 'data/quiz/optimus/module-02-hardware-architecture/M02-CH01-Q-boitiers.quiz.json',
         sessionId: 'fallback',
         title: 'Session de Secours',
       );
@@ -100,7 +113,21 @@ class QuizRepository {
     int questionCount = 10,
     QuizCatalogTrack? catalogTrack,
     dynamic track,
-  }) => _buildDailyRandomSession();
+  }) async {
+    final lacunesRepo = LacunesRepository();
+    final entries = await lacunesRepo.readEntries();
+    if (entries.isNotEmpty) {
+      final qs = await lacunesRepo.resolveQuestions(entries, max: questionCount);
+      if (qs.isNotEmpty) {
+        return _sessionFromQuestions(
+          'gap_review_${DateTime.now().millisecondsSinceEpoch}',
+          'Mes fautes',
+          qs,
+        );
+      }
+    }
+    return _buildDailyRandomSession();
+  }
 
   Future<QuizSession> buildSoloBundleQuizSession({
     required String assetKey,
@@ -125,6 +152,22 @@ class QuizRepository {
       final qs = await RevisionPoolRepository().resolveQuestions(entries, max: maxQuestions);
       return _sessionFromQuestions(
         'revision_${DateTime.now().millisecondsSinceEpoch}',
+        title,
+        qs,
+      );
+    }
+    return _buildDailyRandomSession();
+  }
+
+  Future<QuizSession> buildLacunesSession({
+    int maxQuestions = 15,
+    String title = 'Mes fautes ❌',
+    List<RevisionPoolEntry>? entries,
+  }) async {
+    if (entries != null && entries.isNotEmpty) {
+      final qs = await LacunesRepository().resolveQuestions(entries, max: maxQuestions);
+      return _sessionFromQuestions(
+        'lacunes_rev_${DateTime.now().millisecondsSinceEpoch}',
         title,
         qs,
       );
@@ -201,9 +244,52 @@ class QuizRepository {
     }
 
     // 3. Injecter les questions Lexique si demandé
-    for (final lp in lexiquePaths) {
-      final key = lp.replaceFirst(lexiqueSentinelPrefix, '');
-      questions.addAll(_lexiqueToQuizQuestions(key));
+    if (lexiquePaths.isNotEmpty) {
+      final List<LexiqueEntry> dynamicEntries = [];
+      try {
+        final allModuleLexique = await ocm.OptimusLexiqueRepository.loadAll();
+        for (final m in allModuleLexique) {
+          final String cat;
+          switch (m.moduleId) {
+            case 'M01':
+            case 'M05':
+            case 'M08':
+              cat = 'metier';
+              break;
+            case 'M02':
+              cat = 'materiel';
+              break;
+            case 'M03':
+              cat = 'materiel';
+              break;
+            case 'M04':
+              cat = 'reseau';
+              break;
+            case 'M06':
+              cat = 'windows';
+              break;
+            case 'M07':
+              cat = 'securite';
+              break;
+            default:
+              cat = 'metier';
+          }
+          for (final term in m.terms) {
+            dynamicEntries.add(LexiqueEntry(
+              term: term.term,
+              definition: term.definition,
+              category: cat,
+            ));
+          }
+        }
+      } catch (e) {
+        debugPrint('[QuizRepository.buildSoloComposeSession.lexique] $e');
+      }
+
+      for (final lp in lexiquePaths) {
+        final key = lp.replaceFirst(lexiqueSentinelPrefix, '');
+        questions.addAll(_lexiqueToQuizQuestions(key, dynamicEntries));
+      }
     }
 
     if (questions.isEmpty) return _buildDailyRandomSession();
@@ -226,7 +312,7 @@ class QuizRepository {
     final nonLexiquePaths = paths.where((p) => !p.startsWith(lexiqueSentinelPrefix)).toList();
     final title = nonLexiquePaths.isNotEmpty
         ? TipQuizCatalog.subjectLabelForPaths(nonLexiquePaths)
-        : 'Lexique IT';
+        : 'Lexique TIP';
 
     return _sessionFromQuestions(
       '${sessionIdPrefix}_${DateTime.now().millisecondsSinceEpoch}',
@@ -235,10 +321,21 @@ class QuizRepository {
     );
   }
 
-  static List<QuizQuestion> _lexiqueToQuizQuestions(String categoryKey) {
+  static List<QuizQuestion> _lexiqueToQuizQuestions(String categoryKey, List<LexiqueEntry> dynamicEntries) {
+    final combined = [...allLexique, ...dynamicEntries];
+    final seen = <String>{};
+    final unique = <LexiqueEntry>[];
+    for (final e in combined) {
+      final normalized = e.term.trim().toLowerCase();
+      if (!seen.contains(normalized)) {
+        seen.add(normalized);
+        unique.add(e);
+      }
+    }
+
     final entries = categoryKey == 'all'
-        ? allLexique
-        : allLexique.where((e) => e.category == categoryKey).toList();
+        ? unique
+        : unique.where((e) => e.category == categoryKey).toList();
     return entries.map((e) {
       final catName = lexiqueCategories
           .where((c) => c.key == e.category)
@@ -329,9 +426,9 @@ class QuizRepository {
 
   Future<QuizSession> _buildDailyRandomSession() async {
     final chapters = [
-      'data/quiz/optimus/section-01-hardware/part-01-fondations.json',
-      'data/quiz/optimus/section-02-systemes/part-01-concepts-os.json',
-      'data/quiz/optimus/section-06-ia/part-02-cas-usage.json',
+      'data/quiz/optimus/module-02-hardware-architecture/M02-CH01-Q-boitiers.quiz.json',
+      'data/quiz/optimus/module-03-systeme-exploitation/M03-CH01-Q-differents-os.quiz.json',
+      'data/quiz/optimus/module-08-utiliser-ia/M08-CH01-roct-contexte.json',
     ];
     final selectedAsset = chapters[Random().nextInt(chapters.length)];
     return await _loadTipAssetSession(

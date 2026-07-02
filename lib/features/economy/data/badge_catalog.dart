@@ -35,7 +35,7 @@ const List<BadgeDef> kBadgeCatalogStatic = [
     emoji: '\u{1F393}',
     title: 'Diplômé TIP',
     description:
-        'Valider l’examen blanc de fin de formation TIP (parcours complet).',
+        'Réussir l’épreuve de validation de fin de formation TIP (parcours complet).',
     isSuper: true,
   ),
   BadgeDef(
@@ -43,7 +43,7 @@ const List<BadgeDef> kBadgeCatalogStatic = [
     emoji: '\u{1F916}',
     title: 'Diplômé Optimus',
     description:
-        'Valider l’examen blanc de fin de parcours Optimus (toutes les sections).',
+        'Réussir l’épreuve de validation de fin de parcours Optimus (toutes les sections).',
     isSuper: true,
   ),
   BadgeDef(

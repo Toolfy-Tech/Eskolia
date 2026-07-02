@@ -67,6 +67,7 @@ class _QuizResultScreenState extends State<QuizResultScreen>
   late Animation<double> _scale;
   late Animation<double> _opacity;
   bool _saved = false;
+  final Set<String> _pinnedKeys = {};
 
   @override
   void initState() {
@@ -82,7 +83,42 @@ class _QuizResultScreenState extends State<QuizResultScreen>
       CurvedAnimation(parent: _entrance, curve: Curves.easeOut),
     );
     _entrance.forward();
+    _loadPinnedKeys();
     WidgetsBinding.instance.addPostFrameCallback((_) => _saveOnce());
+  }
+
+  Future<void> _loadPinnedKeys() async {
+    final keys = await RevisionPoolRepository().readKeySet();
+    if (mounted) {
+      setState(() {
+        _pinnedKeys.clear();
+        _pinnedKeys.addAll(keys);
+      });
+    }
+  }
+
+  Future<void> _togglePinQuestion(QuizQuestion q, int index) async {
+    final repo = RevisionPoolRepository();
+    final qKey = RevisionPoolRepository.keyForQuestion(q, index);
+    if (_pinnedKeys.contains(qKey)) {
+      final a = q.sourceAssetPath;
+      if (a != null && a.isNotEmpty) {
+        final entry = RevisionPoolEntry(
+          assetPath: a,
+          questionIndex: index,
+          questionId: q.id.isNotEmpty ? q.id : null,
+        );
+        await repo.remove(entry);
+        setState(() {
+          _pinnedKeys.remove(qKey);
+        });
+      }
+    } else {
+      await repo.add(q);
+      setState(() {
+        _pinnedKeys.add(qKey);
+      });
+    }
   }
 
   Future<void> _saveOnce() async {
@@ -326,18 +362,48 @@ class _QuizResultScreenState extends State<QuizResultScreen>
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _miniAction(Icons.push_pin_rounded, "Révision", () => RevisionPoolRepository().add(q)),
-                    const SizedBox(width: 8),
-                    _miniAction(Icons.menu_book_rounded, "Cours", () async {
-                      final id = await courseModuleIdForQuizContext(widget.sessionId, q);
-                      if (id != null && mounted) {
-                        showQuizLessonPreviewDialog(context, id);
+                    Builder(
+                      builder: (context) {
+                        final qKey = RevisionPoolRepository.keyForQuestion(q, index);
+                        final isPinned = _pinnedKeys.contains(qKey);
+                        return _miniAction(
+                          isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                          isPinned ? "Épinglé" : "Épingler",
+                          () => _togglePinQuestion(q, index),
+                          iconColor: isPinned ? EskoliaTokens.gold : Colors.white60,
+                          textColor: isPinned ? EskoliaTokens.gold : Colors.white70,
+                          borderColor: isPinned ? EskoliaTokens.gold.withValues(alpha: 0.25) : Colors.white10,
+                          bgColor: isPinned ? EskoliaTokens.gold.withValues(alpha: 0.08) : Colors.transparent,
+                        );
                       }
-                    }),
+                    ),
                     const SizedBox(width: 8),
-                    _miniAction(Icons.flag_outlined, "Signaler", () {
-                      showQuizQuestionReportDialog(context, q);
-                    }),
+                    _miniAction(
+                      Icons.menu_book_rounded,
+                      "Cours",
+                      () async {
+                        final id = await courseModuleIdForQuizContext(widget.sessionId, q);
+                        if (id != null && mounted) {
+                          showQuizLessonPreviewDialog(context, id);
+                        }
+                      },
+                      iconColor: EskoliaTokens.info,
+                      textColor: EskoliaTokens.info.withValues(alpha: 0.9),
+                      borderColor: EskoliaTokens.info.withValues(alpha: 0.2),
+                      bgColor: EskoliaTokens.info.withValues(alpha: 0.06),
+                    ),
+                    const SizedBox(width: 8),
+                    _miniAction(
+                      Icons.flag_rounded,
+                      "Signaler",
+                      () {
+                        showQuizQuestionReportDialog(context, q);
+                      },
+                      iconColor: EskoliaTokens.error,
+                      textColor: EskoliaTokens.error.withValues(alpha: 0.9),
+                      borderColor: EskoliaTokens.error.withValues(alpha: 0.2),
+                      bgColor: EskoliaTokens.error.withValues(alpha: 0.06),
+                    ),
                   ],
                 ),
               ],
@@ -348,18 +414,37 @@ class _QuizResultScreenState extends State<QuizResultScreen>
     );
   }
 
-  Widget _miniAction(IconData icon, String label, VoidCallback onTap) {
+  Widget _miniAction(
+    IconData icon,
+    String label,
+    VoidCallback onTap, {
+    Color? iconColor,
+    Color? textColor,
+    Color? borderColor,
+    Color? bgColor,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(border: Border.all(color: Colors.white10), borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: bgColor ?? Colors.transparent,
+          border: Border.all(color: borderColor ?? Colors.white10),
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Row(
           children: [
-            Icon(icon, size: 14, color: EskoliaTokens.cyan),
+            Icon(icon, size: 14, color: iconColor ?? EskoliaTokens.cyan),
             const SizedBox(width: 6),
-            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor ?? Colors.white70,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),

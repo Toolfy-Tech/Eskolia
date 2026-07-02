@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../home/presentation/providers/home_providers.dart';
 
 import '../../../data/repositories/user_repository.dart';
 import '../../../core/theme/eskolia_layout.dart';
@@ -31,14 +35,14 @@ class LaboHubScreen extends StatelessWidget {
         : UserRepository().getUserById(uid);
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Le Labo'),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: false,
             child: ListView(
               padding: const EdgeInsets.fromLTRB(
                 EskoliaLayout.screenPaddingH,
@@ -47,6 +51,45 @@ class LaboHubScreen extends StatelessWidget {
                 EskoliaLayout.screenPaddingBottom,
               ),
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24, top: 8),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 48),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            '🔬 Le Labo',
+                            style: GoogleFonts.outfit(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final isAddedToHome = ref.watch(homeCardsOrderProvider).contains('feature:labo_contrib');
+                          return IconButton(
+                            icon: Icon(
+                              isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
+                              color: isAddedToHome ? EskoliaTokens.cyan : Colors.white54,
+                            ),
+                            onPressed: () {
+                              if (isAddedToHome) {
+                                ref.read(homeCardsOrderProvider.notifier).removeCard('feature:labo_contrib');
+                              } else {
+                                ref.read(homeCardsOrderProvider.notifier).addCard('feature:labo_contrib');
+                              }
+                            },
+                            tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 FutureBuilder<UserModel?>(
                   future: userFuture,
                   builder: (context, snap) {

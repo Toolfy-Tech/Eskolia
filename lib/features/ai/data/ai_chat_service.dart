@@ -171,8 +171,29 @@ class AiChatService {
     }
   }
 
-  // ── Google Gemini ─────────────────────────────────────────────────────────
-  // Appel non-streaming vers generateContent — format canonique Google.
+  Future<Response<dynamic>> _postGemini(String key, String model, String promptText) {
+    return _dio.post<dynamic>(
+      'https://generativelanguage.googleapis.com/v1beta/models/'
+      '$model:generateContent',
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': key,
+        },
+        sendTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 90),
+      ),
+      data: jsonEncode({
+        'contents': [
+          {
+            'parts': [
+              {'text': promptText}
+            ]
+          }
+        ],
+      }),
+    );
+  }
 
   Stream<String> _streamGemini(
     String key,
@@ -193,33 +214,23 @@ class AiChatService {
     final promptText = buf.toString().trim();
 
     final prefs      = await SharedPreferences.getInstance();
-    final geminiModel = prefs.getString('gemini_model') ?? 'gemini-2.5-flash';
+    var geminiModel = prefs.getString('gemini_model') ?? 'gemini-2.5-flash';
 
     Response<dynamic> response;
     try {
-      response = await _dio.post<dynamic>(
-        'https://generativelanguage.googleapis.com/v1beta/models/'
-        '$geminiModel:generateContent',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': key,
-          },
-          sendTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 90),
-        ),
-        data: jsonEncode({
-          'contents': [
-            {
-              'parts': [
-                {'text': promptText}
-              ]
-            }
-          ],
-        }),
-      );
+      response = await _postGemini(key, geminiModel, promptText);
     } on DioException catch (e) {
-      throw _dioError(e);
+      final status = e.response?.statusCode;
+      if (geminiModel == 'gemini-2.5-flash' && (status == 503 || status == 429)) {
+        try {
+          geminiModel = 'gemini-2.0-flash';
+          response = await _postGemini(key, geminiModel, promptText);
+        } on DioException catch (fallbackErr) {
+          throw _dioError(fallbackErr);
+        }
+      } else {
+        throw _dioError(e);
+      }
     }
 
     final data = response.data is Map

@@ -32,6 +32,30 @@
 
   <title>Eskolia</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    // Monkey-patch window.addEventListener pour intercepter les erreurs de décodage JSON
+    // causées par des messages non-YouTube reçus par youtube_player_iframe sur le web.
+    (function() {
+      const originalAdd = window.addEventListener;
+      window.addEventListener = function(type, listener, options) {
+        if (type === 'message') {
+          const safeListener = function(event) {
+            try {
+              listener(event);
+            } catch (e) {
+              if (e.name === 'SyntaxError' && e.message.includes('JSON')) {
+                // Ignorer silencieusement pour éviter le crash de l'application Dart
+              } else {
+                console.error('Erreur attrapée dans l\'écouteur de messages:', e);
+              }
+            }
+          };
+          return originalAdd.call(window, type, safeListener, options);
+        }
+        return originalAdd.call(this, type, listener, options);
+      };
+    })();
+  </script>
 </head>
 <body>
   <!--

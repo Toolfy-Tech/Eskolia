@@ -1,12 +1,22 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../home/presentation/providers/home_providers.dart';
+import '../../home/presentation/widgets/home_card_settings_dialog.dart';
+import 'providers/lobby_providers.dart';
+import 'widgets/duel_quick_card_body.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
+import '../../../core/utils/feature_info_resolver.dart';
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/widgets/bottom_nav.dart';
@@ -14,6 +24,9 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import 'widgets/lobby_create_card_body.dart';
+import 'widgets/lobby_create_ai_card_body.dart';
+import 'widgets/lobby_join_private_card_body.dart';
 import '../../../shared/widgets/teacher_quiz_picker_widget.dart';
 import '../../parcours/data/tip_quiz_catalog.dart';
 import '../../quiz/presentation/widgets/quiz_catalog_track_selector.dart';
@@ -35,19 +48,22 @@ const Color _green = EskoliaTokens.success;
 const Color _orange = EskoliaTokens.amber;
 const Color _red = EskoliaTokens.error;
 
-class LobbyListScreen extends StatefulWidget {
+class LobbyListScreen extends ConsumerStatefulWidget {
   const LobbyListScreen({super.key});
 
   @override
-  State<LobbyListScreen> createState() => _LobbyListScreenState();
+  ConsumerState<LobbyListScreen> createState() => _LobbyListScreenState();
 }
 
-class _LobbyListScreenState extends State<LobbyListScreen>
+class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
     with SingleTickerProviderStateMixin {
   final LobbyRepository _repo = LobbyRepository();
   int _retry = 0;
   late AnimationController _pulse;
   bool _isStaff = false;
+
+  Timer? _dragDebounceTimer;
+  String? _hoveredDragKey;
 
   @override
   void initState() {
@@ -82,6 +98,7 @@ class _LobbyListScreenState extends State<LobbyListScreen>
   @override
   void dispose() {
     _pulse.dispose();
+    _dragDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -171,834 +188,698 @@ class _LobbyListScreenState extends State<LobbyListScreen>
     }
   }
 
-  Widget _buildLobbyVisibilitySegment({
-    required bool isPrivate,
-    required void Function(bool value) onChanged,
+  Widget _buildInteractiveCard({
+    required String key,
+    required String category,
+    required String title,
+    required String defaultEmoji,
+    required Color accentColor,
+    required Widget body,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Visibilité',
-          style: TextStyle(color: _slateLight, fontSize: 12),
-        ),
-        const SizedBox(height: 8),
-        SegmentedButton<bool>(
-          showSelectedIcon: false,
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          segments: const [
-            ButtonSegment<bool>(
-              value: false,
-              label: Text('Public'),
-              icon: Icon(Icons.public_outlined, size: 18),
-            ),
-            ButtonSegment<bool>(
-              value: true,
-              label: Text('Privé'),
-              icon: Icon(Icons.lock_outline, size: 18),
-            ),
-          ],
-          selected: {isPrivate},
-          onSelectionChanged: (s) {
-            if (s.isEmpty) return;
-            onChanged(s.first);
-          },
-        ),
-        const SizedBox(height: 8),
-        Text(
-          isPrivate
-              ? 'Pas dans la liste des lobbies : un code est généré pour que tes coéquipiers rejoignent.'
-              : "Visible dans la liste tant qu'il reste des places (jusqu'à $kLobbyMaxPlayers joueurs).",
-          style: TextStyle(
-            color: _slateLight.withValues(alpha: 0.85),
-            fontSize: 11,
-            height: 1.35,
-          ),
-        ),
-      ],
-    );
-  }
+    final settingsMap = ref.watch(homeCardSettingsProvider);
+    final settings = settingsMap[key];
+    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
+    final isCollapsed = settings?.isCollapsed ?? false;
+    
+    final isPinned = ref.watch(lobbyPinnedCardsProvider).contains(key);
+    final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
+    final displayAccentColor = settings != null
+        ? Color(settings.colorHex)
+        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-  Widget _buildCorrectionModeSegment({
-    required bool correctionAtEnd,
-    required void Function(bool value) onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text('Correction', style: TextStyle(color: _slateLight, fontSize: 12)),
-        const SizedBox(height: 8),
-        SegmentedButton<bool>(
-          showSelectedIcon: false,
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          segments: const [
-            ButtonSegment<bool>(
-              value: true,
-              label: Text('À la fin'),
-              icon: Icon(Icons.playlist_add_check_rounded, size: 18),
-            ),
-            ButtonSegment<bool>(
-              value: false,
-              label: Text('Après chaque question'),
-              icon: Icon(Icons.manage_search_rounded, size: 18),
-            ),
-          ],
-          selected: {correctionAtEnd},
-          onSelectionChanged: (s) {
-            if (s.isEmpty) return;
-            onChanged(s.first);
-          },
-        ),
-        const SizedBox(height: 8),
-        Text(
-          correctionAtEnd
-              ? 'Les réponses sont corrigées toutes ensemble à la fin du quiz.'
-              : 'Le créateur corrige les réponses après chaque question avant de passer à la suivante.',
-          style: TextStyle(color: _slateLight.withValues(alpha: 0.85), fontSize: 11, height: 1.35),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _openCreateDialog() async {
-    var selectedPaths = <String>{};
-    var catalogTrack = QuizCatalogTrack.optimusOnly;
-    final catalogFuture = TipQuizCatalog.loadChaptersWithQuiz();
-    var questionCount = 15;
-    var useCustomSource = false;
-    var useAiSource = false;
-    CustomQuizData? customQuizData;
-    final aiThemeCtrl = TextEditingController();
-    var aiDifficulty = 'mixte';
-    var aiGenerating = false;
-    String? aiError;
-    final aiKeyRepo = AiKeyRepository();
-    final aiGenerator = NoteAiGenerator();
-    final difficulties = <String>{
-      'facile',
-      'moyen',
-      'difficile',
-    };
-    var isPrivateLobby = false;
-    var correctionAtEnd = true;
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
-    // Priorité : username Firestore > displayName Firebase Auth > préfixe email
-    String name = FirebaseAuth.instance.currentUser?.displayName ??
-        FirebaseAuth.instance.currentUser?.email?.split('@').first ??
-        'Hôte';
-    if (uid != 'guest') {
-      try {
-        final userDoc = await UserRepository().getUserById(uid);
-        if (userDoc != null && userDoc.username.isNotEmpty) {
-          name = userDoc.username;
-        }
-      } catch (e) {
-        debugPrint('[LobbyListScreen._openCreateDialog] $e');
-      }
-    }
-
-    if (!mounted) return;
-    final created = await showDialog<String>(
-      context: context,
-      builder: (ctx) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: AlertDialog(
-            backgroundColor: EskoliaTokens.surface1.withValues(alpha: 0.94),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-              side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-            ),
-            title: const Text(
-              'Nouveau lobby',
-              style: TextStyle(color: Colors.white),
-            ),
-            content: StatefulBuilder(
-              builder: (context, setD) {
-                return SizedBox(
-                  width: 420,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Titre automatique : Quiz multi de $name · '
-                        '$kLobbyMaxPlayers places max.',
-                        style: TextStyle(
-                          color: _slateLight.withValues(alpha: 0.9),
-                          fontSize: 12,
-                          height: 1.35,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Quiz multijoueur : +10 pts par bonne réponse, mêmes manches pour tout le monde.',
-                        style: TextStyle(
-                          color: _slateLight.withValues(alpha: 0.88),
-                          fontSize: 11,
-                          height: 1.35,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      _buildLobbyVisibilitySegment(
-                        isPrivate: isPrivateLobby,
-                        onChanged: (v) => setD(() => isPrivateLobby = v),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildCorrectionModeSegment(
-                        correctionAtEnd: correctionAtEnd,
-                        onChanged: (v) => setD(() => correctionAtEnd = v),
-                      ),
-                      const SizedBox(height: 14),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Difficulté des questions',
-                        style: TextStyle(color: _slateLight, fontSize: 12),
-                      ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          FilterChip(
-                            label: const Text('Facile'),
-                            selected: difficulties.contains('facile'),
-                            onSelected: (v) => setD(() {
-                              if (v) {
-                                difficulties.add('facile');
-                              } else {
-                                difficulties.remove('facile');
-                              }
-                            }),
-                          ),
-                          FilterChip(
-                            label: const Text('Moyen'),
-                            selected: difficulties.contains('moyen'),
-                            onSelected: (v) => setD(() {
-                              if (v) {
-                                difficulties.add('moyen');
-                              } else {
-                                difficulties.remove('moyen');
-                              }
-                            }),
-                          ),
-                          FilterChip(
-                            label: const Text('Difficile'),
-                            selected: difficulties.contains('difficile'),
-                            onSelected: (v) => setD(() {
-                              if (v) {
-                                difficulties.add('difficile');
-                              } else {
-                                difficulties.remove('difficile');
-                              }
-                            }),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Sans niveau clair dans le JSON → traité comme « moyen » si tu coches Moyen.',
-                        style: TextStyle(
-                          color: _slateLight.withValues(alpha: 0.75),
-                          fontSize: 10,
-                          height: 1.3,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Nombre de questions : $questionCount',
-                        style: TextStyle(color: _slateLight, fontSize: 12),
-                      ),
-                      Slider(
-                        value: questionCount.toDouble(),
-                        min: kLobbyMinQuestionCount.toDouble(),
-                        max: kLobbyMaxQuestionCount.toDouble(),
-                        divisions:
-                            kLobbyMaxQuestionCount - kLobbyMinQuestionCount,
-                        label: '$questionCount',
-                        activeColor: _violet,
-                        onChanged: (v) => setD(
-                          () => questionCount = v.round().clamp(
-                            kLobbyMinQuestionCount,
-                            kLobbyMaxQuestionCount,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      // ── Source des questions ────────────────────────
-                      Text('Sources des questions',
-                          style: TextStyle(color: _slateLight, fontSize: 12)),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          FilterChip(
-                            label: const Text('Chapitres'),
-                            selected: !useCustomSource && !useAiSource,
-                            onSelected: (_) => setD(() {
-                              useCustomSource = false;
-                              useAiSource = false;
-                              customQuizData = null;
-                              aiError = null;
-                            }),
-                            selectedColor: _cyan.withValues(alpha: 0.2),
-                            checkmarkColor: _cyan,
-                            labelStyle: TextStyle(
-                              color: (!useCustomSource && !useAiSource) ? _cyan : _slateLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                          FilterChip(
-                            label: const Text('Mon quiz .json'),
-                            selected: useCustomSource,
-                            onSelected: (v) => setD(() {
-                              useCustomSource = v;
-                              if (v) useAiSource = false;
-                              if (!v) customQuizData = null;
-                            }),
-                            selectedColor: _violet.withValues(alpha: 0.25),
-                            checkmarkColor: Colors.white,
-                            labelStyle: TextStyle(
-                              color: useCustomSource ? Colors.white : _slateLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                          FilterChip(
-                            label: const Text('IA'),
-                            selected: useAiSource,
-                            onSelected: (v) => setD(() {
-                              useAiSource = v;
-                              if (v) useCustomSource = false;
-                              customQuizData = null;
-                              aiError = null;
-                            }),
-                            selectedColor: EskoliaTokens.amber.withValues(alpha: 0.25),
-                            checkmarkColor: Colors.white,
-                            labelStyle: TextStyle(
-                              color: useAiSource ? Colors.white : _slateLight,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      if (useCustomSource) ...[
-                        CustomQuizImportWidget(
-                          importedData: customQuizData,
-                          onImported: (d) => setD(() => customQuizData = d),
-                        ),
-                      ] else if (useAiSource) ...[
-                        _buildAiQuizGenerator(
-                          setD: setD,
-                          themeCtrl: aiThemeCtrl,
-                          difficulty: aiDifficulty,
-                          onDifficultyChanged: (v) => setD(() => aiDifficulty = v),
-                          questionCount: questionCount,
-                          generating: aiGenerating,
-                          generatedData: customQuizData,
-                          error: aiError,
-                          onGenerate: () async {
-                            final theme = aiThemeCtrl.text.trim();
-                            if (theme.isEmpty) {
-                              setD(() => aiError = 'Saisis un theme avant de generer.');
-                              return;
-                            }
-                            setD(() { aiGenerating = true; aiError = null; customQuizData = null; });
-                            try {
-                              final aiState = await aiKeyRepo.watch().first;
-                              if (!aiState.isConnected) {
-                                setD(() { aiError = 'Connecte ton IA dans Profil > IA.'; aiGenerating = false; });
-                                return;
-                              }
-                              final buffer = StringBuffer();
-                              await for (final token in aiGenerator.streamQuizFromTheme(
-                                apiKey: aiState.apiKey!,
-                                provider: aiState.provider,
-                                theme: theme,
-                                questionCount: questionCount,
-                                difficulty: aiDifficulty,
-                              )) {
-                                buffer.write(token);
-                              }
-                              final raw = NoteAiGenerator.extractJson(buffer.toString());
-                              final data = CustomQuizData.fromJsonString(raw);
-                              setD(() { customQuizData = data; aiGenerating = false; });
-                            } on FormatException catch (e) {
-                              setD(() { aiError = 'Format invalide : ${e.message}'; aiGenerating = false; });
-                            } catch (e) {
-                              setD(() { aiError = e.toString(); aiGenerating = false; });
-                            }
-                          },
-                          onReset: () => setD(() { customQuizData = null; aiError = null; }),
-                        ),
-                      ] else ...[
-                        Text(
-                          selectedPaths.isEmpty
-                              ? 'Aucun chapitre sélectionné'
-                              : '${selectedPaths.length} chapitre(s) sélectionné(s)',
-                          style: TextStyle(
-                            color: selectedPaths.isEmpty ? _slateLight.withValues(alpha: 0.6) : _cyan,
-                            fontSize: 11,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        QuizCatalogTrackSelector(
-                          value: catalogTrack,
-                          dense: true,
-                          onChanged: (t) {
-                            catalogFuture.then((all) {
-                              if (!ctx.mounted) return;
-                              final allowed = TipQuizCatalog.filterByTrack(all, t)
-                                  .map((e) => e.quizAssetPath)
-                                  .toSet();
-                              setD(() {
-                                catalogTrack = t;
-                                selectedPaths.removeWhere(
-                                    (p) => !allowed.contains(p));
-                              });
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 260,
-                          child: catalogTrack == QuizCatalogTrack.teacher
-                              ? TeacherQuizPickerWidget(
-                                  selectedPath: selectedPaths.firstOrNull,
-                                  onSelected: (path) =>
-                                      setD(() => selectedPaths = {path}),
-                                )
-                              : FutureBuilder<List<TipQuizChapterRef>>(
-                                  future: catalogFuture,
-                                  builder: (context, snap) {
-                                    if (snap.connectionState != ConnectionState.done) {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 28,
-                                          height: 28,
-                                          child: CircularProgressIndicator(
-                                              strokeWidth: 2, color: _cyan),
-                                        ),
-                                      );
-                                    }
-                                    if (snap.hasError) {
-                                      return Center(
-                                        child: Text(
-                                          'Erreur catalogue.\n${snap.error}',
-                                          style: TextStyle(
-                                              color: Colors.red.shade200,
-                                              fontSize: 12),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      );
-                                    }
-                                    final all = snap.data ?? [];
-                                    final entries = TipQuizCatalog.filterByTrack(all, catalogTrack);
-                                    return QuizScopePicker(
-                                      entries: entries,
-                                      selectedPaths: selectedPaths,
-                                      onSelectionChanged: (s) =>
-                                          setD(() => selectedPaths = Set<String>.from(s)),
-                                    );
-                                  },
-                                ),
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text('Annuler', style: TextStyle(color: _slateLight)),
+    return EskoliaCardContent(
+      accentBorderColor: displayAccentColor,
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              EskoliaCardSectionBadge(
+                sectionName: 'MULTI',
+                color: displayAccentColor,
               ),
-              FilledButton(
-                onPressed: () async {
-                  // Validation selon la source active
-                  if (useCustomSource || useAiSource) {
-                    if (customQuizData == null) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        SnackBar(content: Text(useAiSource
-                            ? 'Genere un quiz avec l\'IA avant de creer le lobby.'
-                            : 'Importe un fichier .json avant de creer le lobby.')),
-                      );
-                      return;
-                    }
+              const SizedBox(width: 10),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+                        child: Text(
+                          displayTitle,
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (FeatureInfoResolver.getInfo(key) != null) ...[
+                      const SizedBox(width: 4),
+                      IconButton(
+                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(4),
+                        tooltip: 'Comment ça marche ?',
+                        onPressed: () => _showInfoDialog(context, key),
+                        icon: const Icon(
+                          Icons.info_outline_rounded,
+                          color: Colors.white60,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: isCollapsed ? Colors.white70 : displayAccentColor,
+                  size: 18,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: 'Personnaliser',
+                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
+                icon: const Icon(
+                  Icons.edit_note_rounded,
+                  color: Colors.white70,
+                  size: 20,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
+                onPressed: () => ref.read(lobbyPinnedCardsProvider.notifier).togglePin(key),
+                icon: Icon(
+                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                  color: isPinned ? displayAccentColor : Colors.white38,
+                  size: 16,
+                ),
+              ),
+              IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(4),
+                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
+                onPressed: () {
+                  if (isAddedToHome) {
+                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
                   } else {
-                    if (selectedPaths.isEmpty) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('Choisis au moins une section ou un chapitre.')),
-                      );
-                      return;
-                    }
-                    if (difficulties.isEmpty) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('Coche au moins un niveau de difficulté.')),
-                      );
-                      return;
-                    }
-                  }
-
-                  try {
-                    String lobbyId;
-                    if ((useCustomSource || useAiSource) && customQuizData != null) {
-                      final data = customQuizData!;
-                      // Convertir les questions au format tipJson
-                      final qs = data.questions.asMap().entries.map((e) => {
-                        'id': 'cq_${e.key}',
-                        'question': e.value.question,
-                        'answer': e.value.answer,
-                        'difficultyBucket': e.value.difficulty,
-                        'type': e.value.type,
-                        if (e.value.hint.isNotEmpty) 'explanation': e.value.hint,
-                        if (e.value.contextLine != null && e.value.contextLine!.isNotEmpty)
-                          'contextLine': e.value.contextLine,
-                        if (e.value.indices.isNotEmpty) 'indices': e.value.indices,
-                        // sequence : items = answerSequence ET options (pour le drag & drop)
-                        if (e.value.items.isNotEmpty) 'answerSequence': e.value.items,
-                        if (e.value.items.isNotEmpty) 'options': e.value.items,
-                      }).toList();
-                      lobbyId = await _repo.createLobby(LobbyModel(
-                        id: '',
-                        title: '"${data.title}" par $name',
-                        subject: 'Quiz personnalisé · ${data.questions.length} questions',
-                        hostName: name,
-                        hostAvatar: '\u{1F4C2}',
-                        currentPlayers: 1,
-                        maxPlayers: kLobbyMaxPlayers,
-                        status: 'waiting',
-                        difficulty: 'mixte',
-                        quizId: 'custom',
-                        createdAt: DateTime.now(),
-                        hostId: uid,
-                        questionAssetPaths: const [],
-                        customQuestionsJson: jsonEncode(qs),
-                        isPrivate: isPrivateLobby,
-                        correctionMode: correctionAtEnd ? 'at_end' : 'after_each',
-                        gameMode: kLobbyGameModeQuiz,
-                        timed: false,
-                        questionCount: data.questions.length.clamp(kLobbyMinQuestionCount, kLobbyMaxQuestionCount),
-                        difficultyFilters: const ['facile', 'moyen', 'difficile'],
-                        playerMeta: [PlayerMeta(userId: uid, displayName: name, avatar: '\u{1F4C2}')],
-                      ));
-                    } else {
-                      final diffLabel = difficulties.length >= 3 ? 'mixte' : difficulties.join('+');
-                      lobbyId = await _repo.createLobby(LobbyModel(
-                        id: '',
-                        title: 'Quiz multi de $name',
-                        subject: '${TipQuizCatalog.subjectLabelForPaths(selectedPaths.toList())} · '
-                            '${selectedPaths.length} source(s) Maîtrise',
-                        hostName: name,
-                        hostAvatar: '\u{2694}\u{FE0F}',
-                        currentPlayers: 1,
-                        maxPlayers: kLobbyMaxPlayers,
-                        status: 'waiting',
-                        difficulty: diffLabel,
-                        quizId: TipQuizCatalog.quizIdForPaths(selectedPaths.toList()),
-                        createdAt: DateTime.now(),
-                        hostId: uid,
-                        questionAssetPaths: selectedPaths.toList(),
-                        isPrivate: isPrivateLobby,
-                        correctionMode: correctionAtEnd ? 'at_end' : 'after_each',
-                        gameMode: kLobbyGameModeQuiz,
-                        timed: false,
-                        questionCount: questionCount,
-                        difficultyFilters: difficulties.toList(),
-                        playerMeta: [PlayerMeta(userId: uid, displayName: name, avatar: '\u{2694}\u{FE0F}')],
-                      ));
-                    }
-                    if (ctx.mounted) Navigator.pop(ctx, lobbyId);
-                  } catch (e) {
-                    if (ctx.mounted) {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        SnackBar(content: Text('Création impossible : $e')),
-                      );
-                    }
+                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
                   }
                 },
-                style: FilledButton.styleFrom(backgroundColor: _violet),
-                child: const Text('Créer le lobby'),
+                icon: Icon(
+                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
+                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
+                  size: 16,
+                ),
               ),
             ],
+          ),
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: body,
+            ),
+            crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 250),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showInfoDialog(BuildContext context, String key) {
+    final info = FeatureInfoResolver.getInfo(key);
+    if (info == null) return;
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final isErrorAccent = key == 'feature:solo_lacunes' || key == 'feature:tp';
+        return AlertDialog(
+          backgroundColor: EskoliaTokens.surface1,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              if (info.emoji.isNotEmpty) ...[
+                Text(info.emoji, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 8),
+              ],
+              Expanded(
+                child: Text(
+                  info.title,
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: FeatureInfoResolver.buildRichDescription(
+            info.description,
+            const TextStyle(color: Colors.white70, fontSize: 13.5, height: 1.45),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(
+                'Compris',
+                style: TextStyle(
+                  color: isErrorAccent ? EskoliaTokens.error : EskoliaTokens.cyan,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDraggableCard(String key, Widget child, double width) {
+    final isWebOrDesktop = kIsWeb || 
+        defaultTargetPlatform == TargetPlatform.macOS || 
+        defaultTargetPlatform == TargetPlatform.windows || 
+        defaultTargetPlatform == TargetPlatform.linux;
+
+    final feedbackWidget = Material(
+      color: Colors.transparent,
+      child: Transform.rotate(
+        angle: 0.035, // ~2 degrés d'inclinaison
+        child: Transform.scale(
+          scale: 1.04, // léger zoom
+          child: Opacity(
+            opacity: 0.9,
+            child: Container(
+              width: width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: EskoliaTokens.cyan.withValues(alpha: 0.45),
+                    blurRadius: 20,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return DragTarget<String>(
+      key: ValueKey(key),
+      onWillAcceptWithDetails: (details) {
+        final dragKey = details.data;
+        if (dragKey != key) {
+          if (_hoveredDragKey != key) {
+            _hoveredDragKey = key;
+            _dragDebounceTimer?.cancel();
+            _dragDebounceTimer = Timer(const Duration(milliseconds: 150), () {
+              if (mounted && _hoveredDragKey == key) {
+                final pinned = ref.read(lobbyPinnedCardsProvider);
+                final isDragPinned = pinned.contains(dragKey);
+                final isTargetPinned = pinned.contains(key);
+
+                if (isDragPinned != isTargetPinned) {
+                  ref.read(lobbyPinnedCardsProvider.notifier).togglePin(dragKey);
+                }
+
+                final order = ref.read(lobbyCardsOrderProvider);
+                final oldIdx = order.indexOf(dragKey);
+                final newIdx = order.indexOf(key);
+                if (oldIdx != -1 && newIdx != -1) {
+                  ref.read(lobbyCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
+                }
+              }
+            });
+          }
+        }
+        return true;
+      },
+      onLeave: (data) {
+        if (_hoveredDragKey == key) {
+          _dragDebounceTimer?.cancel();
+          _hoveredDragKey = null;
+        }
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isHovered = candidateData.isNotEmpty;
+
+        final cardWidget = SizedBox(
+          width: width,
+          child: child,
+        );
+
+        Widget mainChild;
+        if (isWebOrDesktop) {
+          mainChild = Draggable<String>(
+            key: ValueKey(key),
+            data: key,
+            feedback: feedbackWidget,
+            childWhenDragging: Opacity(
+              opacity: 0.2,
+              child: cardWidget,
+            ),
+            child: cardWidget,
+          );
+        } else {
+          mainChild = LongPressDraggable<String>(
+            key: ValueKey(key),
+            data: key,
+            feedback: feedbackWidget,
+            childWhenDragging: Opacity(
+              opacity: 0.2,
+              child: cardWidget,
+            ),
+            child: cardWidget,
+          );
+        }
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
+              width: 2.0,
+            ),
+            boxShadow: isHovered
+                ? [
+                    BoxShadow(
+                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : [],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: mainChild,
           ),
         );
       },
     );
-
-    aiThemeCtrl.dispose();
-    if (created != null && mounted) {
-      context.push('/lobby/$created');
-    }
   }
 
+  Widget _buildCardContent(String key, BuildContext context) {
+    if (key == 'feature:lobbys_active') {
+      return _buildInteractiveCard(
+        key: key,
+        category: 'PARTIES EN COURS',
+        title: 'Salons Actifs',
+        defaultEmoji: '🎮',
+        accentColor: Colors.pinkAccent,
+        body: StreamBuilder<List<LobbyModel>>(
+          key: ValueKey(_retry),
+          stream: _repo.watchLobbies(),
+          builder: (context, snap) {
+            if (snap.hasError) {
+              return _error(snap.error.toString());
+            }
+            final waitingConnection =
+                snap.connectionState == ConnectionState.waiting &&
+                    !snap.hasData;
+            final all = snap.data ?? [];
+            final joinable = _joinableLobbies(all);
+            final waitingCount =
+                joinable.where((l) => l.status == 'waiting').length;
+            final liveCount = joinable
+                .where((l) => l.status == 'in_progress')
+                .length;
 
-  Widget _buildAiQuizGenerator({
-    required StateSetter setD,
-    required TextEditingController themeCtrl,
-    required String difficulty,
-    required ValueChanged<String> onDifficultyChanged,
-    required int questionCount,
-    required bool generating,
-    required CustomQuizData? generatedData,
-    required String? error,
-    required VoidCallback onGenerate,
-    required VoidCallback onReset,
-  }) {
-    const amber = EskoliaTokens.amber;
-    if (generatedData != null) {
-      final preview = generatedData.questions.take(3).toList();
-      final remaining = generatedData.questions.length - preview.length;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: amber.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: amber.withValues(alpha: 0.3)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            if (waitingConnection) {
+              return Column(
+                children: _skeletonSectionChildren(),
+              );
+            }
+
+            if (joinable.isEmpty) {
+              return _emptyLobbyQueueCard();
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.auto_awesome_rounded, color: amber, size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        '"${generatedData.title}" — ${generatedData.questions.length} questions',
-                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
-                      ),
+                    _LobbyQueueBadges(
+                      waitingCount: waitingCount,
+                      liveCount: liveCount,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                for (int i = 0; i < preview.length; i++)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Q${i + 1} ', style: TextStyle(color: _violet, fontSize: 10, fontWeight: FontWeight.w700)),
-                        Expanded(
-                          child: Text(
-                            preview[i].question,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(color: _slateLight.withValues(alpha: 0.9), fontSize: 11),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (remaining > 0)
-                  Text('+ $remaining autre${remaining > 1 ? 's' : ''} question${remaining > 1 ? 's' : ''}',
-                      style: TextStyle(color: _slateLight, fontSize: 11)),
+                const SizedBox(height: 12),
+                Column(
+                  children: joinable.asMap().entries.map((e) {
+                    final i = e.key;
+                    final lobby = e.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: LobbyCard(
+                        lobby: lobby,
+                        index: i,
+                        showJoinCta: true,
+                        onTap: () => context.push('/lobby/${lobby.id}'),
+                        onDelete: (_isStaff ||
+                                lobby.hostId ==
+                                    FirebaseAuth
+                                        .instance.currentUser?.uid)
+                            ? () => _repo.deleteLobby(lobby.id)
+                            : null,
+                        isAdminDelete: _isStaff &&
+                            lobby.hostId !=
+                                FirebaseAuth.instance.currentUser?.uid,
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
-            ),
-          ),
-          TextButton.icon(
-            onPressed: onReset,
-            style: TextButton.styleFrom(foregroundColor: _slateLight),
-            icon: const Icon(Icons.refresh_rounded, size: 16),
-            label: const Text('Regenerer'),
-          ),
-        ],
+            );
+          },
+        ),
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: themeCtrl,
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-          decoration: InputDecoration(
-            hintText: 'Ex: Active Directory, VLAN, Securite reseau...',
-            hintStyle: TextStyle(color: _slateLight.withValues(alpha: 0.6), fontSize: 12),
-            filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.06),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+    if (key == 'feature:lobbys_create') {
+      return _buildInteractiveCard(
+        key: key,
+        category: 'CRÉATION DE SALON',
+        title: 'Créer un Salon',
+        defaultEmoji: '➕',
+        accentColor: Colors.pinkAccent,
+        body: const LobbyCreateCardBody(isExpandedOverride: true),
+      );
+    }
+    if (key == 'feature:lobbys_create_ai') {
+      return _buildInteractiveCard(
+        key: key,
+        category: 'CRÉATION DE SALON IA',
+        title: 'Créer un Salon IA',
+        defaultEmoji: '🧠',
+        accentColor: EskoliaTokens.amber,
+        body: const LobbyCreateAiCardBody(isExpandedOverride: true),
+      );
+    }
+    if (key == 'feature:lobbys_join_private') {
+      return _buildInteractiveCard(
+        key: key,
+        category: 'REJOINDRE PAR CODE',
+        title: 'Rejoindre par Code',
+        defaultEmoji: '🔑',
+        accentColor: EskoliaTokens.cyan,
+        body: const LobbyJoinPrivateCardBody(isExpandedOverride: true),
+      );
+    }
+    if (key == 'feature:duel_quick') {
+      return _buildInteractiveCard(
+        key: key,
+        category: 'DÉFI EXPRESS 1V1',
+        title: 'Défi Express',
+        defaultEmoji: '⚡',
+        accentColor: Colors.purpleAccent,
+        body: const DuelQuickCardBody(isExpandedOverride: true),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 12),
+      child: Row(
+        children: [
+          const SizedBox(width: 4),
+          Text(
+            title.toUpperCase(),
+            style: GoogleFonts.outfit(
+              color: Colors.white60,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text('Niveau', style: TextStyle(color: _slateLight, fontSize: 11)),
-        const SizedBox(height: 6),
-        SegmentedButton<String>(
-          showSelectedIcon: false,
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          segments: const [
-            ButtonSegment(value: 'facile', label: Text('Facile')),
-            ButtonSegment(value: 'moyen', label: Text('Moyen')),
-            ButtonSegment(value: 'difficile', label: Text('Difficile')),
-            ButtonSegment(value: 'mixte', label: Text('Mix')),
-          ],
-          selected: {difficulty},
-          onSelectionChanged: (s) { if (s.isNotEmpty) onDifficultyChanged(s.first); },
-        ),
-        if (error != null) ...[
-          const SizedBox(height: 8),
-          Text(error, style: TextStyle(color: Colors.red.shade300, fontSize: 11)),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Divider(
+              color: Colors.white12,
+              thickness: 1,
+            ),
+          ),
         ],
-        const SizedBox(height: 10),
-        FilledButton.icon(
-          onPressed: generating ? null : onGenerate,
-          style: FilledButton.styleFrom(
-            backgroundColor: amber,
-            foregroundColor: Colors.black87,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-          ),
-          icon: generating
-              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black54))
-              : const Icon(Icons.auto_awesome_rounded, size: 18),
-          label: Text(generating ? 'Generation en cours...' : 'Generer le quiz ($questionCount questions)'),
-        ),
-      ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.screenPaddingH;
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(
-        context,
-        title: 'Multijoueur',
-        actions: [
-          TextButton(
-            onPressed: _joinByCode,
-            child: Text(
-              'Code',
-              style: TextStyle(
-                color: _cyan,
-                fontWeight: FontWeight.w800,
-                fontSize: 14,
-              ),
-            ),
-          ),
+    final width = MediaQuery.sizeOf(context).width;
+
+    int numColumns;
+    if (width > 1200) {
+      numColumns = 3;
+    } else if (width > 800) {
+      numColumns = 2;
+    } else {
+      numColumns = 1;
+    }
+
+    // Déterminer la largeur des cartes
+    final sidebarWidth = width > 800 ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
+    final availableWidth = width - sidebarWidth - 48; // marges et padding
+    final cardWidth = numColumns == 3
+        ? (availableWidth - 32) / 3
+        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
+
+    final rawOrder = ref.watch(lobbyCardsOrderProvider);
+    final pinned = ref.watch(lobbyPinnedCardsProvider);
+
+    final order = rawOrder;
+
+    List<Widget> addSpacing(List<Widget> list) {
+      if (list.isEmpty) return [];
+      final res = <Widget>[];
+      for (var i = 0; i < list.length; i++) {
+        res.add(list[i]);
+        if (i < list.length - 1) {
+          res.add(const SizedBox(height: 16));
+        }
+      }
+      return res;
+    }
+
+    Widget buildGrid(List<String> keys) {
+      final cards = keys.map((key) {
+        return _buildDraggableCard(key, _buildCardContent(key, context), cardWidth);
+      }).toList();
+
+      if (numColumns == 3) {
+        final col1 = <Widget>[];
+        final col2 = <Widget>[];
+        final col3 = <Widget>[];
+        for (var i = 0; i < keys.length; i++) {
+          if (i % 3 == 0) {
+            col1.add(cards[i]);
+          } else if (i % 3 == 1) {
+            col2.add(cards[i]);
+          } else {
+            col3.add(cards[i]);
+          }
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(col1))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(col2))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(col3))),
+          ],
+        );
+      } else if (numColumns == 2) {
+        final col1 = <Widget>[];
+        final col2 = <Widget>[];
+        for (var i = 0; i < keys.length; i++) {
+          if (i % 2 == 0) {
+            col1.add(cards[i]);
+          } else {
+            col2.add(cards[i]);
+          }
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(col1))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(col2))),
+          ],
+        );
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: addSpacing(cards),
+        );
+      }
+    }
+
+    Widget content;
+    if (pinned.isEmpty) {
+      content = buildGrid(order);
+    } else {
+      final pinnedKeys = order.where((k) => pinned.contains(k)).toList();
+      final otherKeys = order.where((k) => !pinned.contains(k)).toList();
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionHeader('Épinglées'),
+          buildGrid(pinnedKeys),
+          if (otherKeys.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            _buildSectionHeader('Autres'),
+            buildGrid(otherKeys),
+          ],
         ],
-      ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
-            child: StreamBuilder<List<LobbyModel>>(
-              key: ValueKey(_retry),
-              stream: _repo.watchLobbies(),
-              builder: (context, snap) {
-                if (snap.hasError) {
-                  return _error(snap.error.toString());
-                }
-                final waitingConnection =
-                    snap.connectionState == ConnectionState.waiting &&
-                        !snap.hasData;
-                final all = snap.data ?? [];
-                final joinable = _joinableLobbies(all);
-                final waitingCount =
-                    joinable.where((l) => l.status == 'waiting').length;
-                final liveCount = joinable
-                    .where((l) => l.status == 'in_progress')
-                    .length;
-
-                return ListView(
-                  padding: EdgeInsets.fromLTRB(
-                    hPad,
-                    4,
-                    hPad,
-                    kEskoliaBottomNavReserve,
-                  ),
+            safeAreaTop: true,
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
+              children: [
+                Stack(
+                  alignment: Alignment.center,
                   children: [
                     Text(
-                      'Lance une partie ou rejoins un lobby avec de la place.',
-                      style: TextStyle(
-                        color: _slateLight.withValues(alpha: 0.92),
-                        fontSize: 13,
-                        height: 1.35,
-                        fontWeight: FontWeight.w600,
+                      'Multijoueur',
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    _LobbyModeCard(
-                      emoji: '\u{1F3AF}',
-                      title: 'Quiz multi',
-                      subtitle:
-                          'Lobby classique : manches communes, +10 pts par bonne réponse, '
-                          'choix des chapitres et du nombre de questions.',
-                      onTap: _openCreateDialog,
-                    ),
-                    const SizedBox(height: 12),
-                    const SizedBox(height: 22),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Lobbies à rejoindre',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
+                    Positioned(
+                      right: 0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            onPressed: _joinByCode,
+                            child: Text(
+                              'Code',
+                              style: TextStyle(
+                                color: _cyan,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14,
+                              ),
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        if (!waitingConnection && joinable.isNotEmpty)
-                          _LobbyQueueBadges(
-                            waitingCount: waitingCount,
-                            liveCount: liveCount,
+                          Consumer(
+                            builder: (context, ref, child) {
+                              final orderHome = ref.watch(homeCardsOrderProvider);
+                              final activePinned = orderHome.contains('feature:lobbys_active');
+                              final createPinned = orderHome.contains('feature:lobbys_create');
+                              final createAiPinned = orderHome.contains('feature:lobbys_create_ai');
+                              final joinPrivatePinned = orderHome.contains('feature:lobbys_join_private');
+                              final duelPinned = orderHome.contains('feature:duel_quick');
+
+                              return PopupMenuButton<String>(
+                                icon: const Icon(Icons.add_circle_outline_rounded, color: Colors.white70),
+                                tooltip: 'Gérer les cartes d\'accueil',
+                                onSelected: (key) {
+                                  final pinnedHome = orderHome.contains(key);
+                                  if (pinnedHome) {
+                                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+                                  } else {
+                                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
+                                  }
+                                },
+                                itemBuilder: (ctx) => [
+                                  PopupMenuItem(
+                                    value: 'feature:lobbys_active',
+                                    child: Row(
+                                      children: [
+                                        Icon(activePinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
+                                        const SizedBox(width: 8),
+                                        Text(activePinned ? 'Retirer "Lobbies Actifs" de l\'accueil' : 'Ajouter "Lobbies Actifs" à l\'accueil', style: const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'feature:lobbys_create',
+                                    child: Row(
+                                      children: [
+                                        Icon(createPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
+                                        const SizedBox(width: 8),
+                                        Text(createPinned ? 'Retirer "Créer Salon" de l\'accueil' : 'Ajouter "Créer Salon" à l\'accueil', style: const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'feature:lobbys_create_ai',
+                                    child: Row(
+                                      children: [
+                                        Icon(createAiPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
+                                        const SizedBox(width: 8),
+                                        Text(createAiPinned ? 'Retirer "Créer Salon IA" de l\'accueil' : 'Ajouter "Créer Salon IA" à l\'accueil', style: const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'feature:lobbys_join_private',
+                                    child: Row(
+                                      children: [
+                                        Icon(joinPrivatePinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
+                                        const SizedBox(width: 8),
+                                        Text(joinPrivatePinned ? 'Retirer "Rejoindre par Code" de l\'accueil' : 'Ajouter "Rejoindre par Code" à l\'accueil', style: const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 'feature:duel_quick',
+                                    child: Row(
+                                      children: [
+                                        Icon(duelPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
+                                        const SizedBox(width: 8),
+                                        Text(duelPinned ? 'Retirer "Défi Express" de l\'accueil' : 'Ajouter "Défi Express" à l\'accueil', style: const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Salles en attente ou en cours — uniquement si des places sont libres.',
-                      style: TextStyle(
-                        color: _slateLight.withValues(alpha: 0.85),
-                        fontSize: 11.5,
-                        height: 1.3,
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    if (waitingConnection) ..._skeletonSectionChildren(),
-                    if (!waitingConnection && joinable.isEmpty)
-                      _emptyLobbyQueueCard(),
-                    if (!waitingConnection && joinable.isNotEmpty)
-                      ...joinable.asMap().entries.map((e) {
-                        final i = e.key;
-                        final lobby = e.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: LobbyCard(
-                            lobby: lobby,
-                            index: i,
-                            showJoinCta: true,
-                            onTap: () => context.push('/lobby/${lobby.id}'),
-                            onDelete: (_isStaff ||
-                                    lobby.hostId ==
-                                        FirebaseAuth
-                                            .instance.currentUser?.uid)
-                                ? () => _repo.deleteLobby(lobby.id)
-                                : null,
-                            isAdminDelete: _isStaff &&
-                                lobby.hostId !=
-                                    FirebaseAuth.instance.currentUser?.uid,
-                          ),
-                        );
-                      }),
                   ],
-                );
-              },
+                ),
+                const SizedBox(height: 24),
+                content,
+              ],
             ),
           ),
         ],
@@ -1054,17 +935,6 @@ class _LobbyListScreenState extends State<LobbyListScreen>
               height: 1.35,
             ),
           ),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: _openCreateDialog,
-            style: FilledButton.styleFrom(
-              backgroundColor: _violet,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            icon: const Icon(Icons.add_rounded, size: 18),
-            label: const Text('Créer un lobby'),
-          ),
         ],
       ),
     );
@@ -1117,39 +987,43 @@ class _LobbyModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EskoliaCardContent(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       onTap: onTap,
-      child: Row(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(emoji, style: const TextStyle(fontSize: 34)),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    height: 1.15,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: _slateLight.withValues(alpha: 0.9),
-                    fontSize: 12,
-                    height: 1.35,
-                  ),
-                ),
-              ],
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              height: 1.15,
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: Colors.white38),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _slateLight.withValues(alpha: 0.9),
+              fontSize: 12,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Lancer la partie →',
+            style: TextStyle(
+              color: EskoliaTokens.cyan,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
@@ -1356,13 +1230,13 @@ class LobbyCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         splashColor: _violet.withValues(alpha: 0.2),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: Color.lerp(accent, Colors.white, 0.55)!
                   .withValues(alpha: lobby.isSurvival ? 0.42 : 0.35),
@@ -1376,211 +1250,174 @@ class LobbyCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Container(
-                width: 4,
-                height: 92,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      accent,
-                      accent.withValues(alpha: 0.45),
+              if (onDelete != null)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: Icon(
+                      isAdminDelete
+                          ? Icons.admin_panel_settings_rounded
+                          : Icons.delete_outline_rounded,
+                      color: isAdminDelete
+                          ? _orange.withValues(alpha: 0.85)
+                          : _red.withValues(alpha: 0.75),
+                      size: 20,
+                    ),
+                    tooltip: isAdminDelete ? 'Supprimer (admin)' : 'Supprimer le lobby',
+                    onPressed: () => _confirmAndDelete(context),
+                  ),
+                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 38,
+                        height: 38,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.08),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        ),
+                        child: Text(lobby.hostAvatar, style: const TextStyle(fontSize: 16)),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 38,
+                        height: 38,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ms.$1,
+                          border: Border.all(color: accent.withValues(alpha: 0.45)),
+                        ),
+                        child: Text(modeEmoji, style: const TextStyle(fontSize: 18)),
+                      ),
                     ],
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accent.withValues(alpha: 0.35),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ms.$1,
-                      border: Border.all(
-                        color: accent.withValues(alpha: 0.45),
-                      ),
-                    ),
-                    child: Text(
-                      modeEmoji,
-                      style: const TextStyle(fontSize: 24),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Hôte : ${lobby.hostName}',
+                    style: TextStyle(
+                      color: _slateLight.withValues(alpha: 0.8),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    lobby.gameModeLabelShort,
+                    lobby.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.5,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    lobby.subject,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: accent,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.3,
+                      color: _slateLight.withValues(alpha: 0.7),
+                      fontSize: 11.5,
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.08),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: Text(
-                  lobby.hostAvatar,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            lobby.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: st.$1,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        if (onDelete != null)
-                          SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                isAdminDelete
-                                    ? Icons.admin_panel_settings_rounded
-                                    : Icons.delete_outline_rounded,
-                                color: isAdminDelete
-                                    ? _orange.withValues(alpha: 0.85)
-                                    : _red.withValues(alpha: 0.75),
-                                size: 18,
-                              ),
-                              tooltip: isAdminDelete
-                                  ? 'Supprimer (admin)'
-                                  : 'Supprimer le lobby',
-                              onPressed: () => _confirmAndDelete(context),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Hôte : ${lobby.hostName} · ${lobby.subject}',
-                      style: TextStyle(
-                        color: _slateLight.withValues(alpha: 0.9),
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: ratio.clamp(0, 1),
-                              minHeight: 4,
-                              backgroundColor: _surface,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(progressColor),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '\u{1F465} ${lobby.currentPlayers}/${lobby.maxPlayers}',
+                        child: Text(
+                          st.$3,
                           style: TextStyle(
-                            color: _slateLight,
-                            fontSize: 11,
+                            color: st.$2,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: st.$1,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            st.$3,
-                            style: TextStyle(
-                              color: st.$2,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: df.$1,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                        child: Text(
+                          lobby.difficulty,
+                          style: TextStyle(
+                            color: df.$2,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
                           ),
-                          decoration: BoxDecoration(
-                            color: df.$1,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            lobby.difficulty,
-                            style: TextStyle(
-                              color: df.$2,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (showJoinCta) ...[
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton(
-                          onPressed: onTap,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: accent,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                          ),
-                          child: const Text('Rejoindre'),
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: ratio.clamp(0, 1),
+                            minHeight: 4,
+                            backgroundColor: _surface,
+                            valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        '👥 ${lobby.currentPlayers}/${lobby.maxPlayers}',
+                        style: TextStyle(
+                          color: _slateLight.withValues(alpha: 0.85),
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (showJoinCta) ...[
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: onTap,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: accent,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Rejoindre', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
                   ],
-                ),
+                ],
               ),
             ],
           ),

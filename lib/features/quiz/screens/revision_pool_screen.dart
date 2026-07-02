@@ -133,7 +133,7 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Ma révision'),
+      appBar: EskoliaAppBar.standard(context, title: 'À revoir'),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
@@ -169,15 +169,15 @@ class _RevisionPoolScreenState extends State<RevisionPoolScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('\u{1F4CC}', style: TextStyle(fontSize: 52)),
+            const Text('📌', style: TextStyle(fontSize: 52)),
             const SizedBox(height: 16),
             const Text(
-              'Pool vide',
+              'Rien à revoir',
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18),
             ),
             const SizedBox(height: 8),
             Text(
-              'Épingle des questions depuis les résultats de quiz\nou après chaque mauvaise réponse.',
+              'Épingle des questions à la fin de tes quiz pour pouvoir les réviser spécifiquement ici.',
               textAlign: TextAlign.center,
               style: TextStyle(color: EskoliaTokens.textSecondary.withValues(alpha: 0.85), fontSize: 13, height: 1.4),
             ),

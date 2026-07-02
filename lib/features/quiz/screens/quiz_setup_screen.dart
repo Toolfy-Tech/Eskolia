@@ -30,11 +30,19 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
   bool _prioritizeRevisionPool = false;
   QuizCatalogTrack _catalogTrack = QuizCatalogTrack.optimusOnly;
   late final Future<List<TipQuizChapterRef>> _catalogFuture;
+  late final TextEditingController _questionsController;
 
   @override
   void initState() {
     super.initState();
+    _questionsController = TextEditingController(text: '${_maxQuestions.round()}');
     _catalogFuture = TipQuizCatalog.loadChaptersWithQuiz();
+  }
+
+  @override
+  void dispose() {
+    _questionsController.dispose();
+    super.dispose();
   }
 
   Future<void> _playEskoliaQuiz() async {
@@ -294,26 +302,72 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
               ),
               const SizedBox(height: 16),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Expanded(
                     child: Text(
-                      'Nombre max de questions',
-                      style: TextStyle(color: Colors.white70),
+                      'Nombre max de questions (à l\'écrit)',
+                      style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w600),
                     ),
                   ),
-                  Text(
-                    '${_maxQuestions.round()}',
-                    style: const TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w700),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _maxQuestions > 5
+                            ? () {
+                                setState(() {
+                                  _maxQuestions--;
+                                  _questionsController.text = '${_maxQuestions.round()}';
+                                });
+                              }
+                            : null,
+                        icon: const Icon(Icons.remove_circle_outline_rounded, color: EskoliaTokens.cyan),
+                      ),
+                      Container(
+                        width: 70,
+                        alignment: Alignment.center,
+                        child: TextFormField(
+                          controller: _questionsController,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                            filled: true,
+                            fillColor: Colors.white.withValues(alpha: 0.05),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: Colors.white24),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: EskoliaTokens.cyan),
+                            ),
+                          ),
+                          onChanged: (val) {
+                            final parsed = int.tryParse(val);
+                            if (parsed != null && parsed >= 5 && parsed <= 100) {
+                              setState(() {
+                                _maxQuestions = parsed.toDouble();
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: _maxQuestions < 100
+                            ? () {
+                                setState(() {
+                                  _maxQuestions++;
+                                  _questionsController.text = '${_maxQuestions.round()}';
+                                });
+                              }
+                            : null,
+                        icon: const Icon(Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-              Slider(
-                min: 5,
-                max: 40,
-                divisions: 35,
-                value: _maxQuestions,
-                activeColor: EskoliaTokens.violetSoft,
-                onChanged: (v) => setState(() => _maxQuestions = v),
               ),
               const SizedBox(height: 4),
               SwitchListTile(

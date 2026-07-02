@@ -80,7 +80,7 @@ class PodcastMiniPlayer extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        podcast.title,
+                        podcast.displayTitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

@@ -61,12 +61,13 @@ class QuizNotifier extends Notifier<QuizState> {
   final String arg;
 
   late QuizRepository _repo;
-  final LacunesRepository _lacunesRepo = LacunesRepository();
+  late LacunesRepository _lacunesRepo;
   Timer? _timer;
 
   @override
   QuizState build() {
-    _repo = QuizRepository();
+    _repo = ref.watch(quizRepositoryProvider);
+    _lacunesRepo = ref.watch(lacunesRepositoryProvider);
     ref.onDispose(() {
       _timer?.cancel();
     });

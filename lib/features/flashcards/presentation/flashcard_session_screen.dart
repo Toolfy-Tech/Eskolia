@@ -15,6 +15,7 @@ import '../../economy/data/achievement_triggers.dart';
 import '../../economy/data/daily_quest_reward_service.dart';
 import '../../home/data/daily_quests_repository.dart';
 import '../data/flashcard_deck_repository.dart';
+import '../../quiz/services/lacunes_repository.dart';
 
 /// Arguments pour [GoRouter] (`/flashcards/session`).
 class FlashcardSessionRouteArgs {
@@ -132,6 +133,19 @@ class _FlashcardSessionScreenState extends State<FlashcardSessionScreen> {
     }
     final next = DeckFlashcard.applyGrade(cur, g);
     _cards[_index] = next;
+
+    if (cur.sourceKey != null) {
+      String cleanKey = cur.sourceKey!;
+      if (cleanKey.startsWith('deck|')) {
+        cleanKey = cleanKey.substring(5);
+      }
+      if (g == FlashcardGrade.forgot) {
+        await LacunesRepository().addWrongByKey(cleanKey);
+      } else if (g == FlashcardGrade.knew) {
+        await LacunesRepository().removeByKey(cleanKey);
+      }
+    }
+
     if (!widget.ephemeral) {
       await _deckRepo.upsert(next);
     }

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -65,13 +66,15 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
     });
     try {
       final list = await _repo.loadRound(count: widget.roundSize);
+      final prefs = await SharedPreferences.getInstance();
+      final savedBest = prefs.getInt('true_false_best_streak') ?? 0;
       if (!mounted) return;
       setState(() {
         _round = list;
         _index = 0;
         _score = 0;
         _streak = 0;
-        _bestStreak = 0;
+        _bestStreak = savedBest;
         _roundOver = false;
         _dragX = 0;
         _busyLoad = false;
@@ -96,7 +99,12 @@ class _TrueFalseSwipeScreenState extends State<TrueFalseSwipeScreen>
       setState(() {
         _score++;
         _streak++;
-        if (_streak > _bestStreak) _bestStreak = _streak;
+        if (_streak > _bestStreak) {
+          _bestStreak = _streak;
+          SharedPreferences.getInstance().then((prefs) {
+            prefs.setInt('true_false_best_streak', _bestStreak);
+          });
+        }
       });
     } else {
       setState(() => _streak = 0);

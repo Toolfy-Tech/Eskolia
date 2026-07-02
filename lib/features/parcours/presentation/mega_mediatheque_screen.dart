@@ -38,7 +38,7 @@ class _MegaMediathequeScreenState extends State<MegaMediathequeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Mediatheque'),
+      appBar: EskoliaAppBar.standard(context, title: 'Média TIP'),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),

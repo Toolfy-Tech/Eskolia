@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../core/constants/eskolia_tokens.dart';
@@ -21,7 +22,7 @@ class EskoliaTextField extends StatelessWidget {
     this.minLines,
     this.enabled = true,
     this.autocorrect = true,
-    this.borderRadius = 12,
+    this.borderRadius = 16,
     this.blurSigma = 10,
     this.autofocus = false,
   });
@@ -49,10 +50,15 @@ class EskoliaTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final base = theme.inputDecorationTheme;
+    final radius = borderRadius == 12 || borderRadius == 16
+        ? EskoliaTokens.radiusMd
+        : borderRadius;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: TextField(
+      borderRadius: BorderRadius.circular(radius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        child: TextField(
           controller: controller,
           focusNode: focusNode,
           autofocus: autofocus,
@@ -74,6 +80,7 @@ class EskoliaTextField extends StatelessWidget {
             suffixIcon: suffixIcon,
           ).applyDefaults(base),
         ),
+      ),
     );
   }
 }

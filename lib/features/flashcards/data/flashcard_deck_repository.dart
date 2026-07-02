@@ -280,12 +280,13 @@ class FlashcardDeckRepository {
       if (q.explanation != null && q.explanation!.trim().isNotEmpty) {
         back.write('\n\n${q.explanation!.trim()}');
       }
+      final sk = DeckFlashcard.sourceKeyForQuestion(q, 0);
       out.add(
         DeckFlashcard(
           id: '${idPrefix}_${out.length}_${q.question.hashCode}',
           front: q.question.trim(),
           back: back.toString(),
-          sourceKey: null,
+          sourceKey: sk,
           mastery: 0,
           nextDue: DateTime.now(),
         ),

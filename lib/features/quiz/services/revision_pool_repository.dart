@@ -137,6 +137,42 @@ class RevisionPoolRepository {
     await _save(cur);
   }
 
+  Future<void> addByKey(String storageKey) async {
+    final cur = await readEntries();
+    if (cur.any((e) => e.storageKey == storageKey)) return;
+    
+    String assetPath;
+    String? questionId;
+    int questionIndex = 0;
+    if (storageKey.contains('|||')) {
+      final parts = storageKey.split('|||');
+      assetPath = parts[0];
+      questionId = parts[1];
+    } else if (storageKey.contains('||idx|')) {
+      final parts = storageKey.split('||idx|');
+      assetPath = parts[0];
+      questionIndex = int.tryParse(parts[1]) ?? 0;
+    } else {
+      return;
+    }
+    
+    final next = <RevisionPoolEntry>[
+      RevisionPoolEntry(
+        assetPath: assetPath,
+        questionIndex: questionIndex,
+        questionId: questionId,
+      ),
+      ...cur,
+    ];
+    await _save(next);
+  }
+
+  Future<void> removeByKey(String storageKey) async {
+    final cur = await readEntries();
+    cur.removeWhere((x) => x.storageKey == storageKey);
+    await _save(cur);
+  }
+
   Future<void> markReviewed(List<String> storageKeys) async {
     if (storageKeys.isEmpty) return;
     final keySet = storageKeys.toSet();
@@ -154,14 +190,26 @@ class RevisionPoolRepository {
   Future<List<QuizQuestion>> resolveQuestions(List<RevisionPoolEntry> entries, {int max = 40}) async {
     final out = <QuizQuestion>[];
     final repo = QuizRepository();
+    final Map<String, QuizSession> sessionCache = {};
+
     for (final e in entries) {
       if (out.length >= max) break;
       try {
-        final session = await repo.loadSession(e.assetPath);
-        final q = session.questions.firstWhere((q) => q.id == e.questionId, orElse: () => session.questions.first);
+        QuizSession? session = sessionCache[e.assetPath];
+        if (session == null) {
+          session = await repo.buildSoloBundleQuizSession(
+            assetKey: e.assetPath,
+            title: 'Révisions Pool',
+          );
+          sessionCache[e.assetPath] = session;
+        }
+        final q = session.questions.firstWhere(
+          (q) => q.id == e.questionId,
+          orElse: () => throw Exception('Question ${e.questionId} absente de ${e.assetPath}'),
+        );
         out.add(q);
-      } catch (e) {
-        debugPrint('[RevisionPoolRepository.resolveQuestions] $e');
+      } catch (err) {
+        debugPrint('[RevisionPoolRepository.resolveQuestions] Erreur de résolution de la question : $err');
       }
     }
     return out;

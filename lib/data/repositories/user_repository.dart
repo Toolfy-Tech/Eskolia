@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/time/xp_week_key.dart';
 import '../../features/auth/data/user_model.dart';
+
+final userRepositoryProvider = Provider<UserRepository>((ref) {
+  return UserRepository();
+});
 
 class UserRepository {
   UserRepository({FirebaseFirestore? db}) : _db = db ?? FirebaseFirestore.instance;

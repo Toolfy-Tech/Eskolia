@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
@@ -72,18 +73,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(
-        context,
-        title: 'Paramètres',
-        showBack: false,
-      ),
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -126,6 +122,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : ListView(
                               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                               children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 24, top: 8),
+                                    child: Text(
+                                      'Paramètres',
+                                      style: GoogleFonts.outfit(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 _sectionCard(
                                   title: 'Notifications',
                                   children: [
@@ -671,13 +680,10 @@ class _EskoliaFolderCardState extends State<_EskoliaFolderCard> {
               child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: _teal)),
             )
           else ...[
-            Padding(
+             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Text(
-                'Quiz, flashcards, cours et bilans seront enregistres directement '
-                'dans un dossier de ton choix sur ton ordinateur, organises '
-                'automatiquement en sous-dossiers. Choisis un emplacement dans tes '
-                'Documents par exemple.',
+                'Tu peux configurer un dossier sur ton ordinateur pour y enregistrer tes cours, quiz et flashcards lorsque tu cliques sur le bouton de sauvegarde. Sinon, ils seront sauvegardés dans l\'application.',
                 style: TextStyle(
                   color: EskoliaTokens.textSecondary.withValues(alpha: 0.7),
                   fontSize: 12,

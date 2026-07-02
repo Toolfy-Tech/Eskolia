@@ -3,13 +3,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/eskolia_visual.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
+import '../../home/presentation/providers/home_providers.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_text_field.dart';
@@ -18,6 +21,7 @@ import '../../ai/data/ai_key_repository.dart';
 import '../../quiz/services/quiz_repository.dart';
 import '../data/note_ai_generator.dart';
 import '../data/note_model.dart';
+import '../data/notebook_repository.dart';
 import '../data/saved_quiz_repository.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 
@@ -88,26 +92,36 @@ class _SubjectResult {
 
 // ── Screen ─────────────────────────────────────────────────────────────────────
 
-class NoteEditorScreen extends StatefulWidget {
-  const NoteEditorScreen({super.key, this.note});
+class NoteEditorScreen extends ConsumerStatefulWidget {
+  const NoteEditorScreen({
+    super.key,
+    this.note,
+    this.initialWantCours = true,
+    this.initialWantQuiz = true,
+    this.initialWantFlashcards = false,
+  });
 
   /// Null = nouvelle session. Non-null = pre-peuplee avec le contenu de la note.
   final NoteModel? note;
+  final bool initialWantCours;
+  final bool initialWantQuiz;
+  final bool initialWantFlashcards;
 
   @override
-  State<NoteEditorScreen> createState() => _NoteEditorScreenState();
+  ConsumerState<NoteEditorScreen> createState() => _NoteEditorScreenState();
 }
 
-class _NoteEditorScreenState extends State<NoteEditorScreen> {
+class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
   final _aiKeyRepo     = AiKeyRepository();
   final _aiGenerator   = NoteAiGenerator();
   final _savedQuizRepo = SavedQuizRepository();
 
   final List<TextEditingController> _controllers = [];
+  final _titleController = TextEditingController();
 
-  bool _wantCours      = true;
-  bool _wantQuiz       = true;
-  bool _wantFlashcards = false;
+  late bool _wantCours;
+  late bool _wantQuiz;
+  late bool _wantFlashcards;
 
   bool   _generating      = false;
   String _generationPhase = '';
@@ -119,8 +133,17 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.note != null && widget.note!.content.trim().isNotEmpty) {
-      _controllers.add(TextEditingController(text: widget.note!.content.trim()));
+    _wantCours = widget.initialWantCours;
+    _wantQuiz = widget.initialWantQuiz;
+    _wantFlashcards = widget.initialWantFlashcards;
+
+    if (widget.note != null) {
+      _titleController.text = widget.note!.title.trim();
+      if (widget.note!.content.trim().isNotEmpty) {
+        _controllers.add(TextEditingController(text: widget.note!.content.trim()));
+      } else {
+        _controllers.add(TextEditingController());
+      }
     } else {
       _controllers.add(TextEditingController());
     }
@@ -128,6 +151,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
 
   @override
   void dispose() {
+    _titleController.dispose();
     for (final c in _controllers) {
       c.dispose();
     }
@@ -151,10 +175,40 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     final lines = <String>[];
     for (int i = 0; i < _controllers.length; i++) {
       final text = _controllers[i].text.trim();
-      if (text.isNotEmpty) lines.add('Note ${i + 1} : $text');
+      if (text.isNotEmpty) lines.add(text);
     }
     return lines.join('\n\n');
   }
+
+  Future<void> _saveModifiedNote() async {
+    final title = _titleController.text.trim();
+    final prompt = _buildNotesPrompt();
+    if (prompt.isEmpty) {
+      showEskoliaSnackBar(context, 'Écris au moins une note.');
+      return;
+    }
+    if (widget.note != null) {
+      final updated = widget.note!.copyWith(
+        title: title.isEmpty ? 'Sans titre' : title,
+        content: prompt,
+      );
+      await NotebookRepository().save(updated);
+      if (mounted) {
+        showEskoliaSnackBar(context, 'Note sauvegardée !');
+      }
+    } else {
+      final newNote = NoteModel.create(
+        title: title.isEmpty ? 'Sans titre' : title,
+        content: prompt,
+      );
+      await NotebookRepository().save(newNote);
+      if (mounted) {
+        showEskoliaSnackBar(context, 'Note créée !');
+        context.pop();
+      }
+    }
+  }
+
 
   // ── Generation IA ───────────────────────────────────────────────────────────
 
@@ -368,6 +422,24 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        TextField(
+          controller: _titleController,
+          style: GoogleFonts.outfit(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          decoration: InputDecoration(
+            hintText: 'Titre de la note...',
+            hintStyle: TextStyle(
+              color: Colors.white.withValues(alpha: 0.3),
+              fontSize: 18,
+            ),
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          ),
+        ),
+        const Divider(color: Colors.white10, height: 16),
         Row(
           children: [
             const Text('\u{1F4DD}', style: TextStyle(fontSize: 18)),
@@ -382,11 +454,21 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                 ),
               ),
             ),
+            TextButton.icon(
+              onPressed: _saveModifiedNote,
+              icon: Icon(
+                widget.note != null ? Icons.save_rounded : Icons.check_circle_outline_rounded,
+                size: 16,
+              ),
+              label: Text(widget.note != null ? 'Sauvegarder' : 'Créer la note'),
+              style: TextButton.styleFrom(foregroundColor: EskoliaTokens.success),
+            ),
+            const SizedBox(width: 8),
             if (_controllers.length < 10)
               TextButton.icon(
                 onPressed: _addNote,
                 icon: const Icon(Icons.add_rounded, size: 16),
-                label: const Text('Ajouter une note'),
+                label: const Text('Ajouter'),
                 style: TextButton.styleFrom(foregroundColor: _violet),
               ),
           ],

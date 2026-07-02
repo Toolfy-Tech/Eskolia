@@ -3,6 +3,11 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/constants/eskolia_tokens.dart';
 
+const Color _cyan = EskoliaTokens.cyan;
+const Color _slate = EskoliaTokens.textSecondary;
+const Color _bg = EskoliaTokens.bgBase;
+const Color _card = EskoliaTokens.surface1;
+
 // ---------------------------------------------------------------------------
 // NetworkCalculatorSheet
 // ---------------------------------------------------------------------------

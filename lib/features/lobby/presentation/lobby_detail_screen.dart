@@ -56,8 +56,11 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
-          EskoliaShellBody(
-            child: StreamBuilder<LobbyModel?>(
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 850),
+              child: EskoliaShellBody(
+                child: StreamBuilder<LobbyModel?>(
               stream: _repo.watchLobby(widget.lobbyId),
               builder: (context, lobbySnap) {
                 final lobby = lobbySnap.data;
@@ -270,6 +273,8 @@ class _LobbyDetailScreenState extends State<LobbyDetailScreen> {
                 );
               },
             ),
+          ),
+          ),
           ),
         ],
       ),

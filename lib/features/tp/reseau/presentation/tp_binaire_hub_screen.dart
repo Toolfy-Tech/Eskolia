@@ -46,7 +46,7 @@ class _TpBinaireHubScreenState extends State<TpBinaireHubScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _AiGenerateSheet(aiState: aiState),
+      builder: (_) => AiGenerateSheet(aiState: aiState),
     );
   }
 
@@ -237,7 +237,7 @@ class _AiGenerateCard extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (_) => _AiGenerateSheet(
+        builder: (_) => AiGenerateSheet(
           aiState: aiState,
           initialDifficulty: difficulty,
         ),
@@ -286,16 +286,16 @@ class _AiGenerateCard extends StatelessWidget {
 
 // ─── AI Generate bottom sheet ─────────────────────────────────────────────────
 
-class _AiGenerateSheet extends StatefulWidget {
-  const _AiGenerateSheet({required this.aiState, this.initialDifficulty});
+class AiGenerateSheet extends StatefulWidget {
+  const AiGenerateSheet({super.key, required this.aiState, this.initialDifficulty});
   final AiConnectionState aiState;
   final TpDifficulty? initialDifficulty;
 
   @override
-  State<_AiGenerateSheet> createState() => _AiGenerateSheetState();
+  State<AiGenerateSheet> createState() => _AiGenerateSheetState();
 }
 
-class _AiGenerateSheetState extends State<_AiGenerateSheet> {
+class _AiGenerateSheetState extends State<AiGenerateSheet> {
   late AiDifficulty   _difficulty;
   int                 _questionCount = 10;
   TpExerciseType      _exerciseType  = TpExerciseType.complet;

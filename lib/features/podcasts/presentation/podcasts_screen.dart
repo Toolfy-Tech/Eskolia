@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/podcast_model.dart';
 import 'podcast_player_card.dart';
 import '../../../core/constants/eskolia_tokens.dart';
@@ -22,12 +24,12 @@ class _PodcastsScreenState extends State<PodcastsScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Podcasts'),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
-          SafeArea(
-            top: false,
+          EskoliaShellBody(
+            showBack: false,
             child: FutureBuilder<List<Podcast>>(
               future: _future,
               builder: (context, snap) {
@@ -88,18 +90,26 @@ class _Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Podcasts du parcours',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              const Text(
+                '🎙️',
+                style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Podcasts',
+                style: GoogleFonts.outfit(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 10),
           Text(
-            'Une analyse audio par module. A ecouter avant de lire le cours '
-            'pour preparer le terrain.',
+            'Une analyse audio par module. A ecouter avant de lire le cours pour preparer le terrain.',
             style: TextStyle(
               color: EskoliaTokens.textSecondary.withValues(alpha: 0.95),
               fontSize: 13,

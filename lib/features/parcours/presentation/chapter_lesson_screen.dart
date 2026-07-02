@@ -9,10 +9,12 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_lesson_markdown.dart';
 import '../../../shared/widgets/eskolia_button.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
 import '../data/optimus_content_models.dart';
 import '../data/parcours_repository.dart';
+import '../data/tip_catalog_loader.dart';
 import '../data/tip_progress_repository.dart';
 import 'widgets/lexique_section.dart';
 import 'widgets/mediatheque_section.dart';
@@ -63,6 +65,13 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
     return parts.length >= 3 ? parts[2] : null;
   }
 
+  Future<void> _ensureCatalogLoaded() async {
+    if (ParcoursRepository.moduleCatalog.isEmpty) {
+      final base = await TipCatalogLoader.loadOptimusFormation();
+      ParcoursRepository.registerModules(base);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +81,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   }
 
   Future<void> _loadContent() async {
+    await _ensureCatalogLoaded();
     final secId = _sectionId(widget.moduleId);
     final slug = _chapterSlug(widget.moduleId);
     if (secId == null || slug == null) return;
@@ -114,6 +124,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   }
 
   Future<void> _load() async {
+    await _ensureCatalogLoaded();
     final mod = ParcoursRepository.moduleById(widget.moduleId);
     final path = mod?.lessonAssetPath;
     if (path == null || path.isEmpty) {
@@ -137,6 +148,7 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
   /// Charge le podcast de la section, mais seulement en tete de section
   /// (1er chapitre) pour ne pas le repeter sur chaque chapitre du module.
   Future<void> _loadPodcast() async {
+    await _ensureCatalogLoaded();
     final loc = ParcoursRepository.moduleLocation[widget.moduleId];
     if (loc == null) return;
     final section = ParcoursRepository
@@ -174,45 +186,13 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
         }
       },
       child: Scaffold(
-        extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: false,
         backgroundColor: Colors.transparent,
-        appBar: EskoliaAppBar.standard(
-          context,
-          title: m?.title ?? 'Cours',
-          actions: [
-            if (hasQuiz)
-              Padding(
-                padding: const EdgeInsets.only(right: 6, top: 6, bottom: 6),
-                child: FilledButton.icon(
-                  onPressed: () => context.push('/quiz/${m.id}'),
-                  icon: const Icon(Icons.quiz_rounded, size: 22),
-                  label: const Text('Maîtrise'),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 12,
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.3,
-                    ),
-                    backgroundColor: _cyan,
-                    foregroundColor: EskoliaTokens.bgBase,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+        appBar: null,
         body: Stack(
           children: [
             const EskoliaAmbientBackground(),
-            SafeArea(
-              top: false,
+            EskoliaShellBody(
               child: _buildBody(
                 hasQuiz: hasQuiz,
                 quizModuleId: hasQuiz ? m.id : null,
@@ -261,15 +241,57 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (hasQuiz && quizModuleId != null) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FilledButton.icon(
+                          onPressed: () => context.push('/quiz/$quizModuleId'),
+                          icon: const Icon(Icons.quiz_rounded, size: 18),
+                          label: const Text('Lancer le Quiz de Maîtrise'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _cyan,
+                            foregroundColor: EskoliaTokens.bgBase,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 if (_podcast != null) ...[
                   _PodcastIntro(podcast: _podcast!),
                   const SizedBox(height: 22),
                 ],
                 EskoliaCardContent(
                   padding: const EdgeInsets.fromLTRB(20, 22, 20, 26),
-                  child: EskoliaLessonMarkdown(
-                    data: _text!,
-                    lessonAssetPath: _lessonAssetPath,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      EskoliaLessonMarkdown(
+                        data: _text!,
+                        lessonAssetPath: _lessonAssetPath,
+                      ),
+                      if (_chapterSupports.isNotEmpty) ...[
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: Divider(
+                            color: Colors.white12,
+                            height: 1,
+                            thickness: 1,
+                          ),
+                        ),
+                        SupportSection(
+                          items: _chapterSupports,
+                          title: 'Support de cours',
+                        ),
+                      ],
+                    ],
                   ),
                 ),
                 // Termes clés liés à ce chapitre spécifiquement
@@ -286,14 +308,6 @@ class _ChapterLessonScreenState extends State<ChapterLessonScreen> {
                   MediathequeSection(
                     specific: _chapterResources,
                     title: 'Ressources du chapitre',
-                  ),
-                ],
-                // Support pédagogique lié à ce chapitre
-                if (_chapterSupports.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  SupportSection(
-                    items: _chapterSupports,
-                    title: 'Support de cours',
                   ),
                 ],
                 // Dernier chapitre du module → tout le lexique + médiathèque
@@ -381,37 +395,42 @@ class _PodcastIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-          decoration: BoxDecoration(
-            color: _violet.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: _violet.withValues(alpha: 0.30)),
-          ),
-          child: Row(
-            children: [
-              const Text('\u{1F3A7}', style: TextStyle(fontSize: 18)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Ecoute le podcast avant de lire — il vulgarise le cours en profondeur.',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.92),
-                    fontSize: 13,
-                    height: 1.35,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              decoration: BoxDecoration(
+                color: _violet.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _violet.withValues(alpha: 0.30)),
               ),
-            ],
-          ),
+              child: Row(
+                children: [
+                  const Text('\u{1F3A7}', style: TextStyle(fontSize: 18)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Ecoute le podcast avant de lire — il vulgarise le cours en profondeur.',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.92),
+                        fontSize: 13,
+                        height: 1.35,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            PodcastPlayerCard(podcast: podcast),
+          ],
         ),
-        const SizedBox(height: 12),
-        PodcastPlayerCard(podcast: podcast),
-      ],
+      ),
     );
   }
 }

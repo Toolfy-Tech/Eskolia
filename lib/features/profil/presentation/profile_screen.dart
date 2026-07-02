@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/theme/eskolia_layout.dart';
 import '../../../core/theme/eskolia_visual.dart';
@@ -64,14 +65,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
-      appBar: EskoliaAppBar.standard(context, title: 'Moi', showBack: false),
+      appBar: null,
       body: Stack(
         children: [
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
-            safeAreaTop: false,
+            showBack: widget.uid.isNotEmpty,
             child: FutureBuilder<ProfileSnapshot>(
               future: _future,
               builder: (context, snap) {
@@ -94,6 +95,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     120,
                   ),
                   children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 24, top: 8),
+                        child: Text(
+                          widget.uid.isNotEmpty ? 'Profil' : 'Mon Profil',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
                     _buildHeaderCard(p),
                     const SizedBox(height: 20),
                     _buildMetricsGrid(p),
@@ -105,8 +119,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildWeeklySection(p),
                     const SizedBox(height: 24),
                     _buildBadgesSection(p),
-                    const SizedBox(height: 24),
-                    _buildExplorerSection(context),
                     if (isSelf) ...[
                       const SizedBox(height: 32),
                       _buildLogoutButton(),
@@ -128,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return GradientBorderCard(
       gradientColors: EskoliaVisual.borderPrimary,
       glowColor: EskoliaTokens.violet,
-      borderRadius: 22,
+      borderRadius: 24,
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
@@ -226,9 +238,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final startWeekday = slots.first.day.weekday;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'ACTIVITÉ',
@@ -254,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.04),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
             children: [
@@ -321,7 +334,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final ratio = total > 0 ? (done / total).clamp(0.0, 1.0) : 0.0;
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text('PROGRESSION PARCOURS', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
             const SizedBox(height: 12),
@@ -329,15 +342,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     children: [
-                      const Text('Parcours Optimus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      Text('$done / $total chapitres', style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 12, fontWeight: FontWeight.bold)),
+                      const Text('Parcours Optimus', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text('$done / $total chapitres', style: const TextStyle(color: EskoliaTokens.cyan, fontSize: 13, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -349,12 +362,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: EskoliaTokens.gold.withValues(alpha: 0.5)),
                           color: EskoliaTokens.gold.withValues(alpha: 0.07),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(Icons.emoji_events_rounded, color: EskoliaTokens.gold, size: 18),
                             const SizedBox(width: 8),
@@ -384,7 +398,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildWeeklySection(ProfileSnapshot p) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Text(
           'CETTE SEMAINE',
@@ -407,23 +421,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildBadgesSection(ProfileSnapshot p) {
     if (p.badges.isEmpty) return const SizedBox.shrink();
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Text('BADGES RÉCENTS', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
         const SizedBox(height: 12),
-        SizedBox(
-          height: 80,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: p.badges.length,
-            itemBuilder: (context, i) {
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(p.badges.length, (i) {
               final b = resolveBadgeDef(p.badges[i]);
               return Container(
-                width: 70,
-                margin: const EdgeInsets.only(right: 12),
+                width: 75,
+                height: 80,
+                margin: const EdgeInsets.symmetric(horizontal: 6),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: b.isSuper ? EskoliaTokens.amber.withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.1)),
                 ),
                 child: Column(
@@ -431,42 +445,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     Text(b.emoji, style: const TextStyle(fontSize: 24)),
                     const SizedBox(height: 4),
-                    Text(b.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white, fontSize: 9)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(b.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white, fontSize: 9)),
+                    ),
                   ],
                 ),
               );
-            },
+            }),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildExplorerSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('EXPLORER', style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
-        const SizedBox(height: 12),
-        _ExplorerTile(icon: Icons.psychology_rounded, label: 'Mon IA', route: '/ai/setup', color: EskoliaTokens.violet),
-        _ExplorerTile(icon: Icons.emoji_events_rounded, label: 'Classement', route: '/leaderboard', color: EskoliaTokens.amber),
-        _ExplorerTile(icon: Icons.military_tech_rounded, label: 'Hauts faits', route: '/achievements', color: EskoliaTokens.violet),
-        _ExplorerTile(icon: Icons.biotech_rounded, label: 'Le Labo', route: '/labo', color: EskoliaTokens.success),
-        _ExplorerTile(icon: Icons.settings_rounded, label: 'Réglages', route: '/settings', color: EskoliaTokens.textSecondary),
-      ],
-    );
-  }
-
   Widget _buildLogoutButton() {
-    return OutlinedButton(
-      onPressed: _signOut,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: EskoliaTokens.error,
-        side: const BorderSide(color: EskoliaTokens.error, width: 1.5),
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return Center(
+      child: SizedBox(
+        width: 200,
+        child: OutlinedButton(
+          onPressed: _signOut,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: EskoliaTokens.error,
+            side: const BorderSide(color: EskoliaTokens.error, width: 1.5),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          ),
+          child: const Text('Se déconnecter', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
       ),
-      child: const Text('Se déconnecter', style: TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
@@ -499,50 +506,15 @@ class _MetricCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
-          Text(value, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(value, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
+          Text(label, style: const TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11)),
         ],
-      ),
-    );
-  }
-}
-
-class _ExplorerTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-  final Color color;
-
-  const _ExplorerTile({required this.icon, required this.label, required this.route, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: () => context.push(route),
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(icon, color: color, size: 22),
-                const SizedBox(width: 16),
-                Expanded(child: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600))),
-                const Icon(Icons.chevron_right_rounded, color: Colors.white24),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -21,6 +21,14 @@ class Podcast {
   final String? sectionId;
 
   String get sectionKey => sectionId ?? id;
+
+  String get displayTitle {
+    final key = sectionKey.toUpperCase();
+    if (key.startsWith('M') && key.length > 1) {
+      return '$key — $title';
+    }
+    return title;
+  }
 }
 
 /// Charge le manifeste des podcasts (titres + URLs des releases GitHub).

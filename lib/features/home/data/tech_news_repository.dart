@@ -62,16 +62,66 @@ class TechNewsRepository {
     return rootBundle.loadString(assetPath);
   }
 
-  Future<List<TechNewsItem>> loadNews() async {
+  Future<List<TechNewsItem>> loadNews({
+    String? sourceFilter,
+    List<String> subscribedSources = const [],
+  }) async {
+    if (sourceFilter != null && sourceFilter.startsWith('custom:')) {
+      try {
+        final jsonStr = sourceFilter.substring(7);
+        final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+        final feed = TechFeedConfig(
+          id: sourceFilter,
+          label: map['label'] as String? ?? 'Flux perso',
+          rssUrl: map['rssUrl'] as String? ?? '',
+          category: map['category'] as String? ?? 'it_pro',
+        );
+        if (feed.rssUrl.isNotEmpty) {
+          return _fetchFeedItems(feed, 12);
+        }
+      } catch (_) {}
+      return const [];
+    }
+
     final raw = await _loadFeedsConfigRaw();
     final root = jsonDecode(raw) as Map<String, dynamic>;
     final feedsJson = root['feeds'] as List<dynamic>? ?? const [];
-    final feeds = feedsJson
-        .map((e) => TechFeedConfig.fromJson(e as Map<String, dynamic>))
-        .where((f) => f.rssUrl.isNotEmpty)
-        .toList();
+    
+    final customFeeds = <TechFeedConfig>[];
+    for (final sub in subscribedSources) {
+      if (sub.startsWith('custom:')) {
+        try {
+          final jsonStr = sub.substring(7);
+          final map = jsonDecode(jsonStr) as Map<String, dynamic>;
+          customFeeds.add(TechFeedConfig(
+            id: sub,
+            label: map['label'] as String? ?? 'Flux perso',
+            rssUrl: map['rssUrl'] as String? ?? '',
+            category: map['category'] as String? ?? 'it_pro',
+          ));
+        } catch (_) {}
+      }
+    }
+
+    final feeds = [
+      ...feedsJson.map((e) => TechFeedConfig.fromJson(e as Map<String, dynamic>)),
+      ...customFeeds,
+    ].where((f) => f.rssUrl.isNotEmpty).toList();
 
     if (feeds.isEmpty) return const [];
+
+    if (sourceFilter != null) {
+      final targetFeed = feeds.firstWhere(
+        (f) => f.label.toLowerCase() == sourceFilter.toLowerCase(),
+        orElse: () => feeds.firstWhere(
+          (f) => f.id.toLowerCase() == sourceFilter.toLowerCase(),
+          orElse: () => const TechFeedConfig(id: '', label: '', rssUrl: '', category: ''),
+        ),
+      );
+      if (targetFeed.rssUrl.isEmpty) return const [];
+      // Permettre jusqu'à 12 articles pour une carte dédiée à une source
+      return _fetchFeedItems(targetFeed, 12);
+    }
 
     final maxPer =
         (root['maxItemsPerFeed'] as num?)?.toInt().clamp(1, 20) ?? 5;
@@ -125,6 +175,7 @@ class TechNewsRepository {
           title: title,
           link: link,
           sourceLabel: feed.label,
+          category: feed.category,
           pubDate: pub,
           publishedAt: _parseArticleDate(pub),
         ),

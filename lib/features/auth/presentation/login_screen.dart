@@ -157,6 +157,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TextFormField(
                                     controller: _passwordController,
                                     obscureText: _obscureText,
+                                    textInputAction: TextInputAction.done,
+                                    onFieldSubmitted: (_) => _handleLogin(),
                                     style: const TextStyle(color: Colors.white),
                                     decoration: _fieldDecoration(
                                       context,
