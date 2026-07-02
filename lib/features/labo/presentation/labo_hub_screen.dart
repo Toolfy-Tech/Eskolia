@@ -89,7 +89,8 @@ class LaboHubScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                              FutureBuilder<UserModel?>(
+                ),
+                FutureBuilder<UserModel?>(
                   future: userFuture,
                   builder: (context, snap) {
                     final staff = userHasStaffAccess(snap.data, email);

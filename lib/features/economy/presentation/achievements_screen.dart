@@ -400,7 +400,7 @@ class AchievementsScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: const BoxDecoration(
-                                    color: Colors.greenDoubleExtraSoft,
+                                    color: Color(0x264ADE80),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
