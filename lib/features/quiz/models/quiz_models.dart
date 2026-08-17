@@ -98,6 +98,9 @@ class QuizSession {
     this.timed = true,
     this.postQuestionRecapEnabled = true,
     this.survivalCatalogTrack,
+    this.isMistakesSession = false,
+    this.isDailyRandom = false,
+    this.isPoolOnly = false,
   });
 
   final String sessionId;
@@ -111,6 +114,9 @@ class QuizSession {
   final bool timed;
   final bool postQuestionRecapEnabled;
   final QuizCatalogTrack? survivalCatalogTrack;
+  final bool isMistakesSession;
+  final bool isDailyRandom;
+  final bool isPoolOnly;
 
   int get totalQuestions => questions.length;
 
@@ -125,6 +131,9 @@ class QuizSession {
     bool? timed,
     bool? postQuestionRecapEnabled,
     QuizCatalogTrack? survivalCatalogTrack,
+    bool? isMistakesSession,
+    bool? isDailyRandom,
+    bool? isPoolOnly,
   }) {
     return QuizSession(
       sessionId: sessionId ?? this.sessionId,
@@ -141,6 +150,9 @@ class QuizSession {
           postQuestionRecapEnabled ?? this.postQuestionRecapEnabled,
       survivalCatalogTrack:
           survivalCatalogTrack ?? this.survivalCatalogTrack,
+      isMistakesSession: isMistakesSession ?? this.isMistakesSession,
+      isDailyRandom: isDailyRandom ?? this.isDailyRandom,
+      isPoolOnly: isPoolOnly ?? this.isPoolOnly,
     );
   }
 }

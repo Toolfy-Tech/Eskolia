@@ -8,6 +8,8 @@ import 'package:eskolia/core/theme/app_theme.dart';
 import 'package:eskolia/features/auth/data/auth_repository.dart';
 import 'package:eskolia/features/auth/presentation/login_screen.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 void main() {
   testWidgets('LoginScreen : champs, CTA et validation', (tester) async {
     final authRepo = AuthRepository(
@@ -30,9 +32,11 @@ void main() {
     );
 
     await tester.pumpWidget(
-      MaterialApp.router(
-        theme: AppTheme.dark,
-        routerConfig: router,
+      ProviderScope(
+        child: MaterialApp.router(
+          theme: AppTheme.dark,
+          routerConfig: router,
+        ),
       ),
     );
     await tester.pumpAndSettle();

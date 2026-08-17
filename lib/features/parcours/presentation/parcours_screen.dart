@@ -597,23 +597,23 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final isLargeScreen = screenWidth > 800;
+    final isDesktopOrTablet = screenWidth >= 700;
 
-    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = screenWidth - sidebarWidth - 48;
+    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
+    final availableWidth = (screenWidth - sidebarWidth - 48).clamp(280.0, double.infinity);
 
     int numColumns;
-    if (screenWidth > 1200) {
+    double cardWidth;
+    if (availableWidth >= 1050) {
       numColumns = 3;
-    } else if (screenWidth > 800) {
+      cardWidth = (availableWidth - 32) / 3;
+    } else if (availableWidth >= 660) {
       numColumns = 2;
+      cardWidth = (availableWidth - 16) / 2;
     } else {
       numColumns = 1;
+      cardWidth = availableWidth;
     }
-
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (screenWidth - 40));
 
     return Scaffold(
       backgroundColor: Colors.transparent,

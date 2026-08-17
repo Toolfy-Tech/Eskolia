@@ -1,0 +1,453 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 4 — Sujet Delta (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb4_q1",
+      "type": "classic",
+      "question": "Dans une usine de production, plusieurs postes connectés en Ethernet subissent des pertes régulières de paquets et des micro-déconnexions dès que les moteurs de découpe laser démarrent. Quel type de blindage de câble réseau aurait dû être installé pour éviter ces perturbations électromagnétiques ?",
+      "answer": "Un câble à blindage renforcé de type SFTP (ou S/FTP — blindage par paire en feuille d'aluminium + tresse de blindage globale) en Catégorie 6a ou Catégorie 7.",
+      "explanation": "Les câbles UTP (non blindés) ou FTP basiques sont très sensibles aux parasites électromagnétiques générés par les machines industrielles et variateurs de fréquence ; le SFTP offre une barrière physique indispensable en environnement hostile (CP 7)[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Réseaux Industriels & Câblage"
+    },
+    {
+      "id": "eb4_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'un échange complet de résolution de nom DNS récursif lorsqu'un utilisateur tape 'intranet.aerosud.fr' dans son navigateur pour la première fois.",
+      "answer": "1. Le poste client vérifie son fichier local 'hosts' et son cache DNS interne\n2. Le client émet une requête DNS (UDP 53) vers le serveur DNS configuré sur sa carte réseau\n3. Le serveur DNS interne consulte sa zone directe locale à la recherche de l'enregistrement A correspondant\n4. Le serveur DNS renvoie l'adresse IPv4 locale (ex: 10.10.50.20) au poste client\n5. Le poste client met l'adresse en cache et établit la connexion HTTP/HTTPS vers le serveur web",
+      "items": [
+        "Le poste client vérifie son fichier local 'hosts' et son cache DNS interne",
+        "Le client émet une requête DNS (UDP 53) vers le serveur DNS configuré sur sa carte réseau",
+        "Le serveur DNS interne consulte sa zone directe locale à la recherche de l'enregistrement A correspondant",
+        "Le serveur DNS renvoie l'adresse IPv4 locale (ex: 10.10.50.20) au poste client",
+        "Le poste client met l'adresse en cache et établit la connexion HTTP/HTTPS vers le serveur web"
+      ],
+      "explanation": "La résolution de noms suit toujours la chaîne : cache/hosts local, puis interrogation du serveur DNS déclaré qui interroge sa zone ou les serveurs racines (CP 7)[cite: 32, 34].",
+      "difficulty": "moyen",
+      "context": "Services DNS & Résolution"
+    },
+    {
+      "id": "eb4_q3",
+      "type": "association",
+      "question": "Associe chaque terme lié à la gestion des processeurs à sa définition technique.",
+      "answer": "TDP (Thermal Design Power) -> Puissance thermique maximale que le système de refroidissement doit dissiper, Socket -> Connecteur mécanique et électrique sur la carte mère accueillant le CPU, Throttling thermique -> Baisse automatique de la fréquence du CPU pour éviter la destruction par surchauffe, Pâte thermique -> Composé conducteur comblant les micro-espaces d'air entre le processeur et le radiateur",
+      "pairs": [
+        ["TDP (Thermal Design Power)", "Puissance thermique maximale que le système de refroidissement doit dissiper"],
+        ["Socket", "Connecteur mécanique et électrique sur la carte mère accueillant le CPU"],
+        ["Throttling thermique", "Baisse automatique de la fréquence du CPU pour éviter la destruction par surchauffe"],
+        ["Pâte thermique", "Composé conducteur comblant les micro-espaces d'air entre le processeur et le radiateur"]
+      ],
+      "explanation": "Le dimensionnement du refroidissement et la compréhension du TDP sont cruciaux pour assurer la pérennité matérielle des équipements (CP 5)[cite: 12, 13, 17, 20].",
+      "difficulty": "facile",
+      "context": "Hardware & Refroidissement"
+    },
+    {
+      "id": "eb4_q4",
+      "type": "diagnostic_indices",
+      "question": "Un technicien tente d'exécuter la commande 'sysprep /generalize /oobe /shutdown' sur une machine de référence Windows 11 préparée en Mode Audit, mais le processus s'interrompt brutalement avec une erreur fatale. Identifie la cause racine classique de ce blocage.",
+      "answer": "Des mises à jour Windows Update ou des mises à jour automatiques d'applications du Microsoft Store sont en cours d'installation ou en attente de redémarrage en arrière-plan.",
+      "indices": [
+        "Indice 1 : Le fichier journal C:\\Windows\\System32\\Sysprep\\Panther\\setupact.log consigne une erreur 'Package ... was installed for a user, but not provisioned for all users'[cite: 44].",
+        "Indice 2 : La machine a été laissée connectée à Internet avec les services de mise à jour automatiques actifs pendant la personnalisation[cite: 24, 44].",
+        "Indice 3 : Windows considère l'état du système instable tant que toutes les transactions de mises à jour ne sont pas achevées et validées par un redémarrage[cite: 44]."
+      ],
+      "explanation": "Pour que la généralisation Sysprep réussisse, toutes les mises à jour en attente doivent être terminées et le système redémarré, ou la machine isolée d'Internet pendant le mode audit (CP 4)[cite: 24, 44].",
+      "difficulty": "difficile",
+      "context": "Déploiement & Sysprep"
+    },
+    {
+      "id": "eb4_q5",
+      "type": "ticket",
+      "question": "Ticket #3320 — 'Bonjour, nous avons installé un nouveau commutateur dans l'atelier mais les postes branchés sur les ports 1 à 12 ne communiquent pas avec le serveur de l'atelier branché sur le port 24.'",
+      "answer": "Vérifier la configuration des VLANs sur le commutateur (les ports 1 à 12 et le port 24 doivent être affectés au même VLAN ou un routage inter-VLAN doit être activé).",
+      "checklist": [
+        "Se connecter en console ou SSH sur le commutateur (show vlan brief)[cite: 33, 34]",
+        "Vérifier l'assignation des VLANs par port (ports d'accès)[cite: 33]",
+        "Assigner le port 24 au même VLAN que les postes de l'atelier (ex: VLAN 20 - ATELIER)[cite: 33]",
+        "Tester un ping entre un poste de l'atelier et le serveur pour valider la connectivité locale[cite: 30, 33]"
+      ],
+      "explanation": "Par défaut, deux ports situés sur des VLANs différents ne peuvent pas échanger de données sans passer par un routeur ou un commutateur de niveau 3 (CP 7)[cite: 33].",
+      "difficulty": "moyen",
+      "context": "Commutation & VLANs"
+    },
+    {
+      "id": "eb4_q6",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre les protocoles de routage/pare-feu 'Stateless' (sans état) et 'Stateful' (avec état) ?",
+      "answer": "Un pare-feu Stateless filtre chaque paquet individuellement sans mémoire des flux précédents (ex: ACL simple), alors qu'un pare-feu Stateful conserve une table de connexions actives et autorise automatiquement les paquets retours légitimes d'une session initiée depuis l'intérieur.",
+      "explanation": "Les pare-feux Stateful (comme pfSense, FortiGate ou le pare-feu Windows) offrent une sécurité nettement supérieure en analysant le contexte complet des sessions TCP/UDP (CP 7)[cite: 34].",
+      "difficulty": "moyen",
+      "context": "Sécurité Réseau & Pare-feu"
+    },
+    {
+      "id": "eb4_q7",
+      "type": "association",
+      "question": "Associe chaque norme de connecteur USB à sa vitesse de transfert théorique maximale.",
+      "answer": "USB 2.0 -> 480 Mb/s (soit ~60 Mo/s théorique), USB 3.0 / USB 3.2 Gen 1 -> 5 Gb/s (languette intérieure bleue), USB 3.1 / USB 3.2 Gen 2 -> 10 Gb/s (languette rouge ou connecteur Type-C), USB4 / Thunderbolt 4 -> 40 Gb/s (connecteur Type-C universel)",
+      "pairs": [
+        ["USB 2.0", "480 Mb/s (soit ~60 Mo/s théorique)"],
+        ["USB 3.0 / USB 3.2 Gen 1", "5 Gb/s (languette intérieure bleue)"],
+        ["USB 3.1 / USB 3.2 Gen 2", "10 Gb/s (languette rouge ou connecteur Type-C)"],
+        ["USB4 / Thunderbolt 4", "40 Gb/s (connecteur Type-C universel)"]
+      ],
+      "explanation": "L'identification visuelle et technique des débits USB évite de brancher des supports externes rapides sur des ports anciens bridant les transferts (CP 4 et CP 5)[cite: 18].",
+      "difficulty": "facile",
+      "context": "Connectique & Débits USB"
+    },
+    {
+      "id": "eb4_q8",
+      "type": "classic",
+      "question": "Dans le cadre de l'hygiène informatique et de la sécurité des mots de passe définie par l'ANSSI, qu'est-ce que l'authentification multifacteur (MFA) et quels sont les 3 types de facteurs possibles ?",
+      "answer": "Le MFA exige la validation d'au moins 2 facteurs distincts parmi : 1. Ce que je sais (mot de passe, code PIN), 2. Ce que je possède (smartphone/Authenticator, clé FIDO2, carte à puce), 3. Ce que je suis (biométrie : empreinte, visage).",
+      "explanation": "Le MFA bloque la quasi-totalité des attaques par vol d'identifiants car la possession du mot de passe seul ne permet plus d'ouvrir la session (CP 6)[cite: 42, 58, 59].",
+      "difficulty": "facile",
+      "context": "Authentification & MFA"
+    },
+    {
+      "id": "eb4_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'installation d'une nouvelle carte graphique dédiée (dGPU) dans une tour d'ordinateur.",
+      "answer": "1. Débrancher l'alimentation secteur et se prémunir des décharges électrostatiques (ESD)\n2. Retirer les caches métalliques arrière (brackets) correspondant à l'emplacement PCIe\n3. Insérer fermement la carte graphique dans le slot PCIe x16 jusqu'au clic du verrou\n4. Visser l'équerre métallique de la carte au boîtier pour assurer le maintien mécanique\n5. Brancher le ou les câbles d'alimentation PCIe (6 ou 8 broches) depuis le bloc d'alimentation (PSU)\n6. Rebrancher le câble écran directement sur la sortie vidéo de la nouvelle carte graphique et installer les pilotes",
+      "items": [
+        "Débrancher l'alimentation secteur et se prémunir des décharges électrostatiques (ESD)",
+        "Retirer les caches métalliques arrière (brackets) correspondant à l'emplacement PCIe",
+        "Insérer fermement la carte graphique dans le slot PCIe x16 jusqu'au clic du verrou",
+        "Visser l'équerre métallique de la carte au boîtier pour assurer le maintien mécanique",
+        "Brancher le ou les câbles d'alimentation PCIe (6 ou 8 broches) depuis le bloc d'alimentation (PSU)",
+        "Rebrancher le câble écran directement sur la sortie vidéo de la nouvelle carte graphique et installer les pilotes"
+      ],
+      "explanation": "L'installation matérielle exige la fixation mécanique, le raccordement électrique dédié et le branchement du moniteur sur la carte dédiée (CP 4 et CP 5)[cite: 16, 17, 22].",
+      "difficulty": "moyen",
+      "context": "Assemblage & GPU"
+    },
+    {
+      "id": "eb4_q10",
+      "type": "classic",
+      "question": "Pourquoi la création d'un Master d'entreprise ne doit-elle jamais inclure de compte utilisateur local nominatif ou de mot de passe personnel ?",
+      "answer": "Parce que lors de la capture et du déploiement de l'image, ce compte et ses fichiers résiduels seraient dupliqués sur toutes les machines du parc, créant une faille de sécurité majeure et une violation de confidentialité.",
+      "explanation": "Le Master ne doit contenir que le système d'exploitation généralisé, les pilotes et les applications bureautiques/métiers communes (CP 4)[cite: 44].",
+      "difficulty": "facile",
+      "context": "Industrialisation & Master"
+    },
+    {
+      "id": "eb4_q11",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son PC redémarre systématiquement en boucle au bout de 2 minutes après l'ouverture de sa session avec un compte à rebours Windows affichant 'Arrêt du système initié par AUTORITE NT\\SYSTEM'. Trouve la cause de l'anomalie.",
+      "answer": "Une tâche planifiée malveillante ou un service corrompu (anciennement virus de type Blaster/Sasser ou script d'arrêt forcé 'shutdown -r -t 120') déclenche l'arrêt automatique du système.",
+      "indices": [
+        "Indice 1 : En démarrant en Mode sans échec, le PC reste parfaitement stable et ne redémarre pas.",
+        "Indice 2 : L'Observateur d'événements consigne l'Event ID 1074 indiquant que le processus C:\\Windows\\System32\\shutdown.exe a ordonné le redémarrage[cite: 49].",
+        "Indice 3 : L'exécution de la commande 'shutdown -a' dans l'invite de commande annule immédiatement le compte à rebours d'extinction."
+      ],
+      "explanation": "La commande 'shutdown -a' permet d'avorter l'arrêt programmé pour laisser le temps au technicien d'analyser le Planificateur de tâches et les clés de registre Run (CP 5)[cite: 49, 51, 53].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Windows & Persistance"
+    },
+    {
+      "id": "eb4_q12",
+      "type": "classic",
+      "question": "Qu'est-ce qu'un NPU (Neural Processing Unit) intégré dans les ordinateurs récents et quel est son avantage par rapport au processeur classique (CPU) et à la carte graphique (GPU) ?",
+      "answer": "Le NPU est une puce matérielle spécialisée dans l'accélération des calculs matriciels d'intelligence artificielle (reconnaissance vocale, effets vidéo, sécurité locale). Son avantage majeur est d'exécuter ces tâches avec une efficacité énergétique bien supérieure, préservant l'autonomie et déchargeant le CPU et le GPU.",
+      "explanation": "Les NPU (mesurés en TOPS) équipent la nouvelle génération de processeurs pour traiter les modèles d'IA directement en local sans solliciter le Cloud (CP 4 et CP 5)[cite: 16].",
+      "difficulty": "moyen",
+      "context": "Hardware & IA"
+    },
+    {
+      "id": "eb4_q13",
+      "type": "ticket",
+      "question": "Ticket #5104 — 'Bonjour, nous devons déployer une flotte de 30 tablettes Android pour les préparateurs de commandes dans l'entrepôt. Comment assurer leur enrôlement et leur verrouillage centralisé ?'",
+      "answer": "Enrôler les tablettes dans la solution MDM de l'entreprise (ex: Microsoft Intune) en mode dédié (kiosque) pour restreindre l'usage aux seules applications professionnelles de stock.",
+      "checklist": [
+        "Configurer le profil d'enrôlement Android Enterprise dans le centre d'administration Intune[cite: 42]",
+        "Définir une stratégie de conformité (code PIN obligatoire, chiffrement du stockage, blocage du Play Store personnel)[cite: 29, 42]",
+        "Déployer automatiquement l'application métier de gestion d'entrepôt en mode Kiosque verrouillé[cite: 42]",
+        "Tester l'effacement à distance (wipe) et la géolocalisation sur une tablette pilote avant distribution[cite: 29, 42]"
+      ],
+      "explanation": "Le MDM permet une administration industrielle des flottes mobiles en appliquant des profils de sécurité homogènes et le mode kiosque pour les terminaux dédiés (CP 4)[cite: 29, 42].",
+      "difficulty": "moyen",
+      "context": "MDM & Flottes Mobiles"
+    },
+    {
+      "id": "eb4_q14",
+      "type": "association",
+      "question": "Associe chaque terme lié à la gestion des disques sous Windows à sa description.",
+      "answer": "Partition principale -> Volume autonome contenant un système de fichiers amorçable, Volume dynamique (agrégé/miroir) -> Gestion logicielle avancée permettant le RAID logiciel sous Windows, Secteur de boot (VBR) -> Premier secteur d'une partition contenant le code de chargement de l'OS, Espace non alloué -> Espace physique libre sur le disque n'appartenant à aucune partition",
+      "pairs": [
+        ["Partition principale", "Volume autonome contenant un système de fichiers amorçable"],
+        ["Volume dynamique (agrégé/miroir)", "Gestion logicielle avancée permettant le RAID logiciel sous Windows"],
+        ["Secteur de boot (VBR)", "Premier secteur d'une partition contenant le code de chargement de l'OS"],
+        ["Espace non alloué", "Espace physique libre sur le disque n'appartenant à aucune partition"]
+      ],
+      "explanation": "La manipulation des partitions via la console diskmgmt.msc ou l'outil diskpart est une compétence quotidienne de maintenance (CP 4 et CP 5)[cite: 23, 24, 40].",
+      "difficulty": "moyen",
+      "context": "Gestion des Disques"
+    },
+    {
+      "id": "eb4_q15",
+      "type": "classic",
+      "question": "Quelle est la commande PowerShell permettant de lister l'ensemble des comptes utilisateurs désactivés dans un domaine Active Directory et de les exporter dans un fichier CSV ?",
+      "answer": "Get-ADUser -Filter {Enabled -eq $false} -Properties * | Select-Object Name, SamAccountName, LastLogonDate | Export-Csv -Path 'C:\\Rapports\\ComptesDesactives.csv' -Encoding UTF8",
+      "explanation": "L'automatisation des audits d'utilisateurs avec PowerShell fait gagner un temps précieux et permet de maintenir un annuaire conforme aux règles de sécurité (CP 8)[cite: 54].",
+      "difficulty": "difficile",
+      "context": "PowerShell & Active Directory"
+    },
+    {
+      "id": "eb4_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de mise en place d'une session de déploiement en Multicast via WDS pour installer 40 postes simultanément.",
+      "answer": "1. Vérifier que les commutateurs réseau supportent et ont activé le protocole IGMP Snooping\n2. Ouvrir la console des Services de déploiement Windows (WDS) sur le serveur\n3. Faire un clic droit sur 'Transmissions par multidiffusion' et sélectionner 'Nouvelle transmission...'\n4. Sélectionner l'image d'installation de référence et choisir le mode 'Scheduled-Cast' (démarrage planifié)\n5. Définir le seuil de déclenchement (ex: démarrer dès que 40 clients sont connectés)\n6. Démarrer les 40 postes clients en PXE pour rejoindre automatiquement la session de diffusion unique",
+      "items": [
+        "Vérifier que les commutateurs réseau supportent et ont activé le protocole IGMP Snooping",
+        "Ouvrir la console des Services de déploiement Windows (WDS) sur le serveur",
+        "Faire un clic droit sur 'Transmissions par multidiffusion' et sélectionner 'Nouvelle transmission...'",
+        "Sélectionner l'image d'installation de référence et choisir le mode 'Scheduled-Cast' (démarrage planifié)",
+        "Définir le seuil de déclenchement (ex: démarrer dès que 40 clients sont connectés)",
+        "Démarrer les 40 postes clients en PXE pour rejoindre automatiquement la session de diffusion unique"
+      ],
+      "explanation": "Le mode Multicast diffuse un seul flux sur le réseau à destination d'une adresse IP multicast, évitant ainsi d'envoyer 40 fois l'image WIM et de saturer la bande passante (CP 4)[cite: 44].",
+      "difficulty": "difficile",
+      "context": "Déploiement Multicast WDS"
+    },
+    {
+      "id": "eb4_q17",
+      "type": "classic",
+      "question": "Sur un poste de travail sous macOS, quel outil natif de sauvegarde permet de réaliser des sauvegardes incrémentielles automatiques sur un disque externe ou un partage réseau NAS ?",
+      "answer": "Time Machine.",
+      "explanation": "Time Machine est le système de sauvegarde intégré de macOS créant des instantanés horaires et quotidiens pour restaurer des fichiers individuels ou le système complet (CP 5 et CP 6)[cite: 28].",
+      "difficulty": "facile",
+      "context": "Environnement macOS"
+    },
+    {
+      "id": "eb4_q18",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son navigateur web affiche une page d'avertissement rouge 'Votre connexion n'est pas privée (NET::ERR_CERT_DATE_INVALID)' lorsqu'il tente d'accéder à tous les sites HTTPS sécurisés. Trouve la cause racine de cette anomalie.",
+      "answer": "La date et l'heure système du poste client sont incorrectes (décalage temporel important souvent causé par une pile CMOS CR2032 épuisée).",
+      "indices": [
+        "Indice 1 : L'accès aux sites HTTP non sécurisés fonctionne sans message d'alerte[cite: 32].",
+        "Indice 2 : Les certificats de sécurité SSL/TLS des sites consultés (Google, Microsoft) sont pourtant tous parfaitement valides au niveau mondial[cite: 32].",
+        "Indice 3 : L'horloge en bas à droite de la barre des tâches affiche l'année 2018 au lieu de l'année actuelle[cite: 12, 21]."
+      ],
+      "explanation": "La validation cryptographique des certificats TLS compare la période de validité du certificat à l'horloge locale du PC ; si l'heure locale est fausse, le navigateur considère le certificat comme non encore valide ou expiré (CP 3)[cite: 21, 32].",
+      "difficulty": "facile",
+      "context": "Diagnostic TLS & Certificats"
+    },
+    {
+      "id": "eb4_q19",
+      "type": "association",
+      "question": "Associe chaque terme relatif à la gestion des licences logicielles d'entreprise à sa définition.",
+      "answer": "OEM (Original Equipment Manufacturer) -> Licence liée définitivement à la carte mère de la machine physique d'origine (non transférable), FPP / Retail (Boîte) -> Licence transférable d'un ordinateur à un autre lors d'un renouvellement matériel, Licence en Volume (VLSC) -> Contrat d'entreprise permettant d'activer plusieurs dizaines de postes avec une clé centralisée (KMS/MAK), SaaS (Software as a Service) -> Modèle d'abonnement mensuel/annuel hébergé dans le Cloud (ex: Microsoft 365)",
+      "pairs": [
+        ["OEM (Original Equipment Manufacturer)", "Licence liée définitivement à la carte mère de la machine physique d'origine (non transférable)"],
+        ["FPP / Retail (Boîte)", "Licence transférable d'un ordinateur à un autre lors d'un renouvellement matériel"],
+        ["Licence en Volume (VLSC)", "Contrat d'entreprise permettant d'activer plusieurs dizaines de postes avec une clé centralisée (KMS/MAK)"],
+        ["SaaS (Software as a Service)", "Modèle d'abonnement mensuel/annuel hébergé dans le Cloud (ex: Microsoft 365)"]
+      ],
+      "explanation": "La gestion de la conformité des licences matérielles et logicielles fait partie intégrante du suivi de parc et de la gestion budgétaire (CP 1 et CP 4)[cite: 6, 8, 42].",
+      "difficulty": "moyen",
+      "context": "Gestion de Parc & Licences"
+    },
+    {
+      "id": "eb4_q20",
+      "type": "ticket",
+      "question": "Ticket #2950 — 'Bonjour, nous avons installé un nouveau serveur NAS Synology pour les sauvegardes de l'agence, mais les sauvegardes échouent dès que le volume de données dépasse 2 To.'",
+      "answer": "Reconfigurer le système de fichiers ou initialiser les disques du NAS avec une table de partitionnement GPT plutôt que MBR pour dépasser la barrière des 2 To.",
+      "checklist": [
+        "Se connecter à l'interface d'administration du serveur NAS (Synology DSM)[cite: 30]",
+        "Vérifier la configuration du groupe de stockage (RAID 1 ou RAID 5)[cite: 40]",
+        "Vérifier que les disques sont bien initialisés en mode GPT (GUID Partition Table) et non en MBR hérité[cite: 15, 21, 23]",
+        "Créer un volume de stockage formaté en Btrfs ou ext4 et relancer la tâche de sauvegarde de test[cite: 15, 26]"
+      ],
+      "explanation": "Le partitionnement MBR bride tout volume ou disque dur à 2 To maximum ; GPT est obligatoire pour gérer de grands volumes de stockage réseau (CP 6)[cite: 15, 21, 23].",
+      "difficulty": "moyen",
+      "context": "Stockage NAS & Volumes"
+    },
+    {
+      "id": "eb4_q21",
+      "type": "classic",
+      "question": "Qu'est-ce que l'UAC (User Account Control / Contrôle de compte d'utilisateur) sous Windows et quel est son rôle dans la sécurité au quotidien ?",
+      "answer": "L'UAC est un mécanisme de sécurité qui fait tourner toutes les sessions avec des privilèges standards par défaut et demande une confirmation explicite (ou la saisie d'identifiants administrateur) dès qu'un programme tente de modifier des fichiers système ou le registre.",
+      "explanation": "L'UAC empêche les logiciels malveillants de s'installer ou de modifier les paramètres système de manière transparente et silencieuse (CP 6)[cite: 23, 26].",
+      "difficulty": "facile",
+      "context": "Sécurité Windows & UAC"
+    },
+    {
+      "id": "eb4_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'exécution d'un script d'automatisation lors de l'ouverture de session d'un utilisateur sous Windows.",
+      "answer": "1. L'utilisateur saisit son identifiant et son mot de passe sur l'écran de verrouillage\n2. Le contrôleur de domaine authentifie les identifiants via le protocole Kerberos\n3. Windows charge le profil utilisateur local ou itinérant (AppData\\Roaming)\n4. Les stratégies de groupe (GPO) de la section 'Configuration utilisateur' sont appliquées\n5. Les scripts d'ouverture de session (Logon Scripts) et le mappage des lecteurs réseaux s'exécutent\n6. Le bureau Windows s'affiche et les applications de la clé Run / dossier Démarrage se lancent",
+      "items": [
+        "L'utilisateur saisit son identifiant et son mot de passe sur l'écran de verrouillage",
+        "Le contrôleur de domaine authentifie les identifiants via le protocole Kerberos",
+        "Windows charge le profil utilisateur local ou itinérant (AppData\\Roaming)",
+        "Les stratégies de groupe (GPO) de la section 'Configuration utilisateur' sont appliquées",
+        "Les scripts d'ouverture de session (Logon Scripts) et le mappage des lecteurs réseaux s'exécutent",
+        "Le bureau Windows s'affiche et les applications de la clé Run / dossier Démarrage se lancent"
+      ],
+      "explanation": "La compréhension de l'ordre d'ouverture de session permet d'identifier à quel moment précis un script ou une GPO se bloque (CP 8)[cite: 23, 43, 51].",
+      "difficulty": "moyen",
+      "context": "Système & Ouverture de Session"
+    },
+    {
+      "id": "eb4_q23",
+      "type": "classic",
+      "question": "Sous Linux, dans quel répertoire principal de l'arborescence se trouvent stockés les fichiers de configuration texte de l'ensemble des services et du système d'exploitation ?",
+      "answer": "Dans le répertoire /etc.",
+      "explanation": "Sous Linux, '/etc' est le dossier central de configuration où l'on édite les fichiers de paramétrage réseau, de services (Apache, SSH) et de comptes utilisateurs[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Configuration"
+    },
+    {
+      "id": "eb4_q24",
+      "type": "association",
+      "question": "Associe chaque norme de sécurité de messagerie électronique à sa fonction de protection contre l'usurpation.",
+      "answer": "SPF (Sender Policy Framework) -> Enregistrement DNS listant les adresses IP des serveurs autorisés à envoyer des mails au nom du domaine, DKIM (DomainKeys Identified Mail) -> Signature cryptographique insérée dans l'en-tête pour garantir que l'e-mail n'a pas été altéré en transit, DMARC -> Politique indiquant aux serveurs récepteurs quoi faire (rejeter/quarantaine) si SPF ou DKIM échouent",
+      "pairs": [
+        ["SPF (Sender Policy Framework)", "Enregistrement DNS listant les adresses IP des serveurs autorisés à envoyer des mails au nom du domaine"],
+        ["DKIM (DomainKeys Identified Mail)", "Signature cryptographique insérée dans l'en-tête pour garantir que l'e-mail n'a pas été altéré en transit"],
+        ["DMARC", "Politique indiquant aux serveurs récepteurs quoi faire (rejeter/quarantaine) si SPF ou DKIM échouent"]
+      ],
+      "explanation": "Le triplet SPF/DKIM/DMARC constitue le rempart technique indispensable pour empêcher les cybercriminels d'usurper le nom de domaine de l'entreprise lors d'attaques de phishing (CP 6)[cite: 59].",
+      "difficulty": "difficile",
+      "context": "Sécurité Messagerie & Phishing"
+    },
+    {
+      "id": "eb4_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail ne parvient plus à imprimer sur l'imprimante réseau du bureau. La commande ping vers l'imprimante fonctionne parfaitement mais la page de test Windows reste en file d'attente. Identifie la cause du problème.",
+      "answer": "Le service Spouleur d'impression Windows (Print Spooler) sur le poste client est arrêté ou figé par une tâche d'impression corrompue.",
+      "indices": [
+        "Indice 1 : Les collègues du même bureau connectés à la même imprimante impriment sans difficulté[cite: 55].",
+        "Indice 2 : La console services.msc indique que le service 'Spouleur d'impression' est à l'état 'Arrêté' ou ne répond plus aux requêtes de statut[cite: 23, 54, 55].",
+        "Indice 3 : Le redémarrage du service Spooler via PowerShell libère immédiatement les documents en attente[cite: 54, 55]."
+      ],
+      "explanation": "Le spouleur local gère la file de traduction des impressions vers les périphériques ; s'il se bloque sur un document mal formé, aucune impression locale ne peut aboutir (CP 5)[cite: 54, 55].",
+      "difficulty": "facile",
+      "context": "Dépannage Impression & Services"
+    },
+    {
+      "id": "eb4_q26",
+      "type": "classic",
+      "question": "Lors du paramétrage d'un point d'accès Wi-Fi d'entreprise, pourquoi doit-on impérativement désactiver la fonctionnalité WPS (Wi-Fi Protected Setup) ?",
+      "answer": "Parce que le protocole WPS utilise un code PIN à 8 chiffres vulnérable à des attaques par force brute (outils automatisés comme Reaver) permettant de découvrir la clé de sécurité Wi-Fi en quelques heures seulement.",
+      "explanation": "Le WPS est une faille de sécurité majeure bannie des environnements professionnels par l'ANSSI (CP 7)[cite: 30].",
+      "difficulty": "facile",
+      "context": "Sécurité Wi-Fi & WPS"
+    },
+    {
+      "id": "eb4_q27",
+      "type": "ticket",
+      "question": "Ticket #4701 — 'Bonjour, un consultant externe doit animer une formation demain dans nos locaux avec son propre ordinateur portable. Il a besoin d'accéder au vidéoprojecteur connecté de la salle et à Internet.'",
+      "answer": "Connecter le consultant sur le Wi-Fi Invités isolé et lui fournir le câble HDMI/adaptateur ou le code de diffusion sans fil du projecteur sans lui donner d'accès au réseau interne.",
+      "checklist": [
+        "Fournir un accès temporaire au réseau Wi-Fi Invités (VLAN isolé)[cite: 30, 33]",
+        "Raccorder physiquement le PC portable au vidéoprojecteur via le câble HDMI de la salle ou via la passerelle de projection dédiée[cite: 16, 18]",
+        "Ajuster la résolution et le mode de projection sous Windows (Win + P en mode 'Dupliquer')",
+        "Tester le bon affichage de la présentation et du son avant le début de la session"
+      ],
+      "explanation": "L'accueil d'intervenants externes exige la fourniture d'outils de présentation tout en maintenant une étanchéité stricte avec le réseau interne de production (CP 2 et CP 7)[cite: 30, 33].",
+      "difficulty": "facile",
+      "context": "Support & Équipements de Salle"
+    },
+    {
+      "id": "eb4_q28",
+      "type": "classic",
+      "question": "Quelle est l'utilité du protocole SNMP (Simple Network Management Protocol - port UDP 161) dans la supervision d'un parc de commutateurs, routeurs et imprimantes ?",
+      "answer": "SNMP permet à un serveur de supervision centralisé de collecter en temps réel l'état de fonctionnement, les alertes, le trafic réseau et les niveaux de consommables (toners) des équipements managés.",
+      "explanation": "SNMP est le protocole standard utilisé par les outils de monitoring de parc et de supervision réseau (CP 1 et CP 7)[cite: 6, 32].",
+      "difficulty": "moyen",
+      "context": "Supervision & SNMP"
+    },
+    {
+      "id": "eb4_q29",
+      "type": "association",
+      "question": "Associe chaque technologie de virtualisation à son niveau d'architecture.",
+      "answer": "Hyperviseur Type 1 (Bare-Metal) -> S'installe directement sur le matériel physique sans OS intermédiaire (ex: VMware ESXi, Proxmox VE), Hyperviseur Type 2 (Hosted) -> S'exécute comme une application au-dessus d'un système d'exploitation hôte (ex: VirtualBox, VMware Workstation), Machine Virtuelle (Guest) -> Système d'exploitation invité fonctionnant dans un environnement matériel émulé",
+      "pairs": [
+        ["Hyperviseur Type 1 (Bare-Metal)", "S'installe directement sur le matériel physique sans OS intermédiaire (ex: VMware ESXi, Proxmox VE)"],
+        ["Hyperviseur Type 2 (Hosted)", "S'exécute comme une application au-dessus d'un système d'exploitation hôte (ex: VirtualBox, VMware Workstation)"],
+        ["Machine Virtuelle (Guest)", "Système d'exploitation invité fonctionnant dans un environnement matériel émulé"]
+      ],
+      "explanation": "Les hyperviseurs de Type 1 dominent les centres de données pour leurs performances, tandis que le Type 2 est privilégié pour les tests et TP en atelier (CP 4)[cite: 25].",
+      "difficulty": "facile",
+      "context": "Virtualisation & Hyperviseurs"
+    },
+    {
+      "id": "eb4_q30",
+      "type": "classic",
+      "question": "Pourquoi la commande 'gpresult /r' exécutée dans une invite de commande est-elle l'un des premiers réflexes de diagnostic lors d'un dysfonctionnement de stratégie de groupe (GPO) sur un poste client ?",
+      "answer": "Parce qu'elle affiche le rapport détaillé de l'ensemble des GPO appliquées et refusées au poste et à l'utilisateur, ainsi que la liste exacte des groupes de sécurité auxquels le compte appartient.",
+      "explanation": "gpresult /r permet de vérifier si la machine se trouve dans la bonne Unité d'Organisation (OU) et si les filtres de sécurité n'ont pas bloqué l'application de la stratégie (CP 8)[cite: 43].",
+      "difficulty": "moyen",
+      "context": "Diagnostic GPO Active Directory"
+    },
+    {
+      "id": "eb4_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de sécurisation d'un commutateur Cisco neuf avant sa mise en production dans une baie de brassage.",
+      "answer": "1. Définir un nom d'équipement explicite (hostname) et un mot de passe d'accès au mode privilégié chiffré (enable secret)\n2. Configurer le nom de domaine IP et générer une paire de clés cryptographiques RSA de 2048 bits\n3. Activer le protocole SSH version 2 sur les lignes VTY et désactiver le protocole Telnet\n4. Créer un compte administrateur local avec mot de passe robuste\n5. Configurer l'adresse IP de management sur le VLAN d'administration et renseigner la passerelle par défaut\n6. Sauvegarder la configuration active dans la mémoire non volatile (copy running-config startup-config)",
+      "items": [
+        "Définir un nom d'équipement explicite (hostname) et un mot de passe d'accès au mode privilégié chiffré (enable secret)",
+        "Configurer le nom de domaine IP et générer une paire de clés cryptographiques RSA de 2048 bits",
+        "Activer le protocole SSH version 2 sur les lignes VTY et désactiver le protocole Telnet",
+        "Créer un compte administrateur local avec mot de passe robuste",
+        "Configurer l'adresse IP de management sur le VLAN d'administration et renseigner la passerelle par défaut",
+        "Sauvegarder la configuration active dans la mémoire non volatile (copy running-config startup-config)"
+      ],
+      "explanation": "La configuration sécurisée de base (Hardening) protège les équipements réseau contre les accès non autorisés et les écoutes clandestines (CP 7)[cite: 33, 34].",
+      "difficulty": "difficile",
+      "context": "Sécurisation Réseau Cisco"
+    },
+    {
+      "id": "eb4_q32",
+      "type": "classic",
+      "question": "Quel est le rôle du connecteur d'alimentation ATX 24 broches par rapport au connecteur EPS 4+4 / 8 broches branché sur une carte mère ?",
+      "answer": "Le connecteur ATX 24 broches alimente la carte mère et l'ensemble de ses circuits généraux (+3.3V, +5V, +12V), tandis que le connecteur EPS 4+4/8 broches est dédié exclusivement à l'alimentation électrique haute puissance du processeur (CPU en +12V).",
+      "explanation": "Oublier de brancher le connecteur CPU 8 broches près du socket empêche tout démarrage du processeur bien que les ventilateurs et LEDs de la carte mère s'allument (CP 5)[cite: 12, 17, 22].",
+      "difficulty": "moyen",
+      "context": "Hardware & Alimentations PSU"
+    },
+    {
+      "id": "eb4_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'un technicien l'a appelé par téléphone en affirmant appartenir au support Microsoft, lui demandant d'installer l'outil AnyDesk pour nettoyer son PC prétendument infecté. De quelle attaque s'agit-il et quelle est la consigne ?",
+      "answer": "Une attaque par ingénierie sociale de type 'Vishing' (Tech Support Scam / Arnaque au faux support technique). La consigne immédiate est de raccrocher, de ne rien installer et de prévenir le service informatique interne.",
+      "indices": [
+        "Indice 1 : L'appelant est à l'initiative du contact et utilise un discours alarmiste sur l'état de sécurité du PC[cite: 59].",
+        "Indice 2 : Il demande l'installation d'un outil de prise de contrôle à distance (RAT / AnyDesk / TeamViewer)[cite: 7, 56].",
+        "Indice 3 : Microsoft ne contacte jamais directement les utilisateurs par téléphone pour des alertes de sécurité[cite: 58, 59]."
+      ],
+      "explanation": "L'arnaque au faux support vise à prendre le contrôle du poste pour voler des données bancaires ou installer des ransomwares (CP 6)[cite: 56, 59].",
+      "difficulty": "facile",
+      "context": "Ingénierie Sociale & Vishing"
+    },
+    {
+      "id": "eb4_q34",
+      "type": "classic",
+      "question": "Dans le modèle relationnel et d'accompagnement de l'utilisateur, pourquoi est-il essentiel d'éviter l'usage d'un jargon technique complexe lors d'une intervention de dépannage ?",
+      "answer": "Pour instaurer un climat de confiance, éviter de culpabiliser ou de déstabiliser l'utilisateur, et faciliter la transmission des consignes d'hygiène informatique dans un langage clair et accessible à tous.",
+      "explanation": "La vulgarisation pédagogique et l'écoute sans condescendance sont des critères d'évaluation clés de la compétence transversale 'Communiquer' (CP 2 et CT)[cite: 8, 67].",
+      "difficulty": "facile",
+      "context": "Posture & Vulgarisation Pédagogique"
+    },
+    {
+      "id": "eb4_q35",
+      "type": "ticket",
+      "question": "Ticket #5990 — 'Bonjour, nous devons renouveler 15 ordinateurs de bureau hors d'usage. Merci d'assurer le transfert des données des disques durs vers les nouveaux postes et de préparer les anciens équipements pour la filière de recyclage.'",
+      "answer": "Sauvegarder et transférer les données utilisateurs, effectuer un effacement sécurisé des anciens disques avec un outil certifié, mettre à jour l'inventaire de parc GLPI et déposer le matériel dans la filière DEEE.",
+      "checklist": [
+        "Sauvegarder et migrer les données et profils utilisateurs vers les nouveaux postes de travail[cite: 23, 35]",
+        "Réaliser un effacement sécurisé multi-passes (ou démagnétisation physique) des anciens disques durs[cite: 41, 61]",
+        "Mettre à jour le statut des équipements dans la gestion de parc GLPI (passage à l'état 'Rebut / Déclassé')[cite: 6, 41]",
+        "Conditionner le matériel pour la collecte par un éco-organisme agréé DEEE (directive européenne)[cite: 41]"
+      ],
+      "explanation": "La fin de vie des matériels associe protection des données personnelles (RGPD), traçabilité dans l'inventaire de parc et respect de la filière environnementale DEEE (CP 1, CP 5 et CP 6)[cite: 6, 41, 61].",
+      "difficulty": "moyen",
+      "context": "Fin de Vie & Filière DEEE"
+    }
+  ]
+}

@@ -33,6 +33,11 @@ class QuizCatalogTrackSelector extends StatelessWidget {
           icon: Icon(Icons.construction_rounded, size: 18),
         ),
         ButtonSegment(
+          value: QuizCatalogTrack.exams,
+          label: Text('Examens'),
+          icon: Icon(Icons.assignment_turned_in_rounded, size: 18),
+        ),
+        ButtonSegment(
           value: QuizCatalogTrack.labo,
           label: Text('Labo'),
           icon: Icon(Icons.science_rounded, size: 18),

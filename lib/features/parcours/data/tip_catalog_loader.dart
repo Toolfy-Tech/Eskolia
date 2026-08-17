@@ -15,14 +15,20 @@ class TipCatalogLoader {
   static Future<bool> assetExists(String assetKey) async {
     if (_assetsInManifest == null) {
       try {
-        final manifestContent = await rootBundle.loadString('AssetManifest.json');
-        final Map<String, dynamic> manifestMap = jsonDecode(manifestContent);
-        _assetsInManifest = manifestMap.keys.toSet();
+        final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+        _assetsInManifest = manifest.listAssets().toSet();
       } catch (_) {
-        _assetsInManifest = {};
+        try {
+          final manifestContent = await rootBundle.loadString('AssetManifest.json');
+          final Map<String, dynamic> manifestMap = jsonDecode(manifestContent);
+          _assetsInManifest = manifestMap.keys.toSet();
+        } catch (_) {
+          _assetsInManifest = null;
+          return true;
+        }
       }
     }
-    return _assetsInManifest!.contains(assetKey);
+    return _assetsInManifest?.contains(assetKey) ?? true;
   }
 
   /// Charge la formation Optimus en utilisant les chemins définis dans l'index.json

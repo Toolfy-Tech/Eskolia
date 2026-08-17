@@ -127,7 +127,21 @@ class _LobbyCreateCardBodyState extends ConsumerState<LobbyCreateCardBody> {
         }
       }
 
-      // 2. Personal Quizzes
+      // 2. Examens Blancs (8 Sujets Alpha à Theta)
+      if (_selectedPools.contains('exams')) {
+        for (int i = 1; i <= 8; i++) {
+          final path = 'data/exam/exam0$i.json';
+          try {
+            final raw = await AssetCacheService.loadString(path);
+            final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: path);
+            questions.addAll(qs.where((q) => difficultyFilters.isEmpty || difficultyFilters.contains(q.difficultyBucket)));
+          } catch (e) {
+            debugPrint('Error loading exam asset $path: $e');
+          }
+        }
+      }
+
+      // 3. Personal Quizzes
       if (_selectedPools.contains('perso') && _selectedPersoFiles.isNotEmpty) {
         for (final file in _selectedPersoFiles) {
           try {
@@ -518,12 +532,13 @@ class _LobbyCreateCardBodyState extends ConsumerState<LobbyCreateCardBody> {
         : (settingsMap['feature:lobbys_create']?.isCollapsed ?? false);
 
     String poolText = '';
-    final isAllPoolsSelected = _selectedPools.length == 3;
+    final isAllPoolsSelected = _selectedPools.length == 4;
     if (isAllPoolsSelected) {
       poolText = 'Tous les pools';
     } else {
       final List<String> parts = [];
       if (_selectedPools.contains('base')) parts.add('Base');
+      if (_selectedPools.contains('exams')) parts.add('Examens');
       if (_selectedPools.contains('perso')) parts.add('Perso');
       if (_selectedPools.contains('teacher')) parts.add('Prof');
       poolText = parts.join(' + ');
@@ -599,7 +614,7 @@ class _LobbyCreateCardBodyState extends ConsumerState<LobbyCreateCardBody> {
                       if (isAllPoolsSelected) {
                         _selectedPools = {'base'};
                       } else {
-                        _selectedPools = {'base', 'perso', 'teacher'};
+                        _selectedPools = {'base', 'exams', 'perso', 'teacher'};
                       }
                     });
                   },
@@ -618,6 +633,22 @@ class _LobbyCreateCardBodyState extends ConsumerState<LobbyCreateCardBody> {
                         }
                       } else {
                         _selectedPools.add('base');
+                      }
+                    });
+                  },
+                  activeColor: accentColor,
+                ),
+                _buildThemeCheckboxRow(
+                  title: '🎓 Examens Blancs (8 Sujets / 280 Q)',
+                  value: _selectedPools.contains('exams'),
+                  onChanged: (val) {
+                    setState(() {
+                      if (_selectedPools.contains('exams')) {
+                        if (_selectedPools.length > 1) {
+                          _selectedPools.remove('exams');
+                        }
+                      } else {
+                        _selectedPools.add('exams');
                       }
                     });
                   },

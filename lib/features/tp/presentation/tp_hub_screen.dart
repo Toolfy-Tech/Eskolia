@@ -21,6 +21,7 @@ import '../reseau/data/tp_binaire_data.dart';
 import '../reseau/presentation/tp_binaire_hub_screen.dart';
 import '../../home/presentation/widgets/home_card_settings_dialog.dart';
 import '../../home/presentation/providers/home_providers.dart';
+import '../osi/presentation/widgets/tp_osi_card_body.dart';
 import 'providers/tp_providers.dart';
 
 class TpHubScreen extends ConsumerStatefulWidget {
@@ -512,6 +513,20 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
 
     if (key == 'feature:tp_reseau') {
       return _buildCardByKeyForReseau(key, cardWidth);
+    } else if (key == 'feature:tp_osi') {
+      return _buildDraggableCard(
+        key,
+        _buildEskoliaPremiumCard(
+          key: key,
+          title: 'Modèle OSI',
+          defaultEmoji: '🌐',
+          accentColor: EskoliaTokens.cyan,
+          isExpanded: isExpanded,
+          onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+          body: const TpOsiCardBody(),
+        ),
+        cardWidth,
+      );
     } else if (key == 'feature:tp_ad') {
       return _buildDraggableCard(
         key,

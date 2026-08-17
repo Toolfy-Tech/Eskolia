@@ -1,0 +1,456 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 6 — Sujet Foxtrot (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb6_q1",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre les concepts de RPO (Recovery Point Objective) et de RTO (Recovery Time Objective) dans un Plan de Reprise d'Activité (PRA) ?",
+      "answer": "Le RPO représente la quantité maximale de données perdues acceptable exprimée en durée (perte de données entre la dernière sauvegarde et le sinistre), tandis que le RTO représente la durée maximale admissible d'interruption du service avant son rétablissement complet.",
+      "explanation": "Le RPO détermine la fréquence requise des sauvegardes (ex: sauvegardes toutes les 4 heures), tandis que le RTO dimensionne les moyens techniques et matériels nécessaires pour reconstruire et relancer les services (CP 6)[cite: 38].",
+      "difficulty": "moyen",
+      "context": "Continuité & RPO/RTO"
+    },
+    {
+      "id": "eb6_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de restauration d'un système Windows Server complet à partir d'une sauvegarde bare-metal Windows Server Backup après le remplacement à neuf de l'ensemble des disques durs défaillants.",
+      "answer": "1. Démarrer le serveur sur le support d'installation officiel Windows Server (WinPE)\n2. Sélectionner 'Réparer l'ordinateur' puis naviguer vers 'Dépannage > Récupération de l'image système'\n3. Connecter le support externe ou renseigner le chemin réseau UNC hébergeant la sauvegarde\n4. Sélectionner l'image de sauvegarde système la plus récente et valider le repartitionnement des nouveaux disques\n5. Laisser le processus de restauration réécrire l'OS et les données\n6. Redémarrer sur les disques internes et vérifier l'intégrité des rôles et services",
+      "items": [
+        "Démarrer le serveur sur le support d'installation officiel Windows Server (WinPE)",
+        "Sélectionner 'Réparer l'ordinateur' puis naviguer vers 'Dépannage > Récupération de l'image système'",
+        "Connecter le support externe ou renseigner le chemin réseau UNC hébergeant la sauvegarde",
+        "Sélectionner l'image de sauvegarde système la plus récente et valider le repartitionnement des nouveaux disques",
+        "Laisser le processus de restauration réécrire l'OS et les données",
+        "Redémarrer sur les disques internes et vérifier l'intégrité des rôles et services"
+      ],
+      "explanation": "La restauration bare-metal réapplique l'intégralité du système d'exploitation et des partitions sur un matériel vierge sans nécessiter de réinstallation préalable de l'OS (CP 5 et CP 6)[cite: 38, 39].",
+      "difficulty": "difficile",
+      "context": "Sauvegarde & Restauration Système"
+    },
+    {
+      "id": "eb6_q3",
+      "type": "association",
+      "question": "Associe chaque terme lié aux architectures de stockage d'entreprise à sa définition.",
+      "answer": "NAS (Network Attached Storage) -> Serveur autonome dédié au partage de fichiers en réseau via protocoles SMB/NFS, SAN (Storage Area Network) -> Réseau dédié très haut débit reliant des baies de disques aux serveurs en mode bloc (iSCSI / Fibre Channel), LTO (Linear Tape-Open) -> Technologie de bandes magnétiques amovibles haute capacité idéale pour l'archivage froid et hors-ligne, Hot-Swap -> Capacité de remplacer un disque dur à chaud sans éteindre le serveur ni interrompre la production",
+      "pairs": [
+        ["NAS (Network Attached Storage)", "Serveur autonome dédié au partage de fichiers en réseau via protocoles SMB/NFS"],
+        ["SAN (Storage Area Network)", "Réseau dédié très haut débit reliant des baies de disques aux serveurs en mode bloc (iSCSI / Fibre Channel)"],
+        ["LTO (Linear Tape-Open)", "Technologie de bandes magnétiques amovibles haute capacité idéale pour l'archivage froid et hors-ligne"],
+        ["Hot-Swap", "Capacité de remplacer un disque dur à chaud sans éteindre le serveur ni interrompre la production"]
+      ],
+      "explanation": "La maîtrise des supports physiques et logiques de stockage conditionne la mise en place d'une infrastructure résiliente (CP 6)[cite: 15, 36, 40].",
+      "difficulty": "moyen",
+      "context": "Stockage d'Entreprise"
+    },
+    {
+      "id": "eb6_q4",
+      "type": "diagnostic_indices",
+      "question": "Un administrateur réseau constate qu'un commutateur central d'étage est totalement saturé : l'ensemble des voyants LED clignotent frénétiquement en vert et le trafic réseau est paralysé à 100%. Identifie la cause racine.",
+      "answer": "Une boucle réseau physique (Broadcast Storm / Tempête de diffusion) causée par un double raccordement Ethernet accidentel sur un switch non protégé par le protocole Spanning Tree (STP).",
+      "indices": [
+        "Indice 1 : Un utilisateur a branché les deux extrémités d'un même câble RJ45 sur deux prises murales voisines de son bureau[cite: 30].",
+        "Indice 2 : Les trames de diffusion broadcast (ARP, DHCP) tournent en boucle infinie et se multiplient de manière exponentielle[cite: 30, 32].",
+        "Indice 3 : Débrancher l'un des câbles incriminés rétablit instantanément la fluidité du trafic sur le commutateur[cite: 30, 33]."
+      ],
+      "explanation": "Sans Spanning Tree Protocol (STP) actif pour bloquer les liaisons redondantes, une boucle physique génère une tempête de broadcast qui paralyse intégralement la couche 2 du réseau (CP 7)[cite: 30, 32, 33].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Réseau & Tempête de Broadcast"
+    },
+    {
+      "id": "eb6_q5",
+      "type": "ticket",
+      "question": "Ticket #4301 — 'Bonjour, notre serveur d'application critique a subi une coupure de courant nette et ne démarre plus. Les disques étaient configurés en RAID 0 sur deux volumes.'",
+      "answer": "Expliquer que le RAID 0 n'offre aucune tolérance aux pannes (la perte ou corruption d'un seul disque détruit l'ensemble des données) et engager la restauration intégrale depuis la dernière sauvegarde saine externe.",
+      "checklist": [
+        "Vérifier l'état matériel des disques dans le contrôleur RAID (un disque marqué en échec / Offline)[cite: 40]",
+        "Rappeler au responsable que le RAID 0 privilégie la vitesse sans aucune redondance de sécurité[cite: 40]",
+        "Remplacer le disque défectueux et reconfigurer la grappe en RAID 1 ou RAID 5 sécurisé[cite: 40]",
+        "Restaurer l'intégralité du système et des bases de données à partir de la sauvegarde hors ligne[cite: 35, 38]"
+      ],
+      "explanation": "Le RAID 0 découpe les données par bandes sans parité : si un élément lâche, 100% des données sont perdues, d'où l'interdiction du RAID 0 sur les serveurs critiques (CP 5 et CP 6)[cite: 40].",
+      "difficulty": "moyen",
+      "context": "Stockage RAID & Gestion de Crise"
+    },
+    {
+      "id": "eb6_q6",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre une adresse IPv6 de type 'Link-Local' (commençant par fe80::) et une adresse IPv6 de type 'Global Unicast' (commençant généralement par 2001:: ou 2000::/3) ?",
+      "answer": "Une adresse Link-Local (fe80::) n'est utilisable et routable qu'au sein du segment réseau local direct (non routable sur Internet), alors qu'une adresse Global Unicast est une adresse publique mondialement unique et routable sur l'Internet IPv6.",
+      "explanation": "En IPv6, chaque interface génère automatiquement une adresse Link-Local pour communiquer avec ses voisins directs et le routeur local avant même d'obtenir une adresse globale (CP 7)[cite: 31].",
+      "difficulty": "moyen",
+      "context": "Adressage IPv6"
+    },
+    {
+      "id": "eb6_q7",
+      "type": "association",
+      "question": "Associe chaque technologie d'interface de bus d'extension à son débit par ligne (lane) théorique.",
+      "answer": "PCIe 3.0 -> ~1 Go/s par ligne (~16 Go/s en slot x16)[cite: 19], PCIe 4.0 -> ~2 Go/s par ligne (~32 Go/s en slot x16)[cite: 19], PCIe 5.0 -> ~4 Go/s par ligne (~64 Go/s en slot x16)[cite: 19], Ancien bus PCI 32 bits -> 133 Mo/s partagés sur tout le bus[cite: 19]",
+      "pairs": [
+        ["PCIe 3.0", "~1 Go/s par ligne (~16 Go/s en slot x16)[cite: 19]"],
+        ["PCIe 4.0", "~2 Go/s par ligne (~32 Go/s en slot x16)[cite: 19]"],
+        ["PCIe 5.0", "~4 Go/s par ligne (~64 Go/s en slot x16)[cite: 19]"],
+        ["Ancien bus PCI 32 bits", "133 Mo/s partagés sur tout le bus[cite: 19]"]
+      ],
+      "explanation": "Chaque génération de bus PCI Express double la bande passante par ligne tout en maintenant une rétrocompatibilité mécanique et logique complète (CP 5)[cite: 19].",
+      "difficulty": "moyen",
+      "context": "Hardware & Bus PCIe"
+    },
+    {
+      "id": "eb6_q8",
+      "type": "classic",
+      "question": "Sous Windows, quelle est la fonction principale du service 'VSS' (Volume Shadow Copy Service / Clichés instantanés de volume) lors de l'exécution d'une sauvegarde de données ?",
+      "answer": "Il permet de capturer un instantané cohérent des fichiers et des bases de données en cours d'utilisation sans interrompre le travail des utilisateurs ni bloquer les fichiers ouverts en écriture.",
+      "explanation": "VSS gèle l'état des blocs disques pour permettre au logiciel de sauvegarde (Veeam, Windows Server Backup) de copier des fichiers verrouillés sans incohérence (CP 6)[cite: 38, 39].",
+      "difficulty": "moyen",
+      "context": "Sauvegardes & Service VSS"
+    },
+    {
+      "id": "eb6_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de sécurisation d'un routeur/passerelle d'entreprise lors de son installation initiale.",
+      "answer": "1. Raccorder le PC d'administration sur un port LAN et accéder à l'interface via la passerelle par défaut\n2. Modifier immédiatement les identifiants d'administration par défaut (admin/admin) par un mot de passe complexe\n3. Mettre à jour le microprogramme (firmware) avec la dernière version officielle du constructeur\n4. Configurer la connexion WAN (fibre/VDSL) et paramétrer le pare-feu en blocage entrant par défaut\n5. Configurer les sous-réseaux LAN/VLANs, le serveur DHCP et désactiver les accès d'administration depuis le WAN (Internet)\n6. Sauvegarder le fichier de configuration chiffré sur un support sécurisé",
+      "items": [
+        "Raccorder le PC d'administration sur un port LAN et accéder à l'interface via la passerelle par défaut",
+        "Modifier immédiatement les identifiants d'administration par défaut (admin/admin) par un mot de passe complexe",
+        "Mettre à jour le microprogramme (firmware) avec la dernière version officielle du constructeur",
+        "Configurer la connexion WAN (fibre/VDSL) et paramétrer le pare-feu en blocage entrant par défaut",
+        "Configurer les sous-réseaux LAN/VLANs, le serveur DHCP et désactiver les accès d'administration depuis le WAN (Internet)",
+        "Sauvegarder le fichier de configuration chiffré sur un support sécurisé"
+      ],
+      "explanation": "Le durcissement initial du routeur évite l'exploitation des failles de firmwares obsolètes et des mots de passe par défaut connus des pirates (CP 7)[cite: 30, 34].",
+      "difficulty": "moyen",
+      "context": "Sécurité Réseau & Routeurs"
+    },
+    {
+      "id": "eb6_q10",
+      "type": "classic",
+      "question": "Pourquoi la norme ATX impose-t-elle le montage d'entretoises métalliques (standoffs) vissées entre le fond du boîtier et la carte mère lors de l'assemblage d'un PC ?",
+      "answer": "Pour maintenir un espace physique isolant et éviter que les soudures et pistes électroniques situées sous la carte mère n'entrent en contact direct avec la tôle métallique du boîtier, ce qui provoquerait un court-circuit destructeur.",
+      "explanation": "Oublier les entretoises ou en placer une en trop entraîne un court-circuit franc empêchant tout démarrage de la carte mère par mise en sécurité de l'alimentation (CP 4 et CP 5)[cite: 11, 22].",
+      "difficulty": "facile",
+      "context": "Assemblage Matériel & Sécurité"
+    },
+    {
+      "id": "eb6_q11",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur portable se bloque complètement et que la souris saccade dès qu'il ouvre plus de 5 onglets sur son navigateur web en même temps qu'un tableur. Le Gestionnaire des tâches indique que le processeur n'est utilisé qu'à 15%, mais que le disque SSD tourne à 100% en continu. Trouve la cause de l'anomalie.",
+      "answer": "Saturation totale de la mémoire vive (RAM) qui force Windows à utiliser massivement le fichier d'échange sur disque (Pagination / Paging file / Swap), créant un goulet d'étranglement sévère.",
+      "indices": [
+        "Indice 1 : La mémoire vive physique installée est de seulement 4 Go et l'occupation mémoire est affichée à 96%[cite: 14, 50].",
+        "Indice 2 : Le moniteur de ressources (resmon) montre une activité d'écriture massive sur le fichier C:\\pagefile.sys[cite: 23, 50].",
+        "Indice 3 : La fermeture des onglets superflus libère immédiatement la réactivité de la machine[cite: 50]."
+      ],
+      "explanation": "Lorsque la RAM est saturée, Windows déplace les blocs mémoire sur le disque (mémoire virtuelle) : bien qu'un SSD soit rapide, il reste des dizaines de fois plus lent que la RAM, provoquant des gels du système (CP 3 et CP 5)[cite: 14, 23, 50].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Performances & RAM"
+    },
+    {
+      "id": "eb6_q12",
+      "type": "classic",
+      "question": "Dans le protocole TCP, quel est le mécanisme en 3 étapes (Three-Way Handshake) utilisé pour établir une connexion fiable entre un client et un serveur ?",
+      "answer": "1. Le client envoie un paquet SYN (Synchronize), 2. Le serveur répond avec un paquet SYN-ACK (Synchronize-Acknowledge), 3. Le client confirme avec un paquet ACK (Acknowledge).",
+      "explanation": "Ce handshake garantit que les deux hôtes sont prêts à communiquer et synchronise les numéros de séquence pour assurer la remise ordonnée des paquets (CP 7)[cite: 32].",
+      "difficulty": "moyen",
+      "context": "Protocoles Réseau & TCP"
+    },
+    {
+      "id": "eb6_q13",
+      "type": "ticket",
+      "question": "Ticket #4920 — 'Bonjour, une utilisatrice malvoyante n'arrive pas à utiliser sa souris et demande comment piloter son poste Windows 11 uniquement à la voix pour dicter ses comptes rendus.'",
+      "answer": "Activer et configurer la fonctionnalité native de 'Saisie vocale / Dictée' (Raccourci Win + H) et l'outil d'accès vocal dans les paramètres d'accessibilité de Windows (Win + U)[cite: 27].",
+      "checklist": [
+        "Vérifier le bon fonctionnement et le réglage du microphone dans les paramètres audio[cite: 11]",
+        "Présenter à l'utilisatrice le raccourci Windows + H pour lancer la dictée vocale dans Word ou les e-mails[cite: 27]",
+        "Configurer la ponctuation automatique dans les options de saisie vocale",
+        "Faire réaliser un essai pratique de dictée de texte pour valider la précision de la reconnaissance[cite: 8, 27]"
+      ],
+      "explanation": "La maîtrise des outils de reconnaissance vocale intégrés fait partie des réponses indispensables pour adapter l'environnement de travail aux situations de handicap moteur ou visuel (CP 2)[cite: 8, 27].",
+      "difficulty": "facile",
+      "context": "Accessibilité & Saisie Vocale"
+    },
+    {
+      "id": "eb6_q14",
+      "type": "association",
+      "question": "Associe chaque outil de ligne de commande Windows à son usage de diagnostic spécialisé.",
+      "answer": "nslookup -> Interroge les serveurs DNS pour tester la résolution directe et inverse des noms d'hôtes[cite: 34], pathping -> Combine les fonctions de Ping et Tracert en mesurant les pertes de paquets par routeur intermédiaire[cite: 34], diskpart -> Utilitaire d'administration avancée en ligne de commande pour partitionner, formater et convertir les disques[cite: 23, 24], getmac -> Affiche les adresses physiques (MAC) associées à l'ensemble des cartes réseau de la machine[cite: 30]",
+      "pairs": [
+        ["nslookup", "Interroge les serveurs DNS pour tester la résolution directe et inverse des noms d'hôtes[cite: 34]"],
+        ["pathping", "Combine les fonctions de Ping et Tracert en mesurant les pertes de paquets par routeur intermédiaire[cite: 34]"],
+        ["diskpart", "Utilitaire d'administration avancée en ligne de commande pour partitionner, formater et convertir les disques[cite: 23, 24]"],
+        ["getmac", "Affiche les adresses physiques (MAC) associées à l'ensemble des cartes réseau de la machine[cite: 30]"]
+      ],
+      "explanation": "Ces commandes réseau et disque fournissent des informations précises sans dépendre des interfaces graphiques lors des dépannages (CP 3, CP 5 et CP 7)[cite: 24, 34].",
+      "difficulty": "moyen",
+      "context": "Ligne de Commande & Diagnostic"
+    },
+    {
+      "id": "eb6_q15",
+      "type": "classic",
+      "question": "Quelle est la règle d'or concernant le branchement d'une imprimante laser professionnelle sur un onduleur (UPS) de bureau ?",
+      "answer": "Il est strictement interdit de brancher une imprimante laser sur les prises ondulées (secourues par batterie) d'un onduleur, car l'élément chauffant du four (fuser) génère des pointes de courant instantanées massives qui surchargent et détruisent l'onduleur.",
+      "explanation": "Les imprimantes laser doivent être branchées soit sur une prise murale directe, soit sur les prises uniquement parafoudres (non ondulées) de l'onduleur (CP 5 et CP 6)[cite: 17].",
+      "difficulty": "moyen",
+      "context": "Sécurité Électrique & Onduleurs"
+    },
+    {
+      "id": "eb6_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de résolution d'un incident de conflit d'adresses IP détecté sur un poste de travail.",
+      "answer": "1. Identifier l'adresse IP et l'adresse MAC du poste client en conflit via ipconfig /all et l'Observateur d'événements[cite: 24, 34, 49]\n2. Isoler le poste du réseau et exécuter 'arp -a' sur une autre machine pour repérer la MAC de l'équipement usurpateur[cite: 32, 34]\n3. Libérer le bail IP actuel sur le poste client avec la commande 'ipconfig /release'[cite: 34]\n4. Reconfigurer l'équipement statique fautif ou créer une exclusion sur le serveur DHCP[cite: 34]\n5. Demander un nouveau bail IP propre sur le poste client avec la commande 'ipconfig /renew'[cite: 34]\n6. Vérifier la connectivité et la reprise normale des communications réseau[cite: 30, 34]",
+      "items": [
+        "Identifier l'adresse IP et l'adresse MAC du poste client en conflit via ipconfig /all et l'Observateur d'événements[cite: 24, 34, 49]",
+        "Isoler le poste du réseau et exécuter 'arp -a' sur une autre machine pour repérer la MAC de l'équipement usurpateur[cite: 32, 34]",
+        "Libérer le bail IP actuel sur le poste client avec la commande 'ipconfig /release'[cite: 34]",
+        "Reconfigurer l'équipement statique fautif ou créer une exclusion sur le serveur DHCP[cite: 34]",
+        "Demander un nouveau bail IP propre sur le poste client avec la commande 'ipconfig /renew'[cite: 34]",
+        "Vérifier la connectivité et la reprise normale des communications réseau[cite: 30, 34]"
+      ],
+      "explanation": "La commande ipconfig /release suivie de /renew réinitialise la pile DHCP une fois la source du doublon isolée (CP 3 et CP 7)[cite: 34].",
+      "difficulty": "moyen",
+      "context": "Dépannage Réseau DHCP"
+    },
+    {
+      "id": "eb6_q17",
+      "type": "classic",
+      "question": "Quelle est l'utilité du protocole Syslog (port UDP 514) dans l'administration et la sécurité d'une infrastructure réseau ?",
+      "answer": "Syslog permet de centraliser en temps réel l'ensemble des journaux d'événements, alertes et logs de sécurité émis par les commutateurs, routeurs, pare-feux et serveurs vers un serveur de collecte unique pour faciliter l'audit et la détection d'intrusions.",
+      "explanation": "La centralisation Syslog évite de consulter les logs équipement par équipement et garantit la conservation des traces en cas de compromission d'un matériel (CP 6 et CP 7)[cite: 32, 49].",
+      "difficulty": "moyen",
+      "context": "Supervision & Logs Syslog"
+    },
+    {
+      "id": "eb6_q18",
+      "type": "diagnostic_indices",
+      "question": "Un technicien constate qu'un disque SSD NVMe neuf installé sur une carte mère ancienne ne dépasse pas 1600 Mo/s en lecture sous CrystalDiskMark, alors que le constructeur garantit 7000 Mo/s (PCIe 4.0). Trouve la cause de ce bridage.",
+      "answer": "Le SSD NVMe PCIe 4.0 est bridé car il est installé sur un slot M.2 ou une carte mère fonctionnant en norme PCIe 3.0 (ou bridé en x2 lignes au lieu de x4 lignes PCIe).",
+      "indices": [
+        "Indice 1 : Le SSD fonctionne de manière parfaitement stable et la santé SMART est à 100%[cite: 20, 22].",
+        "Indice 2 : La documentation de la carte mère indique que le slot M.2 secondaire est câblé sur le chipset en PCIe Gen3 x2[cite: 12, 19].",
+        "Indice 3 : Le bus PCIe est rétrocompatible mais s'aligne automatiquement sur la vitesse de la génération la plus basse présente sur la liaison[cite: 19]."
+      ],
+      "explanation": "La rétrocompatibilité PCIe garantit le fonctionnement matériel mais limite les débits à la bande passante maximale du bus le plus ancien présent sur la carte mère (CP 5)[cite: 19].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Hardware PCIe"
+    },
+    {
+      "id": "eb6_q19",
+      "type": "association",
+      "question": "Associe chaque concept de cybersécurité à sa définition officielle.",
+      "answer": "EDR (Endpoint Detection and Response) -> Solution de surveillance comportementale continue sur les postes clients pour détecter et bloquer les menaces complexes en temps réel[cite: 58], Sandboxing -> Environnement virtuel étanche permettant d'exécuter et d'analyser un fichier suspect sans risquer d'infecter la machine hôte[cite: 25, 58], OSINT (Open Source Intelligence) -> Collecte et analyse d'informations publiquement accessibles (LinkedIn, registres) utilisée lors des phases de reconnaissance[cite: 59], Faille Zero-Day -> Vulnérabilité de sécurité inconnue de l'éditeur pour laquelle aucun correctif officiel n'est encore disponible[cite: 56]",
+      "pairs": [
+        ["EDR (Endpoint Detection and Response)", "Solution de surveillance comportementale continue sur les postes clients pour détecter et bloquer les menaces complexes en temps réel[cite: 58]"],
+        ["Sandboxing", "Environnement virtuel étanche permettant d'exécuter et d'analyser un fichier suspect sans risquer d'infecter la machine hôte[cite: 25, 58]"],
+        ["OSINT (Open Source Intelligence)", "Collecte et analyse d'informations publiquement accessibles (LinkedIn, registres) utilisée lors des phases de reconnaissance[cite: 59]"],
+        ["Faille Zero-Day", "Vulnérabilité de sécurité inconnue de l'éditeur pour laquelle aucun correctif officiel n'est encore disponible[cite: 56]"]
+      ],
+      "explanation": "La compréhension du vocabulaire moderne de la cybersécurité permet d'analyser les vecteurs d'attaque et d'appliquer les contre-mesures adaptées (CP 6)[cite: 56, 58, 59].",
+      "difficulty": "moyen",
+      "context": "Concepts de Cybersécurité"
+    },
+    {
+      "id": "eb6_q20",
+      "type": "ticket",
+      "question": "Ticket #5540 — 'Bonjour, nous constatons que l'heure de plusieurs serveurs et postes clients dérive de 5 minutes par rapport à l'heure réelle, provoquant des rejets d'authentification sur le domaine Active Directory.'",
+      "answer": "Reconfigurer le service de temps Windows (w32time) sur le contrôleur de domaine principal (rôle PDC Emulator) pour se synchroniser sur un serveur de temps NTP externe de référence (ex: pool.ntp.org)[cite: 43].",
+      "checklist": [
+        "Vérifier le contrôleur de domaine détenant le rôle FSMO PDC Emulator via la commande netdom query fsmo",
+        "Configurer la source NTP externe sur le PDC : w32tm /config /manualpeerlist:pool.ntp.org /syncfromflags:manual /reliable:yes /update",
+        "Forcer la resynchronisation du temps : w32tm /resync",
+        "Vérifier que les postes clients et serveurs membres se synchronisent automatiquement auprès du DC[cite: 43]"
+      ],
+      "explanation": "Le protocole d'authentification Kerberos d'Active Directory tolère un décalage d'horloge maximal de 5 minutes par défaut : au-delà, toute ouverture de session échoue (CP 8)[cite: 43].",
+      "difficulty": "difficile",
+      "context": "Active Directory & Synchronisation NTP"
+    },
+    {
+      "id": "eb6_q21",
+      "type": "classic",
+      "question": "Quelle est la commande PowerShell permettant de redémarrer à distance un ordinateur nommé PC-COMPTA-04 sans se déplacer physiquement ?",
+      "answer": "Restart-Computer -ComputerName PC-COMPTA-04 -Force[cite: 54]",
+      "explanation": "La cmdlet Restart-Computer permet de redémarrer un poste distant sur le réseau en s'appuyant sur le protocole WinRM et les droits d'administration de domaine (CP 8)[cite: 54].",
+      "difficulty": "facile",
+      "context": "PowerShell & Administration Distante"
+    },
+    {
+      "id": "eb6_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement de la pâte thermique entre un processeur (CPU) et son ventirad lors d'une opération de maintenance préventive.",
+      "answer": "1. Mettre le PC hors tension, débrancher le secteur et démonter délicatement le ventirad du socket\n2. Nettoyer les résidus de l'ancienne pâte thermique asséchée sur le CPU et la base du radiateur avec de l'alcool isopropylique\n3. Vérifier la propreté et le séchage complet des surfaces métalliques\n4. Déposer une petite noisette (équivalent d'un grain de riz) de pâte thermique neuve au centre du processeur\n5. Repositionner le ventirad et visser en croix progressivement pour répartir la pâte de manière homogène sans bulles d'air\n6. Rebrancher le connecteur PWM du ventilateur sur la carte mère (CPU_FAN) et tester les températures",
+      "items": [
+        "Mettre le PC hors tension, débrancher le secteur et démonter délicatement le ventirad du socket",
+        "Nettoyer les résidus de l'ancienne pâte thermique asséchée sur le CPU et la base du radiateur avec de l'alcool isopropylique",
+        "Vérifier la propreté et le séchage complet des surfaces métalliques",
+        "Déposer une petite noisette (équivalent d'un grain de riz) de pâte thermique neuve au centre du processeur",
+        "Repositionner le ventirad et visser en croix progressivement pour répartir la pâte de manière homogène sans bulles d'air",
+        "Rebrancher le connecteur PWM du ventilateur sur la carte mère (CPU_FAN) et tester les températures"
+      ],
+      "explanation": "L'application soignée de la pâte thermique et le serrage en croix évitent les bulles d'air isolantes et garantissent une conduction thermique optimale vers le dissipateur (CP 5)[cite: 20, 22].",
+      "difficulty": "moyen",
+      "context": "Maintenance Matérielle & Pâte Thermique"
+    },
+    {
+      "id": "eb6_q23",
+      "type": "classic",
+      "question": "Quelle est l'utilité du mécanisme 'DHCP Snooping' configuré sur les commutateurs réseau managés d'une entreprise ?",
+      "answer": "Il empêche les attaques par faux serveur DHCP (Rogue DHCP Server) en bloquant les offres DHCP (DHCPOFFER) émises sur des ports non explicitement déclarés comme 'de confiance' (Trusted ports).",
+      "explanation": "Le DHCP Snooping protège le réseau contre les routeurs pirates branchés par erreur ou malveillance qui distribueraient de mauvaises passerelles ou DNS aux utilisateurs (CP 7)[cite: 30, 34].",
+      "difficulty": "difficile",
+      "context": "Sécurité Réseau & DHCP Snooping"
+    },
+    {
+      "id": "eb6_q24",
+      "type": "association",
+      "question": "Associe chaque outil d'assistance et de prise de contrôle à distance à son protocole et usage principal.",
+      "answer": "Bureau à distance Windows (RDP) -> Protocole propriétaire Microsoft (TCP 3389) verrouillant la session locale lors de la prise de main[cite: 46], Quick Assist (Assistance rapide) -> Outil intégré natif Windows basé sur le Cloud pour guider un utilisateur en voyant son écran avec son accord[cite: 7], TeamViewer / AnyDesk -> Solutions tierces de télé-assistance traversant les pare-feux via relais Cloud avec code de session temporaire[cite: 7], SSH (Secure Shell) -> Prise de main en ligne de commande sécurisée et chiffrée sur les équipements réseau et Linux (TCP 22)[cite: 26, 34]",
+      "pairs": [
+        ["Bureau à distance Windows (RDP)", "Protocole propriétaire Microsoft (TCP 3389) verrouillant la session locale lors de la prise de main[cite: 46]"],
+        ["Quick Assist (Assistance rapide)", "Outil intégré natif Windows basé sur le Cloud pour guider un utilisateur en voyant son écran avec son accord[cite: 7]"],
+        ["TeamViewer / AnyDesk", "Solutions tierces de télé-assistance traversant les pare-feux via relais Cloud avec code de session temporaire[cite: 7]"],
+        ["SSH (Secure Shell)", "Prise de main en ligne de commande sécurisée et chiffrée sur les équipements réseau et Linux (TCP 22)[cite: 26, 34]"]
+      ],
+      "explanation": "Le choix du bon outil de télé-assistance dépend de l'objectif (guidage partagé de l'utilisateur ou session d'administration dédiée) et des règles de sécurité (CP 1 et CP 2)[cite: 7, 46].",
+      "difficulty": "moyen",
+      "context": "Outils de Télé-Assistance"
+    },
+    {
+      "id": "eb6_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur portable neuf sous Windows 11 perd totalement sa connexion Internet Wi-Fi dès qu'il s'éloigne de plus de 4 mètres de la borne, alors que les smartphones des collègues captent parfaitement dans toute la pièce. Trouve la cause racine.",
+      "answer": "Les deux petits câbles d'antennes internes Wi-Fi (connecteurs U.FL/MHF4) sont débranchés de la carte réseau sans fil interne (module M.2 Wi-Fi) suite à un choc ou une intervention antérieure.",
+      "indices": [
+        "Indice 1 : Le pilote de la carte Wi-Fi est parfaitement à jour et ne présente aucun point d'exclamation dans devmgmt.msc[cite: 23, 24].",
+        "Indice 2 : Collé contre la borne Wi-Fi (à 30 cm), le PC capte le réseau à 2 barres sur 4 et parvient à naviguer[cite: 30].",
+        "Indice 3 : L'inspection physique en atelier montre que les connecteurs d'antenne noire et blanche situés sur la carte M.2 Wi-Fi ne sont pas clipsés[cite: 12, 22]."
+      ],
+      "explanation": "Sans ses antennes internes connectées, une carte Wi-Fi ne dispose que d'une portée de quelques centimètres, provoquant des déconnexions immédiates dès qu'on s'écarte de la borne (CP 5)[cite: 12, 30].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Hardware Portables"
+    },
+    {
+      "id": "eb6_q26",
+      "type": "classic",
+      "question": "Quelle est l'utilité du fichier '/etc/hosts' sous Linux et 'C:\\Windows\\System32\\drivers\\etc\\hosts' sous Windows ?",
+      "answer": "C'est un fichier texte local qui permet de mapper manuellement des adresses IP à des noms d'hôtes statiques, prioritaire sur les requêtes DNS envoyées au serveur réseau.",
+      "explanation": "Le fichier hosts est très utilisé par les techniciens pour tester un serveur web en pré-production avant la propagation DNS officielle, mais peut aussi être corrompu par des malwares pour détourner le trafic (CP 3 et CP 5)[cite: 23, 26, 56].",
+      "difficulty": "facile",
+      "context": "Systèmes & Fichier Hosts"
+    },
+    {
+      "id": "eb6_q27",
+      "type": "ticket",
+      "question": "Ticket #5008 — 'Bonjour, nous constatons que des utilisateurs standards peuvent installer des exécutables non autorisés (jeux, utilitaires) dans leur répertoire local AppData sans que l'UAC ne se déclenche.'",
+      "answer": "Déployer une stratégie de restriction logicielle via GPO (AppLocker ou Stratégies de contrôle des applications Windows Defender) pour interdire l'exécution de tout binaire (.exe, .msi, .bat) en dehors des répertoires sécurisés Windows et Program Files[cite: 23, 43].",
+      "checklist": [
+        "Ouvrir la console gpmc.msc sur le contrôleur de domaine[cite: 43]",
+        "Créer une GPO de sécurité AppLocker appliquée à l'OU des postes clients[cite: 43]",
+        "Définir des règles par défaut autorisant l'exécution dans C:\\Windows et C:\\Program Files, et bloquant le reste (notamment %USERPROFILE%\\AppData)[cite: 23]",
+        "Tester la stratégie sur un poste pilote avec un compte utilisateur standard non-administrateur[cite: 23, 43]"
+      ],
+      "explanation": "Les applications ne nécessitant pas de droits administrateurs s'installent dans AppData pour contourner l'UAC ; AppLocker permet de verrouiller hermétiquement l'exécution des binaires non approuvés (CP 6 et CP 8)[cite: 23, 43].",
+      "difficulty": "difficile",
+      "context": "Sécurité GPO & AppLocker"
+    },
+    {
+      "id": "eb6_q28",
+      "type": "classic",
+      "question": "Pourquoi la norme IEEE 802.11ax (Wi-Fi 6) utilise-t-elle la technologie OFDMA (Orthogonal Frequency Division Multiple Access) et quel est son bénéfice majeur en entreprise ?",
+      "answer": "OFDMA divise chaque canal Wi-Fi en sous-canaux plus petits (unités de ressources), permettant au point d'accès de communiquer simultanément avec plusieurs dizaines d'appareils en parallèle sans temps d'attente, ce qui réduit drastiquement la latence dans les environnements denses (open spaces, salles de réunion).",
+      "explanation": "Contrairement aux anciennes normes qui traitaient les appareils les uns après les autres, le Wi-Fi 6 gère efficacement la densité d'équipements et d'objets connectés (CP 7)[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Réseaux Sans-Fil & Wi-Fi 6"
+    },
+    {
+      "id": "eb6_q29",
+      "type": "association",
+      "question": "Associe chaque technologie de chiffrement de stockage à son environnement natif.",
+      "answer": "BitLocker -> Solution de chiffrement intégral de volume intégrée à Windows (éditions Pro et Entreprise)[cite: 47], LUKS (Linux Unified Key Setup) -> Standard de chiffrement de bloc et de partitions sous les distributions Linux, FileVault -> Solution de chiffrement matériel et logiciel intégrée nativement à macOS, BitLocker To Go -> Chiffrement sécurisé avec mot de passe pour les supports amovibles (clés USB et disques externes)[cite: 47]",
+      "pairs": [
+        ["BitLocker", "Solution de chiffrement intégral de volume intégrée à Windows (éditions Pro et Entreprise)[cite: 47]"],
+        ["LUKS (Linux Unified Key Setup)", "Standard de chiffrement de bloc et de partitions sous les distributions Linux"],
+        ["FileVault", "Solution de chiffrement matériel et logiciel intégrée nativement à macOS"],
+        ["BitLocker To Go", "Chiffrement sécurisé avec mot de passe pour les supports amovibles (clés USB et disques externes)[cite: 47]"]
+      ],
+      "explanation": "Chaque système d'exploitation dispose de sa propre brique native de chiffrement pour garantir la confidentialité des données au repos en cas de vol (CP 6)[cite: 47].",
+      "difficulty": "facile",
+      "context": "Chiffrement & Systèmes"
+    },
+    {
+      "id": "eb6_q30",
+      "type": "classic",
+      "question": "Quelle est la commande Linux permettant de modifier le propriétaire et le groupe d'un dossier nommé '/var/www/html' pour les attribuer à l'utilisateur 'www-data' et au groupe 'www-data' de manière récursive ?",
+      "answer": "sudo chown -R www-data:www-data /var/www/html[cite: 26]",
+      "explanation": "La commande chown modifie l'appartenance utilisateur et groupe, et l'option -R applique le changement à l'ensemble des sous-dossiers et fichiers contenus (CP 5)[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Permissions"
+    },
+    {
+      "id": "eb6_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes pour réaliser un effacement sécurisé et certifié d'un disque dur SSD avant sa mise au rebut selon les exigences RGPD.",
+      "answer": "1. Identifier précisément le numéro de série physique du disque SSD à traiter\n2. Démarrer la machine sur un environnement autonome d'effacement (ex: clé USB bootable avec ShredOS ou Parted Magic)\n3. Sélectionner le disque cible et lancer la commande d'effacement sécurisé matériel (ATA Secure Erase / NVMe Format Cryptographic Erase)\n4. Vérifier que l'ensemble des blocs de mémoire flash sont réinitialisés\n5. Générer et archiver le certificat d'effacement comportant la date, l'heure et le numéro de série du disque\n6. Mettre à jour la fiche d'inventaire de parc GLPI et orienter le disque vers le recyclage DEEE",
+      "items": [
+        "Identifier précisément le numéro de série physique du disque SSD à traiter",
+        "Démarrer la machine sur un environnement autonome d'effacement (ex: clé USB bootable avec ShredOS ou Parted Magic)",
+        "Sélectionner le disque cible et lancer la commande d'effacement sécurisé matériel (ATA Secure Erase / NVMe Format Cryptographic Erase)",
+        "Vérifier que l'ensemble des blocs de mémoire flash sont réinitialisés",
+        "Générer et archiver le certificat d'effacement comportant la date, l'heure et le numéro de série du disque",
+        "Mettre à jour la fiche d'inventaire de parc GLPI et orienter le disque vers le recyclage DEEE"
+      ],
+      "explanation": "L'effacement sécurisé certifié garantit l'impossibilité de récupération des données personnelles conformément au RGPD avant recyclage (CP 5 et CP 6)[cite: 41, 61].",
+      "difficulty": "moyen",
+      "context": "Conformité RGPD & Effacement"
+    },
+    {
+      "id": "eb6_q32",
+      "type": "classic",
+      "question": "Pourquoi le ventilateur d'une alimentation d'ordinateur (PSU) ou d'un boîtier doit-il être monté de manière à expulser l'air chaud vers l'extérieur par le haut ou l'arrière du châssis ?",
+      "answer": "Parce que l'air chaud monte naturellement par convection thermique : placer les ventilateurs d'extraction (exhaust) en haut et à l'arrière permet d'évacuer la chaleur accumulée efficacement, tandis que les ventilateurs d'aspiration (intake) placés en bas et en façade injectent de l'air frais.",
+      "explanation": "Ce schéma d'airflow optimise le flux d'air thermique et maintient les composants internes à des températures de fonctionnement stables (CP 5)[cite: 11, 20].",
+      "difficulty": "facile",
+      "context": "Hardware & Airflow"
+    },
+    {
+      "id": "eb6_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'il n'arrive plus à imprimer sur le traceur grand format de l'agence. L'écran du traceur affiche l'adresse IP 192.168.1.200, mais la commande ping vers cette adresse renvoie 'Destination host unreachable'. Lorsqu'on débranche le câble réseau du traceur, le ping répond soudainement. Trouve la cause de l'anomalie.",
+      "answer": "Une autre machine sur le réseau a été configurée manuellement avec la même adresse IP 192.168.1.200, créant un conflit d'IP qui bloque la communication du traceur.",
+      "indices": [
+        "Indice 1 : Deux équipements physiques distincts partagent simultanément la même adresse IP sur le sous-réseau[cite: 30, 32].",
+        "Indice 2 : La table de cache ARP locale (arp -a) conserve l'adresse MAC du poste intrus au lieu de celle de la carte réseau du traceur[cite: 32].",
+        "Indice 3 : Reconfigurer le traceur sur une nouvelle adresse IP libre avec réservation DHCP résout immédiatement le problème d'impression[cite: 55]."
+      ],
+      "explanation": "Lorsqu'un équipement 'répond au ping' alors qu'il est physiquement débranché, c'est la preuve irréfutable qu'un autre hôte utilise la même adresse IP sur le réseau (CP 3 et CP 7)[cite: 30, 32].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Réseau Conflit IP"
+    },
+    {
+      "id": "eb6_q34",
+      "type": "classic",
+      "question": "Dans le cadre de l'accompagnement pédagogique, quelle est la bonne attitude à adopter si un utilisateur formule des demandes d'assistance répétées sur des manipulations simples de sa suite bureautique ?",
+      "answer": "Faire preuve de patience et de pédagogie, lui faire effectuer lui-même les manipulations plutôt que de faire à sa place, rédiger ou lui fournir une fiche mémo illustrée pas à pas, et lui proposer une session d'accompagnement ou des modules de formation adaptés.",
+      "explanation": "L'autonomisation bienveillante de l'utilisateur fait partie intégrante de la mission d'accompagnement du technicien de proximité (CP 2)[cite: 8, 67].",
+      "difficulty": "facile",
+      "context": "Accompagnement & Pédagogie"
+    },
+    {
+      "id": "eb6_q35",
+      "type": "ticket",
+      "question": "Ticket #5602 — 'Bonjour, nous constatons que la boîte de messagerie de notre service client est saturée par des centaines de spams et messages de démarchage non sollicités chaque jour.'",
+      "answer": "Vérifier et ajuster les règles de filtrage anti-spam et de protection contre le phishing dans le centre d'administration Exchange / Microsoft Defender pour bloquer les domaines émetteurs et renforcer les seuils de réputation.",
+      "checklist": [
+        "Accéder au centre d'administration de la sécurité de messagerie (security.microsoft.com ou interface antispam)[cite: 42, 59]",
+        "Ajuster le niveau de sensibilité du filtre de courrier indésirable (Anti-spam inbound policy)",
+        "Activer la vérification stricte des enregistrements SPF, DKIM et DMARC sur les e-mails entrants[cite: 59]",
+        "Bloquer les domaines d'expéditeurs indésirables récurrents et sensibiliser l'équipe à signaler les courriers suspects via le bouton d'alerte[cite: 59]"
+      ],
+      "explanation": "La configuration des politiques de sécurité de messagerie protège les boîtes aux lettres contre l'encombrement et les tentatives d'hameçonnage (CP 6)[cite: 42, 59].",
+      "difficulty": "moyen",
+      "context": "Sécurité Messagerie & Anti-Spam"
+    }
+  ]
+}

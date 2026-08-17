@@ -1,0 +1,454 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 2 — Sujet Bravo (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb2_q1",
+      "type": "classic",
+      "question": "Un utilisateur appelle le centre de services car il n'arrive plus à ouvrir sa session Windows avec son mot de passe habituel. Après vérification dans la console Active Directory (dsa.msc), le compte est verrouillé (Event ID 4740). Quelle est la procédure de sécurité obligatoire à respecter avant de déverrouiller le compte ou réinitialiser le mot de passe ?",
+      "answer": "Vérifier formellement l'identité de l'utilisateur par un canal de confiance (rappel sur son numéro professionnel officiel, validation auprès de son manager ou contact visuel) afin de prévenir une attaque par ingénierie sociale (pretexting / vishing).",
+      "explanation": "La réinitialisation d'un mot de passe ou le déverrouillage de compte sans contrôle d'identité préalable est l'une des failles d'ingénierie sociale les plus exploitées pour usurper des accès en entreprise[cite: 9, 59].",
+      "difficulty": "moyen",
+      "context": "Support & Sécurité des Accès"
+    },
+    {
+      "id": "eb2_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'une démarche d'escalade d'un incident du support N1 vers une équipe spécialisée N2/N3 selon les bonnes pratiques ITIL.",
+      "answer": "1. Constater que l'incident dépasse son périmètre de compétences, ses habilitations ou les délais impartis\n2. Rédiger un compte rendu d'intervention détaillé (symptômes, tests réalisés, hypothèses écartées)\n3. Assigner formellement le ticket dans l'outil de gestion (GLPI/ITSM) au groupe support N2/N3 compétent\n4. Informer l'utilisateur du transfert de son dossier et lui communiquer le nouveau délai estimé\n5. Assurer le suivi du ticket jusqu'à la résolution finale pour enrichir sa propre base de connaissances",
+      "items": [
+        "Constater que l'incident dépasse son périmètre de compétences, ses habilitations ou les délais impartis",
+        "Rédiger un compte rendu d'intervention détaillé (symptômes, tests réalisés, hypothèses écartées)",
+        "Assigner formellement le ticket dans l'outil de gestion (GLPI/ITSM) au groupe support N2/N3 compétent",
+        "Informer l'utilisateur du transfert de son dossier et lui communiquer le nouveau délai estimé",
+        "Assurer le suivi du ticket jusqu'à la résolution finale pour enrichir sa propre base de connaissances"
+      ],
+      "explanation": "Une escalade réussie évite à l'équipe suivante de repartir de zéro et maintient l'utilisateur informé de la prise en charge de sa demande[cite: 7].",
+      "difficulty": "moyen",
+      "context": "Organisation & ITIL"
+    },
+    {
+      "id": "eb2_q3",
+      "type": "association",
+      "question": "Associe chaque type d'enregistrement DNS à son rôle précis dans la résolution de noms.",
+      "answer": "Enregistrement A -> Associe un nom de domaine complet (FQDN) à une adresse IPv4, Enregistrement AAAA -> Associe un nom de domaine complet (FQDN) à une adresse IPv6, Enregistrement CNAME -> Crée un alias pointant vers un autre nom de domaine canonique, Enregistrement MX -> Définit les serveurs de messagerie responsables de la réception des e-mails du domaine, Enregistrement PTR -> Permet la résolution DNS inverse (adresse IP vers nom d'hôte)",
+      "pairs": [
+        ["Enregistrement A", "Associe un nom de domaine complet (FQDN) à une adresse IPv4"],
+        ["Enregistrement AAAA", "Associe un nom de domaine complet (FQDN) à une adresse IPv6"],
+        ["Enregistrement CNAME", "Crée un alias pointant vers un autre nom de domaine canonique"],
+        ["Enregistrement MX", "Définit les serveurs de messagerie responsables de la réception des e-mails du domaine"],
+        ["Enregistrement PTR", "Permet la résolution DNS inverse (adresse IP vers nom d'hôte)"]
+      ],
+      "explanation": "La maîtrise des enregistrements DNS est indispensable pour diagnostiquer les pannes de messagerie, d'accès web ou de résolution locale Active Directory[cite: 32, 34, 43].",
+      "difficulty": "moyen",
+      "context": "Services Réseau DNS"
+    },
+    {
+      "id": "eb2_q4",
+      "type": "diagnostic_indices",
+      "question": "Un PC de bureau refuse de démarrer : à l'allumage, les ventilateurs tournent à fond pendant 3 secondes, l'écran reste noir sans signal vidéo, et la carte mère émet une série de 3 bips longs continus. Trouve la cause de la panne matérielle.",
+      "answer": "Défaut d'initialisation de la mémoire vive (RAM) : barrette mal enclenchée dans son slot DIMM, poussière sur les contacts dorés ou barrette défectueuse.",
+      "indices": [
+        "Indice 1 : Le bloc d'alimentation (PSU) délivre bien les tensions +12V et +5V et le voyant LED de veille de la carte mère est allumé[cite: 17].",
+        "Indice 2 : L'écran testé sur un autre poste avec le même câble HDMI fonctionne parfaitement[cite: 16, 18].",
+        "Indice 3 : Le code sonore du BIOS (Beep Code) signale une erreur critique lors du test POST au niveau de la détection de la mémoire système[cite: 21, 22]."
+      ],
+      "explanation": "Lors du POST (Power-On Self-Test), les bips sonores permettent d'identifier les pannes matérielles avant l'affichage vidéo ; 3 bips longs signalent quasi systématiquement une anomalie sur la mémoire vive (RAM)[cite: 21, 22].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Matériel POST"
+    },
+    {
+      "id": "eb2_q5",
+      "type": "ticket",
+      "question": "Ticket #2844 — 'Bonjour, je viens de brancher un second écran sur mon poste de travail avec un adaptateur, mais Windows ne le détecte pas et l'écran affiche Aucun signal.'",
+      "answer": "Vérifier la sélection de la source sur l'écran (HDMI/DisplayPort), brancher le câble sur la carte graphique dédiée (dGPU) et non sur la carte mère (si iGPU inactif), et configurer l'affichage sous Windows (Win + P).",
+      "checklist": [
+        "Vérifier le branchement physique de l'écran sur le port de la carte graphique dédiée (PCIe) et non sur la carte mère[cite: 12, 16]",
+        "Contrôler la sélection de la source d'entrée (Input) sur le menu physique de l'écran (OSD)[cite: 16]",
+        "Utiliser le raccourci Windows + P pour basculer en mode 'Étendre ces affichages'",
+        "Vérifier la présence et la mise à jour des pilotes graphiques dans le Gestionnaire de périphériques (devmgmt.msc)[cite: 23, 24]"
+      ],
+      "explanation": "Sur les tours dotées d'une carte graphique dédiée, brancher par erreur l'écran sur les sorties vidéo de la carte mère désactivées par le BIOS est un piège classique de support[cite: 16, 22].",
+      "difficulty": "facile",
+      "context": "Support Périphériques"
+    },
+    {
+      "id": "eb2_q6",
+      "type": "classic",
+      "question": "Un technicien intervient pour remplacer une carte mère dans un boîtier tour. Quelles sont les précautions indispensables à prendre pour éviter de détruire les composants par décharge électrostatique (ESD) ?",
+      "answer": "Porter un bracelet antistatique relié à la terre (ou toucher régulièrement une partie métallique non peinte du châssis), manipuler les cartes par les bords sans toucher les pistes dorées, et travailler sur un tapis antistatique ou sur le carton d'emballage d'origine[cite: 22].",
+      "explanation": "Une décharge électrostatique invisible et inaudible (de quelques centaines de volts) suffit à endommager définitivement les micro-transistors d'un processeur, d'une barrette de RAM ou d'un chipset[cite: 12, 13, 22].",
+      "difficulty": "facile",
+      "context": "Hardware & Précautions ESD"
+    },
+    {
+      "id": "eb2_q7",
+      "type": "association",
+      "question": "Associe chaque type de mémoire vive à sa caractéristique technologique et son usage.",
+      "answer": "SRAM (Static RAM) -> Mémoire ultra-rapide intégrée directement au processeur sous forme de cache (L1/L2/L3), SDRAM DDR4/DDR5 -> Mémoire vive volatile sous forme de barrettes amovibles pour l'espace de travail de l'OS, ECC RAM -> Mémoire vive avec code de correction d'erreurs intégrée dédiée aux serveurs critiques, VRAM (GDDR6) -> Mémoire haute vitesse soudée sur la carte graphique dédiée aux calculs d'affichage et textures",
+      "pairs": [
+        ["SRAM (Static RAM)", "Mémoire ultra-rapide intégrée directement au processeur sous forme de cache (L1/L2/L3)"],
+        ["SDRAM DDR4/DDR5", "Mémoire vive volatile sous forme de barrettes amovibles pour l'espace de travail de l'OS"],
+        ["ECC RAM", "Mémoire vive avec code de correction d'erreurs intégrée dédiée aux serveurs critiques"],
+        ["VRAM (GDDR6)", "Mémoire haute vitesse soudée sur la carte graphique dédiée aux calculs d'affichage et textures"]
+      ],
+      "explanation": "Distinguer les mémoires de travail système (SDRAM), les caches CPU ultra-rapides (SRAM) et la mémoire vidéo dédiée (VRAM) est essentiel pour diagnostiquer les goulets d'étranglement[cite: 13, 14, 16].",
+      "difficulty": "moyen",
+      "context": "Architecture Matérielle"
+    },
+    {
+      "id": "eb2_q8",
+      "type": "classic",
+      "question": "Pourquoi est-il impossible de copier une image ISO de 6,5 Go sur une clé USB formatée avec le système de fichiers FAT32, et quel système de fichiers compatible Windows/macOS/Linux doit-on choisir à la place ?",
+      "answer": "FAT32 est techniquement limité à une taille maximale de 4 Go par fichier unique. Il faut formater la clé en exFAT (ou en NTFS si l'usage est réservé à Windows)[cite: 15, 22].",
+      "explanation": "Le système de fichiers FAT32 gère des volumes jusqu'à 2 To mais bloque tout fichier individuel dépassant 4 Go[cite: 15]. L'exFAT est la solution universelle sans limite pratique de taille pour les supports amovibles[cite: 15].",
+      "difficulty": "facile",
+      "context": "Systèmes de Fichiers"
+    },
+    {
+      "id": "eb2_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique la procédure de remplacement d'un disque dur défaillant configuré en grappe RAID 1 (Miroir) sur un serveur d'entreprise.",
+      "answer": "1. Identifier précisément le disque physique en panne (voyant ambre clignotant / logiciel contrôleur RAID)\n2. Effectuer une vérification d'état de la sauvegarde globale des données par précaution\n3. Remplacer à chaud (Hot-Swap) ou hors tension le disque défectueux par un disque identique en capacité et technologie\n4. Lancer ou surveiller la reconstruction automatique de la grappe (Rebuild) via le contrôleur RAID\n5. Vérifier que l'état de la grappe repasse au statut Optimal / En ligne dans l'utilitaire de gestion",
+      "items": [
+        "Identifier précisément le disque physique en panne (voyant ambre clignotant / logiciel contrôleur RAID)",
+        "Effectuer une vérification d'état de la sauvegarde globale des données par précaution",
+        "Remplacer à chaud (Hot-Swap) ou hors tension le disque défectueux par un disque identique en capacité et technologie",
+        "Lancer ou surveiller la reconstruction automatique de la grappe (Rebuild) via le contrôleur RAID",
+        "Vérifier que l'état de la grappe repasse au statut Optimal / En ligne dans l'utilitaire de gestion"
+      ],
+      "explanation": "En RAID 1, la tolérance à la panne permet de maintenir le service sur le disque survivant pendant le remplacement et la reconstruction intégrale des données[cite: 40].",
+      "difficulty": "moyen",
+      "context": "Stockage RAID & Continuité"
+    },
+    {
+      "id": "eb2_q10",
+      "type": "classic",
+      "question": "Sur un commutateur réseau d'entreprise, à quoi sert la fonctionnalité de sécurité 'Port-Security' configurée avec l'option 'Violation Shutdown' ?",
+      "answer": "Elle restreint l'accès au port physique du switch en n'autorisant que la ou les adresses MAC enregistrées. Si un équipement avec une adresse MAC non reconnue est branché, le port est immédiatement désactivé (état err-disable).",
+      "explanation": "Port-Security empêche le branchement sauvage de machines inconnues (ordinateurs personnels, routeurs pirates) sur les prises réseau murales de l'entreprise[cite: 33].",
+      "difficulty": "moyen",
+      "context": "Sécurité Réseau & Commutation"
+    },
+    {
+      "id": "eb2_q11",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur télétravailleur parvient à joindre l'Internet public depuis son domicile mais ne peut ouvrir aucun serveur de fichiers interne de l'entreprise. Identifie la cause du problème.",
+      "answer": "Le tunnel VPN nomade (client-à-site) n'est pas connecté ou son authentification a échoué (certificat expiré / MFA non validé).",
+      "indices": [
+        "Indice 1 : La commande ping 8.8.8.8 et la navigation sur des sites publics fonctionnent sans ralentissement[cite: 24, 34].",
+        "Indice 2 : La commande ping sur l'adresse IP interne du serveur de fichiers (10.20.1.50) renvoie 'Délai d'attente dépassé'[cite: 32, 34].",
+        "Indice 3 : L'icône de l'application cliente VPN (ex: FortiClient / OpenVPN / Cisco AnyConnect) affiche l'état 'Disconnected'[cite: 34]."
+      ],
+      "explanation": "Pour qu'un poste distant accède aux plages IP privées et aux ressources internes de l'entreprise à travers Internet, le tunnel chiffré VPN doit impérativement être établi[cite: 34].",
+      "difficulty": "facile",
+      "context": "VPN & Télétravail"
+    },
+    {
+      "id": "eb2_q12",
+      "type": "classic",
+      "question": "Quelle est la plage d'adresses IPv4 privées de Classe B définie par la RFC 1918 et quel est son masque par défaut ?",
+      "answer": "De 172.16.0.0 à 172.31.255.255, avec le masque par défaut 255.255.0.0 (/16)[cite: 31].",
+      "explanation": "Les trois plages privées RFC 1918 non routables sur Internet sont la Classe A (10.0.0.0/8), la Classe B (172.16.0.0/12 regroupant les blocs 172.16 à 172.31) et la Classe C (192.168.0.0/16)[cite: 31].",
+      "difficulty": "moyen",
+      "context": "Adressage Réseau IP"
+    },
+    {
+      "id": "eb2_q13",
+      "type": "ticket",
+      "question": "Ticket #3412 — 'Un nouvel employé souffrant de tremblements sévères de la main ne parvient pas à taper au clavier car chaque pression involontaire produit des lettres répétées (ex: bbbbooonnsssoooiiir).' ",
+      "answer": "Activer et configurer la fonctionnalité des 'Touches filtres' (Filter Keys) dans les paramètres d'accessibilité de Windows (Win + U).",
+      "checklist": [
+        "Ouvrir les Paramètres d'accessibilité Windows via le raccourci Windows + U[cite: 27]",
+        "Naviguer vers la section Clavier et activer l'option 'Touches filtres'[cite: 27]",
+        "Régler la temporisation pour ignorer les frappes répétées brèves ou involontaires[cite: 27]",
+        "Faire tester la saisie dans le bloc-notes à l'utilisateur et ajuster la sensibilité selon son retour direct[cite: 27]"
+      ],
+      "explanation": "Les touches filtres permettent d'ignorer les frappes brèves ou involontaires et de ralentir la vitesse de répétition pour adapter le poste aux troubles moteurs[cite: 27].",
+      "difficulty": "moyen",
+      "context": "Accessibilité & Inclusion"
+    },
+    {
+      "id": "eb2_q14",
+      "type": "association",
+      "question": "Associe chaque catégorie de câble réseau Ethernet à sa performance maximale sur 100 mètres.",
+      "answer": "Catégorie 5e -> 1 Gb/s (Gigabit Ethernet) à 100 MHz, Catégorie 6 -> 1 Gb/s sur 100 m (et jusqu'à 10 Gb/s sur 55 m max) à 250 MHz, Catégorie 6a -> 10 Gb/s garantis sur 100 m à 500 MHz (standard recommandé en entreprise), Catégorie 8 -> 25 à 40 Gb/s sur courtes liaisons de data center (30 m max) à 2000 MHz",
+      "pairs": [
+        ["Catégorie 5e", "1 Gb/s (Gigabit Ethernet) à 100 MHz"],
+        ["Catégorie 6", "1 Gb/s sur 100 m (et jusqu'à 10 Gb/s sur 55 m max) à 250 MHz"],
+        ["Catégorie 6a", "10 Gb/s garantis sur 100 m à 500 MHz (standard recommandé en entreprise)"],
+        ["Catégorie 8", "25 à 40 Gb/s sur courtes liaisons de data center (30 m max) à 2000 MHz"]
+      ],
+      "explanation": "Le câblage cuivre Cat 6a blindé (FTP/SFTP) est la norme de référence actuelle pour garantir un réseau local pérenne à 10 Gb/s[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Câblage & Couche Physique"
+    },
+    {
+      "id": "eb2_q15",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre les technologies PoE (Power over Ethernet) et CPL (Courant Porteur en Ligne) ?",
+      "answer": "Le PoE injecte du courant électrique sur un câble réseau Ethernet (RJ45) pour alimenter un équipement (AP Wi-Fi, caméra IP, téléphone VoIP), alors que le CPL injecte des données réseau à travers les câbles électriques d'une prise secteur murale 230V[cite: 30].",
+      "explanation": "PoE = l'électricité passe sur le câble réseau[cite: 30] ; CPL = le réseau passe sur le câblage électrique du bâtiment[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Réseaux & Alimentation"
+    },
+    {
+      "id": "eb2_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique la démarche de création d'une arborescence partagée sécurisée sous Active Directory selon la méthode AGDLP.",
+      "answer": "1. Créer le dossier sur le disque de données et désactiver l'héritage des autorisations NTFS\n2. Créer les groupes de sécurité Domaine Local de ressources (ex: GDL_Compta_RW et GDL_Compta_RO)\n3. Appliquer les droits NTFS sur le dossier aux groupes Domaine Local correspondants\n4. Créer les groupes de sécurité Globaux métiers (ex: GG_Comptabilite)\n5. Imbriquer les groupes Globaux dans les groupes Domaine Local appropriés\n6. Ajouter les comptes utilisateurs (A) dans leur groupe Global respectif",
+      "items": [
+        "Créer le dossier sur le disque de données et désactiver l'héritage des autorisations NTFS",
+        "Créer les groupes de sécurité Domaine Local de ressources (ex: GDL_Compta_RW et GDL_Compta_RO)",
+        "Appliquer les droits NTFS sur le dossier aux groupes Domaine Local correspondants",
+        "Créer les groupes de sécurité Globaux métiers (ex: GG_Comptabilite)",
+        "Imbriquer les groupes Globaux dans les groupes Domaine Local appropriés",
+        "Ajouter les comptes utilisateurs (A) dans leur groupe Global respectif"
+      ],
+      "explanation": "La méthode AGDLP (Accounts -> Global groups -> Domain Local -> Permissions) assure une maintenance modulaire et sécurisée des accès sans jamais assigner de droits NTFS directs à des utilisateurs individuels[cite: 43, 48].",
+      "difficulty": "difficile",
+      "context": "Active Directory AGDLP"
+    },
+    {
+      "id": "eb2_q17",
+      "type": "classic",
+      "question": "Lors du calcul d'accès à un dossier partagé Windows à travers le réseau, comment le système tranche-t-il le conflit entre les autorisations de Partage et les autorisations de Sécurité NTFS ?",
+      "answer": "Le système applique toujours l'autorisation la plus restrictive (la plus stricte) des deux[cite: 48].",
+      "explanation": "Si le partage est en 'Contrôle total' mais que le droit NTFS est en 'Lecture', l'accès final sera en Lecture seule[cite: 48]. La bonne pratique consiste à accorder 'Contrôle total' au niveau du partage et à verrouiller finement via les permissions NTFS[cite: 48].",
+      "difficulty": "moyen",
+      "context": "Sécurité NTFS & Partages"
+    },
+    {
+      "id": "eb2_q18",
+      "type": "diagnostic_indices",
+      "question": "Un technicien déploie une nouvelle imprimante réseau en attribuant une adresse IP fixe manuellement. Immédiatement après, l'imprimante et un serveur de fichiers du même service tombent par intermittence. Trouve la cause de l'incident.",
+      "answer": "Conflit d'adresses IP (adresse IP en double) sur le sous-réseau entraînant une corruption de la table de cache ARP du commutateur et des postes clients.",
+      "indices": [
+        "Indice 1 : La commande ping vers l'adresse IP en question renvoie des temps de réponse très instables avec des pertes de paquets massives[cite: 30, 32].",
+        "Indice 2 : L'Observateur d'événements du serveur consigne un avertissement TCP/IP 'Le système a détecté un conflit d'adresse pour l'adresse IP... avec le système ayant l'adresse réseau physique...'[cite: 23, 32].",
+        "Indice 3 : La table ARP locale (arp -a) alterne entre deux adresses MAC distinctes pour la même adresse IP[cite: 32]."
+      ],
+      "explanation": "Attribuer une IP fixe sans vérifier le plan d'adressage ou sans créer d'exclusion/réservation sur le serveur DHCP provoque un conflit ARP bloquant la communication pour les deux hôtes concernés[cite: 30, 32, 34].",
+      "difficulty": "difficile",
+      "context": "Diagnostic Réseau ARP"
+    },
+    {
+      "id": "eb2_q19",
+      "type": "association",
+      "question": "Associe chaque outil de diagnostic logiciel Windows à sa fonction de maintenance spécialisée.",
+      "answer": "CrystalDiskInfo -> Analyse de l'état de santé physique SMART et des températures des disques SSD/HDD, Memtest86 -> Test exhaustif et approfondi de la mémoire vive (RAM) hors système d'exploitation, Resource Monitor (resmon) -> Analyse en temps réel des accès fichiers par processus et des connexions réseau actives, Process Explorer -> Visualisation avancée de l'arborescence des processus et détection de processus suspects",
+      "pairs": [
+        ["CrystalDiskInfo", "Analyse de l'état de santé physique SMART et des températures des disques SSD/HDD"],
+        ["Memtest86", "Test exhaustif et approfondi de la mémoire vive (RAM) hors système d'exploitation"],
+        ["Resource Monitor (resmon)", "Analyse en temps réel des accès fichiers par processus et des connexions réseau actives"],
+        ["Process Explorer", "Visualisation avancée de l'arborescence des processus et détection de processus suspects"]
+      ],
+      "explanation": "Ces outils logiciels forment la trousse de secours indispensable du technicien pour isoler rapidement les goulots d'étranglement matériels et les comportements malveillants[cite: 20, 22, 50, 58].",
+      "difficulty": "moyen",
+      "context": "Boîte à Outils Support"
+    },
+    {
+      "id": "eb2_q20",
+      "type": "ticket",
+      "question": "Ticket #4190 — 'Bonjour, notre serveur de gestion de parc GLPI et tickets d'assistance n'est plus joignable depuis les postes clients du réseau local (erreur Page Web inaccessible).' ",
+      "answer": "Vérifier l'état du service de serveur web (Apache/Nginx) et de base de données (MySQL/MariaDB) sur le serveur GLPI et redémarrer les services si nécessaire.",
+      "checklist": [
+        "Tester la joignabilité réseau de l'hôte GLPI via un ping sur son adresse IP[cite: 30, 32]",
+        "Se connecter au serveur hébergeant GLPI (en console ou SSH/RDP)[cite: 32, 34, 46]",
+        "Vérifier l'état d'exécution des services web et SQL (systemctl status apache2 mariadb sous Linux ou services.msc sous Windows)[cite: 23, 26]",
+        "Vérifier le remplissage de l'espace disque du serveur (df -h ou Gestion des disques) pour éliminer un blocage lié aux logs saturés[cite: 23, 26]"
+      ],
+      "explanation": "GLPI repose sur une pile logicielle web/base de données : si le serveur répond au ping mais que la page web ne s'affiche pas, le diagnostic se porte sur les services applicatifs de couche 7[cite: 6, 32].",
+      "difficulty": "moyen",
+      "context": "Helpdesk & Infrastructure GLPI"
+    },
+    {
+      "id": "eb2_q21",
+      "type": "classic",
+      "question": "Quelle est la commande PowerShell permettant de tester si le port 3389 (RDP) est ouvert et joignable sur un serveur distant nommé SRV-FICHIERS.entreprise.lan ?",
+      "answer": "Test-NetConnection -ComputerName SRV-FICHIERS.entreprise.lan -Port 3389[cite: 34, 54]",
+      "explanation": "La commande Test-NetConnection (TNC) remplace avantageusement l'ancien client Telnet sous Windows pour tester la connectivité de couche 4 (TCP) vers un port et un hôte spécifiques[cite: 32, 34, 54].",
+      "difficulty": "moyen",
+      "context": "PowerShell & Diagnostic Réseau"
+    },
+    {
+      "id": "eb2_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de déploiement d'un lecteur réseau partagé automatique sur tous les postes de la direction via une Stratégie de Groupe (GPO).",
+      "answer": "1. Ouvrir la console de gestion des stratégies de groupe (gpmc.msc) sur le contrôleur de domaine\n2. Créer un nouvel objet GPO (ex: U_Mappage_Direction) dans le conteneur des stratégies\n3. Lier la GPO à l'Unité d'Organisation (OU) contenant les comptes utilisateurs de la Direction\n4. Éditer la GPO : Configuration utilisateur > Préférences > Paramètres Windows > Mappage de lecteurs\n5. Configurer la lettre du lecteur (ex: Z:) et renseigner le chemin UNC (\\\\SRV-DATA\\Direction$)\n6. Forcer l'application sur un poste client test avec la commande gpupdate /force",
+      "items": [
+        "Ouvrir la console de gestion des stratégies de groupe (gpmc.msc) sur le contrôleur de domaine",
+        "Créer un nouvel objet GPO (ex: U_Mappage_Direction) dans le conteneur des stratégies",
+        "Lier la GPO à l'Unité d'Organisation (OU) contenant les comptes utilisateurs de la Direction",
+        "Éditer la GPO : Configuration utilisateur > Préférences > Paramètres Windows > Mappage de lecteurs",
+        "Configurer la lettre du lecteur (ex: Z:) et renseigner le chemin UNC (\\\\SRV-DATA\\Direction$)",
+        "Forcer l'application sur un poste client test avec la commande gpupdate /force"
+      ],
+      "explanation": "L'automatisation du mappage de lecteur via GPO de préférences utilisateur évite toute configuration manuelle poste par poste et garantit l'homogénéité du parc[cite: 43].",
+      "difficulty": "moyen",
+      "context": "GPO & Active Directory"
+    },
+    {
+      "id": "eb2_q23",
+      "type": "classic",
+      "question": "Pourquoi est-il crucial de stocker la clé de récupération BitLocker à 48 chiffres dans l'annuaire Active Directory de l'entreprise plutôt que sur le disque dur local du poste protégé ?",
+      "answer": "Parce que si la carte mère est remplacée, le firmware BIOS mis à jour ou le disque extrait du PC suite à un crash matériel, le disque devient inaccessible et la clé locale ne peut plus être lue[cite: 47].",
+      "explanation": "La centralisation de la clé de récupération dans l'objet ordinateur de l'Active Directory (via GPO) permet au support de débloquer immédiatement un utilisateur légitime sans risque de perte de données[cite: 47].",
+      "difficulty": "moyen",
+      "context": "Sécurité BitLocker AD"
+    },
+    {
+      "id": "eb2_q24",
+      "type": "association",
+      "question": "Associe chaque protocole de sécurité et d'authentification à son niveau d'efficacité et d'usage recommandé.",
+      "answer": "WPA3-Enterprise (802.1X / RADIUS) -> Niveau de sécurité maximal recommandé pour le Wi-Fi d'entreprise avec authentification individuelle par compte AD, WPA2-Personal (Pre-Shared Key) -> Standard courant mais inadapté aux grandes structures (mot de passe partagé par tous les utilisateurs), WEP (Wired Equivalent Privacy) -> Protocole totalement obsolète et vulnérable, à bannir immédiatement de la production, NLA (Network Level Authentication) -> Authentification préalable obligatoire pour sécuriser les connexions au Bureau à distance (RDP)",
+      "pairs": [
+        ["WPA3-Enterprise (802.1X / RADIUS)", "Niveau de sécurité maximal recommandé pour le Wi-Fi d'entreprise avec authentification individuelle par compte AD"],
+        ["WPA2-Personal (Pre-Shared Key)", "Standard courant mais inadapté aux grandes structures (mot de passe partagé par tous les utilisateurs)"],
+        ["WEP (Wired Equivalent Privacy)", "Protocole totalement obsolète et vulnérable, à bannir immédiatement de la production"],
+        ["NLA (Network Level Authentication)", "Authentification préalable obligatoire pour sécuriser les connexions au Bureau à distance (RDP)"]
+      ],
+      "explanation": "La sécurisation des flux sans fil et des accès distants repose sur le bannissement des protocoles cassés (WEP) et l'adoption du 802.1X et du NLA[cite: 30, 46].",
+      "difficulty": "moyen",
+      "context": "Cybersécurité & Protocoles"
+    },
+    {
+      "id": "eb2_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'une application métier plante au lancement avec le message 'Erreur 0x80070005 : Accès refusé' lorsqu'il ouvre sa session, alors que l'application fonctionne parfaitement sur la session administrateur local du même poste. Trouve la cause de l'incident.",
+      "answer": "Droits NTFS insuffisants de l'utilisateur standard sur le répertoire d'installation ou le dossier de base de données locale de l'application (ex: C:\\Program Files\\MonLogiciel).",
+      "indices": [
+        "Indice 1 : Le compte de l'utilisateur appartient au groupe par défaut 'Utilisateurs du domaine' sans privilèges d'administration locale[cite: 23].",
+        "Indice 2 : L'application tente d'écrire des fichiers de configuration temporaires directement dans le répertoire d'installation plutôt que dans AppData\\Local[cite: 23].",
+        "Indice 3 : L'Observateur d'événements consigne un échec d'audit de sécurité sur une tentative d'écriture dans le dossier C:\\Program Files\\AppMetier[cite: 23, 49]."
+      ],
+      "explanation": "Un utilisateur standard n'a pas les droits d'écriture dans Program Files par défaut[cite: 23]. Si un logiciel ancien exige d'écrire dans ce dossier, il faut attribuer des droits NTFS spécifiques 'Modification' au groupe de l'utilisateur sur le sous-dossier concerné[cite: 48].",
+      "difficulty": "moyen",
+      "context": "Droits Systèmes & Applications"
+    },
+    {
+      "id": "eb2_q26",
+      "type": "classic",
+      "question": "Dans le cadre de la gestion des mises à jour centralisées via WSUS (Windows Server Update Services), quelle est la règle d'or à respecter avant de déployer un correctif de sécurité critique à l'ensemble du parc informatique de l'entreprise ?",
+      "answer": "Valider et déployer d'abord la mise à jour sur un groupe pilote restreint (5 à 10 postes représentatifs des différents métiers) pendant quelques jours afin de s'assurer de l'absence d'incompatibilité avec les logiciels métiers[cite: 45].",
+      "explanation": "Le déploiement direct sans phase de test pilote peut paralyser la production si une mise à jour système crée un conflit avec un progiciel de gestion ou un pilote d'impression[cite: 45].",
+      "difficulty": "facile",
+      "context": "Mises à Jour WSUS"
+    },
+    {
+      "id": "eb2_q27",
+      "type": "ticket",
+      "question": "Ticket #5811 — 'Bonjour, je viens de changer de smartphone professionnel et lorsque j'essaie de me connecter à Microsoft Teams, l'application me demande une validation Microsoft Authenticator sur mon ancien téléphone qui a été restitué.'",
+      "answer": "Se connecter au portail d'administration Microsoft Entra ID (Azure AD), supprimer l'ancienne méthode d'authentification et exiger le réenregistrement du MFA pour l'utilisateur après vérification d'identité[cite: 42].",
+      "checklist": [
+        "Vérifier formellement l'identité du collaborateur (rappel sur son poste fixe ou validation responsable)[cite: 9, 42, 59]",
+        "Accéder au centre d'administration Microsoft Entra (entra.microsoft.com) > Utilisateurs[cite: 42]",
+        "Sélectionner l'utilisateur > Méthodes d'authentification > Supprimer l'ancienne application d'authentification[cite: 42]",
+        "Cliquer sur 'Exiger la réinscription de l'authentification multifacteur' et assister l'utilisateur lors de la configuration du QR Code sur son nouveau mobile[cite: 42]"
+      ],
+      "explanation": "Le réenregistrement MFA est l'une des demandes les plus fréquentes en support d'entreprise moderne utilisant Microsoft 365 / Entra ID[cite: 42].",
+      "difficulty": "moyen",
+      "context": "M365 & Entra ID MFA"
+    },
+    {
+      "id": "eb2_q28",
+      "type": "classic",
+      "question": "Quelles sont les 3 recommandations fondamentales de l'ANSSI concernant la politique de sécurité des mots de passe en entreprise ?",
+      "answer": "Privilégier une longueur importante (minimum 12 à 14 caractères ou phrase de passe) plutôt qu'une complexité artificielle courte, imposer un mot de passe strictement unique par service, et utiliser un gestionnaire de mots de passe agréé (KeePass, Bitwarden) sans jamais communiquer son secret[cite: 43, 58].",
+      "explanation": "Une phrase de passe longue offre une résistance cryptographique bien supérieure aux attaques par force brute tout en étant plus facile à mémoriser pour l'humain[cite: 58].",
+      "difficulty": "moyen",
+      "context": "Cybersécurité ANSSI"
+    },
+    {
+      "id": "eb2_q29",
+      "type": "association",
+      "question": "Associe chaque type de malware à son mode d'action destructeur principal.",
+      "answer": "Ransomware (Rançongiciel) -> Chiffre les fichiers de l'utilisateur et des partages réseau pour exiger une rançon financière, Keylogger (Enregistreur de frappe) -> Intercepte et enregistre discrètement toutes les saisies clavier pour voler identifiants et mots de passe, Spyware (Logiciel espion) -> Collecte des données personnelles et surveille les activités de l'utilisateur à son insu, Rootkit / Bootkit -> Se dissimule au cœur du noyau système ou de l'UEFI pour maintenir un accès furtif persistant avant l'OS",
+      "pairs": [
+        ["Ransomware (Rançongiciel)", "Chiffre les fichiers de l'utilisateur et des partages réseau pour exiger une rançon financière"],
+        ["Keylogger (Enregistreur de frappe)", "Intercepte et enregistre discrètement toutes les saisies clavier pour voler identifiants et mots de passe"],
+        ["Spyware (Logiciel espion)", "Collecte des données personnelles et surveille les activités de l'utilisateur à son insu"],
+        ["Rootkit / Bootkit", "Se dissimule au cœur du noyau système ou de l'UEFI pour maintenir un accès furtif persistant avant l'OS"]
+      ],
+      "explanation": "La compréhension des mécanismes d'infection permet au technicien de choisir les bons outils d'analyse et de remédiation en post-incident[cite: 56, 58].",
+      "difficulty": "facile",
+      "context": "Menaces & Malwares"
+    },
+    {
+      "id": "eb2_q30",
+      "type": "classic",
+      "question": "Sous Windows 11, quelle est la ligne de commande permettant de vérifier l'état du chiffrement BitLocker du volume système principal ?",
+      "answer": "manage-bde -status C:[cite: 47]",
+      "explanation": "L'utilitaire en ligne de commande manage-bde permet d'administrer et de surveiller l'état de chiffrement, les protecteurs de clé (TPM, mot de passe) et le pourcentage de progression[cite: 47].",
+      "difficulty": "facile",
+      "context": "Administration BitLocker"
+    },
+    {
+      "id": "eb2_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre les actions de dépannage réseau par élimination selon la méthode 'Bottom-Up' (du bas vers le haut du modèle OSI) lorsqu'un poste ne peut pas ouvrir un site web sécurisé.",
+      "answer": "1. Couche 1 : Vérifier le branchement du câble RJ45, l'état des voyants LED de la carte réseau et de la prise murale\n2. Couche 2 : Vérifier que la carte réseau négocie la bonne vitesse et que sa table MAC est apprise sur le switch\n3. Couche 3 : Vérifier l'adresse IP, le masque et tester la réponse au ping vers la passerelle par défaut\n4. Couche 4 : Tester l'ouverture du port TCP 443 vers le serveur cible avec Test-NetConnection\n5. Couches 5-6-7 : Tester la résolution de nom avec nslookup et vérifier la validité du certificat TLS dans le navigateur",
+      "items": [
+        "Couche 1 : Vérifier le branchement du câble RJ45, l'état des voyants LED de la carte réseau et de la prise murale",
+        "Couche 2 : Vérifier que la carte réseau négocie la bonne vitesse et que sa table MAC est apprise sur le switch",
+        "Couche 3 : Vérifier l'adresse IP, le masque et tester la réponse au ping vers la passerelle par défaut",
+        "Couche 4 : Tester l'ouverture du port TCP 443 vers le serveur cible avec Test-NetConnection",
+        "Couches 5-6-7 : Tester la résolution de nom avec nslookup et vérifier la validité du certificat TLS dans le navigateur"
+      ],
+      "explanation": "La méthode OSI Bottom-Up évite de perdre du temps sur des problèmes logiciels complexes alors que la cause racine est souvent un simple câble débranché ou une passerelle inaccessible[cite: 32].",
+      "difficulty": "moyen",
+      "context": "Méthode de Diagnostic OSI"
+    },
+    {
+      "id": "eb2_q32",
+      "type": "classic",
+      "question": "Pourquoi ne doit-on jamais utiliser le protocole Telnet (port TCP 23) pour administrer un commutateur ou un routeur en environnement professionnel, et quel protocole chiffré doit-on impérativement lui substituer ?",
+      "answer": "Telnet transmet les identifiants et les commandes en texte clair non chiffré (vulnérable à l'écoute réseau / sniffing). Il faut impérativement utiliser le protocole SSH (Secure Shell - port TCP 22)[cite: 34].",
+      "explanation": "L'utilisation de Telnet sur un réseau de production constitue une faute de sécurité majeure permettant la capture immédiate des mots de passe d'administration[cite: 34].",
+      "difficulty": "facile",
+      "context": "Sécurité des Équipements Réseau"
+    },
+    {
+      "id": "eb2_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur est devenu extrêmement lent : l'Explorateur Windows se fige régulièrement et le disque dur mécanique émet un grattement continu. Identifie la cause et l'action d'urgence immédiate.",
+      "answer": "Défaillance matérielle imminente du disque dur (secteurs défectueux / crash de tête mécanique). L'action d'urgence absolue est de sauvegarder immédiatement les données utilisateur avant toute autre manipulation et de remplacer le disque par un SSD[cite: 22].",
+      "indices": [
+        "Indice 1 : Le Gestionnaire des tâches (taskmgr) affiche une activité disque constante à 100% avec un temps de réponse supérieur à 3000 ms[cite: 50].",
+        "Indice 2 : L'utilitaire CrystalDiskInfo affiche un statut de santé 'Prudence' ou 'Mauvais' avec un nombre élevé de secteurs réalloués et d'erreurs CRC[cite: 22].",
+        "Indice 3 : Les bruits mécaniques anormaux augmentent lors des tentatives d'accès aux fichiers[cite: 22]."
+      ],
+      "explanation": "Face à un disque dur mourant, il ne faut jamais lancer de défragmentation ou d'analyse lourde qui achèverait le disque : la priorité numéro 1 est la copie de secours des données[cite: 22].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Matériel & Sauvegarde"
+    },
+    {
+      "id": "eb2_q34",
+      "type": "classic",
+      "question": "Dans le cadre de la gestion responsable des équipements en fin de vie (DEEE), quelle est la hiérarchie officielle des actions à privilégier pour un parc d'ordinateurs vieillissants mais fonctionnels ?",
+      "answer": "La hiérarchie officielle est : 1. Le Réemploi / Reconditionnement (prolongation de la durée de vie, dons aux associations) > 2. Le Recyclage (valorisation des matières premières via filière agréée) > 3. L'Élimination contrôlée (mise au rebut en dernier recours)[cite: 41].",
+      "explanation": "Le réemploi prime toujours sur le recyclage pour limiter l'empreinte environnementale et la consommation de ressources électroniques[cite: 41].",
+      "difficulty": "facile",
+      "context": "Filière DEEE & Écologie"
+    },
+    {
+      "id": "eb2_q35",
+      "type": "ticket",
+      "question": "Ticket #6304 — 'Bonjour, nous devons configurer un nouveau poste de travail pour un comptable qui doit traiter des données financières confidentielles. Merci de paramétrer la sécurité conformément à la charte d'entreprise.'",
+      "answer": "Déployer le poste avec Windows 11 Professionnel, activer et vérifier le chiffrement BitLocker (clé sauvegardée dans AD), configurer le verrouillage automatique de session après 5 minutes et installer un câble antivol Kensington[cite: 47, 60].",
+      "checklist": [
+        "Vérifier l'activation du TPM 2.0 dans le BIOS/UEFI et activer le chiffrement BitLocker sur le disque C:[cite: 21, 47]",
+        "Contrôler que la clé de récupération à 48 chiffres est bien répliquée dans l'objet ordinateur d'Active Directory[cite: 47]",
+        "Appliquer la GPO de verrouillage automatique de session après 5 minutes d'inactivité (Win + L)[cite: 60]",
+        "Fixer physiquement le poste de travail au bureau avec un câble antivol Kensington[cite: 60]"
+      ],
+      "explanation": "La protection des postes traitant des données sensibles associe sécurité physique (antivol Kensington, verrouillage d'écran) et sécurité logique forte (chiffrement BitLocker)[cite: 47, 60].",
+      "difficulty": "moyen",
+      "context": "Sécurité Physique & Postes de Travail"
+    }
+  ]
+}

@@ -1,0 +1,456 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 8 — Sujet Hotel (Grand Examen Blanc Récapitulatif TIP)",
+    "description": "Simulation finale exhaustive et transversale de l'épreuve du Titre Professionnel Technicien Informatique de Proximité (Niveau 4 / Bac +1), balayant l'ensemble des 8 compétences professionnelles du REAC et des pièges d'examen oral.",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb8_q1",
+      "type": "classic",
+      "question": "Devant le jury du Titre Pro, quelle justification technique et organisationnelle donnez-vous au choix d'un outil ITSM / gestion de parc comme GLPI couplé à un agent d'inventaire automatisé plutôt qu'un suivi sous tableur Excel ?",
+      "answer": "GLPI centralise le cycle de vie complet des tickets et des SLA, assure la traçabilité des interventions, lie chaque ticket à un équipement matériel/logiciel précis grâce à l'inventaire automatique (remontée des configurations, numéros de série, licences et dates de garantie), et met à disposition une base de connaissances partagée pour capitaliser sur les résolutions d'incidents.",
+      "explanation": "Un tableur ne gère ni les alertes de SLA, ni les droits d'escalade, ni l'inventaire matériel dynamique, ni l'historique opposable en cas d'audit ou de contrat de service (CP 1)[cite: 6, 67].",
+      "difficulty": "moyen",
+      "context": "Gestion de Parc & ITIL"
+    },
+    {
+      "id": "eb8_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'un déploiement complet d'une salle de 20 postes informatiques neufs dans un nouvel étage de l'entreprise.",
+      "answer": "1. Déballer, inspecter le matériel et enregistrer les numéros de série/inventaire dans GLPI\n2. Installer les postes sur les bureaux, raccorder les câbles réseau RJ45, écrans et périphériques\n3. Démarrer les postes en PXE et appliquer l'image Master d'entreprise via session Multicast WDS\n4. Vérifier la conformité de la jonction au domaine Active Directory et le chiffrement BitLocker\n5. Tester l'ouverture de session utilisateur, les accès aux partages réseau, à la messagerie et à l'imprimante d'étage\n6. Rédiger le compte rendu d'intervention et faire signer le bon de livraison/mise en service",
+      "items": [
+        "Déballer, inspecter le matériel et enregistrer les numéros de série/inventaire dans GLPI",
+        "Installer les postes sur les bureaux, raccorder les câbles réseau RJ45, écrans et périphériques",
+        "Démarrer les postes en PXE et appliquer l'image Master d'entreprise via session Multicast WDS",
+        "Vérifier la conformité de la jonction au domaine Active Directory et le chiffrement BitLocker",
+        "Tester l'ouverture de session utilisateur, les accès aux partages réseau, à la messagerie et à l'imprimante d'étage",
+        "Rédiger le compte rendu d'intervention et faire signer le bon de livraison/mise en service"
+      ],
+      "explanation": "Le déploiement industriel suit une rigueur méthodique associant inventaire, mise en place physique, télédistribution logicielle, tests fonctionnels et traçabilité administrative (CP 1, CP 4 et CP 5)[cite: 6, 44, 47, 67].",
+      "difficulty": "moyen",
+      "context": "Déploiement Industriel & Intégration"
+    },
+    {
+      "id": "eb8_q3",
+      "type": "association",
+      "question": "Associe chaque terme fondamental de sécurité Active Directory à sa définition.",
+      "answer": "Groupe Global (GG) -> Regroupe des utilisateurs partageant la même fonction métier ou service dans le domaine[cite: 43], Groupe Domaine Local (GDL) -> Reçoit directement les permissions NTFS sur les répertoires et ressources partagées[cite: 43], SID (Security Identifier) -> Identifiant alphanumérique unique et immuable attribué à chaque objet de sécurité[cite: 44], Unité d'Organisation (OU) -> Conteneur hiérarchique permettant d'organiser les objets et d'y lier des stratégies de groupe (GPO)[cite: 43]",
+      "pairs": [
+        ["Groupe Global (GG)", "Regroupe des utilisateurs partageant la même fonction métier ou service dans le domaine[cite: 43]"],
+        ["Groupe Domaine Local (GDL)", "Reçoit directement les permissions NTFS sur les répertoires et ressources partagées[cite: 43]"],
+        ["SID (Security Identifier)", "Identifiant alphanumérique unique et immuable attribué à chaque objet de sécurité[cite: 44]"],
+        ["Unité d'Organisation (OU)", "Conteneur hiérarchique permettant d'organiser les objets et d'y lier des stratégies de groupe (GPO)[cite: 43]"]
+      ],
+      "explanation": "La méthode AGDLP et la hiérarchisation des OU constituent le socle de l'administration et de la sécurité sous Windows Server (CP 8)[cite: 43, 67].",
+      "difficulty": "facile",
+      "context": "Active Directory & Sécurité"
+    },
+    {
+      "id": "eb8_q4",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail ne parvient plus à communiquer avec le serveur de base de données local (10.0.5.10). Le technicien constate qu'un ping vers 127.0.0.1 fonctionne, mais le ping vers l'adresse IP de sa propre carte réseau renvoie une erreur matérielle. Trouve la cause de l'incident.",
+      "answer": "Défaillance matérielle ou désactivation logicielle du pilote de la carte réseau (NIC) sur le poste client.",
+      "indices": [
+        "Indice 1 : La boucle locale (Loopback 127.0.0.1) répond, ce qui prouve que la pile protocolaire TCP/IP logicielle de Windows est intacte[cite: 31, 34].",
+        "Indice 2 : La commande ping sur l'adresse IP assignée au poste renvoie 'DÉFAILLANCE GÉNÉRALE' ou 'Transmit failed. General failure'[cite: 34].",
+        "Indice 3 : Le Gestionnaire de périphériques (devmgmt.msc) affiche un triangle jaune avec le code erreur 10 ou 43 sur la carte réseau physique[cite: 23, 24]."
+      ],
+      "explanation": "Tester 127.0.0.1 valide la pile logicielle interne ; tester sa propre IP valide le dialogue avec le pilote et la carte réseau matérielle avant de tester le câble ou la passerelle (CP 3 et CP 7)[cite: 31, 34].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Réseau de Premier Niveau"
+    },
+    {
+      "id": "eb8_q5",
+      "type": "ticket",
+      "question": "Ticket #6440 — 'Bonjour, notre directeur commercial a égaré son ordinateur portable professionnel contenant des contrats clients dans un train. Le disque est protégé par BitLocker.'",
+      "answer": "Consigner l'incident, révoquer immédiatement les sessions actives du collaborateur, désactiver son compte VPN, et signaler la perte au responsable informatique et au DPO de l'entreprise conformément aux procédures RGPD.",
+      "checklist": [
+        "Vérifier dans l'Active Directory / Intune que le chiffrement BitLocker était bien actif à 100% sur le poste[cite: 42, 47]",
+        "Révoquer immédiatement les jetons de session M365, accès VPN et accès distants de l'utilisateur[cite: 42, 43]",
+        "Déclencher l'effacement à distance (Remote Wipe) via le MDM Microsoft Intune dès que le poste sera connecté à Internet[cite: 42]",
+        "Transmettre une notification formelle d'incident au Délégué à la Protection des Données (DPO) pour évaluer le risque de violation de données (délai de 72h CNIL)[cite: 61]"
+      ],
+      "explanation": "La perte d'un équipement nomade exige une réaction sécuritaire immédiate (révocation, wipe MDM) et la traçabilité légale imposée par le RGPD (CP 6)[cite: 42, 61, 67].",
+      "difficulty": "moyen",
+      "context": "Gestion d'Incident Cyber & RGPD"
+    },
+    {
+      "id": "eb8_q6",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre un disque SSD utilisant le protocole SATA et un disque SSD utilisant le protocole NVMe, bien que les deux puissent utiliser le même format physique de connecteur M.2 ?",
+      "answer": "Le M.2 SATA utilise le vieux protocole SATA limité par le contrôleur à environ 550 Mo/s, alors que le M.2 NVMe communique directement via les lignes du bus PCI Express (PCIe) avec le processeur, permettant des débits de 3000 à 7000+ Mo/s avec une latence considérablement réduite.",
+      "explanation": "M.2 est uniquement la forme physique du connecteur ; le protocole (SATA ou NVMe) détermine les performances et la compatibilité avec le port de la carte mère (CP 5)[cite: 15].",
+      "difficulty": "facile",
+      "context": "Hardware & SSD M.2"
+    },
+    {
+      "id": "eb8_q7",
+      "type": "association",
+      "question": "Associe chaque équipement d'interconnexion réseau à sa couche de fonctionnement principale dans le modèle OSI.",
+      "answer": "Répéteur / Câble RJ45 -> Couche 1 (Physique)[cite: 30, 32], Commutateur réseau classique (Switch L2) -> Couche 2 (Liaison de données)[cite: 30, 32], Routeur d'entreprise -> Couche 3 (Réseau)[cite: 30, 32], Passerelle applicative / Reverse Proxy -> Couche 7 (Application)[cite: 32, 34]",
+      "pairs": [
+        ["Répéteur / Câble RJ45", "Couche 1 (Physique)[cite: 30, 32]"],
+        ["Commutateur réseau classique (Switch L2)", "Couche 2 (Liaison de données)[cite: 30, 32]"],
+        ["Routeur d'entreprise", "Couche 3 (Réseau)[cite: 30, 32]"],
+        ["Passerelle applicative / Reverse Proxy", "Couche 7 (Application)[cite: 32, 34]"]
+      ],
+      "explanation": "La correspondance entre équipement et couche OSI détermine la nature des informations analysées (bits, trames MAC, paquets IP, requêtes HTTP)[cite: 30, 32].",
+      "difficulty": "facile",
+      "context": "Modèle OSI & Équipements"
+    },
+    {
+      "id": "eb8_q8",
+      "type": "classic",
+      "question": "Pourquoi est-il strictement interdit d'utiliser un compte utilisateur nominatif (ex: j.dupont) pour exécuter un service système ou une tâche planifiée critique d'entreprise ?",
+      "answer": "Parce que si le collaborateur change son mot de passe périodiquement ou quitte l'entreprise et que son compte est désactivé, le service ou la tâche planifiée de sauvegarde/synchronisation cessera immédiatement de fonctionner.",
+      "explanation": "Les tâches automatisées doivent toujours être exécutées sous le compte 'AUTORITE NT\\SYSTEM' ou sous un compte de service dédié (ex: svc_backup) avec un mot de passe permanent et des privilèges restreints (CP 6)[cite: 53, 55].",
+      "difficulty": "moyen",
+      "context": "Comptes de Service & Automatisation"
+    },
+    {
+      "id": "eb8_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de sécurisation d'un poste de travail lors d'une alerte d'infection par un cheval de Troie bancaire (Spyware / Trojan).",
+      "answer": "1. Isoler immédiatement le poste du réseau (débrancher le câble Ethernet et désactiver le Wi-Fi)\n2. Ne pas éteindre la machine pour préserver la mémoire vive (RAM) en vue d'une analyse forensique\n3. Informer le responsable sécurité / RSSI et documenter l'heure de début d'incident\n4. Réinitialiser les mots de passe de l'utilisateur depuis un autre poste sécurisé\n5. Analyser et éradiquer le malware avec les outils d'investigation ou réinstaller le poste avec le Master officiel\n6. Vérifier l'absence de persistance et reconnecter le poste au réseau",
+      "items": [
+        "Isoler immédiatement le poste du réseau (débrancher le câble Ethernet et désactiver le Wi-Fi)",
+        "Ne pas éteindre la machine pour préserver la mémoire vive (RAM) en vue d'une analyse forensique",
+        "Informer le responsable sécurité / RSSI et documenter l'heure de début d'incident",
+        "Réinitialiser les mots de passe de l'utilisateur depuis un autre poste sécurisé",
+        "Analyser et éradiquer le malware avec les outils d'investigation ou réinstaller le poste avec le Master officiel",
+        "Vérifier l'absence de persistance et reconnecter le poste au réseau"
+      ],
+      "explanation": "L'isolation immédiate bloque l'exfiltration de données bancaires, tandis que la réinitialisation des mots de passe depuis une machine saine coupe l'accès de l'attaquant (CP 5 et CP 6)[cite: 57, 58].",
+      "difficulty": "moyen",
+      "context": "Gestion d'Incident de Sécurité"
+    },
+    {
+      "id": "eb8_q10",
+      "type": "classic",
+      "question": "Quel est le rôle de la méthode de diagnostic dite 'Top-Down' (du haut vers le bas du modèle OSI) et dans quel contexte d'incident est-elle particulièrement adaptée ?",
+      "answer": "La méthode Top-Down commence par tester la couche applicative (logiciel, navigateur, session utilisateur) avant de descendre vers les couches réseau et matérielles. Elle est particulièrement adaptée lorsqu'un seul logiciel spécifique rencontre une erreur sur une machine dont la connectivité réseau générale fonctionne parfaitement.",
+      "explanation": "Si l'utilisateur navigue sur le web mais n'arrive pas à ouvrir un logiciel métier SaaS spécifique, tester le câble physique est inutile : on commence par vérifier la licence, l'application ou le cache web (CP 3)[cite: 8, 32].",
+      "difficulty": "moyen",
+      "context": "Méthodologie de Diagnostic"
+    },
+    {
+      "id": "eb8_q11",
+      "type": "diagnostic_indices",
+      "question": "Un technicien déploie une machine virtuelle sous VirtualBox pour tester Windows 11. Lors du lancement de l'installation, un message d'erreur bloque la procédure : 'Ce PC ne répond pas aux exigences minimales requises pour installer Windows 11'. Identifie la manipulation de contournement en atelier de test.",
+      "answer": "Ouvrir l'invite de commande (Maj + F10), lancer regedit, créer la clé HKEY_LOCAL_MACHINE\\SYSTEM\\Setup\\LabConfig et y ajouter les valeurs DWORD 'BypassTPMCheck', 'BypassSecureBootCheck' et 'BypassRAMCheck' à 1.",
+      "indices": [
+        "Indice 1 : La machine virtuelle n'a pas de puce TPM 2.0 émulée active dans sa configuration matérielle virtuelle[cite: 21, 25].",
+        "Indice 2 : L'installateur Windows 11 vérifie les prérequis de sécurité matérielle lors de la phase préliminaire de démarrage[cite: 24, 25].",
+        "Indice 3 : La création de la clé de registre LabConfig ordonne au programme d'installation d'ignorer la vérification du TPM, du Secure Boot et de la mémoire RAM[cite: 25]."
+      ],
+      "explanation": "Cette procédure technique permet de tester des environnements Windows 11 sur des hyperviseurs ou matériels de laboratoire ne disposant pas de TPM 2.0 physique (CP 4)[cite: 25].",
+      "difficulty": "difficile",
+      "context": "Virtualisation & Déploiement"
+    },
+    {
+      "id": "eb8_q12",
+      "type": "classic",
+      "question": "Quelle est l'obligation stricte d'un technicien titulaire de l'habilitation électrique BS lors d'une intervention de remplacement d'un bloc d'alimentation (PSU) interne sur un serveur ou poste fixe ?",
+      "answer": "Mettre l'équipement hors tension, débrancher physiquement le cordon d'alimentation secteur 230V, s'assurer contre toute remise sous tension intempestive (consignation élémentaire), et ne jamais ouvrir le boîtier scellé de l'alimentation elle-même.",
+      "explanation": "L'habilitation BS autorise le raccordement et remplacement élémentaire à l'identique hors tension selon la norme NF C 18-510, mais interdit toute intervention à l'intérieur d'un composant contenant des condensateurs haute tension (CP 5)[cite: 17, 22, 67].",
+      "difficulty": "facile",
+      "context": "Habilitation Électrique BS"
+    },
+    {
+      "id": "eb8_q13",
+      "type": "ticket",
+      "question": "Ticket #4099 — 'Bonjour, notre collaboratrice non-voyante vient d'arriver dans le service. Elle a besoin que son poste Windows 11 soit configuré avec la synthèse vocale complète et qu'on lui montre les raccourcis de navigation indispensables.'",
+      "answer": "Activer le lecteur d'écran Narrateur (Win + Ctrl + Entrée), ajuster la vitesse et la voix de synthèse selon sa convenance, et lui rappeler les raccourcis de base (Touche Narrateur Verr.Maj ou Insérer + flèches)[cite: 27].",
+      "checklist": [
+        "Ouvrir les Paramètres d'accessibilité Windows (Win + U > Narrateur)[cite: 27]",
+        "Activer le Narrateur et sélectionner une voix naturelle en français[cite: 27]",
+        "Régler la vitesse d'élocution et la verbosité selon les préférences exprimées par la collaboratrice[cite: 8, 27]",
+        "Faire un test de navigation complet sur la messagerie et les dossiers avec l'utilisatrice pour valider le confort d'usage[cite: 8, 27]"
+      ],
+      "explanation": "L'accompagnement des personnes non-voyantes exige la maîtrise de la configuration fine du lecteur d'écran pour assurer leur inclusion opérationnelle (CP 2)[cite: 8, 27, 67].",
+      "difficulty": "facile",
+      "context": "Accessibilité & Cécité"
+    },
+    {
+      "id": "eb8_q14",
+      "type": "association",
+      "question": "Associe chaque technologie de disque de stockage à son usage professionnel privilégié.",
+      "answer": "HDD SAS 10K / 15K RPM -> Disques mécaniques rapides et haute endurance pour serveurs de bases de données transactionnelles 24/7[cite: 15], SSD SAS Dual-Port -> Mémoire flash haute performance avec deux chemins redondants pour baies de stockage critiques SAN/Datacenter[cite: 15], HDD SATA 3.5 pouces (LFF) -> Stockage de masse grande capacité à faible coût pour archivage et serveurs NAS[cite: 15], SSD NVMe M.2 (2280) -> Disque système principal ultra-rapide pour postes clients, stations de travail et ordinateurs portables[cite: 15]",
+      "pairs": [
+        ["HDD SAS 10K / 15K RPM", "Disques mécaniques rapides et haute endurance pour serveurs de bases de données transactionnelles 24/7[cite: 15]"],
+        ["SSD SAS Dual-Port", "Mémoire flash haute performance avec deux chemins redondants pour baies de stockage critiques SAN/Datacenter[cite: 15]"],
+        ["HDD SATA 3.5 pouces (LFF)", "Stockage de masse grande capacité à faible coût pour archivage et serveurs NAS[cite: 15]"],
+        ["SSD NVMe M.2 (2280)", "Disque système principal ultra-rapide pour postes clients, stations de travail et ordinateurs portables[cite: 15]"]
+      ],
+      "explanation": "La distinction entre interfaces grand public (SATA), professionnelles (SAS) et haute vitesse (NVMe) conditionne la fiabilité et la performance des infrastructures (CP 4 et CP 5)[cite: 15].",
+      "difficulty": "moyen",
+      "context": "Hardware & Interfaces de Stockage"
+    },
+    {
+      "id": "eb8_q15",
+      "type": "classic",
+      "question": "Pourquoi est-il nécessaire d'exécuter la commande 'OOBE\\BYPASSNRO' lors de l'installation de Windows 11 sur une machine de test ou en atelier de masterisation ?",
+      "answer": "Pour contourner l'obligation de connexion à Internet et l'obligation de créer un compte Microsoft personnel lors de l'assistant initial (OOBE), permettant ainsi de créer un compte d'administration local hors-ligne.",
+      "explanation": "Ce contournement technique permet d'accéder au système sans lier la machine à un compte Cloud personnel pendant la phase de préparation du master (CP 4)[cite: 24, 25].",
+      "difficulty": "facile",
+      "context": "Installation Windows & OOBE"
+    },
+    {
+      "id": "eb8_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'attribution dynamique d'un VLAN à un utilisateur en fonction de son groupe Active Directory via le protocole 802.1X.",
+      "answer": "1. Le poste client se connecte à la prise réseau murale reliée au port du switch d'accès\n2. Le commutateur bloque tout le trafic et demande l'authentification de l'utilisateur (protocole EAPoL)\n3. Le poste transmet les identifiants d'ouverture de session Active Directory\n4. Le switch transfère les identifiants au serveur RADIUS (NPS) via le réseau\n5. Le serveur RADIUS valide le compte auprès du contrôleur de domaine et vérifie l'appartenance au groupe métier\n6. Le serveur RADIUS renvoie un message d'acceptation au switch avec l'ID du VLAN cible (ex: VLAN 10 - COMPTA)",
+      "items": [
+        "Le poste client se connecte à la prise réseau murale reliée au port du switch d'accès",
+        "Le commutateur bloque tout le trafic et demande l'authentification de l'utilisateur (protocole EAPoL)",
+        "Le poste transmet les identifiants d'ouverture de session Active Directory",
+        "Le switch transfère les identifiants au serveur RADIUS (NPS) via le réseau",
+        "Le serveur RADIUS valide le compte auprès du contrôleur de domaine et vérifie l'appartenance au groupe métier",
+        "Le serveur RADIUS renvoie un message d'acceptation au switch avec l'ID du VLAN cible (ex: VLAN 10 - COMPTA)"
+      ],
+      "explanation": "L'authentification 802.1X dynamique permet d'affecter automatiquement le bon VLAN à l'utilisateur où qu'il se branche physiquement dans le bâtiment (CP 7 et CP 8)[cite: 30, 33].",
+      "difficulty": "difficile",
+      "context": "Sécurité Réseau 802.1X"
+    },
+    {
+      "id": "eb8_q17",
+      "type": "classic",
+      "question": "Sur un poste de travail Linux, quel est le rôle du fichier journal '/var/log/syslog' (ou '/var/log/messages') ?",
+      "answer": "Il enregistre les messages généraux et les événements du système d'exploitation, des pilotes matériels, des démons et des services en arrière-plan.",
+      "explanation": "La consultation de ce fichier journal via cat, less ou tail est le premier réflexe de diagnostic de dysfonctionnement sous Linux (CP 5)[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Logs Système"
+    },
+    {
+      "id": "eb8_q18",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que sa souris sans fil et son clavier Bluetooth saccadent fortement et se déconnectent toutes les 2 minutes depuis qu'il a branché un disque dur externe USB 3.0 juste à côté de l'adaptateur sans fil sur son PC portable. Trouve la cause de l'incident.",
+      "answer": "Interférences électromagnétiques produites par le contrôleur et le câble USB 3.0 non blindé qui rayonnent sur la bande de fréquence 2,4 GHz utilisée par le Bluetooth et le Wi-Fi.",
+      "indices": [
+        "Indice 1 : Les piles de la souris et du clavier sont neuves et testées à 100% de charge.",
+        "Indice 2 : Débrancher le disque dur externe USB 3.0 rétablit instantanément la fluidité parfaite des périphériques sans fil[cite: 18, 30].",
+        "Indice 3 : L'USB 3.0 génère du bruit radiofréquence harmonique sur la bande des 2,4 à 2,5 GHz[cite: 18, 30]."
+      ],
+      "explanation": "La norme USB 3.0 émet des interférences radio sur la plage 2,4 GHz ; éloigner le récepteur Bluetooth ou utiliser un câble blindé résout immédiatement ces perturbations (CP 5)[cite: 18, 30].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Périphériques & Fréquences"
+    },
+    {
+      "id": "eb8_q19",
+      "type": "association",
+      "question": "Associe chaque type d'attaque d'ingénierie sociale à son vecteur d'approche.",
+      "answer": "Smishing -> Envoi d'un SMS frauduleux contenant un lien piégé (faux suivi de colis, alerte bancaire)[cite: 59], Whaling -> Spear phishing de haut niveau ciblant exclusivement les cadres dirigeants ou le directeur général[cite: 59], Tailgating (Filature physique) -> Suivre de près un employé badgeur pour pénétrer dans un local technique sans badger[cite: 59, 60], Clone Phishing -> Copie conforme d'un e-mail légitime déjà reçu en remplaçant la pièce jointe ou le lien par un piège[cite: 59]",
+      "pairs": [
+        ["Smishing", "Envoi d'un SMS frauduleux contenant un lien piégé (faux suivi de colis, alerte bancaire)[cite: 59]"],
+        ["Whaling", "Spear phishing de haut niveau ciblant exclusivement les cadres dirigeants ou le directeur général[cite: 59]"],
+        ["Tailgating (Filature physique)", "Suivre de près un employé badgeur pour pénétrer dans un local technique sans badger[cite: 59, 60]"],
+        ["Clone Phishing", "Copie conforme d'un e-mail légitime déjà reçu en remplaçant la pièce jointe ou le lien par un piège[cite: 59]"]
+      ],
+      "explanation": "La maîtrise des différentes variantes d'ingénierie sociale permet au technicien de former et sensibiliser efficacement les collaborateurs de l'entreprise (CP 6)[cite: 59, 67].",
+      "difficulty": "moyen",
+      "context": "Cybersécurité & Ingénierie Sociale"
+    },
+    {
+      "id": "eb8_q20",
+      "type": "ticket",
+      "question": "Ticket #4330 — 'Bonjour, nous devons configurer un poste pour un nouvel analyste financier qui a besoin de virtualiser des environnements de test Linux sous Hyper-V/VirtualBox, mais le logiciel indique que la virtualisation matérielle est désactivée.'",
+      "answer": "Accéder au BIOS/UEFI de la machine pour activer la technologie de virtualisation processeur Intel VT-x ou AMD-V (SVM Mode)[cite: 21].",
+      "checklist": [
+        "Redémarrer l'ordinateur et accéder au menu BIOS/UEFI (touche F2, F10 ou Suppr au POST)[cite: 21, 44]",
+        "Naviguer vers les paramètres avancés du processeur (CPU Configuration / Advanced)[cite: 21, 44]",
+        "Activer l'option 'Intel Virtualization Technology (VT-x)' ou 'AMD SVM Mode'[cite: 21]",
+        "Sauvegarder les paramètres (F10), redémarrer et vérifier sous Windows dans le Gestionnaire des tâches (onglet Performance > Virtualisation : Activé)[cite: 21, 50]"
+      ],
+      "explanation": "La virtualisation matérielle au niveau du processeur est indispensable pour exécuter des hyperviseurs et machines virtuelles 64 bits avec des performances natives (CP 4 et CP 5)[cite: 21, 25].",
+      "difficulty": "facile",
+      "context": "Hardware & Virtualisation BIOS"
+    },
+    {
+      "id": "eb8_q21",
+      "type": "classic",
+      "question": "Quelle est la signification d'un voyant d'état ambre/orange clignotant sur l'un des tiroirs de disques durs d'un serveur rackable en production ?",
+      "answer": "Il signale une panne matérielle imminente (alerte prédictive SMART) ou un échec complet du disque dur physique dans la grappe RAID, nécessitant son remplacement rapide.",
+      "explanation": "Les contrôleurs RAID matériels pilotent des LEDs d'état (vert = OK, orange/ambre = défaillant ou en reconstruction) pour faciliter le repérage visuel du tiroir à extraire (CP 5)[cite: 40].",
+      "difficulty": "facile",
+      "context": "Serveurs & Diagnostic RAID"
+    },
+    {
+      "id": "eb8_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de configuration d'un partage réseau masqué réservé aux administrateurs sous Windows Server.",
+      "answer": "1. Créer le dossier sur le volume de données du serveur (ex: D:\\AdminShare)\n2. Faire un clic droit > Propriétés > Partage > Partage avancé\n3. Cocher 'Partager ce dossier' et ajouter le symbole '$' à la fin du nom de partage (ex: AdminShare$)\n4. Attribuer le contrôle total aux administrateurs du domaine au niveau du partage\n5. Configurer les autorisations de sécurité NTFS pour restreindre l'accès au seul groupe des administrateurs\n6. Tester l'accès réseau en tapant le chemin UNC complet \\\\SRV-DATA\\AdminShare$",
+      "items": [
+        "Créer le dossier sur le volume de données du serveur (ex: D:\\AdminShare)",
+        "Faire un clic droit > Propriétés > Partage > Partage avancé",
+        "Cocher 'Partager ce dossier' et ajouter le symbole '$' à la fin du nom de partage (ex: AdminShare$)",
+        "Attribuer le contrôle total aux administrateurs du domaine au niveau du partage",
+        "Configurer les autorisations de sécurité NTFS pour restreindre l'accès au seul groupe des administrateurs",
+        "Tester l'accès réseau en tapant le chemin UNC complet \\\\SRV-DATA\\AdminShare$"
+      ],
+      "explanation": "Le suffixe '$' masque le partage lors de l'exploration du réseau tout en restant parfaitement accessible si l'on connaît son chemin direct (CP 6 et CP 8)[cite: 48].",
+      "difficulty": "moyen",
+      "context": "Partages Réseau Masqués"
+    },
+    {
+      "id": "eb8_q23",
+      "type": "classic",
+      "question": "Pourquoi ne doit-on jamais nettoyer le registre Windows avec des outils automatisés tiers (type CCleaner) sur des postes d'entreprise managés ?",
+      "answer": "Parce que ces nettoyeurs de registre risquent de supprimer des clés de configuration d'applications métiers, des identifiants COM ou des stratégies GPO indispensables, provoquant des instabilités système sévères sans apporter aucun gain de performance mesurable.",
+      "explanation": "Le registre Windows est une base de données optimisée qui ne nécessite aucun nettoyage automatisé ; Microsoft et l'ANSSI déconseillent formellement ces pratiques en entreprise (CP 5)[cite: 51, 58].",
+      "difficulty": "facile",
+      "context": "Maintenance Système & Registre"
+    },
+    {
+      "id": "eb8_q24",
+      "type": "association",
+      "question": "Associe chaque code de bip sonore BIOS (AMI standard) à son anomalie matérielle au POST.",
+      "answer": "1 bip court -> Test POST réussi, le matériel de base est initialisé avec succès[cite: 21, 22], Bips continus ou répétitifs -> Problème critique lié au bloc d'alimentation (PSU) ou court-circuit carte mère[cite: 17, 22], 1 bip long suivi de 2 ou 3 bips courts -> Problème d'affichage vidéo ou carte graphique (GPU) non détectée[cite: 16, 22], 3 bips longs -> Problème d'initialisation de la mémoire vive (RAM)[cite: 14, 22]",
+      "pairs": [
+        ["1 bip court", "Test POST réussi, le matériel de base est initialisé avec succès[cite: 21, 22]"],
+        ["Bips continus ou répétitifs", "Problème critique lié au bloc d'alimentation (PSU) ou court-circuit carte mère[cite: 17, 22]"],
+        ["1 bip long suivi de 2 ou 3 bips courts", "Problème d'affichage vidéo ou carte graphique (GPU) non détectée[cite: 16, 22]"],
+        ["3 bips longs", "Problème d'initialisation de la mémoire vive (RAM)[cite: 14, 22]"]
+      ],
+      "explanation": "Les codes sonores du POST permettent d'orienter le diagnostic matériel avant même l'initialisation de l'affichage vidéo (CP 5)[cite: 21, 22].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Matériel POST"
+    },
+    {
+      "id": "eb8_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que sa session s'ouvre normalement mais qu'aucun de ses lecteurs réseau habituels (Z: et Y:) n'apparaît dans l'Explorateur de fichiers. Lorsqu'il tente d'exécuter 'gpupdate /force', la commande échoue avec le message 'Le traitement de la stratégie de groupe a échoué car le contrôleur de domaine est inaccessible'. Identifie la cause du problème.",
+      "answer": "Le serveur DNS configuré sur la carte réseau du poste client ne pointe pas vers le serveur Active Directory, empêchant la localisation du contrôleur de domaine.",
+      "indices": [
+        "Indice 1 : Le poste navigue parfaitement sur Internet et peut joindre des sites externes comme Google ou Microsoft[cite: 30, 32].",
+        "Indice 2 : La commande nltest /sc_query:mondomaine.lan renvoie 'Échec de la connexion au contrôleur de domaine'[cite: 43].",
+        "Indice 3 : La commande ipconfig /all montre que le serveur DNS principal est configuré sur 1.1.1.1 au lieu de l'adresse IP interne du contrôleur de domaine (10.0.0.1)[cite: 34, 43]."
+      ],
+      "explanation": "Sans pointer sur le DNS interne d'Active Directory, le client ne peut pas résoudre les enregistrements SRV (_ldap._tcp.dc._msdcs) nécessaires pour contacter le DC et appliquer les GPO (CP 3 et CP 8)[cite: 43].",
+      "difficulty": "moyen",
+      "context": "Active Directory & DNS Client"
+    },
+    {
+      "id": "eb8_q26",
+      "type": "classic",
+      "question": "Quelle est l'utilité du protocole HSRP (Hot Standby Router Protocol) ou VRRP configuré sur des routeurs d'entreprise ?",
+      "answer": "Il permet de créer une passerelle par défaut virtuelle redondante partagée entre deux routeurs physiques : si le routeur actif tombe en panne, le routeur de secours prend automatiquement le relais de manière transparente sans aucune coupure pour les postes clients.",
+      "explanation": "Cette redondance de passerelle élimine le point unique de défaillance (SPOF) sur l'accès vers l'extérieur (CP 7)[cite: 30, 38].",
+      "difficulty": "difficile",
+      "context": "Haute Disponibilité Réseau"
+    },
+    {
+      "id": "eb8_q27",
+      "type": "ticket",
+      "question": "Ticket #4880 — 'Bonjour, notre serveur d'annuaire Active Directory principal est tombé en panne suite à un crash matériel de carte mère. Heureusement, nous disposons d'un second contrôleur de domaine (DC2) répliqué dans l'entreprise.'",
+      "answer": "Forcer le transfert des rôles FSMO (Seize FSMO Roles) vers le second contrôleur de domaine DC2 et nettoyer les métadonnées de l'ancien DC crashé dans l'Active Directory.",
+      "checklist": [
+        "Vérifier que le second contrôleur de domaine (DC2) est en ligne et héberge une copie saine de l'annuaire[cite: 43]",
+        "Transférer/Saisir les 5 rôles maîtres d'opérations FSMO (Schema, Domain Naming, PDC Emulator, RID Master, Infrastructure) via la commande ntdsutil ou PowerShell[cite: 43]",
+        "Nettoyer les métadonnées de l'ancien serveur défaillant (Metadata Cleanup) dans Sites et Services Active Directory",
+        "Reconfigurer les postes clients et étendues DHCP pour pointer sur le DNS de DC2 comme serveur principal[cite: 34, 43]"
+      ],
+      "explanation": "En cas de perte définitive d'un contrôleur de domaine détenant des rôles FSMO, la saisie forcée (Seize) permet de rétablir l'autorité sur l'annuaire (CP 8)[cite: 43].",
+      "difficulty": "difficile",
+      "context": "Active Directory & Rôles FSMO"
+    },
+    {
+      "id": "eb8_q28",
+      "type": "classic",
+      "question": "Dans le cadre de la gestion thermique des ordinateurs portables, pourquoi est-il déconseillé de les utiliser posés directement sur des surfaces molles (lits, couettes, coussins) ?",
+      "answer": "Parce que le tissu obstrue les grilles d'aération situées sous le châssis et emprisonne la chaleur, bloquant le flux d'air et provoquant une surchauffe immédiate du processeur et de la batterie.",
+      "explanation": "L'obstruction des entrées d'air entraîne un throttling sévère et dégrade prématurément la durée de vie des cellules de batterie au lithium (CP 5)[cite: 11, 20].",
+      "difficulty": "facile",
+      "context": "Maintenance Matérielle & Portables"
+    },
+    {
+      "id": "eb8_q29",
+      "type": "association",
+      "question": "Associe chaque fichier binaire du noyau Windows à sa fonction vitale.",
+      "answer": "ntoskrnl.exe -> Cœur exécutable du noyau Windows gérant la mémoire, les processus et l'ordonnancement[cite: 23], winload.efi -> Chargeur d'amorçage UEFI qui charge le noyau en mémoire lors du boot[cite: 21, 44], explorer.exe -> Processus gérant l'interface graphique utilisateur (bureau, barre des tâches, Explorateur)[cite: 23], spoolsv.exe -> Service Spouleur gérant la file d'attente et l'envoi des impressions vers les imprimantes[cite: 23, 55]",
+      "pairs": [
+        ["ntoskrnl.exe", "Cœur exécutable du noyau Windows gérant la mémoire, les processus et l'ordonnancement[cite: 23]"],
+        ["winload.efi", "Chargeur d'amorçage UEFI qui charge le noyau en mémoire lors du boot[cite: 21, 44]"],
+        ["explorer.exe", "Processus gérant l'interface graphique utilisateur (bureau, barre des tâches, Explorateur)[cite: 23]"],
+        ["spoolsv.exe", "Service Spouleur gérant la file d'attente et l'envoi des impressions vers les imprimantes[cite: 23, 55]"]
+      ],
+      "explanation": "La compréhension des processus système fondamentaux permet de repérer immédiatement les instabilités ou les usurpations de noms de fichiers par des malwares (CP 3 et CP 5)[cite: 23, 50, 56].",
+      "difficulty": "moyen",
+      "context": "Processus Système Windows"
+    },
+    {
+      "id": "eb8_q30",
+      "type": "classic",
+      "question": "Quelle est la règle de sécurité absolue à respecter concernant les câbles d'alimentation et les prises électriques lors de l'aménagement d'une baie de brassage réseau ?",
+      "answer": "Séparer physiquement les chemins de câblage à courant fort (230V) des chemins de câblage à courant faible (Ethernet RJ45 / fibre) pour éviter les interférences électromagnétiques, et raccorder impérativement le châssis métallique de la baie à la terre du bâtiment.",
+      "explanation": "Le respect des normes de câblage protège les équipements contre les parasites et garantit la sécurité des techniciens intervenant dans la baie (CP 5 et CP 7)[cite: 22, 30, 67].",
+      "difficulty": "moyen",
+      "context": "Infrastructure & Baie de Brassage"
+    },
+    {
+      "id": "eb8_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de résolution d'une corruption de table de routage locale sur un poste client Windows.",
+      "answer": "1. Constater l'incapacité du poste à joindre certains sous-réseaux locaux ou distants\n2. Ouvrir une invite de commandes en tant qu'administrateur\n3. Afficher la table de routage active avec la commande 'route print'\n4. Identifier la présence de routes statiques erronées ou d'une mauvaise métrique de passerelle\n5. Réinitialiser la table de routage et la pile TCP/IP avec la commande 'netsh int ip reset'\n6. Redémarrer le poste et vérifier le rétablissement de la table de routage par défaut",
+      "items": [
+        "Constater l'incapacité du poste à joindre certains sous-réseaux locaux ou distants",
+        "Ouvrir une invite de commandes en tant qu'administrateur",
+        "Afficher la table de routage active avec la commande 'route print'",
+        "Identifier la présence de routes statiques erronées ou d'une mauvaise métrique de passerelle",
+        "Réinitialiser la table de routage et la pile TCP/IP avec la commande 'netsh int ip reset'",
+        "Redémarrer le poste et vérifier le rétablissement de la table de routage par défaut"
+      ],
+      "explanation": "La commande netsh int ip reset réécrit les clés de registre TCP/IP à leur état d'origine pour éliminer les corruptions de routage persistantes (CP 3 et CP 7)[cite: 24, 34].",
+      "difficulty": "moyen",
+      "context": "Dépannage Réseau & Routage"
+    },
+    {
+      "id": "eb8_q32",
+      "type": "classic",
+      "question": "Pourquoi la désactivation de la découverte du réseau et du partage de fichiers sur les profils de réseau 'Public' sous Windows est-elle une règle de sécurité critique pour les utilisateurs nomades ?",
+      "answer": "Parce que cela rend le poste invisible aux autres appareils connectés sur un réseau non maîtrisé (Wi-Fi public d'hôtel, gare, café), bloque les requêtes entrantes non sollicitées et protège contre les scans de ports et tentatives d'intrusion directes.",
+      "explanation": "Le profil Réseau Public active le niveau de filtrage le plus restrictif du pare-feu Windows Defender pour sécuriser le poste en environnement hostile (CP 6)[cite: 24, 58].",
+      "difficulty": "facile",
+      "context": "Sécurité Réseau & Profils Windows"
+    },
+    {
+      "id": "eb8_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail sous Windows 11 s'est figé avec un écran bleu (BSOD) affichant le code 'WHEA_UNCORRECTABLE_ERROR'. Identifie l'origine de cette défaillance.",
+      "answer": "Erreur matérielle matérielle non récupérable signalée par l'architecture WHEA (Windows Hardware Error Architecture), le plus souvent liée à une défaillance physique du processeur (CPU), une tension instable de l'alimentation ou une surchauffe extrême.",
+      "indices": [
+        "Indice 1 : L'erreur n'est pas causée par un conflit de pilote logiciel classique mais par une interruption matérielle brute levée par le CPU[cite: 22].",
+        "Indice 2 : L'utilitaire HWiNFO64 montre des chutes de tension anormales sur le rail +12V de l'alimentation lors des pics de charge[cite: 17, 22].",
+        "Indice 3 : Le remplacement du bloc d'alimentation résout définitivement les plantages WHEA[cite: 17, 22]."
+      ],
+      "explanation": "Le code WHEA pointe directement sur une défaillance de couche matérielle (CPU, carte mère, alimentation sous-dimensionnée) et exige des tests de stabilité en atelier (CP 5)[cite: 17, 22].",
+      "difficulty": "difficile",
+      "context": "Diagnostic Crash BSOD WHEA"
+    },
+    {
+      "id": "eb8_q34",
+      "type": "classic",
+      "question": "Dans le cadre de l'utilisation de l'intelligence artificielle générative comme outil d'assistance au dépannage informatique, qu'est-ce que le phénomène d''Hallucination' et comment le technicien doit-il s'en prémunir ?",
+      "answer": "L'hallucination est la génération par l'IA d'une réponse techniquement fausse ou inventée mais présentée avec assurance. Le technicien doit toujours faire preuve d'esprit critique, ne jamais copier-coller du code ou des commandes à l'aveugle, et systématiquement vérifier les informations dans la documentation technique officielle de l'éditeur ou du constructeur.",
+      "explanation": "L'IA est un assistant à la compréhension et à la rédaction, mais la responsabilité et la validation technique reposent exclusivement sur l'expertise du technicien (Module 8 & Compétences transversales)[cite: 64, 65, 67].",
+      "difficulty": "facile",
+      "context": "IA & Esprit Critique"
+    },
+    {
+      "id": "eb8_q35",
+      "type": "ticket",
+      "question": "Ticket #7001 — 'Bonjour, nous préparons l'examen blanc final pour le passage devant le jury du Titre Professionnel Technicien Informatique de Proximité. Quels sont les réflexes comportementaux et techniques incontournables à démontrer lors de l'oral ?'",
+      "answer": "Adopter une posture professionnelle calme et à l'écoute, respecter scrupuleusement la démarche de diagnostic méthodique (du bas vers le haut du modèle OSI), justifier chaque action par des arguments techniques solides, appliquer le principe de moindre privilège et respecter les règles de sécurité des personnes (habilitation BS) et des données (RGPD / ANSSI).",
+      "checklist": [
+        "Écouter attentivement la mise en situation du jury et reformuler pour valider le périmètre d'intervention[cite: 8, 67]",
+        "Structurer le diagnostic par élimination méthodique en partant toujours de la Couche 1 physique[cite: 32, 67]",
+        "Argumenter ses choix techniques (pourquoi AGDLP[cite: 43], pourquoi Sysprep[cite: 44], pourquoi WPA3[cite: 30], pourquoi 3-2-1-1-0[cite: 35])[cite: 67]",
+        "Démontrer la prise en compte de la sécurité électrique (BS)[cite: 22], de l'inclusion (handicap/accessibilité)[cite: 8, 27], de la conformité (RGPD/DEEE)[cite: 41, 61] et de la traçabilité (tickets GLPI)[cite: 3, 6, 7, 67]"
+      ],
+      "explanation": "L'épreuve orale du titre professionnel évalue avant tout le raisonnement méthodique, la posture de service, le respect des normes et la maturité professionnelle globale du candidat (REAC TIP)[cite: 67].",
+      "difficulty": "moyen",
+      "context": "Épreuve Finale & Jury Titre Pro"
+    }
+  ]
+}

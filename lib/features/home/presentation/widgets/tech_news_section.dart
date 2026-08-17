@@ -163,113 +163,140 @@ class _TechNewsSectionState extends ConsumerState<TechNewsSection> {
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 EskoliaCardSectionBadge(
                   sectionName: 'VEILLE',
                   color: accentColor,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     displayTitle,
-                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
+                const SizedBox(width: 4),
                 IconButton(
-                  tooltip: 'Personnaliser',
-                  onPressed: () => showHomeCardSettingsDialog(context, ref, cardKey),
-                  icon: Icon(
-                    Icons.edit_note_rounded,
-                    color: _slateLight.withValues(alpha: 0.85),
-                    size: 22,
-                  ),
-                ),
-                IconButton(
-                  tooltip: 'Fusionner',
-                  onPressed: () => showMergeCardDialog(context, ref, cardKey),
-                  icon: Icon(
-                    Icons.call_merge_rounded,
-                    color: _slateLight.withValues(alpha: 0.85),
-                    size: 20,
-                  ),
-                ),
-                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                   tooltip: isCollapsed ? 'Afficher' : 'Masquer',
                   onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
                   icon: Icon(
                     isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
                     color: _slateLight.withValues(alpha: 0.85),
-                    size: 20,
+                    size: 19,
                   ),
                 ),
-                IconButton(
-                  tooltip: isPinned ? 'Désépingler' : 'Épingler',
-                  onPressed: () {
-                    if (widget.isVeilleScreen) {
-                      ref.read(veillePinnedCardsProvider.notifier).togglePin(cardKey);
-                    } else {
-                      ref.read(homePinnedCardsProvider.notifier).togglePin(cardKey);
-                    }
-                  },
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                   icon: Icon(
-                    isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                    color: isPinned ? accentColor : _slateLight.withValues(alpha: 0.5),
-                    size: 20,
+                    Icons.more_vert_rounded,
+                    color: _slateLight.withValues(alpha: 0.85),
+                    size: 19,
                   ),
-                ),
-                IconButton(
-                  tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                  onPressed: () {
-                    if (isAddedToHome) {
-                      ref.read(homeCardsOrderProvider.notifier).removeCard(cardKey);
-                    } else {
-                      ref.read(homeCardsOrderProvider.notifier).addCard(cardKey);
-                    }
-                  },
-                  icon: Icon(
-                    isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                    color: isAddedToHome ? EskoliaTokens.cyan : _slateLight.withValues(alpha: 0.5),
-                    size: 20,
+                  tooltip: 'Options de la carte',
+                  color: EskoliaTokens.surface1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
                   ),
-                ),
-                if (widget.sourceFilter != null || (widget.category != 'it_pro' && widget.category != 'all'))
-                  IconButton(
-                    tooltip: 'Se désabonner / Fermer',
-                    onPressed: () {
+                  onSelected: (action) {
+                    if (action == 'refresh') {
+                      _load();
+                    } else if (action == 'settings') {
+                      showHomeCardSettingsDialog(context, ref, cardKey);
+                    } else if (action == 'merge') {
+                      showMergeCardDialog(context, ref, cardKey);
+                    } else if (action == 'pin') {
+                      if (widget.isVeilleScreen) {
+                        ref.read(veillePinnedCardsProvider.notifier).togglePin(cardKey);
+                      } else {
+                        ref.read(homePinnedCardsProvider.notifier).togglePin(cardKey);
+                      }
+                    } else if (action == 'home') {
+                      if (isAddedToHome) {
+                        ref.read(homeCardsOrderProvider.notifier).removeCard(cardKey);
+                      } else {
+                        ref.read(homeCardsOrderProvider.notifier).addCard(cardKey);
+                      }
+                    } else if (action == 'delete') {
                       if (widget.sourceFilter != null) {
                         ref.read(homeSubscribedSourcesProvider.notifier).unsubscribe(widget.sourceFilter!);
                       } else {
                         ref.read(homeCardsOrderProvider.notifier).removeCard(widget.category);
                       }
-                    },
-                    icon: const Icon(
-                      Icons.delete_outline_rounded,
-                      color: EskoliaTokens.error,
-                      size: 20,
+                    }
+                  },
+                  itemBuilder: (ctx) => [
+                    const PopupMenuItem(
+                      value: 'refresh',
+                      child: Row(
+                        children: [
+                          Icon(Icons.refresh_rounded, color: Colors.white70, size: 18),
+                          SizedBox(width: 10),
+                          Text('Actualiser le flux', style: TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
                     ),
-                  ),
-                IconButton(
-                  tooltip: 'Actualiser',
-                  onPressed: _loading ? null : _load,
-                  icon: _loading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: _cyan,
-                          ),
-                        )
-                      : Icon(
-                          Icons.refresh_rounded,
-                          color: _slateLight.withValues(alpha: 0.95),
+                    const PopupMenuItem(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
+                          SizedBox(width: 10),
+                          Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'merge',
+                      child: Row(
+                        children: [
+                          Icon(Icons.call_merge_rounded, color: Colors.white70, size: 18),
+                          SizedBox(width: 10),
+                          Text('Fusionner avec...', style: TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'pin',
+                      child: Row(
+                        children: [
+                          Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? accentColor : Colors.white70, size: 18),
+                          const SizedBox(width: 10),
+                          Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'home',
+                      child: Row(
+                        children: [
+                          Icon(isAddedToHome ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded, color: isAddedToHome ? EskoliaTokens.error : EskoliaTokens.cyan, size: 18),
+                          const SizedBox(width: 10),
+                          Text(isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    if (widget.sourceFilter != null || (widget.category != 'it_pro' && widget.category != 'all'))
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline_rounded, color: EskoliaTokens.error, size: 18),
+                            SizedBox(width: 10),
+                            Text('Supprimer la carte', style: TextStyle(color: EskoliaTokens.error, fontSize: 13)),
+                          ],
                         ),
+                      ),
+                  ],
                 ),
               ],
             ),

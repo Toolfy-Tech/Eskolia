@@ -9,6 +9,7 @@ import '../../../../core/services/asset_cache_service.dart';
 import '../../../../core/services/eskolia_folder_service.dart';
 import '../../../admin/data/models/teacher_quiz.dart';
 import '../../../quiz/services/quiz_repository.dart';
+import '../../../quiz/services/quiz_template_service.dart';
 import '../../../home/presentation/providers/home_providers.dart';
 import '../../../parcours/data/tip_quiz_catalog.dart';
 
@@ -308,7 +309,22 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
         }
       }
 
-      // 2. Personal Quizzes
+      // 2. Examens Blancs (8 Sujets Alpha à Theta)
+      if (_selectedPools.contains('exams')) {
+        final difficultyFilters = _selectedDifficulties.map((d) => d.toLowerCase()).toSet();
+        for (int i = 1; i <= 8; i++) {
+          final path = 'data/exam/exam0$i.json';
+          try {
+            final raw = await AssetCacheService.loadString(path);
+            final qs = QuizRepository.tipJsonToQuizQuestions(raw, sourceAssetPath: path);
+            questions.addAll(qs.where((q) => difficultyFilters.isEmpty || difficultyFilters.contains(q.difficultyBucket)));
+          } catch (e) {
+            debugPrint('Error loading exam asset $path: $e');
+          }
+        }
+      }
+
+      // 3. Personal Quizzes
       if (_selectedPools.contains('perso') && _selectedPersoFiles.isNotEmpty) {
         for (final file in _selectedPersoFiles) {
           try {
@@ -372,8 +388,27 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
         throw Exception('Aucune question ne correspond aux critères sélectionnés !');
       }
 
-      questions.shuffle();
-      final limitedQuestions = questions.take(_questionCount).toList();
+      // Échantillonnage équitable entre les différents types de questions disponibles
+      final groupedByType = <String, List<QuizQuestion>>{};
+      for (final q in questions) {
+        groupedByType.putIfAbsent(q.type, () => []).add(q);
+      }
+      for (final list in groupedByType.values) {
+        list.shuffle();
+      }
+
+      final limitedQuestions = <QuizQuestion>[];
+      final types = groupedByType.keys.toList()..shuffle();
+      int typeIndex = 0;
+      while (limitedQuestions.length < _questionCount && groupedByType.values.any((l) => l.isNotEmpty)) {
+        final currentType = types[typeIndex % types.length];
+        final list = groupedByType[currentType];
+        if (list != null && list.isNotEmpty) {
+          limitedQuestions.add(list.removeLast());
+        }
+        typeIndex++;
+      }
+      limitedQuestions.shuffle();
 
       final session = QuizSession(
         sessionId: 'solo_${DateTime.now().millisecondsSinceEpoch}',
@@ -420,7 +455,7 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
     }
 
     String poolText;
-    final isAllPoolsSelected = _selectedPools.length == 3;
+    final isAllPoolsSelected = _selectedPools.length == 4;
     if (isAllPoolsSelected) {
       poolText = 'Tous les pools';
     } else if (_selectedPools.isEmpty) {
@@ -429,6 +464,8 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
       final pool = _selectedPools.first;
       if (pool == 'base') {
         poolText = 'Application de base';
+      } else if (pool == 'exams') {
+        poolText = 'Examens Blancs (8 sujets)';
       } else if (pool == 'perso') {
         poolText = 'Pool perso (Créées / IA)';
       } else {
@@ -496,7 +533,7 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
                       if (isAllPoolsSelected) {
                         _selectedPools = {'base'};
                       } else {
-                        _selectedPools = {'base', 'perso', 'teacher'};
+                        _selectedPools = {'base', 'exams', 'perso', 'teacher'};
                       }
                     });
                   },
@@ -514,6 +551,21 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
                         }
                       } else {
                         _selectedPools.add('base');
+                      }
+                    });
+                  },
+                ),
+                _buildThemeCheckboxRow(
+                  title: '🎓 Examens Blancs (8 Sujets / 280 Q)',
+                  value: _selectedPools.contains('exams'),
+                  onChanged: (val) {
+                    setState(() {
+                      if (_selectedPools.contains('exams')) {
+                        if (_selectedPools.length > 1) {
+                          _selectedPools.remove('exams');
+                        }
+                      } else {
+                        _selectedPools.add('exams');
                       }
                     });
                   },
@@ -848,19 +900,40 @@ class _SoloQuizCardBodyState extends ConsumerState<SoloQuizCardBody> {
         ],
 
         const SizedBox(height: 12),
-        // Action Buttons: Lancer
-        ElevatedButton.icon(
-          onPressed: _loading ? null : _launchQuiz,
-          icon: _loading
-              ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-              : const Icon(Icons.play_arrow_rounded, size: 14),
-          label: const Text('Lancer', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: EskoliaTokens.cyan,
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            padding: const EdgeInsets.symmetric(vertical: 10),
-          ),
+        // Action Buttons: Lancer + Modèle JSON
+        Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: ElevatedButton.icon(
+                onPressed: _loading ? null : _launchQuiz,
+                icon: _loading
+                    ? const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
+                    : const Icon(Icons.play_arrow_rounded, size: 14),
+                label: const Text('Lancer', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: EskoliaTokens.cyan,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 2,
+              child: OutlinedButton.icon(
+                onPressed: () => QuizTemplateService.downloadTemplate(context),
+                icon: const Icon(Icons.file_download_outlined, size: 13, color: EskoliaTokens.cyan),
+                label: const Text('Modèle .json', style: TextStyle(fontSize: 10, color: EskoliaTokens.cyan, fontWeight: FontWeight.w600)),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.3)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

@@ -17,6 +17,7 @@ import '../../../core/widgets/bottom_nav.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
 import 'docs_mini_course_dialog.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import 'providers/docs_providers.dart';
@@ -119,20 +120,18 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     final width = MediaQuery.sizeOf(context).width;
 
-    int numColumns;
-    if (width > 1200) {
-      numColumns = 3;
-    } else if (width > 800) {
-      numColumns = 2;
-    } else {
-      numColumns = 1;
-    }
+    final isLargeScreen = width >= 700;
+    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78.0 : 250.0) : 0.0;
+    final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
-    final sidebarWidth = width > 800 ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 48; // marges et padding
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
+    final colPref = ref.watch(columnPreferenceProvider('docs'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final order = ref.watch(docsCardsOrderProvider);
     final pinned = ref.watch(docsPinnedCardsProvider);
@@ -154,7 +153,24 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
         return _buildDraggableCard(key, _buildCardContent(key, context), cardWidth);
       }).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -233,17 +249,28 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
             child: ListView(
               padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
               children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 24, top: 8),
-                    child: Text(
-                      '📁 Docs métier',
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24, top: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 40),
+                      Expanded(
+                        child: Text(
+                          '📁 Docs métier',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
-                    ),
+                      const EskoliaColumnSwitcherButton(
+                        screenKey: 'docs',
+                        maxColumns: 4,
+                      ),
+                    ],
                   ),
                 ),
                 content,

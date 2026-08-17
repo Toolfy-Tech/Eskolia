@@ -38,7 +38,16 @@ class QuizRepository {
 
   static QuizResultExitDestination resultExitDestination(QuizSession s) {
     if (s.runMode == QuizRunMode.survival) return QuizResultExitDestination.soloMenu;
-    if (s.sessionId.startsWith('daily_')) return QuizResultExitDestination.soloMenu;
+    if (s.sessionId.startsWith('daily_') ||
+        s.sessionId.startsWith('solo_') ||
+        s.sessionId.startsWith('ai_') ||
+        s.sessionId.startsWith('exam_') ||
+        s.sessionId.startsWith('notebook_') ||
+        s.sessionId.startsWith('mistakes_') ||
+        s.sessionId.startsWith('custom_') ||
+        s.sessionId.startsWith('flashcards_')) {
+      return QuizResultExitDestination.soloMenu;
+    }
     return QuizResultExitDestination.parcours;
   }
 
@@ -77,7 +86,18 @@ class QuizRepository {
     QuizCatalogTrack catalogTrack = QuizCatalogTrack.optimusOnly,
     bool timed = true,
     dynamic track,
-  }) => _buildDailyRandomSession();
+  }) async {
+    final allChapters = await TipQuizCatalog.loadChaptersWithQuiz();
+    final filtered = TipQuizCatalog.filterByTrack(allChapters, catalogTrack);
+    final targetChapters = filtered.isNotEmpty ? filtered : allChapters;
+    final paths = targetChapters.map((c) => c.quizAssetPath).toList();
+    final session = await _buildFromPaths(
+      paths: paths,
+      maxQuestions: questionCount,
+      sessionIdPrefix: 'quick',
+    );
+    return session.copyWith(timed: timed);
+  }
 
   /// Compose une session à partir d'une liste de chemins (assets ou sentinel Labo/Lexique).
   Future<QuizSession> buildSoloComposeSession({
@@ -106,8 +126,20 @@ class QuizRepository {
         sessionIdPrefix: 'multi',
       );
 
-  Future<QuizSession> buildSurvivalSession({QuizCatalogTrack? catalogTrack, dynamic track}) =>
-      _buildDailyRandomSession();
+  Future<QuizSession> buildSurvivalSession({QuizCatalogTrack? catalogTrack, dynamic track}) async {
+    final allChapters = await TipQuizCatalog.loadChaptersWithQuiz();
+    final filtered = catalogTrack != null
+        ? TipQuizCatalog.filterByTrack(allChapters, catalogTrack)
+        : allChapters;
+    final targetChapters = filtered.isNotEmpty ? filtered : allChapters;
+    final paths = targetChapters.map((c) => c.quizAssetPath).toList();
+    final session = await _buildFromPaths(
+      paths: paths,
+      maxQuestions: 50,
+      sessionIdPrefix: 'survival',
+    );
+    return session.copyWith(runMode: QuizRunMode.survival, timed: false);
+  }
 
   Future<QuizSession> buildGapReviewSession({
     int questionCount = 10,
@@ -175,9 +207,25 @@ class QuizRepository {
     return _buildDailyRandomSession();
   }
 
-  Future<QuizSession> buildGrandFinaleOptimusSession() => _buildDailyRandomSession();
+  Future<QuizSession> buildGrandFinaleOptimusSession() async {
+    final allChapters = await TipQuizCatalog.loadChaptersWithQuiz();
+    final paths = allChapters.map((c) => c.quizAssetPath).toList();
+    return _buildFromPaths(
+      paths: paths,
+      maxQuestions: 40,
+      sessionIdPrefix: optimusGrandFinaleSessionId,
+    );
+  }
 
-  Future<QuizSession> buildGrandFinaleSession() => _buildDailyRandomSession();
+  Future<QuizSession> buildGrandFinaleSession() async {
+    final allChapters = await TipQuizCatalog.loadChaptersWithQuiz();
+    final paths = allChapters.map((c) => c.quizAssetPath).toList();
+    return _buildFromPaths(
+      paths: paths,
+      maxQuestions: 40,
+      sessionIdPrefix: grandFinaleSessionId,
+    );
+  }
 
   Future<void> saveResult(String userId, String sessionId, double score, int total) async {
     final xp = (score * 10).toInt();
@@ -306,8 +354,27 @@ class QuizRepository {
       if (byType.isNotEmpty) filtered = byType;
     }
 
-    filtered.shuffle();
-    final limited = filtered.take(maxQuestions).toList();
+    // Échantillonnage équitable par type de question
+    final groupedByType = <String, List<QuizQuestion>>{};
+    for (final q in filtered) {
+      groupedByType.putIfAbsent(q.type, () => []).add(q);
+    }
+    for (final list in groupedByType.values) {
+      list.shuffle();
+    }
+
+    final limited = <QuizQuestion>[];
+    final types = groupedByType.keys.toList()..shuffle();
+    int typeIndex = 0;
+    while (limited.length < maxQuestions && groupedByType.values.any((l) => l.isNotEmpty)) {
+      final currentType = types[typeIndex % types.length];
+      final list = groupedByType[currentType];
+      if (list != null && list.isNotEmpty) {
+        limited.add(list.removeLast());
+      }
+      typeIndex++;
+    }
+    limited.shuffle();
 
     final nonLexiquePaths = paths.where((p) => !p.startsWith(lexiqueSentinelPrefix)).toList();
     final title = nonLexiquePaths.isNotEmpty
@@ -425,16 +492,26 @@ class QuizRepository {
   }
 
   Future<QuizSession> _buildDailyRandomSession() async {
-    final chapters = [
-      'data/quiz/optimus/module-02-hardware-architecture/M02-CH01-Q-boitiers.quiz.json',
-      'data/quiz/optimus/module-03-systeme-exploitation/M03-CH01-Q-differents-os.quiz.json',
-      'data/quiz/optimus/module-08-utiliser-ia/M08-CH01-roct-contexte.json',
-    ];
-    final selectedAsset = chapters[Random().nextInt(chapters.length)];
+    final allChapters = await TipQuizCatalog.loadChaptersWithQuiz();
+    if (allChapters.isEmpty) {
+      return await _loadTipAssetSession(
+        assetKey: 'data/quiz/optimus/module-02-hardware-architecture/M02-CH01-Q-boitiers.quiz.json',
+        sessionId: 'daily_${DateTime.now().millisecondsSinceEpoch}',
+        title: 'Quiz rapide',
+      );
+    }
+    final assetChapters = allChapters
+        .where((c) =>
+            !c.quizAssetPath.startsWith('labo://') &&
+            !c.quizAssetPath.startsWith('teacher://'))
+        .toList();
+    final target = assetChapters.isNotEmpty
+        ? assetChapters[Random().nextInt(assetChapters.length)]
+        : allChapters.first;
     return await _loadTipAssetSession(
-      assetKey: selectedAsset,
+      assetKey: target.quizAssetPath,
       sessionId: 'daily_${DateTime.now().millisecondsSinceEpoch}',
-      title: TipQuizCatalog.fallbackContextLineForAssetPath(selectedAsset) ?? 'Quiz rapide',
+      title: TipQuizCatalog.contextLineForChapter(target),
     );
   }
 
@@ -466,12 +543,31 @@ class QuizRepository {
       if (q is! Map<String, dynamic>) continue;
 
       final question = (q['question'] as String?)?.trim() ?? '';
-      final answer   = (q['answer'] as String?)?.trim() ?? '';
+      var   answer   = (q['answer'] as String?)?.trim() ?? '';
+
+      var options = q['options'] is List
+          ? (q['options'] as List).map((e) => e.toString().trim()).where((s) => s.isNotEmpty).toList()
+          : <String>[];
+
+      if (answer.isEmpty && options.isNotEmpty) {
+        int cIdx = 0;
+        if (q['correctAnswerIndex'] is num) {
+          cIdx = (q['correctAnswerIndex'] as num).toInt();
+        } else if (q['correct_answer_index'] is num) {
+          cIdx = (q['correct_answer_index'] as num).toInt();
+        }
+        if (cIdx >= 0 && cIdx < options.length) {
+          answer = options[cIdx];
+        } else {
+          answer = options.first;
+        }
+      }
+
       if (question.isEmpty || answer.isEmpty) continue;
 
       var   items   = q['items']   is List ? List<String>.from(q['items']   as List) : <String>[];
       final indices = q['indices'] is List ? List<String>.from(q['indices'] as List) : <String>[];
-      var   rawType = (q['type'] as String?)?.trim() ?? 'classic';
+      var   rawType = (q['type'] as String?)?.trim() ?? (options.length >= 2 ? 'qcm' : 'classic');
 
       // If AI declared 'sequence' but forgot items, try to extract from numbered answer.
       if (rawType == 'sequence' && items.isEmpty) {
@@ -494,17 +590,19 @@ class QuizRepository {
         rawType = 'classic';
       }
 
+      final explanationText = ((q['explanation'] as String?) ?? (q['hint'] as String?) ?? '').trim();
+
       questions.add(QuizQuestion(
-        id: 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
+        id: (q['id'] as String?) ?? 'notebook_${DateTime.now().millisecondsSinceEpoch}_$i',
         type: rawType,
         question: question,
         answer: answer,
         difficultyBucket: _parseDifficulty(q['difficulty']),
         contextLine: 'Notebook · $quizTitle',
-        explanation: ((q['hint'] as String?) ?? '').isNotEmpty ? q['hint'] as String : null,
+        explanation: explanationText.isNotEmpty ? explanationText : null,
         indices: indices.isEmpty ? null : indices,
         answerSequence: items.isEmpty ? null : items,
-        options: items.isEmpty ? null : items,
+        options: options.isNotEmpty ? options : (items.isNotEmpty ? items : null),
         matchPairs: rawPairs,
         categoryGroup: QuestionCategoryGroup.themes,
       ));
@@ -588,36 +686,74 @@ class QuizRepository {
   static List<QuizQuestion> tipJsonToQuizQuestions(String jsonStr, {String? sourceAssetPath}) {
     try {
       final decoded = jsonDecode(jsonStr);
-      if (decoded is! List) return [];
-      return decoded.map((e) {
+      final List<dynamic> list;
+      String? quizTitle;
+
+      if (decoded is List) {
+        list = decoded;
+      } else if (decoded is Map<String, dynamic>) {
+        if (decoded['questions'] is List) {
+          list = decoded['questions'] as List<dynamic>;
+          quizTitle = decoded['quiz']?['title'] as String?;
+        } else {
+          return [];
+        }
+      } else {
+        return [];
+      }
+
+      return list.map((e) {
         final m = Map<String, dynamic>.from(e);
+        final rawAnswer = m['answer'] ?? m['reponse'];
+        final answerStr = rawAnswer is List
+            ? rawAnswer.join(', ')
+            : (rawAnswer?.toString() ?? '');
+
+        List<String>? seq;
+        if (m['answerSequence'] is List) {
+          seq = List<String>.from(m['answerSequence']);
+        } else if (m['items'] is List) {
+          seq = List<String>.from(m['items']);
+        } else if (m['sequence'] is List) {
+          seq = List<String>.from(m['sequence']);
+        } else if (rawAnswer is List) {
+          seq = List<String>.from(rawAnswer);
+        }
+
+        final pairs = _parsePairs(m['pairs'] ?? m['matchPairs'] ?? m['matches']);
+        final checklist = m['checklist'] is List
+            ? List<String>.from(m['checklist'])
+            : (m['actions'] is List ? List<String>.from(m['actions']) : null);
+        final indices = m['indices'] is List
+            ? List<String>.from(m['indices'])
+            : (m['hints'] is List ? List<String>.from(m['hints']) : null);
+
+        final rawDiff = m['difficultyBucket'] ?? m['tier'] ?? m['difficulte'] ?? m['difficulty'];
+
         return QuizQuestion(
           id: m['id']?.toString() ?? Random().nextInt(10000).toString(),
           type: m['type']?.toString() ?? 'classic',
           question: (m['question'] as String?)?.trim() ?? '',
-          answer: m['answer'] is List
-              ? (m['answer'] as List).join(', ')
-              : (m['answer'] ?? m['reponse'])?.toString() ?? '',
-          answerSequence: m['answer'] is List
-              ? List<String>.from(m['answer'] as List)
-              : null,
-          matchPairs: _parsePairs(m['pairs']),
-          explanation: (m['explanation'] ?? m['comment']) as String?,
+          answer: answerStr,
+          answerSequence: seq,
+          matchPairs: pairs,
+          explanation: (m['explanation'] ?? m['comment'] ?? m['hint']) as String?,
           sourceAssetPath: sourceAssetPath,
-          options: m['options'] is List ? List<String>.from(m['options']) : null,
-          checklist: m['checklist'] is List ? List<String>.from(m['checklist']) : null,
-          indices: m['indices'] is List ? List<String>.from(m['indices']) : null,
+          options: m['options'] is List
+              ? List<String>.from(m['options'])
+              : (seq != null ? List<String>.from(seq) : null),
+          checklist: checklist,
+          indices: indices,
           contextLine: m['contextLine'] as String? ??
-              (m['theme'] != null
-                  ? '${m['theme']}${m['sous_theme'] != null ? ' · ${m['sous_theme']}' : ''}'
-                  : null),
-          // Supporte les formats : difficultyBucket (Optimus), tier (Optimus), difficulte (TIP-Quiz)
-          difficultyBucket: _parseDifficulty(
-            m['difficultyBucket'] ?? m['tier'] ?? m['difficulte'],
-          ),
+              (m['context'] as String? ??
+                  (m['theme'] != null
+                      ? '${m['theme']}${m['sous_theme'] != null ? ' · ${m['sous_theme']}' : ''}'
+                      : (quizTitle != null ? 'Examen Blanc · $quizTitle' : null))),
+          difficultyBucket: _parseDifficulty(rawDiff),
         );
-      }).toList();
+      }).where((q) => q.question.isNotEmpty && q.answer.isNotEmpty).toList();
     } catch (e) {
+      debugPrint('[QuizRepository.tipJsonToQuizQuestions] $e');
       return [];
     }
   }

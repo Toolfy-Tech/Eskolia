@@ -79,6 +79,8 @@ class CustomQuestion {
     this.contextLine,
     this.indices = const [],
     this.items = const [],
+    this.pairs = const [],
+    this.checklist = const [],
   });
 
   final String question;
@@ -90,9 +92,13 @@ class CustomQuestion {
   final List<String> indices;
   /// Pour type == 'sequence' : éléments dans l'ordre correct.
   final List<String> items;
+  /// Pour type == 'association' : paires [gauche, droite].
+  final List<List<String>> pairs;
+  /// Pour type == 'ticket' : checklist d'actions.
+  final List<String> checklist;
 
   static const _validDifficulties = {'facile', 'moyen', 'difficile'};
-  static const _validTypes = {'classic', 'ticket', 'diagnostic_indices', 'sequence'};
+  static const _validTypes = {'classic', 'ticket', 'diagnostic_indices', 'sequence', 'association'};
 
   static CustomQuestion fromJson(Map<String, dynamic> json) {
     final question = (json['question'] as String?)?.trim() ?? '';
@@ -110,7 +116,7 @@ class CustomQuestion {
     final type = (json['type'] as String?)?.trim().toLowerCase() ?? 'classic';
     if (!_validTypes.contains(type)) {
       throw FormatException(
-          'Type "$type" invalide. Valeurs acceptées : classic, ticket, diagnostic_indices, sequence.');
+          'Type "$type" invalide. Valeurs acceptées : classic, ticket, diagnostic_indices, sequence, association.');
     }
 
     final rawIndices = json['indices'];
@@ -133,6 +139,29 @@ class CustomQuestion {
           'Le type "sequence" requiert au moins 2 éléments dans le champ "items".');
     }
 
+    final rawPairs = json['pairs'];
+    final pairs = <List<String>>[];
+    if (rawPairs is List) {
+      for (final p in rawPairs) {
+        if (p is List && p.length >= 2) {
+          pairs.add([p[0].toString(), p[1].toString()]);
+        } else if (p is Map) {
+          final l = p['left']?.toString() ?? '';
+          final r = p['right']?.toString() ?? '';
+          if (l.isNotEmpty && r.isNotEmpty) pairs.add([l, r]);
+        }
+      }
+    }
+    if (type == 'association' && pairs.length < 2) {
+      throw const FormatException(
+          'Le type "association" requiert au moins 2 paires dans le champ "pairs".');
+    }
+
+    final rawChecklist = json['checklist'];
+    final checklist = rawChecklist is List
+        ? rawChecklist.map((e) => e.toString()).where((s) => s.isNotEmpty).toList()
+        : <String>[];
+
     return CustomQuestion(
       question: question,
       answer: answer,
@@ -142,6 +171,8 @@ class CustomQuestion {
       contextLine: (json['context'] as String?)?.trim(),
       indices: indices,
       items: items,
+      pairs: pairs,
+      checklist: checklist,
     );
   }
 }

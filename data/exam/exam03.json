@@ -1,0 +1,453 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 3 — Sujet Charlie (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb3_q1",
+      "type": "classic",
+      "question": "Un utilisateur très en colère appelle le centre de services car il est bloqué avant une réunion cruciale. Selon la posture professionnelle attendue d'un technicien, comment devez-vous réagir pour désamorcer la situation et recueillir les informations techniques ?",
+      "answer": "Pratiquer l'écoute active sans couper la parole, faire preuve d'empathie en reconnaissant la gêne occasionnée, reformuler calmement le problème pour vérifier la compréhension mutuelle, et s'engager sur un plan d'action clair avec des délais réalistes sans utiliser de jargon culpabilisant.",
+      "explanation": "La posture professionnelle et la communication constructive font partie intégrante des compétences transversales et du support utilisateur évalués au titre pro (CP 1 et CP 2)[cite: 8, 67].",
+      "difficulty": "moyen",
+      "context": "Support & Communication"
+    },
+    {
+      "id": "eb3_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes indispensables pour configurer une nouvelle session de numérisation 'Scan to SMB' depuis un copieur multifonction réseau vers un dossier partagé de serveur.",
+      "answer": "1. Créer le dossier cible sur le serveur (ex: D:\\Scans) et le partager sur le réseau\n2. Définir les autorisations NTFS et de Partage en écriture pour le compte dédié\n3. Créer un compte de service dédié au copieur (ex: svc_scanner) avec mot de passe qui n'expire pas\n4. Accéder à l'interface web d'administration du copieur multifonction\n5. Renseigner le profil de numérisation avec le chemin UNC (\\\\SRV-FICHIERS\\Scans) et les identifiants du compte de service\n6. Réaliser un test de numérisation depuis le copieur et vérifier la présence du fichier PDF dans le dossier",
+      "items": [
+        "Créer le dossier cible sur le serveur (ex: D:\\Scans) et le partager sur le réseau",
+        "Définir les autorisations NTFS et de Partage en écriture pour le compte dédié",
+        "Créer un compte de service dédié au copieur (ex: svc_scanner) avec mot de passe qui n'expire pas",
+        "Accéder à l'interface web d'administration du copieur multifonction",
+        "Renseigner le profil de numérisation avec le chemin UNC (\\\\SRV-FICHIERS\\Scans) et les identifiants du compte de service",
+        "Réaliser un test de numérisation depuis le copieur et vérifier la présence du fichier PDF dans le dossier"
+      ],
+      "explanation": "L'utilisation d'un compte de service dédié avec mot de passe permanent évite de casser la numérisation lors des changements réguliers de mot de passe des utilisateurs (CP 4 et CP 5)[cite: 55].",
+      "difficulty": "moyen",
+      "context": "Périphériques & Numérisation"
+    },
+    {
+      "id": "eb3_q3",
+      "type": "association",
+      "question": "Associe chaque technologie de stockage à ses performances de débit séquentiel typiques et son bus de communication.",
+      "answer": "Disque dur mécanique (HDD SATA III) -> 80 à 160 Mo/s via bus SATA, Disque SSD SATA 2.5 pouces -> 500 à 560 Mo/s via bus SATA, Disque SSD NVMe PCIe 3.0 (M.2) -> 3000 à 3500 Mo/s via bus PCIe direct, Disque SSD NVMe PCIe 4.0 (M.2) -> 5000 à 7000 Mo/s via bus PCIe direct",
+      "pairs": [
+        ["Disque dur mécanique (HDD SATA III)", "80 à 160 Mo/s via bus SATA"],
+        ["Disque SSD SATA 2.5 pouces", "500 à 560 Mo/s via bus SATA"],
+        ["Disque SSD NVMe PCIe 3.0 (M.2)", "3000 à 3500 Mo/s via bus PCIe direct"],
+        ["Disque SSD NVMe PCIe 4.0 (M.2)", "5000 à 7000 Mo/s via bus PCIe direct"]
+      ],
+      "explanation": "Le protocole NVMe exploite les lignes PCIe directement reliées au CPU, ce qui permet de dépasser la limite structurelle des 600 Mo/s imposée par le contrôleur SATA III[cite: 15].",
+      "difficulty": "facile",
+      "context": "Hardware & Stockage"
+    },
+    {
+      "id": "eb3_q4",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail affiche un écran bleu d'erreur (BSOD) avec le code 'INACCESSIBLE_BOOT_DEVICE' juste après qu'un technicien a modifié des options dans le BIOS de la carte mère. Identifie la cause du problème.",
+      "answer": "Le mode de fonctionnement du contrôleur SATA a été modifié par erreur de AHCI (ou NVMe/RAID) vers IDE/Legacy (ou inversement) dans le BIOS.",
+      "indices": [
+        "Indice 1 : Le disque SSD physique contenant Windows est parfaitement détecté dans la liste matérielle du BIOS[cite: 15, 21].",
+        "Indice 2 : Windows démarre le chargement (logo avec cercle qui tourne), puis plante immédiatement après 2 secondes avec le BSOD[cite: 22].",
+        "Indice 3 : Le pilote de stockage chargé au démarrage de Windows ne correspond plus au mode de fonctionnement actif du contrôleur sur la carte mère[cite: 21, 22]."
+      ],
+      "explanation": "Si Windows a été installé en mode AHCI, basculer le contrôleur en mode IDE dans le BIOS empêche le noyau de charger le bon pilote de communication avec le disque, provoquant ce code d'arrêt classique[cite: 21, 22].",
+      "difficulty": "difficile",
+      "context": "Diagnostic BIOS & Démarrage"
+    },
+    {
+      "id": "eb3_q5",
+      "type": "ticket",
+      "question": "Ticket #3780 — 'Bonjour, je travaille au service comptabilité et je n'arrive pas à ouvrir un fichier Excel volumineux partagé sur le réseau. Le message indique : Fichier verrouillé en lecture seule par l'utilisateur j.dupont qui a pourtant quitté l'entreprise il y a 3 mois.'",
+      "answer": "Ouvrir la console de Gestion de l'ordinateur (compmgmt.msc) sur le serveur de fichiers, naviguer dans 'Dossiers partagés > Fichiers ouverts', puis fermer la session de verrouillage fantôme du fichier.",
+      "checklist": [
+        "Se connecter en session d'administration sur le serveur de fichiers hébergeant le partage[cite: 43, 48]",
+        "Lancer la console compmgmt.msc (Gestion de l'ordinateur) ou exécuter la commande PowerShell Get-SmbOpenFile[cite: 54]",
+        "Repérer le fichier verrouillé dans 'Dossiers partagés > Fichiers ouverts'[cite: 48]",
+        "Faire un clic droit sur le fichier pour forcer sa fermeture, puis faire retester l'ouverture immédiate par la comptable[cite: 48]"
+      ],
+      "explanation": "Lors d'une déconnexion brutale d'un poste, le serveur SMB peut conserver un verrouillage fantôme sur un fichier ; le fermer manuellement depuis la console restaure l'accès en écriture sans redémarrer le serveur[cite: 48].",
+      "difficulty": "moyen",
+      "context": "Partages Réseau & SMB"
+    },
+    {
+      "id": "eb3_q6",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre une sauvegarde Différentielle et une sauvegarde Incrémentale lors de la phase de restauration complète des données ?",
+      "answer": "La sauvegarde différentielle nécessite uniquement la dernière sauvegarde totale (Full) + la dernière différentielle pour restaurer, alors que la sauvegarde incrémentale nécessite la sauvegarde totale (Full) + TOUTES les sauvegardes incrémentales successives jusqu'à la date voulue.",
+      "explanation": "La sauvegarde incrémentale économise l'espace disque et le temps de sauvegarde quotidienne, mais allonge et complexifie la chaîne de restauration (CP 6)[cite: 37].",
+      "difficulty": "moyen",
+      "context": "Sauvegardes & PRA"
+    },
+    {
+      "id": "eb3_q7",
+      "type": "association",
+      "question": "Associe chaque type d'onduleur (UPS) à son principe de fonctionnement et son usage recommandé.",
+      "answer": "Onduleur Off-Line (Standby) -> Bascule sur batterie uniquement au moment de la coupure électrique (usage poste individuel bureautique), Onduleur Line-Interactive -> Régule en continu les variations et micro-coupures de tension + batterie (usage PME et petits serveurs), Onduleur On-Line (Double conversion) -> Alimente en permanence les équipements depuis la batterie sans temps de bascule (usage Datacenters et serveurs critiques)",
+      "pairs": [
+        ["Onduleur Off-Line (Standby)", "Bascule sur batterie uniquement au moment de la coupure électrique (usage poste individuel bureautique)"],
+        ["Onduleur Line-Interactive", "Régule en continu les variations et micro-coupures de tension + batterie (usage PME et petits serveurs)"],
+        ["Onduleur On-Line (Double conversion)", "Alimente en permanence les équipements depuis la batterie sans temps de bascule (usage Datacenters et serveurs critiques)"]
+      ],
+      "explanation": "Les onduleurs protègent l'intégrité des serveurs critiques en assurant une alimentation propre et en permettant un arrêt automatique propre via liaison USB/SNMP (CP 6)[cite: 17, 34].",
+      "difficulty": "moyen",
+      "context": "Protection Électrique & Onduleurs"
+    },
+    {
+      "id": "eb3_q8",
+      "type": "classic",
+      "question": "Pourquoi la commande 'rm -rf /' exécutée en tant que root sous Linux est-elle irréversible et destructrice comparée à une suppression de fichier sous Windows ?",
+      "answer": "Parce que sous Linux la commande 'rm' supprime définitivement et immédiatement les fichiers sans passer par une corbeille, et l'option '-rf' force la suppression récursive de toute l'arborescence à partir de la racine système sans demander de confirmation.",
+      "explanation": "Sous Linux, 'tout est fichier' ; supprimer la racine en mode administrateur détruit instantanément l'intégralité du système d'exploitation et des données montées[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Sécurité"
+    },
+    {
+      "id": "eb3_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'une analyse et remédiation sur un poste infecté par un logiciel publicitaire invasif (Adware / Rogue).",
+      "answer": "1. Isoler le poste du réseau d'entreprise (débrancher le câble Ethernet / couper le Wi-Fi)\n2. Analyser les processus suspects et arborescences de démarrage avec Process Explorer et Autoruns\n3. Lancer une analyse complète avec un outil anti-malware reconnu (ex: Malwarebytes)\n4. Réinitialiser les navigateurs web et supprimer les extensions malveillantes non sollicitées\n5. Vérifier l'intégrité des fichiers système Windows (sfc /scannow)\n6. Reconnecter au réseau et vérifier le bon fonctionnement avec l'utilisateur",
+      "items": [
+        "Isoler le poste du réseau d'entreprise (débrancher le câble Ethernet / couper le Wi-Fi)",
+        "Analyser les processus suspects et arborescences de démarrage avec Process Explorer et Autoruns",
+        "Lancer une analyse complète avec un outil anti-malware reconnu (ex: Malwarebytes)",
+        "Réinitialiser les navigateurs web et supprimer les extensions malveillantes non sollicitées",
+        "Vérifier l'intégrité des fichiers système Windows (sfc /scannow)",
+        "Reconnecter au réseau et vérifier le bon fonctionnement avec l'utilisateur"
+      ],
+      "explanation": "L'éradication d'un logiciel malveillant exige d'abord l'isolation physique du poste, puis le nettoyage des points de persistance et des navigateurs avant remise en production (CP 5)[cite: 57, 58].",
+      "difficulty": "moyen",
+      "context": "Désinfection & Sécurité"
+    },
+    {
+      "id": "eb3_q10",
+      "type": "classic",
+      "question": "Quel est le rôle du protocole ARP (Address Resolution Protocol) et quelle commande permet de visualiser la table de correspondance locale sous Windows et Linux ?",
+      "answer": "ARP permet de découvrir l'adresse physique (MAC de couche 2) correspondant à une adresse logique (IPv4 de couche 3) sur le réseau local. La commande est 'arp -a' sous Windows et 'ip neigh show' (ou 'arp -a') sous Linux.",
+      "explanation": "Sans la résolution ARP, aucune trame Ethernet ne peut être encapsulée et transmise à la carte réseau destinataire sur un même réseau local[cite: 30, 32].",
+      "difficulty": "facile",
+      "context": "Réseaux & Couche Liaison"
+    },
+    {
+      "id": "eb3_q11",
+      "type": "diagnostic_indices",
+      "question": "Un technicien déploie une nouvelle imprimante réseau HP. Les impressions depuis Word sortent immédiatement, mais l'impression d'affiches graphiques et de plans PDF depuis la suite Adobe Illustrator met 10 minutes par page ou sort tronquée. Identifie la cause du problème.",
+      "answer": "Le poste utilise un pilote PCL générique non adapté aux rendus vectoriels complexes ; il faut installer le pilote PostScript (PS) du constructeur.",
+      "indices": [
+        "Indice 1 : La connectivité réseau de l'imprimante est parfaite (câble Cat 6a, port TCP/IP standard configuré)[cite: 30, 55].",
+        "Indice 2 : Les documents textes légers en noir et blanc s'impriment en moins de 3 secondes sans aucune erreur[cite: 55].",
+        "Indice 3 : Le pilote actuellement configuré dans les propriétés d'impression est 'HP Universal Printing PCL6'[cite: 55]."
+      ],
+      "explanation": "Le langage PCL est optimisé pour le texte et la bureautique rapide, alors que le langage PostScript (PS) est indispensable pour traiter fidèlement les tracés vectoriels et les polices des logiciels d'arts graphiques (suite Adobe)[cite: 55].",
+      "difficulty": "moyen",
+      "context": "Pilotes d'Impression & PCL/PS"
+    },
+    {
+      "id": "eb3_q12",
+      "type": "classic",
+      "question": "Pourquoi est-il fortement déconseillé de laisser le compte Administrateur local avec son nom par défaut et sans mot de passe complexe sur les postes clients déployés ?",
+      "answer": "Parce que le nom 'Administrateur' (ou 'admin') est la cible prioritaire des attaques automatisées par dictionnaire et force brute. La bonne pratique de sécurité consiste à le renommer, à lui attribuer un mot de passe fort et unique (ou à le désactiver au profit de comptes nominatifs).",
+      "explanation": "Renommer le compte administrateur intégré fait partie des recommandations de base de l'ANSSI pour réduire la surface d'attaque sur les postes de travail (CP 6)[cite: 23, 58].",
+      "difficulty": "facile",
+      "context": "Sécurité Windows & ANSSI"
+    },
+    {
+      "id": "eb3_q13",
+      "type": "ticket",
+      "question": "Ticket #4029 — 'Bonjour, notre collègue malentendante a des difficultés à suivre les réunions vidéo sur Microsoft Teams car les sous-titres automatiques en direct ne sont pas activés par défaut.'",
+      "answer": "Guider l'utilisatrice pour activer les sous-titres en direct (Live Captions) dans Teams et configurer les paramètres de sous-titres d'accessibilité sous Windows.",
+      "checklist": [
+        "Expliquer à l'utilisatrice le chemin dans Microsoft Teams : Menu '...' (Plus d'actions) > 'Langue et voix' > 'Activer les sous-titres en direct'",
+        "Définir la langue parlée sur Français pour une transcription fidèle",
+        "Vérifier dans les paramètres d'accessibilité Windows (Win + U > Sous-titres) le style visuel et le contraste de police[cite: 27]",
+        "Faire un court appel de test avec l'utilisatrice pour valider le confort de lecture en temps réel[cite: 8]"
+      ],
+      "explanation": "L'accompagnement des utilisateurs en situation de handicap auditif passe par la maîtrise des options d'accessibilité des outils collaboratifs (Teams) et de l'OS (CP 2)[cite: 8, 27].",
+      "difficulty": "facile",
+      "context": "Accessibilité & Outils Collaboratifs"
+    },
+    {
+      "id": "eb3_q14",
+      "type": "association",
+      "question": "Associe chaque terme d'architecture de microprocesseur à sa fonction.",
+      "answer": "Unité Arithmétique et Logique (UAL) -> Exécute les opérations mathématiques et les comparaisons logiques, Unité de Contrôle -> Dirige les flux de données et orchestre le décodage des instructions, Hyper-Threading (SMT) -> Permet à un cœur physique de traiter deux threads d'instructions en parallèle, Mémoire Cache L1/L2/L3 -> Mémoire SRAM ultra-rapide réduisant le temps d'attente d'accès aux données de la RAM",
+      "pairs": [
+        ["Unité Arithmétique et Logique (UAL)", "Exécute les opérations mathématiques et les comparaisons logiques"],
+        ["Unité de Contrôle", "Dirige les flux de données et orchestre le décodage des instructions"],
+        ["Hyper-Threading (SMT)", "Permet à un cœur physique de traiter deux threads d'instructions en parallèle"],
+        ["Mémoire Cache L1/L2/L3", "Mémoire SRAM ultra-rapide réduisant le temps d'attente d'accès aux données de la RAM"]
+      ],
+      "explanation": "Comprendre le cycle Fetch-Decode-Execute et l'architecture interne du processeur aide à comprendre les goulets d'étranglement et la gestion du multitâche par l'OS[cite: 13, 23].",
+      "difficulty": "moyen",
+      "context": "Architecture Processeur CPU"
+    },
+    {
+      "id": "eb3_q15",
+      "type": "classic",
+      "question": "Sur une liaison Trunk entre deux commutateurs réseau, pourquoi la norme IEEE 802.1Q ajoute-t-elle un champ de 4 octets dans l'en-tête de la trame Ethernet standard ?",
+      "answer": "Pour insérer le tag de VLAN (VLAN ID) permettant au switch destinataire de savoir à quel réseau virtuel appartient la trame et de l'aiguiller vers le bon port d'accès.",
+      "explanation": "Sur un lien Trunk, le balisage (tagging) 802.1Q est indispensable pour transporter simultanément les flux de plusieurs VLANs isolés sans mélanger les trafics[cite: 33].",
+      "difficulty": "moyen",
+      "context": "Réseaux & Trunks 802.1Q"
+    },
+    {
+      "id": "eb3_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de mise en place d'une règle de pare-feu avancée sous Windows (wf.msc) pour autoriser le trafic entrant vers une application métier sur le port TCP 8080.",
+      "answer": "1. Ouvrir la console de gestion du pare-feu avec fonctions avancées de sécurité (wf.msc)\n2. Sélectionner 'Règles de trafic entrant' puis cliquer sur 'Nouvelle règle...'\n3. Choisir le type de règle 'Port' puis sélectionner 'TCP' et renseigner '8080'\n4. Sélectionner l'action 'Autoriser la connexion'\n5. Cocher les profils réseau ciblés (Domaine et Privé, décocher Public)\n6. Nommer la règle (ex: AppMetier_Inbound_8080) et valider",
+      "items": [
+        "Ouvrir la console de gestion du pare-feu avec fonctions avancées de sécurité (wf.msc)",
+        "Sélectionner 'Règles de trafic entrant' puis cliquer sur 'Nouvelle règle...'",
+        "Choisir le type de règle 'Port' puis sélectionner 'TCP' et renseigner '8080'",
+        "Sélectionner l'action 'Autoriser la connexion'",
+        "Cocher les profils réseau ciblés (Domaine et Privé, décocher Public)",
+        "Nommer la règle (ex: AppMetier_Inbound_8080) et valider"
+      ],
+      "explanation": "La création de règles de filtrage précises sur le pare-feu local Windows protège les postes en n'ouvrant que les flux strictement nécessaires sur les profils de confiance (CP 6)[cite: 58].",
+      "difficulty": "moyen",
+      "context": "Pare-feu & Filtrage"
+    },
+    {
+      "id": "eb3_q17",
+      "type": "classic",
+      "question": "Quelle est la commande Linux permettant de rechercher en temps réel la présence du mot 'ERROR' dans le fichier journal d'authentification /var/log/auth.log ?",
+      "answer": "grep \"ERROR\" /var/log/auth.log (ou tail -f /var/log/auth.log | grep \"ERROR\")",
+      "explanation": "La commande 'grep' est l'outil fondamental d'analyse sous Linux pour filtrer des motifs textuels précis dans les fichiers de configuration et les journaux système de /var/log[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Analyse de Logs"
+    },
+    {
+      "id": "eb3_q18",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur portable neuf branché sur secteur se décharge lentement lors de visioconférences avec partage d'écran. Identifie la cause du problème.",
+      "answer": "Le chargeur USB-C / adaptateur secteur utilisé est sous-dimensionné en puissance (ex: chargeur 45W utilisé au lieu du bloc d'alimentation officiel 90W/100W du constructeur).",
+      "indices": [
+        "Indice 1 : L'icône de batterie dans la barre des tâches affiche 'Branché, pas en charge' ou 'Recharge lente'.",
+        "Indice 2 : La batterie se recharge normalement lorsque l'ordinateur est totalement éteint la nuit.",
+        "Indice 3 : En charge de travail intensive (CPU + GPU + écran allumé), la consommation globale du PC dépasse la puissance délivrée par l'adaptateur[cite: 17]."
+      ],
+      "explanation": "Un chargeur fournissant une puissance inférieure à la consommation de crête de la machine oblige le système à puiser le complément d'énergie sur la batterie même lorsqu'il est branché[cite: 17].",
+      "difficulty": "moyen",
+      "context": "Alimentation & Portables"
+    },
+    {
+      "id": "eb3_q19",
+      "type": "association",
+      "question": "Associe chaque protocole de messagerie ou de transfert à son port standard sécurisé avec chiffrement TLS.",
+      "answer": "HTTPS -> Port TCP 443, SMTPS (Envoi sécurisé) -> Port TCP 465 ou 587, IMAPS (Réception sécurisée) -> Port TCP 993, SFTP (Transfert sécurisé via SSH) -> Port TCP 22",
+      "pairs": [
+        ["HTTPS", "Port TCP 443"],
+        ["SMTPS (Envoi sécurisé)", "Port TCP 465 ou 587"],
+        ["IMAPS (Réception sécurisée)", "Port TCP 993"],
+        ["SFTP (Transfert sécurisé via SSH)", "Port TCP 22"]
+      ],
+      "explanation": "Les ports chiffrés sont devenus obligatoires pour garantir la confidentialité des flux de messagerie et de transfert sur les réseaux d'entreprise[cite: 32, 55].",
+      "difficulty": "facile",
+      "context": "Protocoles & Sécurité Réseau"
+    },
+    {
+      "id": "eb3_q20",
+      "type": "ticket",
+      "question": "Ticket #5431 — 'Bonjour, suite au départ d'une secrétaire, le manager demande la réattribution de son ordinateur fixe à un nouvel intérimaire, mais la session s'ouvre automatiquement sur l'ancien profil.'",
+      "answer": "Réinitialiser/reformater le poste avec le Master Windows d'entreprise pour garantir un environnement propre sans résidus de données personnelles, et joindre le poste au domaine pour le nouvel utilisateur.",
+      "checklist": [
+        "Vérifier auprès du manager qu'aucune donnée professionnelle non sauvegardée n'est restée sur le disque local[cite: 35, 43]",
+        "Redéployer le poste via PXE / WDS ou clé d'installation masterisée[cite: 44]",
+        "Intégrer le poste au domaine Active Directory avec son nouveau nom d'inventaire[cite: 43]",
+        "Faire ouvrir la première session à l'intérimaire avec ses propres identifiants et vérifier l'application des GPO[cite: 43]"
+      ],
+      "explanation": "Réaffecter une machine sans réinstallation complète expose à des fuites de données personnelles (contraire au RGPD) et à des dysfonctionnements de profils résiduels (CP 4 et CP 6)[cite: 41, 61].",
+      "difficulty": "moyen",
+      "context": "Déploiement & Réaffectation"
+    },
+    {
+      "id": "eb3_q21",
+      "type": "classic",
+      "question": "Lors d'un audit de sécurité, vous constatez que le protocole SMBv1 est encore activé sur plusieurs postes anciens. Pourquoi devez-vous impérativement le désactiver sur l'ensemble du parc ?",
+      "answer": "Parce que le protocole SMBv1 comporte des vulnérabilités critiques majeures (notamment la faille EternalBlue exploitée par les ransomwares WannaCry et NotPetya pour se propager automatiquement de poste en poste sur le réseau).",
+      "explanation": "L'ANSSI et Microsoft recommandent la désactivation stricte de SMBv1 sur tous les systèmes au profit de SMBv2 et SMBv3 chiffré (CP 6)[cite: 55, 56, 58].",
+      "difficulty": "moyen",
+      "context": "Sécurité SMB & Malwares"
+    },
+    {
+      "id": "eb3_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre les actions pour configurer une tâche planifiée Windows (taskschd.msc) exécutant un script PowerShell de sauvegarde nocturne.",
+      "answer": "1. Ouvrir la console du Planificateur de tâches (taskschd.msc)\n2. Cliquer sur 'Créer une tâche...' et définir le compte d'exécution 'AUTORITE NT\\SYSTEM' avec privilèges maximaux\n3. Dans l'onglet Déclencheurs, ajouter une programmation quotidienne à 02h00 du matin\n4. Dans l'onglet Actions, choisir 'Démarrer un programme', renseigner 'powershell.exe' et l'argument '-File C:\\Scripts\\Backup.ps1'\n5. Configurer les conditions de démarrage et enregistrer la tâche\n6. Faire un clic droit sur la tâche et sélectionner 'Exécuter' pour tester manuellement le bon déroulement",
+      "items": [
+        "Ouvrir la console du Planificateur de tâches (taskschd.msc)",
+        "Cliquer sur 'Créer une tâche...' et définir le compte d'exécution 'AUTORITE NT\\SYSTEM' avec privilèges maximaux",
+        "Dans l'onglet Déclencheurs, ajouter une programmation quotidienne à 02h00 du matin",
+        "Dans l'onglet Actions, choisir 'Démarrer un programme', renseigner 'powershell.exe' et l'argument '-File C:\\Scripts\\Backup.ps1'",
+        "Configurer les conditions de démarrage et enregistrer la tâche",
+        "Faire un clic droit sur la tâche et sélectionner 'Exécuter' pour tester manuellement le bon déroulement"
+      ],
+      "explanation": "L'exécution sous compte SYSTEM ou compte de service garantit que la tâche s'exécutera même si aucun utilisateur n'a de session ouverte sur le serveur (CP 6)[cite: 53].",
+      "difficulty": "moyen",
+      "context": "Automatisation & Tâches Planifiées"
+    },
+    {
+      "id": "eb3_q23",
+      "type": "classic",
+      "question": "Quel composant logiciel d'une machine virtuelle VMware ou VirtualBox permet d'activer le redimensionnement automatique de l'affichage, l'accélération graphique et le presse-papier partagé bidirectionnel avec le système hôte ?",
+      "answer": "Les compléments d'intégration invités (Guest Additions sous VirtualBox / VMware Tools sous VMware).",
+      "explanation": "Ce package de pilotes spécifiques est indispensable pour optimiser l'interaction et les performances entre l'OS invité virtualisé et l'OS hôte physique[cite: 25].",
+      "difficulty": "facile",
+      "context": "Virtualisation & Outils"
+    },
+    {
+      "id": "eb3_q24",
+      "type": "association",
+      "question": "Associe chaque élément de connectique vidéo à sa caractéristique technique distinctive.",
+      "answer": "HDMI 2.1 -> Transporte le signal vidéo numérique haute résolution + le signal audio multicanal, DisplayPort 2.1 -> Standard privilégié pour les moniteurs professionnels et hautes fréquences de rafraîchissement, VGA (D-Sub 15) -> Connecteur analogique ancien sensible aux interférences et dégradations de signal, USB-C / Thunderbolt -> Connecteur universel compact capable de transporter simultanément flux vidéo DisplayPort, données et alimentation (Power Delivery)",
+      "pairs": [
+        ["HDMI 2.1", "Transporte le signal vidéo numérique haute résolution + le signal audio multicanal"],
+        ["DisplayPort 2.1", "Standard privilégié pour les moniteurs professionnels et hautes fréquences de rafraîchissement"],
+        ["VGA (D-Sub 15)", "Connecteur analogique ancien sensible aux interférences et dégradations de signal"],
+        ["USB-C / Thunderbolt", "Connecteur universel compact capable de transporter simultanément flux vidéo DisplayPort, données et alimentation (Power Delivery)"]
+      ],
+      "explanation": "La connaissance des protocoles vidéo et de leurs limites permet d'orienter le choix du bon câble ou adaptateur lors du raccordement des écrans (CP 4)[cite: 16, 18].",
+      "difficulty": "facile",
+      "context": "Connecteurs & Affichage"
+    },
+    {
+      "id": "eb3_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur en télétravail signale que son ordinateur portable s'allume, que la LED d'alimentation brille, mais que l'écran reste totalement noir. Identifie la manipulation de diagnostic simple à réaliser pour localiser l'origine de la panne.",
+      "answer": "Brancher l'ordinateur portable sur un écran externe en HDMI pour déterminer si la panne provient de la dalle/du rétroéclairage de l'écran intégré ou de la carte mère/puce graphique.",
+      "indices": [
+        "Indice 1 : Le ventilateur tourne et le son d'ouverture de session Windows se fait entendre dans les haut-parleurs.",
+        "Indice 2 : En éclairant la dalle de l'ordinateur portable avec la lampe torche d'un smartphone, on distingue très faiblement le bureau Windows (rétroéclairage éteint).",
+        "Indice 3 : L'affichage apparaît immédiatement net et fonctionnel sur un écran externe relié en HDMI[cite: 16, 22]."
+      ],
+      "explanation": "Si l'affichage fonctionne sur moniteur externe mais pas sur l'écran du portable, la carte mère et la puce graphique fonctionnent : le problème est strictement localisé sur la dalle LCD, la nappe vidéo ou le rétroéclairage[cite: 16, 22].",
+      "difficulty": "moyen",
+      "context": "Diagnostic PC Portables"
+    },
+    {
+      "id": "eb3_q26",
+      "type": "classic",
+      "question": "Quelle est l'utilité principale du mécanisme d'accès conditionnel (Conditional Access) configuré dans Microsoft Entra ID (Azure AD) ?",
+      "answer": "Il permet d'évaluer en temps réel le contexte d'une connexion (conformité de l'appareil dans Intune, pays d'origine de l'adresse IP, niveau de risque de l'utilisateur) pour exiger automatiquement un second facteur MFA ou bloquer l'accès aux ressources Cloud.",
+      "explanation": "L'accès conditionnel est le pilier du modèle de sécurité 'Zero Trust' pour protéger les données de l'entreprise contre les connexions non autorisées depuis l'extérieur[cite: 42].",
+      "difficulty": "moyen",
+      "context": "Cloud & Entra ID"
+    },
+    {
+      "id": "eb3_q27",
+      "type": "ticket",
+      "question": "Ticket #4610 — 'Bonjour, la direction souhaite équiper une salle de réunion isolée avec un point d'accès Wi-Fi supplémentaire. Le câble réseau RJ45 doit parcourir une distance mesurée de 145 mètres depuis la baie de brassage principale.'",
+      "answer": "Alerter sur le dépassement de la limite physique des 100 mètres de la norme Ethernet cuivre, et préconiser l'installation d'un commutateur intermédiaire ou d'une liaison optique (fibre multimode).",
+      "checklist": [
+        "Rappeler la limite normative stricte de 100 mètres pour le câblage Ethernet cuivre (Cat 5e/6/6a)[cite: 30]",
+        "Proposer l'installation d'une liaison en fibre optique (10GBASE-SR / connecteurs LC) entre la baie et la salle[cite: 30]",
+        "Ou prévoir l'insertion d'un commutateur intermédiaire alimenté pour régénérer le signal à mi-parcours[cite: 30]",
+        "Vérifier que le point d'accès Wi-Fi final pourra être alimenté en PoE par le switch dédié[cite: 30]"
+      ],
+      "explanation": "Au-delà de 100 mètres sur cuivre RJ45, l'atténuation du signal provoque des pertes de paquets massives et une rupture de liaison (CP 7)[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Infrastructure Réseau & Câblage"
+    },
+    {
+      "id": "eb3_q28",
+      "type": "classic",
+      "question": "Quel outil natif en ligne de commande de Windows permet de monter une image disque WIM, d'y injecter des pilotes de contrôleurs de stockage et de capturer une partition système ?",
+      "answer": "L'outil DISM (Deployment Image Servicing and Management).",
+      "explanation": "DISM est l'utilitaire central de manipulation des images .wim utilisé tant en maintenance qu'en industrialisation de déploiement d'images de référence (CP 4)[cite: 44, 52].",
+      "difficulty": "facile",
+      "context": "Déploiement & Outils DISM"
+    },
+    {
+      "id": "eb3_q29",
+      "type": "association",
+      "question": "Associe chaque dossier système Windows à sa fonction.",
+      "answer": "C:\\Windows\\System32 -> Fichiers binaires et exécutables critiques du système d'exploitation, C:\\Users\\Public -> Répertoire partagé accessible à tous les profils locaux de la machine, AppData\\Roaming -> Données de configuration et profils d'applications synchronisables, C:\\ProgramData -> Données partagées des logiciels installés pour l'ensemble des utilisateurs (dossier masqué)",
+      "pairs": [
+        ["C:\\Windows\\System32", "Fichiers binaires et exécutables critiques du système d'exploitation"],
+        ["C:\\Users\\Public", "Répertoire partagé accessible à tous les profils locaux de la machine"],
+        ["AppData\\Roaming", "Données de configuration et profils d'applications synchronisables"],
+        ["C:\\ProgramData", "Données partagées des logiciels installés pour l'ensemble des utilisateurs (dossier masqué)"]
+      ],
+      "explanation": "La maîtrise de la structure de l'arborescence Windows est indispensable pour dépanner les corruptions de profils et déployer des raccourcis globaux[cite: 23, 44].",
+      "difficulty": "moyen",
+      "context": "Structure Système Windows"
+    },
+    {
+      "id": "eb3_q30",
+      "type": "classic",
+      "question": "Pourquoi la création d'un cliché instantané (Snapshot) sur une machine virtuelle ne doit-elle jamais être considérée comme une solution de sauvegarde de données à long terme ?",
+      "answer": "Parce qu'un snapshot ne copie pas les données sur un support indépendant : il dépend entièrement du disque virtuel d'origine (si le disque de base est corrompu ou le serveur hôte détruit, le snapshot est perdu) et son accumulation dégrade fortement les performances d'entrées/sorties de la machine virtuelle.",
+      "explanation": "Le snapshot est un mécanisme de retour arrière immédiat avant une manipulation à risque, pas une sauvegarde conforme à la règle 3-2-1-1-0 (CP 6)[cite: 25, 35, 38].",
+      "difficulty": "moyen",
+      "context": "Virtualisation & Sauvegardes"
+    },
+    {
+      "id": "eb3_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre les 4 phases successives du cycle d'exécution d'une instruction par le processeur (CPU).",
+      "answer": "1. Fetch (Recherche) : Récupération de l'instruction depuis la mémoire cache/RAM vers le registre d'instruction\n2. Decode (Décodage) : Interprétation du code opération par l'unité de contrôle\n3. Execute (Exécution) : Réalisation du calcul ou du traitement par l'Unité Arithmétique et Logique (UAL)\n4. Writeback (Écriture) : Enregistrement du résultat dans un registre ou en mémoire vive",
+      "items": [
+        "Fetch (Recherche) : Récupération de l'instruction depuis la mémoire cache/RAM vers le registre d'instruction",
+        "Decode (Décodage) : Interprétation du code opération par l'unité de contrôle",
+        "Execute (Exécution) : Réalisation du calcul ou du traitement par l'Unité Arithmétique et Logique (UAL)",
+        "Writeback (Écriture) : Enregistrement du résultat dans un registre ou en mémoire vive"
+      ],
+      "explanation": "Le cycle perpétuel Fetch-Decode-Execute-Writeback cadence le traitement de chaque instruction exécutée par le cœur du processeur[cite: 13].",
+      "difficulty": "difficile",
+      "context": "Architecture CPU"
+    },
+    {
+      "id": "eb3_q32",
+      "type": "classic",
+      "question": "Dans le cadre de la maintenance préventive d'un parc informatique, pourquoi le dépoussiérage régulier des radiateurs et des filtres de boîtiers est-il essentiel pour maintenir la performance des processeurs ?",
+      "answer": "Parce que l'accumulation de poussière forme un isolant thermique empêchant l'évacuation de la chaleur, provoquant une hausse de température qui force le processeur à réduire sa fréquence d'horloge pour se protéger (phénomène de throttling thermique).",
+      "explanation": "Le throttling thermique baisse drastiquement la réactivité de la machine sans qu'aucune panne logicielle ne soit en cause (CP 5)[cite: 20].",
+      "difficulty": "facile",
+      "context": "Maintenance Préventive Hardware"
+    },
+    {
+      "id": "eb3_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur trouve une clé USB étiquetée 'Salaires et Primes Direction 2026' sur une table de la cafétéria et s'apprête à la brancher sur son poste pour identifier son propriétaire. De quelle menace s'agit-il et quelle est la réaction attendue ?",
+      "answer": "Une cyberattaque par ingénierie sociale de type 'Baiting' (Appât). La consigne absolue est de ne pas brancher la clé USB et de la remettre immédiatement au service informatique / sécurité.",
+      "indices": [
+        "Indice 1 : Le support physique a été abandonné dans un lieu de passage très fréquenté pour susciter la curiosité[cite: 59].",
+        "Indice 2 : Le titre accrocheur exploite des données financières confidentielles[cite: 59].",
+        "Indice 3 : Brancher la clé USB déclencherait l'exécution d'un script malveillant ou d'une émulation clavier piégée (BadUSB)[cite: 59]."
+      ],
+      "explanation": "L'attaque par Baiting exploite la curiosité humaine pour contourner les protections de périmètre et injecter un malware sur le réseau local (CP 6)[cite: 59].",
+      "difficulty": "facile",
+      "context": "Ingénierie Sociale & Baiting"
+    },
+    {
+      "id": "eb3_q34",
+      "type": "classic",
+      "question": "Quelle commande réseau sous Windows permet de retracer l'itinéraire complet paquet par paquet (saut par saut) vers une destination distante pour identifier quel routeur est défaillant sur le chemin ?",
+      "answer": "tracert <adresse_IP_ou_nom_de_domaine>[cite: 34]",
+      "explanation": "La commande tracert (traceroute) utilise le champ TTL des paquets IP pour lister chaque passerelle traversée et repérer l'endroit exact de coupure de liaison[cite: 34].",
+      "difficulty": "facile",
+      "context": "Diagnostic Réseau Tracert"
+    },
+    {
+      "id": "eb3_q35",
+      "type": "ticket",
+      "question": "Ticket #6122 — 'Bonjour, nous constatons que de nombreux ordinateurs de l'entreprise mettent plus de 3 minutes à démarrer le matin. Merci d'analyser la cause et d'optimiser le démarrage.'",
+      "answer": "Analyser les programmes configurés au démarrage dans le Gestionnaire des tâches et auditer les clés de registre Run ainsi que le dossier de démarrage pour désactiver les applications non nécessaires.",
+      "checklist": [
+        "Ouvrir le Gestionnaire des tâches (Ctrl + Maj + Échap) dans l'onglet 'Applications de démarrage'[cite: 50]",
+        "Désactiver les applications non indispensables ayant un 'Impact du démarrage élevé'[cite: 50]",
+        "Vérifier les clés de registre de démarrage automatique (HKLM et HKCU\\...\\Run) avec l'outil Autoruns[cite: 51, 58]",
+        "Vérifier l'état de santé du disque SSD et l'absence de tâches planifiées superflues au démarrage[cite: 22, 53]"
+      ],
+      "explanation": "La gestion des programmes au démarrage et l'allègement de la persistance logicielle réduisent significativement le temps de boot sans nécessiter de modification matérielle (CP 5)[cite: 50, 58].",
+      "difficulty": "moyen",
+      "context": "Optimisation Système & Démarrage"
+    }
+  ]
+}

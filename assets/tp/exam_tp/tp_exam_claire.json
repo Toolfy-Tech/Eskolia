@@ -1,0 +1,222 @@
+{
+  "id": "tp_exam_claire",
+  "title": "Épreuve Pratique TIP — Variante 1 (Claire)",
+  "subtitle": "Cabinet comptable, malvoyance & contrastes, volume E: COMPTA et blocage FTP/HTTP",
+  "candidateName": "Claire Vidal",
+  "companyName": "Cabinet AuditPlus",
+  "role": "Collaboratrice Comptable",
+  "accessibilityContext": "Déficience visuelle modérée reconnue (malvoyance / sensibilité aux faibles contrastes). Nécessite l'agrandissement des polices système, un curseur très visible et l'utilisation de thèmes contrastés.",
+  "vmInfo": {
+    "vmName": "MV-Claire",
+    "targetHostname": "MV-COMPTA01",
+    "os": "Windows 11 Professionnel (English)",
+    "adminUser": "AdminLocal",
+    "adminPassword": "AdminAudit@2026",
+    "tpmKey": "ComptaSecure@2026",
+    "userAccount": {
+      "username": "Claire.Vidal",
+      "fullName": "Claire Vidal",
+      "password": "ComptaAudit#84",
+      "isAdministrator": false
+    }
+  },
+  "tasks": [
+    {
+      "id": "task_1",
+      "order": 1,
+      "title": "Gestion du stockage virtuel",
+      "points": 1.0,
+      "instruction": "Ajoutez un second disque virtuel de 30 Go à la machine virtuelle MV-Claire dans votre hyperviseur.",
+      "guiSteps": "1. Éteindre la VM MV-Claire.\n2. Ouvrir les paramètres de la VM dans l'hyperviseur.\n3. Aller dans 'Storage' > Contrôleur SATA/NVMe.\n4. Cliquer sur 'Add Hard Disk' > Créer un disque de 30 GB et valider.",
+      "powerShellScript": "# Sous Hyper-V :\nNew-VHD -Path 'C:\\VMs\\MV-Claire\\Compta30GB.vhdx' -SizeBytes 30GB -Dynamic\nAdd-VMHardDiskDrive -VMName 'MV-Claire' -Path 'C:\\VMs\\MV-Claire\\Compta30GB.vhdx'",
+      "captureExpected": "Capture des paramètres de stockage de l'hyperviseur montrant le disque de 30 Go connecté à MV-Claire."
+    },
+    {
+      "id": "task_2",
+      "order": 2,
+      "title": "Démarrage sécurisé et session administrateur",
+      "points": 1.0,
+      "instruction": "Démarrez MV-Claire et saisissez la clé de chiffrement TPM obligatoire fournie ('ComptaSecure@2026'). Ouvrez la session avec le compte AdminLocal (MDP : AdminAudit@2026).",
+      "guiSteps": "1. Démarrer la machine virtuelle.\n2. Saisir la clé TPM au prompt BitLocker : ComptaSecure@2026.\n3. Ouvrir la session Windows avec l'utilisateur 'AdminLocal' et le mot de passe : AdminAudit@2026.",
+      "powerShellScript": "# Vérification de session administrateur :\nwhoami\nGet-LocalUser -Name 'AdminLocal'",
+      "captureExpected": "Capture de la session AdminLocal ouverte sur le bureau de MV-Claire."
+    },
+    {
+      "id": "task_3",
+      "order": 3,
+      "title": "Protection du système (Point de restauration)",
+      "points": 1.0,
+      "instruction": "Créez immédiatement un point de restauration système nommé explicitement 'SocleComptaInitial'.",
+      "guiSteps": "1. Taper 'Create a restore point' dans le menu Démarrer.\n2. Vérifier que la protection est active sur C:, puis cliquer sur 'Create...'.\n3. Saisir le nom : SocleComptaInitial.\n4. Valider par 'Create'.",
+      "powerShellScript": "Enable-ComputerRestore -Drive 'C:\\'\nCheckpoint-Computer -Description 'SocleComptaInitial' -RestorePointType 'MODIFY_SETTINGS'",
+      "captureExpected": "Capture de la confirmation de création du point de restauration 'SocleComptaInitial'."
+    },
+    {
+      "id": "task_4",
+      "order": 4,
+      "title": "Maintenance logicielle (Pause Windows Update)",
+      "points": 1.0,
+      "instruction": "Reportez temporairement les mises à jour Windows Update à la date la plus éloignée possible réglementairement.",
+      "guiSteps": "1. Ouvrir Settings > 'Windows Update'.\n2. Dans 'Pause updates', sélectionner la durée maximale disponible (ex: 'Pause for 5 weeks').",
+      "powerShellScript": "# Vérification de la pause dans le registre\nGet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseUpdatesExpiryTime' -ErrorAction SilentlyContinue",
+      "captureExpected": "Capture de la page Windows Update avec la mention 'Updates paused until [Date maximale]'."
+    },
+    {
+      "id": "task_5",
+      "order": 5,
+      "title": "Préparation des volumes (Disque E: COMPTA)",
+      "points": 1.0,
+      "instruction": "Initialisez et partitionnez le nouveau disque de 30 Go dans son intégralité en système de fichiers NTFS. Nommez ce volume COMPTA et attribuez-lui la lettre de lecteur E:.",
+      "guiSteps": "1. Ouvrir 'Disk Management' (Win + X > Disk Management).\n2. Initialiser le disque de 30 Go en GPT.\n3. Clic droit sur l'espace non alloué > 'New Simple Volume...'.\n4. Allouer l'intégralité du disque, assigner la lettre 'E:', formater en 'NTFS' et nommer le volume 'COMPTA'.",
+      "powerShellScript": "Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Initialize-Disk -PartitionStyle GPT -PassThru |\n  New-Partition -DriveLetter 'E' -UseMaximumSize |\n  Format-Volume -FileSystem NTFS -NewFileSystemLabel 'COMPTA' -Confirm:$false",
+      "captureExpected": "Capture de Disk Management montrant le volume 'COMPTA (E:)' de 30 Go formaté en NTFS."
+    },
+    {
+      "id": "task_6",
+      "order": 6,
+      "title": "Configuration réseau fixe (IP statique)",
+      "points": 1.0,
+      "instruction": "Configurez l'adressage IP de la carte réseau (mode Bridge) : IP 192.168.10.15, Masque 255.255.255.0 (/24), Passerelle 192.168.10.254, DNS 192.168.10.254.",
+      "guiSteps": "1. Ouvrir 'ncpa.cpl' (Win + R).\n2. Clic droit sur 'Ethernet' > 'Properties' > 'Internet Protocol Version 4 (TCP/IPv4)'.\n3. Saisir IP : 192.168.10.15, Masque : 255.255.255.0, Passerelle : 192.168.10.254, DNS préféré : 192.168.10.254.\n4. Valider par OK.",
+      "powerShellScript": "$adapter = Get-NetAdapter | Where-Object Status -eq 'Up'\nNew-NetIPAddress -InterfaceIndex $adapter.ifIndex -IPAddress '192.168.10.15' -PrefixLength 24 -DefaultGateway '192.168.10.254'\nSet-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses ('192.168.10.254')",
+      "captureExpected": "Capture des propriétés IPv4 ou de la commande 'ipconfig /all' avec les valeurs IP 192.168.10.15 et passerelle 192.168.10.254."
+    },
+    {
+      "id": "task_7",
+      "order": 7,
+      "title": "Gestion des utilisateurs (Compte local Claire)",
+      "points": 1.0,
+      "instruction": "Créez un nouveau compte utilisateur local standard pour la collaboratrice nommé Claire Vidal au format Prenom.Nom (Claire.Vidal) avec le mot de passe ComptaAudit#84.",
+      "guiSteps": "1. Ouvrir 'lusrmgr.msc' (Win + R).\n2. Clic droit sur 'Users' > 'New User...'.\n3. Username : Claire.Vidal, Full name : Claire Vidal, Password : ComptaAudit#84.\n4. Décocher l'obligation de changement de mot de passe et cocher 'Password never expires'.\n5. Valider.",
+      "powerShellScript": "$secPass = ConvertTo-SecureString 'ComptaAudit#84' -AsPlainText -Force\nNew-LocalUser -Name 'Claire.Vidal' -FullName 'Claire Vidal' -Password $secPass -Description 'Collaboratrice comptable Claire Vidal' -PasswordNeverExpires",
+      "captureExpected": "Capture de la console lusrmgr.msc avec le compte 'Claire.Vidal' créé."
+    },
+    {
+      "id": "task_8",
+      "order": 8,
+      "title": "Identité de la machine (Renommage du poste)",
+      "points": 1.0,
+      "instruction": "Renommez l'ordinateur MV-Claire avec le nom standardisé MV-COMPTA01.",
+      "guiSteps": "1. Ouvrir Settings > System > About > 'Rename this PC'.\n2. Taper : MV-COMPTA01.\n3. Valider par 'Next'.",
+      "powerShellScript": "Rename-Computer -NewName 'MV-COMPTA01' -Force",
+      "captureExpected": "Capture de la fenêtre Settings montrant le nom d'ordinateur 'MV-COMPTA01'."
+    },
+    {
+      "id": "task_9",
+      "order": 9,
+      "title": "Profil utilisateur et redirection de dossier (Bureau)",
+      "points": 1.0,
+      "instruction": "Fermez la session administrateur et ouvrez une session Windows avec le nouveau compte de Claire.Vidal. Délocalisez (déplacez) le dossier spécial Bureau (Desktop) de son profil utilisateur vers le lecteur E: (E:\\BureauClaire).",
+      "guiSteps": "1. Ouvrir la session de Claire.Vidal.\n2. Dans l'Explorateur de fichiers, clic droit sur 'Desktop' (Bureau) > 'Properties'.\n3. Aller dans l'onglet 'Location' > Cliquer sur 'Move...'.\n4. Sélectionner ou créer 'E:\\BureauClaire'.\n5. Valider par 'Apply', accepter le transfert des fichiers existants puis cliquer sur 'OK'.",
+      "powerShellScript": "$newDesktop = 'E:\\BureauClaire'\nif (!(Test-Path $newDesktop)) { New-Item -ItemType Directory -Path $newDesktop -Force }\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name 'Desktop' -Value $newDesktop",
+      "captureExpected": "Capture de l'onglet 'Location' des propriétés de Desktop montrant 'E:\\BureauClaire'."
+    },
+    {
+      "id": "task_10",
+      "order": 10,
+      "title": "Sécurité des données (Permissions NTFS)",
+      "points": 1.0,
+      "instruction": "Paramétrez les autorisations de sécurité NTFS sur le dossier 'E:\\BureauClaire' : désactivez l'héritage, supprimez les accès du groupe Users, et garantissez que seuls Claire.Vidal et SYSTEM disposent d'un accès complet.",
+      "guiSteps": "1. Clic droit sur 'E:\\BureauClaire' > 'Properties' > 'Security' > 'Advanced'.\n2. Cliquer sur 'Disable inheritance' > 'Convert inherited permissions...'.\n3. Supprimer 'Users' et tous les comptes non requis.\n4. Vérifier que 'Claire.Vidal', 'Administrators' et 'SYSTEM' ont 'Full Control'.\n5. Valider par 'Apply' et 'OK'.",
+      "powerShellScript": "$acl = Get-Acl 'E:\\BureauClaire'\n$acl.SetAccessRuleProtection($true, $false)\n$ruleClaire = New-Object System.Security.AccessControl.FileSystemAccessRule('Claire.Vidal', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleSystem = New-Object System.Security.AccessControl.FileSystemAccessRule('SYSTEM', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleAdmin = New-Object System.Security.AccessControl.FileSystemAccessRule('Administrators', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$acl.SetAccessRule($ruleClaire)\n$acl.SetAccessRule($ruleSystem)\n$acl.SetAccessRule($ruleAdmin)\nSet-Acl -Path 'E:\\BureauClaire' -AclObject $acl",
+      "captureExpected": "Capture des paramètres de sécurité avancés sur E:\\BureauClaire montrant les droits stricts."
+    },
+    {
+      "id": "task_11",
+      "order": 11,
+      "title": "Accessibilité (Adaptation Handicap Visuel)",
+      "points": 1.0,
+      "instruction": "Modifiez les paramètres ergonomiques de Windows 11 pour adapter le poste à la déficience visuelle de Claire : activez un thème à contraste élevé (Contrast Themes), agrandissez la taille du texte à 130 %, et configurez un curseur de souris grand et coloré. Justifiez votre choix par écrit.",
+      "guiSteps": "1. Ouvrir Settings > 'Accessibility' > 'Text size' : Déplacer le curseur à 130% et cliquer sur 'Apply'.\n2. Aller dans 'Accessibility' > 'Mouse pointer and touch' : Agrandir le curseur (taille 5+) et choisir une couleur vive (ex: jaune fluo ou violet contrasté).\n3. Aller dans 'Accessibility' > 'Contrast themes' : Sélectionner un thème contrasté (ex: 'Desert' ou 'Dusk') et cliquer sur 'Apply'.",
+      "powerShellScript": "# Ajustement taille du texte et options d'accessibilité visuelle dans le registre\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'CursorBaseSize' -Value 48",
+      "captureExpected": "Capture de l'écran de Claire avec le thème contrasté, le grand curseur coloré et la taille de police augmentée + justification."
+    },
+    {
+      "id": "task_12",
+      "order": 12,
+      "title": "Confort utilisateur (Raccourci Bureau)",
+      "points": 1.0,
+      "instruction": "Ajoutez un raccourci direct vers le dossier de travail comptable situé sur 'E:' sur le bureau de Claire.",
+      "guiSteps": "1. Clic droit sur le Bureau de Claire > 'New' > 'Shortcut'.\n2. Saisir 'E:\\' ou 'E:\\Compta_Fichiers'.\n3. Nommer le raccourci 'Dossier Comptable'.\n4. Valider par 'Finish'.",
+      "powerShellScript": "$wshShell = New-Object -ComObject WScript.Shell\n$desktopPath = [Environment]::GetFolderPath('Desktop')\n$shortcut = $wshShell.CreateShortcut(\"$desktopPath\\Dossier Comptable.lnk\")\n$shortcut.TargetPath = 'E:\\'\n$shortcut.Description = 'Accès direct aux dossiers comptables E:'\n$shortcut.Save()",
+      "captureExpected": "Capture du bureau de Claire montrant l'icône du raccourci 'Dossier Comptable'."
+    },
+    {
+      "id": "task_13",
+      "order": 13,
+      "title": "Sécurité réseau (Blocage Pare-feu ports 21 et 80)",
+      "points": 1.0,
+      "instruction": "Configurez les règles du pare-feu Windows Defender pour bloquer strictement les flux sortants vers les ports 21 (FTP non sécurisé) et 80 (HTTP non chiffré) afin d'imposer des protocoles sécurisés (SFTP/HTTPS).",
+      "guiSteps": "1. Ouvrir 'wf.msc' (Windows Defender Firewall with Advanced Security).\n2. Clic droit sur 'Outbound Rules' > 'New Rule...'.\n3. Choisir 'Port' > 'TCP' > 'Specific remote ports' : taper '21, 80'.\n4. Choisir 'Block the connection'.\n5. Cocher tous les profils (Domain, Private, Public).\n6. Nommer la règle : 'Block_Outbound_FTP_HTTP_Insecure' et valider.",
+      "powerShellScript": "New-NetFirewallRule -DisplayName 'Block_Outbound_FTP_HTTP_Insecure' -Direction Outbound -Protocol TCP -RemotePort 21,80 -Action Block -Profile Any -Description 'Interdiction des protocoles non chiffrés FTP (21) et HTTP (80)'",
+      "captureExpected": "Capture de la liste des règles de trafic sortant dans 'wf.msc' montrant la règle de blocage active sur les ports 21 et 80."
+    },
+    {
+      "id": "task_14",
+      "order": 14,
+      "title": "Sauvegarde du système (Snapshot / Instantané)",
+      "points": 1.0,
+      "instruction": "Effectuez une sauvegarde complète de la machine virtuelle MV-Claire (Snapshot / Instantané dans l'hyperviseur). Insérez la capture et justifiez votre choix technique.",
+      "guiSteps": "1. Ouvrir l'hyperviseur.\n2. Sélectionner la VM MV-Claire.\n3. Créer un nouvel instantané nommé : 'Snapshot_Fin_Config_Claire'.\n4. Ajouter la description de recette.",
+      "powerShellScript": "# Exemple PowerShell Hyper-V :\nCheckpoint-VM -Name 'MV-Claire' -SnapshotName 'Snapshot_Fin_Config_Claire'",
+      "captureExpected": "Capture de l'arborescence des snapshots de l'hyperviseur montrant l'instantané de fin de configuration."
+    }
+  ],
+  "tutorialGuide": {
+    "title": "Livrable Partie 2 — Guide du Tutoriel Utilisateur",
+    "documentName": "Tutoriel Claire",
+    "targetAudience": "Claire Vidal (Collaboratrice comptable, malvoyance)",
+    "maxPages": 10,
+    "formalRequirements": [
+      "Page de titre professionnelle avec titre clair, nom de l'auteur et du cabinet AuditPlus.",
+      "Sommaire généré automatiquement.",
+      "Structuration en deux parties distinctes : Aides visuelles et Compression d'archives.",
+      "Captures d'écran agrandies, haute lisibilité et fléchées.",
+      "Numérotation de page en pied de page.",
+      "Langage vulgarisé, axé sur la productivité quotidienne."
+    ],
+    "modules": [
+      {
+        "moduleNumber": 1,
+        "title": "Utilisation des aides visuelles et de la loupe Windows",
+        "description": "Guide pratique pour utiliser la Loupe intégrée et les raccourcis de zoom dynamique à l'écran.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Lancer et contrôler la Loupe Windows",
+            "instruction": "Appuyer simultanément sur la touche Windows et la touche Plus (Win + +) pour activer la loupe instantanément. Utiliser Win + + pour zoomer et Win + - pour dézoomer. Pour quitter la loupe à tout moment, appuyer sur Win + Échap."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Zoomer à la volée dans les applications et navigateurs",
+            "instruction": "Dans Microsoft Edge, Excel ou Word, maintenir la touche Ctrl enfoncée et faire tourner la molette de la souris vers le haut pour grossir le texte, ou vers le bas pour rétrécir. Raccourci de réinitialisation : Ctrl + 0."
+          }
+        ]
+      },
+      {
+        "moduleNumber": 2,
+        "title": "Compression et extraction de dossiers comptables (.zip)",
+        "description": "Méthode pas-à-pas pour sécuriser et alléger l'envoi de documents volumineux par archive compressée.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Compresser un dossier client en fichier ZIP",
+            "instruction": "Faire un clic droit sur le dossier ou les fichiers comptables à transmettre > Sélectionner 'Compress to ZIP file' (ou 'Envoyer vers > Dossier compressé'). Une archive .zip portant le même nom est immédiatement générée."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Extraire et consulter une archive ZIP reçue",
+            "instruction": "Faire un clic droit sur le fichier .zip reçu > Cliquer sur 'Extract All...' (Extraire tout). Choisir le dossier de destination et cliquer sur 'Extract'. Tous les fichiers décompressés sont alors immédiatement utilisables."
+          }
+        ]
+      }
+    ],
+    "evaluationRubric": [
+      { "criterion": "Page de titre et sommaire automatique", "maxPoints": 1.0, "details": "Présence d'une page de garde complète et table des matières générée automatiquement." },
+      { "criterion": "Qualité de la Partie 1 (Loupe & Zoom dynamique)", "maxPoints": 2.0, "details": "Raccourcis clavier (Win++, Win+Échap, Ctrl+Molette) clairement expliqués et illustrés." },
+      { "criterion": "Qualité de la Partie 2 (Compression & Extraction ZIP)", "maxPoints": 1.5, "details": "Procédure complète de création et d'extraction de fichier ZIP illustrée." },
+      { "criterion": "Ergonomie, captures fléchées et pédagogie", "maxPoints": 1.0, "details": "Captures lisibles avec fléchage des boutons clés, ton adapté." },
+      { "criterion": "Respect des contraintes (Pagination, <= 10 pages)", "maxPoints": 0.5, "details": "Numérotation des pages conforme, volume inférieur ou égal à 10 pages." }
+    ]
+  }
+}

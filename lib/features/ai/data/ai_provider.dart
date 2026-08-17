@@ -50,7 +50,7 @@ enum AiProvider {
         AiProvider.ollama => 'gemma3',
         AiProvider.anthropic => 'claude-3-5-haiku-20241022',
         AiProvider.openai => 'gpt-4o-mini',
-        AiProvider.gemini => 'gemini-2.5-flash',
+        AiProvider.gemini => 'gemini-2.0-flash',
         AiProvider.groq => 'llama-3.3-70b-versatile',
         AiProvider.perplexity => 'llama-3.1-sonar-small-128k-online',
         AiProvider.xai => 'grok-beta',
@@ -82,7 +82,7 @@ enum AiProvider {
 
   /// Modeles connus pour ce provider — utilises dans les selecteurs UI.
   List<String> get availableModels => switch (this) {
-        AiProvider.gemini    => ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'],
+        AiProvider.gemini    => ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-2.5-pro'],
         AiProvider.openai    => ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1-mini', 'o3-mini'],
         AiProvider.anthropic => ['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'],
         AiProvider.groq      => ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'gemma2-9b-it', 'mixtral-8x7b-32768'],

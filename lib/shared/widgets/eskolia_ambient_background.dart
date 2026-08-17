@@ -1,37 +1,38 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/eskolia_tokens.dart';
+import '../../core/theme/theme_palette_provider.dart';
 
 /// Fond global de l'application — Grille technique de dessin millimétré (Blueprint Grid)
-/// posée sur un dégradé bleu TARDIS profond.
-class EskoliaAmbientBackground extends StatelessWidget {
+/// posée sur un dégradé dynamique selon le thème de couleurs choisi.
+class EskoliaAmbientBackground extends ConsumerWidget {
   const EskoliaAmbientBackground({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final palette = ref.watch(themePaletteProvider);
+
     return IgnorePointer(
       child: Stack(
         children: [
-          // Fond dégradé radial bleu TARDIS profond
+          // Fond dégradé radial dynamique
           Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.center,
-                  radius: 1.3,
-                  colors: [
-                    Color(0xFF0C2445), // Tardis bleu de surface
-                    Color(0xFF071426), // Tardis bleu sombre de base
-                  ],
-                ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 350),
+              decoration: BoxDecoration(
+                gradient: palette.backgroundGradient,
               ),
             ),
           ),
           // Grille technique de blueprint en CustomPainter
           Positioned.fill(
             child: CustomPaint(
-              painter: _BlueprintGridPainter(),
+              painter: _BlueprintGridPainter(
+                primaryGridColor: palette.gridPrimaryColor,
+                secondaryGridColor: palette.gridSecondaryColor,
+              ),
             ),
           ),
         ],
@@ -41,15 +42,23 @@ class EskoliaAmbientBackground extends StatelessWidget {
 }
 
 class _BlueprintGridPainter extends CustomPainter {
+  const _BlueprintGridPainter({
+    required this.primaryGridColor,
+    required this.secondaryGridColor,
+  });
+
+  final Color primaryGridColor;
+  final Color secondaryGridColor;
+
   @override
   void paint(Canvas canvas, Size size) {
     final paintGrid = Paint()
-      ..color = EskoliaTokens.cyan.withValues(alpha: 0.05)
+      ..color = primaryGridColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.7;
 
     final paintSubGrid = Paint()
-      ..color = EskoliaTokens.cyan.withValues(alpha: 0.02)
+      ..color = secondaryGridColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.4;
 
@@ -80,5 +89,7 @@ class _BlueprintGridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _BlueprintGridPainter oldDelegate) =>
+      oldDelegate.primaryGridColor != primaryGridColor ||
+      oldDelegate.secondaryGridColor != secondaryGridColor;
 }

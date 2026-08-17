@@ -1,0 +1,457 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 7 — Sujet Golf (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb7_q1",
+      "type": "classic",
+      "question": "Pourquoi est-il primordial de ne jamais utiliser un compte administrateur du domaine pour les tâches de support bureautique quotidiennes (navigation web, messagerie, saisie de tickets) sur un poste client ?",
+      "answer": "Pour respecter le principe de moindre privilège et éviter qu'un malware ou script piégé exécuté lors de la session ne s'exécute avec des privilèges d'administration totale, ce qui permettrait la compromission immédiate de tout l'annuaire Active Directory.",
+      "explanation": "Le technicien doit utiliser un compte standard pour ses activités bureautiques courantes et n'élever ses privilèges (via runas ou compte admin dédié distinct) que pour les interventions d'administration nécessaires (CP 6 et CP 8)[cite: 23, 43, 58].",
+      "difficulty": "facile",
+      "context": "Sécurité des Comptes & Moindre Privilège"
+    },
+    {
+      "id": "eb7_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de déploiement d'un nouveau progiciel métier via Microsoft Intune sur une flotte de postes Windows 11 joints à Microsoft Entra ID.",
+      "answer": "1. Préparer le package d'installation de l'application au format Win32 (.intunewin)\n2. Se connecter au centre d'administration Microsoft Intune (intune.microsoft.com)\n3. Créer une nouvelle application Win32, téléverser le package et renseigner les commandes d'installation silencieuse\n4. Configurer les règles d'exigence matérielle (architecture 64 bits, version d'OS minimale) et les règles de détection\n5. Assigner l'application au groupe d'utilisateurs ou d'appareils cibles (en mode Requis ou Disponible)\n6. Vérifier l'état de déploiement et la conformité sur les postes clients",
+      "items": [
+        "Préparer le package d'installation de l'application au format Win32 (.intunewin)",
+        "Se connecter au centre d'administration Microsoft Intune (intune.microsoft.com)",
+        "Créer une nouvelle application Win32, téléverser le package et renseigner les commandes d'installation silencieuse",
+        "Configurer les règles d'exigence matérielle (architecture 64 bits, version d'OS minimale) et les règles de détection",
+        "Assigner l'application au groupe d'utilisateurs ou d'appareils cibles (en mode Requis ou Disponible)",
+        "Vérifier l'état de déploiement et la conformité sur les postes clients"
+      ],
+      "explanation": "Le déploiement Cloud via Intune remplace les GPO traditionnelles et permet de pousser des logiciels sur les postes nomades partout dans le monde (CP 4)[cite: 42].",
+      "difficulty": "difficile",
+      "context": "Déploiement Intune & Cloud"
+    },
+    {
+      "id": "eb7_q3",
+      "type": "association",
+      "question": "Associe chaque connecteur d'alimentation du bloc d'alimentation (PSU) à sa destination matérielle.",
+      "answer": "Connecteur ATX 24 broches -> Alimentation générale de la carte mère (+3.3V, +5V, +12V)[cite: 12, 17], Connecteur EPS 8 broches (4+4) -> Alimentation spécifique dédiée au processeur (CPU)[cite: 12, 17], Connecteur PCIe 8 broches (6+2) -> Alimentation auxiliaire de la carte graphique dédiée (dGPU)[cite: 16, 17], Connecteur SATA alimentation 15 broches -> Alimentation des disques durs, SSD 2.5 pouces et lecteurs optiques[cite: 15, 17]",
+      "pairs": [
+        ["Connecteur ATX 24 broches", "Alimentation générale de la carte mère (+3.3V, +5V, +12V)[cite: 12, 17]"],
+        ["Connecteur EPS 8 broches (4+4)", "Alimentation spécifique dédiée au processeur (CPU)[cite: 12, 17]"],
+        ["Connecteur PCIe 8 broches (6+2)", "Alimentation auxiliaire de la carte graphique dédiée (dGPU)[cite: 16, 17]"],
+        ["Connecteur SATA alimentation 15 broches", "Alimentation des disques durs, SSD 2.5 pouces et lecteurs optiques[cite: 15, 17]"]
+      ],
+      "explanation": "L'identification rigoureuse des connecteurs de puissance évite les erreurs de branchement pouvant endommager la carte mère ou empêcher le démarrage (CP 5)[cite: 17, 22].",
+      "difficulty": "facile",
+      "context": "Hardware & Alimentation PSU"
+    },
+    {
+      "id": "eb7_q4",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail sous Windows 11 affiche un écran noir avec le message 'Reboot and Select proper Boot device' au premier démarrage de la journée. Identifie la cause racine de cette panne.",
+      "answer": "L'ordre de priorité de démarrage (Boot Order) dans le BIOS/UEFI place un périphérique externe non amorçable (clé USB de stockage oubliée ou disque dur secondaire vierge) avant le disque SSD système.",
+      "indices": [
+        "Indice 1 : Le disque SSD contenant le système d'exploitation Windows est en parfait état de santé physique et détecté dans le BIOS[cite: 15, 21].",
+        "Indice 2 : L'utilisateur a laissé branchée sur un port USB arrière une clé USB contenant uniquement des documents PDF personnels[cite: 21, 22].",
+        "Indice 3 : Débrancher la clé USB permet à Windows de démarrer immédiatement et sans erreur[cite: 21, 22]."
+      ],
+      "explanation": "Si le BIOS est configuré pour booter en priorité sur les supports USB, la présence d'une clé USB non bootable bloque la séquence de démarrage (CP 3 et CP 5)[cite: 21, 22].",
+      "difficulty": "facile",
+      "context": "Diagnostic BIOS & Amorce"
+    },
+    {
+      "id": "eb7_q5",
+      "type": "ticket",
+      "question": "Ticket #3822 — 'Bonjour, un utilisateur signale qu'un malware a modifié les associations de fichiers de son poste : tous les raccourcis .lnk et exécutables .exe s'ouvrent désormais dans le bloc-notes (Notepad).' ",
+      "answer": "Restaurer les associations de fichiers d'origine dans le registre Windows (ruche HKEY_CLASSES_ROOT) à l'aide d'un fichier .reg sain ou via un point de restauration système antérieur.",
+      "checklist": [
+        "Démarrer le poste en environnement sain (Mode sans échec ou support WinPE)[cite: 22, 44]",
+        "Exécuter l'outil de restauration du système (rstrui.exe) pour revenir au dernier point de contrôle antérieur à l'incident[cite: 23]",
+        "Ou fusionner les clés de registre saines par défaut pour les extensions .exe et .lnk dans HKEY_CLASSES_ROOT[cite: 23, 51]",
+        "Lancer une analyse antivirus / anti-malware complète pour éradiquer le logiciel malveillant à l'origine de l'altération[cite: 57, 58]"
+      ],
+      "explanation": "La ruche HKCR gère les associations d'extensions de fichiers : sa corruption par un script paralyse le lancement des applications mais se répare via le registre ou un point de restauration (CP 3 et CP 5)[cite: 23, 51].",
+      "difficulty": "moyen",
+      "context": "Registre Windows & Réparation"
+    },
+    {
+      "id": "eb7_q6",
+      "type": "classic",
+      "question": "Quelle est la règle de calcul du pas (incrément) et du nombre d'hôtes pour un sous-réseau IPv4 défini par le préfixe CIDR /28 ?",
+      "answer": "Pour un /28, il reste 4 bits pour la partie hôte (32 - 28 = 4). Le nombre d'hôtes utilisables est de 14 (2^4 - 2 = 14). Le pas (incrément) est de 16 (256 - 240 = 16, masque 255.255.255.240).",
+      "explanation": "Le calcul binaire/CIDR permet de segmenter précisément les sous-réseaux et d'éviter le gaspillage d'adresses IP privées ou publiques (CP 7)[cite: 31].",
+      "difficulty": "moyen",
+      "context": "Calculs de Sous-Réseaux CIDR"
+    },
+    {
+      "id": "eb7_q7",
+      "type": "association",
+      "question": "Associe chaque console d'administration Microsoft 365 à son périmètre de gestion.",
+      "answer": "Microsoft 365 Admin Center -> Gestion globale des utilisateurs, licences, facturation et groupes de messagerie[cite: 42], Microsoft Entra Admin Center -> Gestion des identités, synchronisation hybride, MFA et accès conditionnel[cite: 42], Microsoft Intune Admin Center -> Gestion du parc d'appareils, stratégies de conformité et déploiement applicatif[cite: 42], Exchange Admin Center -> Gestion approfondie des boîtes aux lettres, redirections, flux de messagerie et anti-spam[cite: 42]",
+      "pairs": [
+        ["Microsoft 365 Admin Center", "Gestion globale des utilisateurs, licences, facturation et groupes de messagerie[cite: 42]"],
+        ["Microsoft Entra Admin Center", "Gestion des identités, synchronisation hybride, MFA et accès conditionnel[cite: 42]"],
+        ["Microsoft Intune Admin Center", "Gestion du parc d'appareils, stratégies de conformité et déploiement applicatif[cite: 42]"],
+        ["Exchange Admin Center", "Gestion approfondie des boîtes aux lettres, redirections, flux de messagerie et anti-spam[cite: 42]"]
+      ],
+      "explanation": "L'écosystème Cloud Microsoft segmente ses portails d'administration selon les responsabilités d'exploitation (CP 1, CP 4 et CP 6)[cite: 42].",
+      "difficulty": "facile",
+      "context": "Administration Microsoft 365"
+    },
+    {
+      "id": "eb7_q8",
+      "type": "classic",
+      "question": "Quelle est la conséquence directe de l'activation de l'option 'Sticky MAC' sur un port de switch configuré avec Port-Security ?",
+      "answer": "Le switch apprend automatiquement l'adresse MAC du premier équipement branché sur le port et l'enregistre dynamiquement dans sa configuration courante (running-config) comme adresse autorisée.",
+      "explanation": "L'option sticky évite à l'administrateur de devoir saisir manuellement les adresses MAC hexadécimales de chaque poste lors du déploiement (CP 7)[cite: 33].",
+      "difficulty": "moyen",
+      "context": "Sécurité Commutation & Port-Security"
+    },
+    {
+      "id": "eb7_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de résolution d'une corruption de profil utilisateur local sous Windows 11 (ouverture sur un profil temporaire).",
+      "answer": "1. Constater le message d'avertissement 'Vous avez été connecté avec un profil temporaire'\n2. Se connecter sur un compte d'administration distinct de la machine\n3. Sauvegarder les données personnelles situées dans C:\\Users\\NomUtilisateur\n4. Ouvrir l'éditeur du Registre (regedit) et naviguer vers HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\n5. Localiser la clé du profil avec l'extension '.bak' et supprimer ou corriger la clé corrompue\n6. Redémarrer le poste et faire réouvrir la session par l'utilisateur pour recréer un profil propre",
+      "items": [
+        "Constater le message d'avertissement 'Vous avez été connecté avec un profil temporaire'",
+        "Se connecter sur un compte d'administration distinct de la machine",
+        "Sauvegarder les données personnelles situées dans C:\\Users\\NomUtilisateur",
+        "Ouvrir l'éditeur du Registre (regedit) et naviguer vers HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList",
+        "Localiser la clé du profil avec l'extension '.bak' et supprimer ou corriger la clé corrompue",
+        "Redémarrer le poste et faire réouvrir la session par l'utilisateur pour recréer un profil propre"
+      ],
+      "explanation": "La suppression de la clé .bak dans ProfileList force Windows à réassocier correctement le dossier de profil utilisateur sans perte de données (CP 3 et CP 5)[cite: 23, 51].",
+      "difficulty": "difficile",
+      "context": "Dépannage Profils Windows"
+    },
+    {
+      "id": "eb7_q10",
+      "type": "classic",
+      "question": "Pourquoi la certification énergétique '80 Plus' (Bronze, Silver, Gold, Platinum) sur un bloc d'alimentation (PSU) est-elle un gage de qualité pour un parc informatique ?",
+      "answer": "Elle garantit qu'au moins 80% de l'électricité consommée est effectivement convertie en courant continu pour les composants (moins de 20% de perte en chaleur), ce qui réduit la consommation électrique, l'échauffement interne et le risque d'instabilité système.",
+      "explanation": "Un bloc d'alimentation de mauvaise qualité sans certification 80 Plus chauffe excessivement et expose les composants internes à des surtensions destructrices (CP 5)[cite: 17].",
+      "difficulty": "facile",
+      "context": "Hardware & Rendement PSU"
+    },
+    {
+      "id": "eb7_q11",
+      "type": "diagnostic_indices",
+      "question": "Un technicien ne parvient pas à joindre un serveur web interne en tapant son adresse IP dans le navigateur (ex: http://192.168.10.50), alors que le ping répond parfaitement (5/5 paquets reçus). Identifie la cause du dysfonctionnement.",
+      "answer": "Le service de serveur web (HTTP port 80 ou HTTPS port 443) est arrêté sur le serveur ou le pare-feu du serveur bloque les ports applicatifs tout en autorisant les requêtes ICMP (Echo Request).",
+      "indices": [
+        "Indice 1 : La couche 3 (réseau / IP) est totalement fonctionnelle comme l'atteste la réussite du ping[cite: 30, 32].",
+        "Indice 2 : La commande PowerShell 'Test-NetConnection 192.168.10.50 -Port 80' renvoie 'TcpTestSucceeded : False'[cite: 32, 54].",
+        "Indice 3 : Le service de serveur web IIS ou Apache est arrêté dans la console des services de la machine cible[cite: 23, 26]."
+      ],
+      "explanation": "Le succès du ping valide uniquement la connectivité de couche 3 (ICMP) mais ne prouve en aucun cas que le port applicatif de couche 4/7 est en écoute et accessible (CP 3 et CP 7)[cite: 32, 34].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Couches OSI"
+    },
+    {
+      "id": "eb7_q12",
+      "type": "classic",
+      "question": "Dans le cadre de l'accompagnement des personnes malvoyantes, quel raccourci clavier Windows permet d'activer instantanément le lecteur d'écran 'Narrateur' ?",
+      "answer": "Win + Ctrl + Entrée (ou Win + Ctrl + Enter)[cite: 27].",
+      "explanation": "Le Narrateur lit à voix haute le texte, les boutons et les éléments d'interface affichés à l'écran pour guider les personnes non-voyantes ou malvoyantes (CP 2)[cite: 27].",
+      "difficulty": "facile",
+      "context": "Accessibilité Numérique & Narrateur"
+    },
+    {
+      "id": "eb7_q13",
+      "type": "ticket",
+      "question": "Ticket #4180 — 'Bonjour, nous constatons que plusieurs postes du service commercial ont leur fond d'écran remplacé par une image publicitaire et que le moteur de recherche par défaut est détourné vers un site inconnu.'",
+      "answer": "Déconnecter les postes du réseau, analyser et supprimer les logiciels malveillants/extensions parasites avec un anti-malware, et verrouiller le fond d'écran et la configuration du navigateur via une GPO Active Directory[cite: 43, 57, 58].",
+      "checklist": [
+        "Isoler les postes du réseau pour éviter toute communication avec des serveurs de commande (C2)[cite: 57]",
+        "Nettoyer les extensions de navigateurs non approuvées et réinitialiser les paramètres web[cite: 58]",
+        "Lancer une analyse complète avec Malwarebytes et vérifier les tâches planifiées[cite: 53, 58]",
+        "Déployer une GPO de restriction interdisant la modification du fond d'écran et fixant le moteur de recherche d'entreprise[cite: 43]"
+      ],
+      "explanation": "L'éradication des adwares et pirates de navigateurs (Browser Hijackers) doit être complétée par un durcissement des stratégies GPO pour prévenir la récidive (CP 5 et CP 8)[cite: 43, 56, 58].",
+      "difficulty": "moyen",
+      "context": "Cybersécurité & Stratégies GPO"
+    },
+    {
+      "id": "eb7_q14",
+      "type": "association",
+      "question": "Associe chaque terme de sécurité réseau à son rôle.",
+      "answer": "DMZ (Zone Démilitarisée) -> Sous-réseau isolé hébergeant les serveurs publics (Web, Mail) pour protéger le réseau interne[cite: 34], NAT / PAT -> Mécanisme traduisant les adresses IP privées en une adresse IP publique avec distinction par numéros de ports[cite: 30, 34], RADIUS -> Protocole AAA centralisant l'authentification réseau des utilisateurs Wi-Fi/VPN auprès de l'Active Directory[cite: 30, 33], Bastion SSH (Jump Server) -> Serveur passerelle unique hautement sécurisé par lequel transitent tous les accès d'administration distante[cite: 34]",
+      "pairs": [
+        ["DMZ (Zone Démilitarisée)", "Sous-réseau isolé hébergeant les serveurs publics (Web, Mail) pour protéger le réseau interne[cite: 34]"],
+        ["NAT / PAT", "Mécanisme traduisant les adresses IP privées en une adresse IP publique avec distinction par numéros de ports[cite: 30, 34]"],
+        ["RADIUS", "Protocole AAA centralisant l'authentification réseau des utilisateurs Wi-Fi/VPN auprès de l'Active Directory[cite: 30, 33]"],
+        ["Bastion SSH (Jump Server)", "Serveur passerelle unique hautement sécurisé par lequel transitent tous les accès d'administration distante[cite: 34]"]
+      ],
+      "explanation": "Ces briques d'architecture réseau protègent les ressources sensibles contre les attaques directes et structurent les flux d'administration (CP 7)[cite: 30, 33, 34].",
+      "difficulty": "moyen",
+      "context": "Architecture de Sécurité Réseau"
+    },
+    {
+      "id": "eb7_q15",
+      "type": "classic",
+      "question": "Quelle est la commande Linux permettant d'afficher l'espace disque disponible et utilisé de l'ensemble des systèmes de fichiers montés sous une forme lisible par un humain (en Mo et Go) ?",
+      "answer": "df -h (disk free -human readable)[cite: 26].",
+      "explanation": "La commande df -h est l'un des premiers réflexes sous Linux pour diagnostiquer un blocage de service causé par une partition saturée à 100% (/var ou racine)[cite: 26].",
+      "difficulty": "facile",
+      "context": "Linux & Diagnostic Stockage"
+    },
+    {
+      "id": "eb7_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de configuration d'une liaison Trunk 802.1Q entre deux commutateurs Cisco pour transporter les VLANs 10 et 20.",
+      "answer": "1. Accéder à l'interface en ligne de commande (CLI) du premier switch en mode de configuration globale\n2. Sélectionner l'interface physique reliant les deux switchs (ex: interface GigabitEthernet 0/1)[cite: 33]\n3. Définir l'encapsulation : switchport trunk encapsulation dot1q[cite: 33]\n4. Passer le port en mode Trunk : switchport mode trunk[cite: 33]\n5. Spécifier les VLANs autorisés : switchport trunk allowed vlan 10,20[cite: 33]\n6. Répéter exactement la même configuration sur l'interface du second commutateur et sauvegarder[cite: 33]",
+      "items": [
+        "Accéder à l'interface en ligne de commande (CLI) du premier switch en mode de configuration globale",
+        "Sélectionner l'interface physique reliant les deux switchs (ex: interface GigabitEthernet 0/1)[cite: 33]",
+        "Définir l'encapsulation : switchport trunk encapsulation dot1q[cite: 33]",
+        "Passer le port en mode Trunk : switchport mode trunk[cite: 33]",
+        "Spécifier les VLANs autorisés : switchport trunk allowed vlan 10,20[cite: 33]",
+        "Répéter exactement la même configuration sur l'interface du second commutateur et sauvegarder[cite: 33]"
+      ],
+      "explanation": "La configuration symétrique des deux côtés de la liaison Trunk garantit l'acheminement étanche des trames taguées entre les différents étages (CP 7)[cite: 33].",
+      "difficulty": "difficile",
+      "context": "Configuration Trunk Cisco"
+    },
+    {
+      "id": "eb7_q17",
+      "type": "classic",
+      "question": "Pourquoi est-il crucial d'activer la technologie 'Dual Channel' lors de l'installation de deux barrettes de mémoire vive (RAM) sur une carte mère ?",
+      "answer": "Parce que le Dual Channel permet au contrôleur mémoire de communiquer simultanément sur deux canaux 64 bits distincts (bus 128 bits), doublant ainsi la bande passante théorique des transferts entre le processeur et la mémoire vive.",
+      "explanation": "Installer deux barrettes de 8 Go dans les slots de même couleur offre de bien meilleures performances qu'une seule barrette de 16 Go en Single Channel (CP 5)[cite: 14].",
+      "difficulty": "moyen",
+      "context": "Hardware & Dual Channel RAM"
+    },
+    {
+      "id": "eb7_q18",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'il reçoit un e-mail semblant provenir du service des Ressources Humaines lui demandant de télécharger un fichier 'Fiche_Evaluation_2026.docx.exe' pour consulter sa prime. De quel vecteur d'attaque s'agit-il ?",
+      "answer": "Une tentative d'infection par Cheval de Troie (Trojan) utilisant la technique de la double extension pour masquer un exécutable malveillant sous l'apparence d'un document Word.",
+      "indices": [
+        "Indice 1 : Windows masque les extensions connues par défaut, affichant uniquement 'Fiche_Evaluation_2026.docx' à l'écran de l'utilisateur[cite: 24].",
+        "Indice 2 : L'icône du fichier imite parfaitement le logo bleu de Microsoft Word mais le type de fichier est 'Application'[cite: 56].",
+        "Indice 3 : L'exécution du fichier lance un code malveillant en tâche de fond tout en ouvrant un faux document texte pour tromper la victime[cite: 56]."
+      ],
+      "explanation": "Activer l'affichage des extensions de fichiers dans l'Explorateur Windows est une règle d'hygiène fondamentale pour déjouer les pièges de double extension (CP 6)[cite: 24, 56, 58].",
+      "difficulty": "facile",
+      "context": "Cybersécurité & Malwares"
+    },
+    {
+      "id": "eb7_q19",
+      "type": "association",
+      "question": "Associe chaque technologie de refroidissement d'ordinateur à ses spécificités.",
+      "answer": "Ventirad classique (Air cooling) -> Dissipateur en aluminium/cuivre surmonté d'un ventilateur régulé PWM (économique et très fiable)[cite: 20], Watercooling AIO (All-In-One) -> Circuit liquide fermé prêt à l'emploi avec pompe intégrée et radiateur externe pour fortes charges thermiques[cite: 20], Refroidissement passif -> Dissipateur thermique métallique sans aucun ventilateur (silence total mais limité aux faibles TDP)[cite: 20], Pression positive dans le boîtier -> Configuration où le débit d'air entrant (intake) est supérieur au débit sortant, limitant l'infiltration de poussière[cite: 20]",
+      "pairs": [
+        ["Ventirad classique (Air cooling)", "Dissipateur en aluminium/cuivre surmonté d'un ventilateur régulé PWM (économique et très fiable)[cite: 20]"],
+        ["Watercooling AIO (All-In-One)", "Circuit liquide fermé prêt à l'emploi avec pompe intégrée et radiateur externe pour fortes charges thermiques[cite: 20]"],
+        ["Refroidissement passif", "Dissipateur thermique métallique sans aucun ventilateur (silence total mais limité aux faibles TDP)[cite: 20]"],
+        ["Pression positive dans le boîtier", "Configuration où le débit d'air entrant (intake) est supérieur au débit sortant, limitant l'infiltration de poussière[cite: 20]"]
+      ],
+      "explanation": "Le choix et l'entretien des solutions thermiques conditionnent la longévité et la stabilité des processeurs sous charge (CP 5)[cite: 13, 20].",
+      "difficulty": "moyen",
+      "context": "Hardware & Refroidissement"
+    },
+    {
+      "id": "eb7_q20",
+      "type": "ticket",
+      "question": "Ticket #5220 — 'Bonjour, une employée nomade en déplacement professionnel a oublié le code PIN de sa session Windows 11 sur son ordinateur portable BitLocker. Elle a besoin d'accéder d'urgence à ses dossiers hors connexion.'",
+      "answer": "Récupérer la clé de récupération BitLocker à 48 chiffres associée au poste dans l'annuaire Active Directory ou Entra ID, guider l'utilisatrice pour la saisie au démarrage, puis réinitialiser son code PIN une fois la session ouverte[cite: 42, 47].",
+      "checklist": [
+        "Vérifier l'identité de l'employée par une procédure de contrôle hors-canal[cite: 9, 59]",
+        "Rechercher l'objet ordinateur dans dsa.msc (onglet Récupération BitLocker) ou sur le portail Entra ID[cite: 42, 47]",
+        "Dicter la clé de déverrouillage numérique à 48 chiffres à l'utilisatrice[cite: 47]",
+        "Faire réinitialiser le code PIN Windows Hello dans les paramètres de compte dès l'ouverture de session"
+      ],
+      "explanation": "La centralisation des clés BitLocker dans l'annuaire d'entreprise permet le déblocage sécurisé des utilisateurs nomades en cas d'oubli de secret local (CP 1 et CP 6)[cite: 42, 47].",
+      "difficulty": "moyen",
+      "context": "Support Nomade & BitLocker"
+    },
+    {
+      "id": "eb7_q21",
+      "type": "classic",
+      "question": "Quel est le rôle du protocole RADIUS (Remote Authentication Dial-In User Service) lors de la connexion d'un utilisateur au réseau Wi-Fi d'entreprise sécurisé en WPA2/WPA3 Enterprise (802.1X) ?",
+      "answer": "Le serveur RADIUS agit comme intermédiaire d'authentification : il reçoit les identifiants envoyés par le point d'accès Wi-Fi, les valide auprès de l'annuaire Active Directory (serveur NPS sous Windows Server), et renvoie l'autorisation d'accès au point d'accès avec le VLAN attribué.",
+      "explanation": "Le 802.1X couplé à RADIUS permet une révocation nominative immédiate des accès sans avoir à modifier le mot de passe Wi-Fi de toute l'entreprise (CP 7 et CP 8)[cite: 30, 33].",
+      "difficulty": "difficile",
+      "context": "Sécurité Réseau & 802.1X RADIUS"
+    },
+    {
+      "id": "eb7_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de résolution d'un problème de connectivité réseau local lié à une mauvaise attribution de passerelle par défaut.",
+      "answer": "1. Constater que le poste peut joindre les machines du même sous-réseau mais ne peut pas sortir sur Internet\n2. Exécuter la commande 'ipconfig /all' pour relever la passerelle par défaut configurée[cite: 24, 34]\n3. Constater que la passerelle est vide ou pointe sur une adresse erronée\n4. Tester un ping vers l'adresse IP réelle du routeur local (ex: 192.168.1.1)[cite: 30, 34]\n5. Corriger la configuration de l'option 003 (Routeur) sur l'étendue du serveur DHCP ou reparamétrer l'IP statique[cite: 34, 44]\n6. Renouveler le bail (ipconfig /renew) et valider l'accès vers l'extérieur avec un ping 8.8.8.8[cite: 30, 34]",
+      "items": [
+        "Constater que le poste peut joindre les machines du même sous-réseau mais ne peut pas sortir sur Internet",
+        "Exécuter la commande 'ipconfig /all' pour relever la passerelle par défaut configurée[cite: 24, 34]",
+        "Constater que la passerelle est vide ou pointe sur une adresse erronée",
+        "Tester un ping vers l'adresse IP réelle du routeur local (ex: 192.168.1.1)[cite: 30, 34]",
+        "Corriger la configuration de l'option 003 (Routeur) sur l'étendue du serveur DHCP ou reparamétrer l'IP statique[cite: 34, 44]",
+        "Renouveler le bail (ipconfig /renew) et valider l'accès vers l'extérieur avec un ping 8.8.8.8[cite: 30, 34]"
+      ],
+      "explanation": "La passerelle par défaut est le point de passage obligatoire pour tout paquet destiné à un sous-réseau externe (CP 3 et CP 7)[cite: 30, 31, 34].",
+      "difficulty": "moyen",
+      "context": "Dépannage Passerelle & IP"
+    },
+    {
+      "id": "eb7_q23",
+      "type": "classic",
+      "question": "Quelle est la principale différence entre une adresse MAC et une adresse IP au sein d'une communication réseau ?",
+      "answer": "L'adresse MAC est une adresse physique unique gravée sur la carte réseau opérant au niveau de la couche 2 (Liaison), tandis que l'adresse IP est une adresse logique modifiable et routable opérant au niveau de la couche 3 (Réseau).",
+      "explanation": "L'adresse MAC identifie l'équipement sur le commutateur local, tandis que l'adresse IP permet le routage entre différents réseaux (CP 7)[cite: 30, 32].",
+      "difficulty": "facile",
+      "context": "Réseaux & Adressage MAC/IP"
+    },
+    {
+      "id": "eb7_q24",
+      "type": "association",
+      "question": "Associe chaque technologie sans fil à sa portée et son usage privilégié.",
+      "answer": "Bluetooth (PAN) -> Portée courte (1 à 10 mètres) pour périphériques personnels (claviers, souris, casques)[cite: 30], Wi-Fi (LAN) -> Portée moyenne (10 à 100 mètres) pour la connectivité réseau locale des postes et terminaux[cite: 30], 4G / 5G (WAN) -> Réseau cellulaire à très large portée pour la mobilité et le haut débit extérieur, NFC -> Portée ultra-courte (quelques centimètres) pour les badges d'accès et le paiement sans contact",
+      "pairs": [
+        ["Bluetooth (PAN)", "Portée courte (1 à 10 mètres) pour périphériques personnels (claviers, souris, casques)[cite: 30]"],
+        ["Wi-Fi (LAN)", "Portée moyenne (10 à 100 mètres) pour la connectivité réseau locale des postes et terminaux[cite: 30]"],
+        ["4G / 5G (WAN)", "Réseau cellulaire à très large portée pour la mobilité et le haut débit extérieur"],
+        ["NFC", "Portée ultra-courte (quelques centimètres) pour les badges d'accès et le paiement sans contact"]
+      ],
+      "explanation": "La connaissance des technologies radio permet de diagnostiquer les pannes d'appairage et de conseiller les utilisateurs en situation de mobilité (CP 4 et CP 7)[cite: 30].",
+      "difficulty": "facile",
+      "context": "Technologies Sans-Fil"
+    },
+    {
+      "id": "eb7_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son PC s'est brutalement éteint lors d'un orage et ne donne plus aucun signe de vie : aucune LED, aucun ventilateur ne tourne, et une forte odeur de brûlé se dégage de l'arrière de la tour. Identifie le composant en panne.",
+      "answer": "Destruction du bloc d'alimentation (PSU) causée par une surtension électrique du réseau secteur.",
+      "indices": [
+        "Indice 1 : Le câble d'alimentation secteur testé sur un autre appareil fonctionne parfaitement[cite: 17, 22].",
+        "Indice 2 : Le fusible interne de protection ou les condensateurs du PSU ont grillé pour protéger les composants aval[cite: 17].",
+        "Indice 3 : Le remplacement du bloc d'alimentation par un modèle de test neuf permet au PC de redémarrer immédiatement sans dommage sur la carte mère[cite: 17, 22]."
+      ],
+      "explanation": "Un bloc d'alimentation de qualité intègre des protections (MOV/fusibles) qui se sacrifient lors d'une surtension pour éviter la destruction de la carte mère et du processeur (CP 5)[cite: 17, 22].",
+      "difficulty": "facile",
+      "context": "Diagnostic Alimentation & Surtension"
+    },
+    {
+      "id": "eb7_q26",
+      "type": "classic",
+      "question": "Quelle est l'utilité du protocole SLAAC (Stateless Address Autoconfiguration) dans le fonctionnement d'un réseau IPv6 ?",
+      "answer": "Il permet à un équipement client de générer automatiquement et de manière autonome son adresse IPv6 globale valide sans avoir besoin d'un serveur DHCPv6, en combinant le préfixe réseau annoncé par le routeur local avec son identifiant d'interface.",
+      "explanation": "SLAAC simplifie grandement l'administration réseau en IPv6 en rendant le déploiement de serveurs DHCP optionnel (CP 7)[cite: 31].",
+      "difficulty": "moyen",
+      "context": "Réseaux IPv6 & SLAAC"
+    },
+    {
+      "id": "eb7_q27",
+      "type": "ticket",
+      "question": "Ticket #4755 — 'Bonjour, notre serveur d'application sous Linux Debian ne démarre plus son serveur web. Le message d'erreur indique : No space left on device alors que le disque est un SSD de 500 Go.'",
+      "answer": "Vérifier la saturation du dossier de logs (/var/log) ou l'épuisement des numéros d'inœuds (inodes) causé par des millions de petits fichiers temporaires non purgés.",
+      "checklist": [
+        "Se connecter en session console/SSH root sur le serveur Linux[cite: 26, 34]",
+        "Vérifier l'espace disque avec 'df -h' et la table des inœuds avec 'df -i'[cite: 26]",
+        "Localiser les répertoires volumineux avec 'du -sh /var/log/*'[cite: 26]",
+        "Purger les anciens fichiers de journaux archivés (.gz) et relancer le service web (systemctl restart apache2/nginx)[cite: 26]"
+      ],
+      "explanation": "Sous Linux, une partition peut afficher 0 octet libre à cause de logs saturés, ou refuser toute écriture si la table des inœuds est épuisée (CP 5)[cite: 26].",
+      "difficulty": "difficile",
+      "context": "Maintenance Linux & Inodes"
+    },
+    {
+      "id": "eb7_q28",
+      "type": "classic",
+      "question": "Pourquoi la commande 'sfc /scannow' doit-elle toujours être lancée dans une invite de commandes ou une console PowerShell exécutée avec les privilèges d'administrateur sous Windows ?",
+      "answer": "Parce que la réparation et le remplacement des fichiers système protégés dans C:\\Windows\\System32 nécessitent les droits d'accès de sécurité les plus élevés (TrustedInstaller / Administrateur système).",
+      "explanation": "Sans élévation de privilèges (UAC), la commande s'interrompt immédiatement avec un message 'Vous devez être administrateur pour exécuter cet utilitaire' (CP 5)[cite: 23, 52].",
+      "difficulty": "facile",
+      "context": "Maintenance Windows & SFC"
+    },
+    {
+      "id": "eb7_q29",
+      "type": "association",
+      "question": "Associe chaque technologie d'affichage à sa caractéristique matérielle.",
+      "answer": "Dalle IPS -> Excellente fidélité des couleurs et angles de vision très larges (idéale pour la bureautique et le graphisme), Dalle TN -> Temps de réponse très rapide mais angles de vision étroits et contraste limité, Dalle VA -> Très bon taux de contraste et noirs profonds (bon compromis polyvalent), Dalle OLED -> Chaque pixel produit sa propre lumière offrant un contraste infini sans rétroéclairage global",
+      "pairs": [
+        ["Dalle IPS", "Excellente fidélité des couleurs et angles de vision très larges (idéale pour la bureautique et le graphisme)"],
+        ["Dalle TN", "Temps de réponse très rapide mais angles de vision étroits et contraste limité"],
+        ["Dalle VA", "Très bon taux de contraste et noirs profonds (bon compromis polyvalent)"],
+        ["Dalle OLED", "Chaque pixel produit sa propre lumière offrant un contraste infini sans rétroéclairage global"]
+      ],
+      "explanation": "Le choix des moniteurs en fonction des dalles permet d'adapter le confort visuel aux besoins métiers des utilisateurs (CP 2 et CP 4)[cite: 16].",
+      "difficulty": "facile",
+      "context": "Hardware & Écrans"
+    },
+    {
+      "id": "eb7_q30",
+      "type": "classic",
+      "question": "Dans le cadre de la gestion des tickets et des indicateurs de performance du centre de services (ITIL), que mesure le taux de résolution au premier contact (FCR - First Contact Resolution) ?",
+      "answer": "Le pourcentage d'incidents ou de demandes résolus dès le premier échange avec l'utilisateur au niveau N1 sans nécessiter de rappel, de réouverture de ticket ou d'escalade vers un niveau supérieur.",
+      "explanation": "Un taux de FCR élevé traduit une excellente efficacité du support de premier niveau et une grande satisfaction des utilisateurs (CP 1)[cite: 1, 7].",
+      "difficulty": "moyen",
+      "context": "Gestion de Services & ITIL"
+    },
+    {
+      "id": "eb7_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement à chaud (Hot-Plug) d'une barrette de mémoire vive sur un serveur haute disponibilité équipé d'une carte mère compatible.",
+      "answer": "1. Vérifier dans la documentation constructeur et l'utilitaire de gestion matérielle (iDRAC/iLO) le slot exact de la barrette défaillante\n2. S'équiper d'un bracelet antistatique et préparer la barrette ECC certifiée constructeur de remplacement[cite: 14, 22]\n3. Ouvrir le capot du serveur en respectant les consignes de sécurité mécanique\n4. Déverrouiller les loquets latéraux du slot DIMM et extraire la barrette défectueuse[cite: 12, 14]\n5. Insérer fermement la nouvelle barrette dans le bon sens d'encoche jusqu'au verrouillage automatique des loquets[cite: 12, 14]\n6. Vérifier dans la console de supervision que l'état de la mémoire repasse au vert sans erreur ECC",
+      "items": [
+        "Vérifier dans la documentation constructeur et l'utilitaire de gestion matérielle (iDRAC/iLO) le slot exact de la barrette défaillante",
+        "S'équiper d'un bracelet antistatique et préparer la barrette ECC certifiée constructeur de remplacement[cite: 14, 22]",
+        "Ouvrir le capot du serveur en respectant les consignes de sécurité mécanique",
+        "Déverrouiller les loquets latéraux du slot DIMM et extraire la barrette défectueuse[cite: 12, 14]",
+        "Insérer fermement la nouvelle barrette dans le bon sens d'encoche jusqu'au verrouillage automatique des loquets[cite: 12, 14]",
+        "Vérifier dans la console de supervision que l'état de la mémoire repasse au vert sans erreur ECC"
+      ],
+      "explanation": "La maintenance sur serveur critique exige le respect scrupuleux des repères de slots et des précautions électrostatiques (CP 5)[cite: 14, 22].",
+      "difficulty": "difficile",
+      "context": "Maintenance Serveurs & RAM ECC"
+    },
+    {
+      "id": "eb7_q32",
+      "type": "classic",
+      "question": "Sur un commutateur réseau Cisco, pourquoi doit-on toujours renommer les VLANs créés avec des noms explicites (ex: vlan 10 / name COMPTA) lors de la configuration ?",
+      "answer": "Parce que sans nommage explicite, les VLANs reçoivent des identifiants génériques par défaut (ex: VLAN0010) qui rendent la lecture de la configuration (show vlan brief) et le dépannage très complexes lors des interventions futures.",
+      "explanation": "La rigueur de documentation et de nommage dans les équipements réseau évite les erreurs humaines lors des modifications de brassage (CP 7)[cite: 33, 34].",
+      "difficulty": "facile",
+      "context": "Administration Commutateurs Cisco"
+    },
+    {
+      "id": "eb7_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur fixe s'allume mais affiche le message d'erreur 'CMOS Checksum Error - Defaults Loaded' à chaque démarrage du matin et que l'horloge affiche 00:00. Identifie la pièce défectueuse à remplacer.",
+      "answer": "La pile bouton au lithium CR2032 de la carte mère est totalement déchargée.",
+      "indices": [
+        "Indice 1 : Le PC démarre et fonctionne normalement une fois que l'utilisateur appuie sur F1 pour continuer[cite: 21, 22].",
+        "Indice 2 : Tous les paramètres personnalisés du BIOS (ordre de boot, profil XMP) sont réinitialisés aux valeurs d'usine après chaque coupure de courant[cite: 14, 21].",
+        "Indice 3 : La tension mesurée sur la pile bouton avec un multimètre est inférieure à 2,5V (au lieu des 3V nominaux)[cite: 21, 22]."
+      ],
+      "explanation": "La pile CR2032 alimente la mémoire CMOS qui conserve l'horloge et la configuration BIOS lorsque la machine est débranchée du secteur (CP 5)[cite: 12, 21, 22].",
+      "difficulty": "facile",
+      "context": "Maintenance Matérielle & Pile CMOS"
+    },
+    {
+      "id": "eb7_q34",
+      "type": "classic",
+      "question": "Dans le cadre de l'ingénierie sociale, qu'est-ce que l'attaque par 'Quid Pro Quo' et comment s'en prémunir ?",
+      "answer": "C'est une manipulation où l'attaquant propose un faux service ou avantage gratuit (ex: faux appel du support IT proposant d'accélérer l'ordinateur) en échange d'informations sensibles ou de la désactivation d'une protection. On s'en prémunit en n'acceptant jamais d'intervention non planifiée sans vérification interne.",
+      "explanation": "Le Quid Pro Quo exploite le principe psychologique de réciprocité pour inciter la victime à coopérer de son plein gré (CP 6)[cite: 59].",
+      "difficulty": "moyen",
+      "context": "Ingénierie Sociale & Quid Pro Quo"
+    },
+    {
+      "id": "eb7_q35",
+      "type": "ticket",
+      "question": "Ticket #5998 — 'Bonjour, suite à un audit de sécurité, nous devons interdire l'accès au panneau de configuration et à l'éditeur du Registre (regedit) pour tous les utilisateurs du service Accueil.'",
+      "answer": "Créer et configurer une Stratégie de Groupe (GPO) désactivant l'accès au Panneau de configuration et aux outils de modification du registre, et la lier à l'Unité d'Organisation (OU) Accueil[cite: 43].",
+      "checklist": [
+        "Ouvrir la console gpmc.msc sur le contrôleur de domaine[cite: 43]",
+        "Créer une GPO (ex: U_Restrictions_Accueil) liée à l'OU Accueil[cite: 43]",
+        "Éditer : Configuration utilisateur > Stratégies > Modèles d'administration > Système > 'Empêcher l'accès aux outils de modification du Registre'[cite: 43, 51]",
+        "Éditer : Configuration utilisateur > Stratégies > Modèles d'administration > Panneau de configuration > 'Interdire l'accès au Panneau de configuration'[cite: 43]",
+        "Tester l'application effective des restrictions sur une session utilisateur avec gpupdate /force[cite: 43]"
+      ],
+      "explanation": "Le durcissement de session par GPO limite les risques de déconfiguration accidentelle ou malveillante sur les postes d'accueil ou en libre-service (CP 6 et CP 8)[cite: 43].",
+      "difficulty": "moyen",
+      "context": "Active Directory & GPO de Sécurité"
+    }
+  ]
+}

@@ -23,6 +23,9 @@ import '../../features/docs/presentation/docs_screen.dart';
 import '../../features/parcours/data/tip_quiz_catalog.dart';
 import '../../features/parcours/presentation/chapter_lesson_screen.dart';
 import '../../features/parcours/presentation/parcours_screen.dart';
+import '../../features/exam/presentation/exams_screen.dart';
+import '../../features/tp/exam_tp/presentation/tp_exam_session_screen.dart';
+import '../../features/tp/exam_tp/presentation/tp_exam_correction_screen.dart';
 import '../../features/profil/presentation/profile_screen.dart';
 import '../../features/notifications/notifications_screen.dart';
 // Nouveaux imports Quiz (Architecture Modulaire)
@@ -67,6 +70,10 @@ import '../../features/tp/reseau/data/tp_binaire_data.dart';
 import '../../features/tp/reseau/presentation/reseau_hub_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_hub_screen.dart';
 import '../../features/tp/reseau/presentation/tp_binaire_session_screen.dart';
+import '../../features/tp/osi/presentation/osi_hub_screen.dart';
+import '../../features/tp/osi/presentation/tri_selectif/tri_selectif_screen.dart';
+import '../../features/tp/osi/presentation/voyage_paquet/voyage_paquet_screen.dart';
+import '../../features/tp/osi/presentation/enqueteur/enqueteur_osi_screen.dart';
 import '../../features/ai/presentation/ai_setup_screen.dart';
 import '../../features/notebook/presentation/notebook_screen.dart';
 import '../../features/notebook/presentation/note_editor_screen.dart';
@@ -181,6 +188,22 @@ final GoRouter appRouter = GoRouter(
           path: '/parcours',
           pageBuilder: (context, state) => eskoliaTransitionPage(
             child: ParcoursScreen(expandFormationId: state.uri.queryParameters['focus']),
+          ),
+        ),
+        GoRoute(
+          path: '/exams',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const ExamsScreen()),
+        ),
+        GoRoute(
+          path: '/exams/tp/:id',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: TpExamSessionScreen(examId: state.pathParameters['id']!),
+          ),
+        ),
+        GoRoute(
+          path: '/exams/tp/:id/correction',
+          pageBuilder: (context, state) => eskoliaTransitionPage(
+            child: TpExamCorrectionScreen(examId: state.pathParameters['id']!),
           ),
         ),
         GoRoute(
@@ -414,6 +437,22 @@ final GoRouter appRouter = GoRouter(
             );
             return eskoliaTransitionPage(child: TpBinaireSessionScreen(tp: tp));
           },
+        ),
+        GoRoute(
+          path: '/tp/osi',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const OsiHubScreen()),
+        ),
+        GoRoute(
+          path: '/tp/osi/tri',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const TriSelectifScreen()),
+        ),
+        GoRoute(
+          path: '/tp/osi/paquet',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const VoyagePaquetScreen()),
+        ),
+        GoRoute(
+          path: '/tp/osi/enqueteur',
+          pageBuilder: (context, state) => eskoliaTransitionPage(child: const EnqueteurOsiScreen()),
         ),
         GoRoute(
           path: '/tp/:trackId',

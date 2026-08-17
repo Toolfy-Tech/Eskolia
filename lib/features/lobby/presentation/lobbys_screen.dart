@@ -24,6 +24,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
 import 'widgets/lobby_create_card_body.dart';
 import 'widgets/lobby_create_ai_card_body.dart';
 import 'widgets/lobby_join_private_card_body.dart';
@@ -653,21 +654,18 @@ class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
     final hPad = EskoliaLayout.screenPaddingH;
     final width = MediaQuery.sizeOf(context).width;
 
-    int numColumns;
-    if (width > 1200) {
-      numColumns = 3;
-    } else if (width > 800) {
-      numColumns = 2;
-    } else {
-      numColumns = 1;
-    }
+    final isLargeScreen = width >= 700;
+    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78.0 : 250.0) : 0.0;
+    final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
-    // Déterminer la largeur des cartes
-    final sidebarWidth = width > 800 ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 48; // marges et padding
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
+    final colPref = ref.watch(columnPreferenceProvider('lobbys'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final rawOrder = ref.watch(lobbyCardsOrderProvider);
     final pinned = ref.watch(lobbyPinnedCardsProvider);
@@ -691,7 +689,24 @@ class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
         return _buildDraggableCard(key, _buildCardContent(key, context), cardWidth);
       }).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -786,6 +801,11 @@ class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const EskoliaColumnSwitcherButton(
+                            screenKey: 'lobbys',
+                            maxColumns: 4,
+                          ),
+                          const SizedBox(width: 4),
                           TextButton(
                             onPressed: _joinByCode,
                             child: Text(

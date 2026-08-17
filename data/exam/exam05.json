@@ -1,0 +1,454 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 5 — Sujet Echo (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb5_q1",
+      "type": "classic",
+      "question": "Dans une infrastructure hybride associant un Active Directory local et Microsoft 365 via Microsoft Entra Connect, où le technicien doit-il obligatoirement réinitialiser le mot de passe d'un utilisateur synchronisé ?",
+      "answer": "Sur le contrôleur de domaine Active Directory local (console dsa.msc ou commande PowerShell Set-ADAccountPassword), car l'annuaire local reste l'autorité source qui réplique ensuite les modifications vers Microsoft Entra ID dans le Cloud[cite: 42].",
+      "explanation": "En environnement hybride standard, l'AD local est maître ; toute modification directe dans le portail Cloud serait écrasée lors du prochain cycle de synchronisation Entra Connect[cite: 42].",
+      "difficulty": "moyen",
+      "context": "Environnement Hybride & Entra ID"
+    },
+    {
+      "id": "eb5_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de configuration d'une imprimante réseau partagée sur un poste client Windows 11 afin d'éviter les instabilités du protocole WSD.",
+      "answer": "1. Attribuer une adresse IPv4 fixe ou une réservation DHCP statique à l'imprimante réseau[cite: 55]\n2. Ouvrir le panneau classique Périphériques et imprimantes et choisir 'Ajouter manuellement une imprimante'[cite: 55]\n3. Sélectionner l'option 'Ajouter une imprimante à l'aide d'une adresse TCP/IP ou d'un nom d'hôte'[cite: 55]\n4. Choisir le type de port 'Périphérique TCP/IP standard' et renseigner l'adresse IP fixe[cite: 55]\n5. Sélectionner le pilote certifié constructeur ou le pilote universel (UPD)[cite: 55]\n6. Imprimer une page de test et valider la bonne communication[cite: 55]",
+      "items": [
+        "Attribuer une adresse IPv4 fixe ou une réservation DHCP statique à l'imprimante réseau[cite: 55]",
+        "Ouvrir le panneau classique Périphériques et imprimantes et choisir 'Ajouter manuellement une imprimante'[cite: 55]",
+        "Sélectionner l'option 'Ajouter une imprimante à l'aide d'une adresse TCP/IP ou d'un nom d'hôte'[cite: 55]",
+        "Choisir le type de port 'Périphérique TCP/IP standard' et renseigner l'adresse IP fixe[cite: 55]",
+        "Sélectionner le pilote certifié constructeur ou le pilote universel (UPD)[cite: 55]",
+        "Imprimer une page de test et valider la bonne communication[cite: 55]"
+      ],
+      "explanation": "L'installation via un port Standard TCP/IP élimine les pannes d'imprimante 'Hors connexion' générées par la mise en veille des ports WSD automatiques (CP 4 et CP 5)[cite: 55].",
+      "difficulty": "moyen",
+      "context": "Impression Réseau & TCP/IP"
+    },
+    {
+      "id": "eb5_q3",
+      "type": "association",
+      "question": "Associe chaque licence Microsoft 365 à son périmètre de services principal.",
+      "answer": "Microsoft 365 Business Basic -> Services Cloud uniquement (Teams, Exchange Online, OneDrive, versions web d'Office)[cite: 42], Microsoft 365 Business Standard -> Services Cloud + Applications bureautiques Office complètes installables en local (Word, Excel, PowerPoint, Outlook)[cite: 42], Microsoft 365 Business Premium -> Services Cloud + Office local + Gestion avancée des postes via Microsoft Intune et Defender for Business[cite: 42]",
+      "pairs": [
+        ["Microsoft 365 Business Basic", "Services Cloud uniquement (Teams, Exchange Online, OneDrive, versions web d'Office)[cite: 42]"],
+        ["Microsoft 365 Business Standard", "Services Cloud + Applications bureautiques Office complètes installables en local (Word, Excel, PowerPoint, Outlook)[cite: 42]"],
+        ["Microsoft 365 Business Premium", "Services Cloud + Office local + Gestion avancée des postes via Microsoft Intune et Defender for Business[cite: 42]"]
+      ],
+      "explanation": "Connaître le contenu des licences permet de résoudre immédiatement les incidents où un utilisateur ne peut pas installer les applications de bureau ou être géré sous Intune (CP 1 et CP 2)[cite: 42].",
+      "difficulty": "facile",
+      "context": "Gestion des Licences M365"
+    },
+    {
+      "id": "eb5_q4",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'il n'arrive plus à joindre un site web d'assistance externe. Lorsqu'il lance la commande 'ping 9.9.9.9', le ping répond parfaitement, mais la commande 'ping quad9.net' renvoie 'La requête Ping n'a pas pu trouver l'hôte'. Identifie la cause du problème.",
+      "answer": "Panne ou mauvaise configuration du service de résolution de noms DNS sur la carte réseau du poste client[cite: 32, 34].",
+      "indices": [
+        "Indice 1 : La connectivité IP de couche 3 est pleinement fonctionnelle vers Internet[cite: 30, 32, 34].",
+        "Indice 2 : L'adresse IP directe du serveur DNS répond avec un temps de latence inférieur à 20 ms[cite: 30, 34].",
+        "Indice 3 : La commande nslookup quad9.net échoue avec un message d'erreur 'DNS request timed out'[cite: 34]."
+      ],
+      "explanation": "Si le ping par adresse IP fonctionne mais que le ping par nom de domaine échoue, la couche réseau est saine et la panne se situe exclusivement au niveau du serveur DNS ou de sa configuration (CP 3)[cite: 32, 34].",
+      "difficulty": "facile",
+      "context": "Diagnostic Réseau & DNS"
+    },
+    {
+      "id": "eb5_q5",
+      "type": "ticket",
+      "question": "Ticket #3911 — 'Bonjour, une assistante de direction signale que plusieurs collaborateurs du service ont accès par erreur à son sous-dossier personnel 'Évaluations' situé dans le partage commun de l'équipe.'",
+      "answer": "Désactiver l'héritage des autorisations NTFS sur le sous-dossier sensible, convertir les autorisations héritées en explicites, et retirer les groupes non autorisés pour ne laisser que l'assistante et sa direction[cite: 43, 48].",
+      "checklist": [
+        "Accéder aux propriétés du sous-dossier 'Évaluations' > Onglet Sécurité > Avancé[cite: 43, 48]",
+        "Cliquer sur 'Désactiver l'héritage' et choisir 'Convertir les autorisations héritées en autorisations explicites'[cite: 43, 48]",
+        "Supprimer les groupes d'utilisateurs généraux (ex: GDL_Service_RW)[cite: 43]",
+        "Ajouter uniquement les groupes autorisés (GDL_Direction_RW et le compte de l'assistante) avec les droits NTFS appropriés[cite: 43, 48]"
+      ],
+      "explanation": "La rupture d'héritage NTFS permet d'isoler un sous-dossier confidentiel sans impacter le reste du partage parent (CP 6 et CP 8)[cite: 43, 48].",
+      "difficulty": "moyen",
+      "context": "Permissions NTFS & Héritage"
+    },
+    {
+      "id": "eb5_q6",
+      "type": "classic",
+      "question": "Quelle est la commande PowerShell permettant de forcer immédiatement un cycle de synchronisation delta entre un serveur Active Directory local et Microsoft Entra ID ?",
+      "answer": "Start-ADSyncSyncCycle -PolicyType Delta[cite: 42]",
+      "explanation": "Cette commande exécutée sur le serveur hébergeant Entra Connect pousse immédiatement les modifications de comptes ou de mots de passe vers le Cloud sans attendre l'intervalle automatique de 30 minutes[cite: 42].",
+      "difficulty": "moyen",
+      "context": "PowerShell & Entra Connect"
+    },
+    {
+      "id": "eb5_q7",
+      "type": "association",
+      "question": "Associe chaque rôle de serveur d'infrastructure Windows Server à sa fonction clé.",
+      "answer": "AD DS (Active Directory Domain Services) -> Annuaire centralisé d'authentification et de gestion des objets du réseau[cite: 43], Serveur DHCP -> Attribution automatique et dynamique des configurations IP aux postes clients[cite: 30, 34], Serveur DNS -> Résolution des noms d'hôtes et localisation des services Active Directory (enregistrements SRV)[cite: 30, 34, 43], WDS (Windows Deployment Services) -> Distribution et installation automatisée d'images système Windows via le réseau[cite: 44], WSUS (Windows Server Update Services) -> Gestion et validation centralisée du déploiement des correctifs de sécurité[cite: 45]",
+      "pairs": [
+        ["AD DS (Active Directory Domain Services)", "Annuaire centralisé d'authentification et de gestion des objets du réseau[cite: 43]"],
+        ["Serveur DHCP", "Attribution automatique et dynamique des configurations IP aux postes clients[cite: 30, 34]"],
+        ["Serveur DNS", "Résolution des noms d'hôtes et localisation des services Active Directory (enregistrements SRV)[cite: 30, 34, 43]"],
+        ["WDS (Windows Deployment Services)", "Distribution et installation automatisée d'images système Windows via le réseau[cite: 44]"],
+        ["WSUS (Windows Server Update Services)", "Gestion et validation centralisée du déploiement des correctifs de sécurité[cite: 45]"]
+      ],
+      "explanation": "La maîtrise des rôles d'infrastructure est le socle de l'activité du technicien sur les serveurs d'entreprise (CP 4, CP 7 et CP 8)[cite: 43, 44, 45, 67].",
+      "difficulty": "facile",
+      "context": "Rôles Windows Server"
+    },
+    {
+      "id": "eb5_q8",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre les modèles de gestion de flotte mobile 'COPE' (Corporate-Owned, Personally-Enabled) et 'BYOD' (Bring Your Own Device) pour le support informatique ?",
+      "answer": "Dans le modèle COPE, l'appareil appartient à l'entreprise qui en garde la pleine propriété et le contrôle global, tandis qu'en BYOD, l'appareil appartient au salarié et le MDM n'administre que le conteneur professionnel isolé avec possibilité d'effacement sélectif[cite: 42].",
+      "explanation": "En BYOD, le respect de la vie privée et du RGPD interdit l'effacement total de l'appareil personnel de l'employé en cas de départ ou d'incident (CP 4 et CP 6)[cite: 42, 61].",
+      "difficulty": "moyen",
+      "context": "MDM & Modèles de Flotte"
+    },
+    {
+      "id": "eb5_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de déploiement et de sécurisation d'un accès Bureau à distance (RDP) d'entreprise.",
+      "answer": "1. Activer le Bureau à distance sur la machine hôte et autoriser le protocole dans le pare-feu[cite: 46]\n2. Activer obligatoirement l'authentification au niveau du réseau (NLA - Network Level Authentication)[cite: 46]\n3. Ajouter uniquement les utilisateurs légitimes dans le groupe local 'Utilisateurs du Bureau à distance'[cite: 46]\n4. Configurer la connexion pour transiter exclusivement à travers un tunnel VPN chiffré (ne jamais exposer le port 3389 sur Internet)[cite: 46]\n5. Tester l'ouverture de session distante avec le client mstsc depuis un poste distant[cite: 46]",
+      "items": [
+        "Activer le Bureau à distance sur la machine hôte et autoriser le protocole dans le pare-feu[cite: 46]",
+        "Activer obligatoirement l'authentification au niveau du réseau (NLA - Network Level Authentication)[cite: 46]",
+        "Ajouter uniquement les utilisateurs légitimes dans le groupe local 'Utilisateurs du Bureau à distance'[cite: 46]",
+        "Configurer la connexion pour transiter exclusivement à travers un tunnel VPN chiffré (ne jamais exposer le port 3389 sur Internet)[cite: 46]",
+        "Tester l'ouverture de session distante avec le client mstsc depuis un poste distant[cite: 46]"
+      ],
+      "explanation": "L'exposition directe du port RDP 3389 sur Internet est la porte d'entrée principale des attaques par rançongiciel ; il doit impérativement être encapsulé dans un VPN avec NLA actif (CP 6 et CP 7)[cite: 46, 56].",
+      "difficulty": "moyen",
+      "context": "Administration RDP & Sécurité"
+    },
+    {
+      "id": "eb5_q10",
+      "type": "classic",
+      "question": "Lors du paramétrage d'un nouveau serveur Contrôleur de Domaine Active Directory, quelle adresse IP doit-on impérativement renseigner dans les propriétés TCP/IPv4 pour le paramètre 'Serveur DNS préféré' ?",
+      "answer": "L'adresse IP fixe du contrôleur de domaine lui-même (ou l'adresse de bouclage 127.0.0.1)[cite: 43].",
+      "explanation": "Active Directory ne peut pas fonctionner sans son propre service DNS intégré qui héberge les enregistrements d'annuaire et les localisateurs de domaine (CP 8)[cite: 43].",
+      "difficulty": "facile",
+      "context": "Active Directory & DNS"
+    },
+    {
+      "id": "eb5_q11",
+      "type": "diagnostic_indices",
+      "question": "Un technicien constate qu'un ordinateur portable professionnel sous Windows 11 demande un mot de passe de récupération BitLocker à 48 chiffres à chaque démarrage. Identifie la cause racine.",
+      "answer": "L'ordre de démarrage (Boot Order) a été modifié dans le BIOS/UEFI ou le microprogramme (firmware/BIOS) a été mis à jour sans suspendre temporairement la protection BitLocker, ce qui a déclenché l'alerte d'intégrité du module TPM[cite: 47].",
+      "indices": [
+        "Indice 1 : Le disque SSD et le système d'exploitation ne présentent aucune corruption de fichiers[cite: 47, 52].",
+        "Indice 2 : La saisie manuelle de la clé à 48 chiffres stockée dans l'Active Directory permet de déverrouiller la session sans problème[cite: 47].",
+        "Indice 3 : L'Observateur d'événements consigne que le module TPM a rejeté la libération automatique de la clé suite à une modification des mesures PCR de la séquence de boot[cite: 47, 49]."
+      ],
+      "explanation": "Le TPM verrouille la clé s'il détecte un changement dans la séquence de démarrage matérielle pour prévenir les attaques physiques ; une mise à jour de BIOS exige de suspendre temporairement BitLocker avant flashage (CP 5 et CP 6)[cite: 21, 47].",
+      "difficulty": "difficile",
+      "context": "Diagnostic BitLocker & TPM"
+    },
+    {
+      "id": "eb5_q12",
+      "type": "classic",
+      "question": "Dans le protocole de routage IPv4, quelle est la signification de l'adresse de destination par défaut '0.0.0.0/0' dans une table de routage ?",
+      "answer": "Elle représente la 'Route par défaut' (Default Route), qui indique au routeur ou au poste d'acheminer tous les paquets dont la destination ne correspond à aucune route spécifique locale vers la passerelle par défaut (Gateway)[cite: 31].",
+      "explanation": "La route par défaut est la règle universelle permettant d'envoyer le trafic vers Internet ou les réseaux distants via le routeur de sortie (CP 7)[cite: 30, 31].",
+      "difficulty": "facile",
+      "context": "Routage Réseau & Passerelle"
+    },
+    {
+      "id": "eb5_q13",
+      "type": "ticket",
+      "question": "Ticket #4402 — 'Bonjour, notre collègue atteinte de daltonisme n'arrive pas à distinguer les états de validation colorés en rouge et vert sur le tableau de bord de notre progiciel métier.'",
+      "answer": "Activer et paramétrer les 'Filtres de couleur' adaptés au type de daltonisme dans les paramètres d'accessibilité de Windows 11 (Win + U)[cite: 27].",
+      "checklist": [
+        "Ouvrir les Paramètres d'accessibilité via le raccourci Windows + U[cite: 27]",
+        "Accéder à la rubrique 'Filtres de couleur' et activer l'option[cite: 27]",
+        "Sélectionner le filtre adapté (Deutéranopie, Protanopie ou Tritanopie) avec l'utilisatrice[cite: 27]",
+        "Faire valider la lisibilité des graphiques directement sur son logiciel métier[cite: 8, 27]"
+      ],
+      "explanation": "L'adaptation de l'environnement visuel aux différentes formes de daltonisme fait partie intégrante des compétences d'accessibilité numérique (CP 2)[cite: 27, 67].",
+      "difficulty": "facile",
+      "context": "Accessibilité Numérique & Vision"
+    },
+    {
+      "id": "eb5_q14",
+      "type": "association",
+      "question": "Associe chaque technologie RAID à son nombre minimum de disques physiques requis.",
+      "answer": "RAID 0 -> 2 disques minimum[cite: 40], RAID 1 -> 2 disques minimum[cite: 40], RAID 5 -> 3 disques minimum[cite: 40], RAID 6 -> 4 disques minimum",
+      "pairs": [
+        ["RAID 0", "2 disques minimum[cite: 40]"],
+        ["RAID 1", "2 disques minimum[cite: 40]"],
+        ["RAID 5", "3 disques minimum[cite: 40]"],
+        ["RAID 6", "4 disques minimum"]
+      ],
+      "explanation": "Le RAID 5 nécessite 3 disques pour répartir les blocs de données et la parité tournante[cite: 40], tandis que le RAID 6 exige 4 disques pour intégrer une double parité (CP 6)[cite: 40].",
+      "difficulty": "facile",
+      "context": "Stockage RAID & Disques"
+    },
+    {
+      "id": "eb5_q15",
+      "type": "classic",
+      "question": "Quel est le rôle du fichier de configuration automatisée 'unattend.xml' lors du déploiement d'un système d'exploitation Windows via WDS ou clé USB bootable ?",
+      "answer": "Il fournit automatiquement toutes les réponses aux questions posées lors de l'installation (partitionnement du disque, langue, fuseau horaire, nom du poste, compte administrateur local, contournement OOBE) afin d'assurer un déploiement sans aucune intervention humaine (Zero-Touch Deployment)[cite: 44].",
+      "explanation": "Le fichier de réponses généré par l'outil Windows SIM (ADK) permet d'industrialiser les installations de masse (CP 4)[cite: 44].",
+      "difficulty": "moyen",
+      "context": "Déploiement & Automatisation"
+    },
+    {
+      "id": "eb5_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'exécution du handshake sécurisé TLS 1.3 lors de l'ouverture d'une session HTTPS sécurisée.",
+      "answer": "1. Le client envoie un message 'ClientHello' indiquant les suites cryptographiques supportées et une clé temporaire[cite: 32]\n2. Le serveur répond avec un message 'ServerHello' et transmet son certificat numérique d'identité[cite: 32]\n3. Le client vérifie l'authenticité et la validité du certificat auprès d'une autorité de certification (CA) de confiance[cite: 32]\n4. Les deux parties génèrent une clé de session symétrique partagée chiffrée[cite: 32]\n5. Les échanges de données applicatives chiffrées débutent sur le port TCP 443[cite: 32]",
+      "items": [
+        "Le client envoie un message 'ClientHello' indiquant les suites cryptographiques supportées et une clé temporaire[cite: 32]",
+        "Le serveur répond avec un message 'ServerHello' et transmet son certificat numérique d'identité[cite: 32]",
+        "Le client vérifie l'authenticité et la validité du certificat auprès d'une autorité de certification (CA) de confiance[cite: 32]",
+        "Les deux parties génèrent une clé de session symétrique partagée chiffrée[cite: 32]",
+        "Les échanges de données applicatives chiffrées débutent sur le port TCP 443[cite: 32]"
+      ],
+      "explanation": "Le protocole TLS garantit la confidentialité, l'intégrité et l'authentification du serveur web avant tout échange de données (CP 6 et CP 7)[cite: 32].",
+      "difficulty": "difficile",
+      "context": "Chiffrement & Sécurité TLS"
+    },
+    {
+      "id": "eb5_q17",
+      "type": "classic",
+      "question": "Sous Windows, quelle commande permet de vérifier l'intégrité physique du système de fichiers et de rechercher les secteurs défectueux sur le lecteur D: en planifiant une réparation au redémarrage ?",
+      "answer": "chkdsk D: /f /r[cite: 24]",
+      "explanation": "L'option /f corrige les erreurs du système de fichiers et l'option /r localise les secteurs défectueux et tente de récupérer les informations lisibles (CP 5)[cite: 24].",
+      "difficulty": "facile",
+      "context": "Maintenance Système & Disques"
+    },
+    {
+      "id": "eb5_q18",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'il reçoit des dizaines d'e-mails d'erreur de non-remise (NDR / Mailer-Daemon) pour des messages qu'il n'a jamais envoyés, alors qu'il n'y a aucune trace de ces e-mails dans son dossier 'Éléments envoyés'. De quel phénomène s'agit-il ?",
+      "answer": "Une usurpation d'adresse e-mail (Email Spoofing) : un pirate utilise l'adresse de la victime comme expéditeur forgé lors d'une campagne de spam massive, et les serveurs récepteurs renvoient les rejets à la vraie victime (phénomène de Backscatter).",
+      "indices": [
+        "Indice 1 : Les journaux de connexion de Microsoft 365 / Entra ID ne montrent aucune connexion frauduleuse sur le compte de l'utilisateur[cite: 42, 49].",
+        "Indice 2 : Les e-mails rejetés proviennent de serveurs de messagerie du monde entier avec des sujets frauduleux[cite: 59].",
+        "Indice 3 : Le domaine de messagerie de l'entreprise ne dispose pas d'un enregistrement DMARC en mode de rejet strict (p=reject)[cite: 59]."
+      ],
+      "explanation": "Sans politiques SPF/DKIM/DMARC strictes, un pirate peut injecter n'importe quelle adresse comme expéditeur apparent d'un e-mail sans avoir piraté la boîte mail (CP 6)[cite: 59].",
+      "difficulty": "difficile",
+      "context": "Sécurité Messagerie & Spoofing"
+    },
+    {
+      "id": "eb5_q19",
+      "type": "association",
+      "question": "Associe chaque connecteur interne de carte mère à sa fonction.",
+      "answer": "Connecteur SATA 7 broches -> Câble de données reliant un disque dur mécanique ou SSD SATA à la carte mère[cite: 12, 15], Slot M.2 Clé M -> Emplacement direct pour SSD ultra-rapide NVMe PCIe sans câble[cite: 12, 15], Headers de façade (Front Panel) -> Broches reliant les boutons Power, Reset et voyants LED du boîtier[cite: 12], Connecteur USB 3.0 interne -> Connecteur rectangulaire bleu reliant les ports USB 3.0 de la façade du boîtier[cite: 12, 18]",
+      "pairs": [
+        ["Connecteur SATA 7 broches", "Câble de données reliant un disque dur mécanique ou SSD SATA à la carte mère[cite: 12, 15]"],
+        ["Slot M.2 Clé M", "Emplacement direct pour SSD ultra-rapide NVMe PCIe sans câble[cite: 12, 15]"],
+        ["Headers de façade (Front Panel)", "Broches reliant les boutons Power, Reset et voyants LED du boîtier[cite: 12]"],
+        ["Connecteur USB 3.0 interne", "Connecteur rectangulaire bleu reliant les ports USB 3.0 de la façade du boîtier[cite: 12, 18]"]
+      ],
+      "explanation": "L'identification précise des connecteurs internes est indispensable lors de l'assemblage et du dépannage en atelier (CP 4 et CP 5)[cite: 12, 22].",
+      "difficulty": "facile",
+      "context": "Hardware & Carte Mère"
+    },
+    {
+      "id": "eb5_q20",
+      "type": "ticket",
+      "question": "Ticket #5190 — 'Bonjour, je dois envoyer un rapport financier confidentiel contenant les salaires de l'équipe à notre expert-comptable externe. Quelle est la méthode sécurisée conforme au RGPD ?'",
+      "answer": "Chiffrer le document ou utiliser un lien de partage sécurisé Microsoft OneDrive/SharePoint avec mot de passe et date d'expiration, et transmettre le mot de passe par un canal différent (SMS/téléphone)[cite: 8, 42, 61].",
+      "checklist": [
+        "Sensibiliser l'utilisatrice sur l'interdiction formelle d'envoyer des données personnelles sensibles en pièce jointe d'e-mail non chiffrée[cite: 61]",
+        "Générer un lien de partage sécurisé restreint à l'adresse e-mail de l'expert-comptable avec code à usage unique[cite: 42, 61]",
+        "Définir une date d'expiration du lien de partage (ex: 7 jours)[cite: 61]",
+        "Rappeler la règle de transmission du mot de passe de déchiffrement via un second canal hors-messagerie[cite: 58, 59]"
+      ],
+      "explanation": "Le RGPD et la politique de sécurité imposent de protéger les données personnelles lors des transferts vers des tiers externes (CP 2 et CP 6)[cite: 61, 67].",
+      "difficulty": "moyen",
+      "context": "RGPD & Transferts Sécurisés"
+    },
+    {
+      "id": "eb5_q21",
+      "type": "classic",
+      "question": "Quel est le rôle de la commande 'netstat -an' sous Windows et pourquoi est-elle précieuse pour diagnostiquer la présence d'un cheval de Troie (Trojan) ou d'un outil d'accès distant (RAT) ?",
+      "answer": "Elle affiche l'ensemble des connexions réseau actives, les adresses IP distantes établies et la liste de tous les ports TCP/UDP en écoute (LISTENING) sur la machine[cite: 24, 34].",
+      "explanation": "netstat permet de repérer immédiatement un port suspect ouvert ou une connexion sortante établie vers une adresse IP inconnue sur Internet (CP 5 et CP 6)[cite: 32, 34, 56].",
+      "difficulty": "moyen",
+      "context": "Analyse Réseau & Malwares"
+    },
+    {
+      "id": "eb5_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes d'installation et de configuration de base du rôle Serveur DHCP sur Windows Server.",
+      "answer": "1. Attribuer une adresse IPv4 fixe et un nom d'hôte explicite au serveur[cite: 43]\n2. Installer le rôle 'Serveur DHCP' via le Gestionnaire de serveur[cite: 34, 43]\n3. Autoriser le serveur DHCP dans l'annuaire Active Directory[cite: 43]\n4. Créer une nouvelle étendue IPv4 avec la plage d'adresses (ex: 192.168.1.50 à .200) et le masque de sous-réseau[cite: 34, 44]\n5. Renseigner les exclusions d'adresses et la durée du bail[cite: 34, 44]\n6. Configurer les options d'étendue (Passerelle 003, Serveur DNS 006, Nom de domaine 015) et activer l'étendue[cite: 34, 44]",
+      "items": [
+        "Attribuer une adresse IPv4 fixe et un nom d'hôte explicite au serveur[cite: 43]",
+        "Installer le rôle 'Serveur DHCP' via le Gestionnaire de serveur[cite: 34, 43]",
+        "Autoriser le serveur DHCP dans l'annuaire Active Directory[cite: 43]",
+        "Créer une nouvelle étendue IPv4 avec la plage d'adresses (ex: 192.168.1.50 à .200) et le masque de sous-réseau[cite: 34, 44]",
+        "Renseigner les exclusions d'adresses et la durée du bail[cite: 34, 44]",
+        "Configurer les options d'étendue (Passerelle 003, Serveur DNS 006, Nom de domaine 015) et activer l'étendue[cite: 34, 44]"
+      ],
+      "explanation": "L'autorisation dans l'AD et la configuration des options d'étendue sont obligatoires pour qu'un serveur DHCP d'entreprise distribue des paramètres valides (CP 7)[cite: 34, 43].",
+      "difficulty": "moyen",
+      "context": "Services Réseau DHCP"
+    },
+    {
+      "id": "eb5_q23",
+      "type": "classic",
+      "question": "Sur un commutateur Cisco, quelle commande permet d'afficher la table de correspondance associant chaque port physique à l'adresse MAC de l'équipement raccordé ?",
+      "answer": "show mac address-table[cite: 32, 33]",
+      "explanation": "Cette commande permet de localiser sur quelle prise ou port de switch est branché un poste ou une imprimante lors du diagnostic (CP 7)[cite: 32, 33].",
+      "difficulty": "facile",
+      "context": "Commutation Cisco & MAC"
+    },
+    {
+      "id": "eb5_q24",
+      "type": "association",
+      "question": "Associe chaque format de carte mère standard à ses dimensions physiques exactes.",
+      "answer": "Mini-ITX -> 170 × 170 mm (PC ultra-compacts et HTPC)[cite: 12], Micro-ATX -> 244 × 244 mm (PC de bureau compacts bureautiques)[cite: 12], ATX -> 305 × 244 mm (Standard universel pour tours de bureau et gaming)[cite: 12], E-ATX -> 305 × 330 mm (Stations de travail et serveurs bi-processeurs)[cite: 12]",
+      "pairs": [
+        ["Mini-ITX", "170 × 170 mm (PC ultra-compacts et HTPC)[cite: 12]"],
+        ["Micro-ATX", "244 × 244 mm (PC de bureau compacts bureautiques)[cite: 12]"],
+        ["ATX", "305 × 244 mm (Standard universel pour tours de bureau et gaming)[cite: 12]"],
+        ["E-ATX", "305 × 330 mm (Stations de travail et serveurs bi-processeurs)[cite: 12]"]
+      ],
+      "explanation": "Le respect des formats ATX garantit la compatibilité physique entre la carte mère, le boîtier et les emplacements d'entretoises (CP 4 et CP 5)[cite: 11, 12, 22].",
+      "difficulty": "facile",
+      "context": "Hardware & Facteurs de Forme"
+    },
+    {
+      "id": "eb5_q25",
+      "type": "diagnostic_indices",
+      "question": "Un technicien déploie un nouveau poste de travail. La connexion filaire Ethernet fonctionne mais le poste ne reçoit aucune adresse IP et s'auto-attribue une adresse en 169.254.x.x. Pourtant, le serveur DHCP fonctionne pour tous les autres postes de l'étage. Identifie la cause racine.",
+      "answer": "La prise murale réseau est branchée sur un port de switch qui n'est pas assigné au bon VLAN (port non configuré ou placé dans un VLAN isolé sans serveur DHCP)[cite: 33, 34].",
+      "indices": [
+        "Indice 1 : Le câble réseau et les LEDs d'activité physique sont parfaitement allumés en vert[cite: 30, 32].",
+        "Indice 2 : En branchant le même PC avec le même câble sur la prise voisine du bureau d'à côté, le PC obtient immédiatement une adresse IP valide[cite: 30, 34].",
+        "Indice 3 : La console du commutateur indique que le port correspondant à la prise défaillante est affecté au VLAN 1 par défaut au lieu du VLAN 10 (UTILISATEURS)[cite: 33]."
+      ],
+      "explanation": "Un port de switch laissé dans le mauvais VLAN isole totalement l'équipement des services du sous-réseau cible (CP 3 et CP 7)[cite: 33, 34].",
+      "difficulty": "moyen",
+      "context": "Diagnostic VLAN & Brassage"
+    },
+    {
+      "id": "eb5_q26",
+      "type": "classic",
+      "question": "Quelle est l'utilité du protocole ICMP (Internet Control Message Protocol) dans l'outillage de diagnostic du technicien informatique ?",
+      "answer": "ICMP est le protocole utilisé par les commandes de test réseau telles que 'ping' (messages Echo Request / Echo Reply) et 'tracert' pour vérifier la joignabilité d'un hôte et mesurer les temps de latence de couche 3[cite: 30, 32, 34].",
+      "explanation": "Bien que non orienté transport de données utilisateur, ICMP est le protocole de signalisation indispensable au dépannage réseau de premier niveau (CP 7)[cite: 30, 32].",
+      "difficulty": "facile",
+      "context": "Protocoles & Diagnostic ICMP"
+    },
+    {
+      "id": "eb5_q27",
+      "type": "ticket",
+      "question": "Ticket #4812 — 'Bonjour, suite à un arrêt électrique brutal ce week-end, le serveur Windows Server de l'agence affiche un écran noir au boot avec le message Boot Configuration Data is missing (0xc0000034).' ",
+      "answer": "Démarrer sur un support d'installation Windows Server (WinPE), ouvrir l'invite de commande et réparer les fichiers de démarrage BCD à l'aide de l'utilitaire bootrec /rebuildbcd[cite: 22, 24, 44].",
+      "checklist": [
+        "Démarrer le serveur sur une clé USB ou un ISO d'installation de Windows Server[cite: 22, 24]",
+        "Sélectionner 'Réparer l'ordinateur' > 'Dépannage' > 'Invite de commandes'[cite: 24]",
+        "Exécuter les commandes de reconstruction de l'amorce : bootrec /fixmbr, bootrec /fixboot et bootrec /rebuildbcd",
+        "Redémarrer le serveur et vérifier le chargement normal de l'OS[cite: 24]"
+      ],
+      "explanation": "La corruption du magasin BCD suite à une coupure électrique empêche le chargeur d'amorce Windows de localiser la partition système ; sa reconstruction via bootrec résout le démarrage sans perte de données (CP 5)[cite: 22, 24].",
+      "difficulty": "moyen",
+      "context": "Dépannage Amorce & BCD"
+    },
+    {
+      "id": "eb5_q28",
+      "type": "classic",
+      "question": "Qu'est-ce qu'une attaque par rançongiciel (Ransomware) et quelle est la seule garantie technique absolue permettant de restaurer l'activité de l'entreprise sans jamais payer la rançon ?",
+      "answer": "Un ransomware est un malware qui chiffre l'ensemble des données et partages réseau pour extorquer une rançon financière[cite: 56]. La seule garantie absolue est de posséder des sauvegardes régulières testées et strictement déconnectées du réseau / immuables (respect de la règle 3-2-1-1-0)[cite: 35, 56].",
+      "explanation": "Payer la rançon ne garantit jamais la récupération des données et finance le cybercrime ; les sauvegardes hors ligne testées sont le seul rempart fiable (CP 6)[cite: 35, 56, 57].",
+      "difficulty": "facile",
+      "context": "Sécurité & Ransomwares"
+    },
+    {
+      "id": "eb5_q29",
+      "type": "association",
+      "question": "Associe chaque terme de sécurité physique des équipements à son utilité.",
+      "answer": "Encoche de sécurité Kensington -> Fixation mécanique d'un ordinateur portable ou écran à un point d'ancrage fixe via un câble antivol en acier[cite: 60], Baie de brassage verrouillée -> Protection physique des commutateurs, routeurs et serveurs dans un local technique sécurisé[cite: 60], Verrouillage automatique de session (Win + L) -> Protection contre l'accès physique d'un tiers lors de l'absence momentanée du collaborateur[cite: 60], Désactivation des ports USB via GPO -> Protection contre l'infection par supports amovibles piégés (Baiting) et la fuite de données[cite: 59, 60]",
+      "pairs": [
+        ["Encoche de sécurité Kensington", "Fixation mécanique d'un ordinateur portable ou écran à un point d'ancrage fixe via un câble antivol en acier[cite: 60]"],
+        ["Baie de brassage verrouillée", "Protection physique des commutateurs, routeurs et serveurs dans un local technique sécurisé[cite: 60]"],
+        ["Verrouillage automatique de session (Win + L)", "Protection contre l'accès physique d'un tiers lors de l'absence momentanée du collaborateur[cite: 60]"],
+        ["Désactivation des ports USB via GPO", "Protection contre l'infection par supports amovibles piégés (Baiting) et la fuite de données[cite: 59, 60]"]
+      ],
+      "explanation": "La sécurité physique est la première barrière de défense : sans elle, les meilleures protections logiques peuvent être compromises par un accès direct au matériel (CP 6)[cite: 60].",
+      "difficulty": "facile",
+      "context": "Sécurité Physique des Équipements"
+    },
+    {
+      "id": "eb5_q30",
+      "type": "classic",
+      "question": "Pourquoi la commande PowerShell 'winget upgrade --all' est-elle particulièrement utile pour la maintenance d'un parc de postes clients Windows 11 ?",
+      "answer": "Parce qu'elle permet d'analyser et de mettre à jour automatiquement l'ensemble des logiciels et applications tiers installés sur la machine en une seule ligne de commande via le gestionnaire de paquets officiel de Windows (Windows Package Manager)[cite: 24].",
+      "explanation": "winget automatise le maintien en condition opérationnelle et la correction des failles de sécurité des applications courantes (7-Zip, Chrome, VLC, etc.)[cite: 24].",
+      "difficulty": "facile",
+      "context": "Automatisation & Winget"
+    },
+    {
+      "id": "eb5_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement d'un bloc d'alimentation (PSU) défaillant dans une tour d'ordinateur.",
+      "answer": "1. Débrancher le câble secteur 230V et actionner l'interrupteur du PSU sur 0[cite: 17, 22]\n2. Débrancher tous les connecteurs internes (ATX 24 broches, CPU 8 broches, PCIe, alimentation SATA)[cite: 12, 17, 22]\n3. Dévisser les 4 vis de fixation arrière maintenant le bloc d'alimentation au châssis[cite: 17, 22]\n4. Insérer le nouveau bloc d'alimentation certifié 80 Plus avec la puissance adaptée et le visser[cite: 17, 22]\n5. Rebrancher soigneusement tous les câbles d'alimentation internes sur la carte mère et les composants[cite: 12, 17, 22]\n6. Rebrancher le câble secteur, allumer et vérifier le démarrage stable de la machine[cite: 17, 22]",
+      "items": [
+        "Débrancher le câble secteur 230V et actionner l'interrupteur du PSU sur 0[cite: 17, 22]",
+        "Débrancher tous les connecteurs internes (ATX 24 broches, CPU 8 broches, PCIe, alimentation SATA)[cite: 12, 17, 22]",
+        "Dévisser les 4 vis de fixation arrière maintenant le bloc d'alimentation au châssis[cite: 17, 22]",
+        "Insérer le nouveau bloc d'alimentation certifié 80 Plus avec la puissance adaptée et le visser[cite: 17, 22]",
+        "Rebrancher soigneusement tous les câbles d'alimentation internes sur la carte mère et les composants[cite: 12, 17, 22]",
+        "Rebrancher le câble secteur, allumer et vérifier le démarrage stable de la machine[cite: 17, 22]"
+      ],
+      "explanation": "Le remplacement d'une alimentation nécessite le respect strict des consignes de sécurité électrique et le raccordement sans oubli de l'alimentation CPU et carte mère (CP 5)[cite: 17, 22].",
+      "difficulty": "moyen",
+      "context": "Hardware & Remplacement PSU"
+    },
+    {
+      "id": "eb5_q32",
+      "type": "classic",
+      "question": "Sur un point d'accès Wi-Fi d'entreprise, à quoi sert la fonctionnalité d''Isolation des clients' (Client Isolation / AP Isolation) et pourquoi est-elle obligatoire sur un réseau Wi-Fi réservé aux visiteurs ?",
+      "answer": "Elle empêche les appareils connectés au même réseau sans fil de communiquer directement entre eux (blocage des flux poste à poste), empêchant un appareil infecté ou un pirate externe de scanner et d'attaquer les ordinateurs des autres visiteurs[cite: 30].",
+      "explanation": "L'isolation des clients garantit que chaque appareil sans fil ne peut communiquer qu'avec la passerelle Internet (CP 7)[cite: 30].",
+      "difficulty": "moyen",
+      "context": "Sécurité Wi-Fi & Isolation"
+    },
+    {
+      "id": "eb5_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son ordinateur fixe s'éteint et redémarre tout seul dès qu'il branche une clé USB sur l'un des ports du panneau avant du boîtier, alors que le branchement sur les ports arrière de la carte mère ne pose aucun problème. Trouve la cause de l'incident.",
+      "answer": "Court-circuit électrique franc sur le connecteur ou le câble reliant les ports USB de la façade aux broches (Headers) de la carte mère, provoquant la mise en sécurité immédiate de l'alimentation (PSU)[cite: 12, 17, 22].",
+      "indices": [
+        "Indice 1 : Le bloc d'alimentation fonctionne parfaitement en charge normale sans surchauffe[cite: 17].",
+        "Indice 2 : L'inspection visuelle montre qu'une languette en plastique interne du port USB avant est cassée et que les broches métalliques se touchent[cite: 18, 22].",
+        "Indice 3 : Débrancher le câble 'USB Front Panel' de la carte mère supprime totalement les redémarrages inopinés[cite: 12, 22]."
+      ],
+      "explanation": "Un court-circuit sur les lignes +5V de l'USB déclenche instantanément la protection OCP/SCP de l'alimentation pour éviter l'incendie ou la destruction de la carte mère (CP 5)[cite: 17, 22].",
+      "difficulty": "moyen",
+      "context": "Diagnostic Hardware & Électricité"
+    },
+    {
+      "id": "eb5_q34",
+      "type": "classic",
+      "question": "Dans le cadre de la veille technologique et de l'auto-formation continue, pourquoi la maîtrise de l'anglais technique est-elle indispensable pour un technicien informatique ?",
+      "answer": "Parce que la majorité de la documentation technique officielle des constructeurs, les bases de connaissances des éditeurs, les rapports de vulnérabilités de sécurité (CVE) et les forums d'entraide professionnels mondiaux sont rédigés en anglais[cite: 10, 65].",
+      "explanation": "La capacité à lire et exploiter des notices et documentations en anglais fait partie intégrante des compétences transversales exigées par le REAC (CT Apprendre en continu)[cite: 10, 65, 67].",
+      "difficulty": "facile",
+      "context": "Veille Technique & Anglais"
+    },
+    {
+      "id": "eb5_q35",
+      "type": "ticket",
+      "question": "Ticket #5910 — 'Bonjour, la direction nous informe qu'un salarié a cliqué sur un lien suspect dans un e-mail de phishing ce matin et a renseigné ses identifiants de session sur une fausse page web. Quelles actions immédiates devons-nous réaliser ?'",
+      "answer": "Réinitialiser immédiatement son mot de passe de domaine, révoquer toutes ses sessions actives Cloud et déconnecter temporairement son poste du réseau pour analyse anti-malware[cite: 42, 57, 59].",
+      "checklist": [
+        "Réinitialiser immédiatement le mot de passe du compte utilisateur dans Active Directory / Entra ID[cite: 42, 43]",
+        "Révoquer l'ensemble des jetons de session active sur le portail d'administration Microsoft Entra ID[cite: 42]",
+        "Déconnecter physiquement le poste du réseau local pour lancer une analyse antivirale préventive[cite: 57]",
+        "Informer le responsable sécurité (RSSI) et documenter l'incident dans le ticket d'assistance[cite: 7, 57]"
+      ],
+      "explanation": "La compromission d'identifiants exige une révocation immédiate des sessions pour couper tout accès déjà établi par le pirate avant d'entamer les vérifications du poste (CP 6)[cite: 42, 57, 59].",
+      "difficulty": "moyen",
+      "context": "Gestion d'Incident Cyber & Phishing"
+    }
+  ]
+}

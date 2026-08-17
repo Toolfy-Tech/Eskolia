@@ -291,7 +291,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
   bool _testing        = false;
   bool _obscure        = true;
   bool _privacyConsent = false;
-  String _geminiModel  = 'gemini-2.5-flash';
+  String _geminiModel  = 'gemini-2.0-flash';
   AiConnectionState _state    = const AiConnectionState(isConnected: false);
   AiProvider        _detected = AiProvider.unknown;
   AiProvider?       _expandedProvider;
@@ -309,7 +309,7 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       setState(() {
         _state        = s;
         _loading      = false;
-        _geminiModel  = model;
+        _geminiModel  = model.isNotEmpty ? model : 'gemini-2.0-flash';
         if (s.isConnected && s.apiKey != null && !s.provider.isLocal) {
           _keyController.text = s.apiKey!;
           _detected = s.provider;
@@ -337,7 +337,11 @@ class _AiSetupScreenState extends State<AiSetupScreen> {
       return;
     }
     setState(() => _testing = true);
-    final error = await _service.testKey(key, _detected);
+    final error = await _service.testKey(
+      key,
+      _detected,
+      geminiModel: _detected == AiProvider.gemini ? _geminiModel : null,
+    );
     if (!mounted) return;
     if (error != null) {
       setState(() => _testing = false);

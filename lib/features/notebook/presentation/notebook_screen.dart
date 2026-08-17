@@ -18,7 +18,7 @@ import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/utils/eskolia_icons.dart';
 import '../../../core/widgets/bottom_nav.dart';
 import '../../../shared/widgets/eskolia_card.dart';
-
+import '../../../shared/widgets/eskolia_column_switcher.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../ai/data/ai_key_repository.dart';
 import '../data/note_ai_generator.dart';
@@ -242,21 +242,18 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     final width = MediaQuery.sizeOf(context).width;
 
-    int numColumns;
-    if (width > 1200) {
-      numColumns = 3;
-    } else if (width > 800) {
-      numColumns = 2;
-    } else {
-      numColumns = 1;
-    }
+    final isLargeScreen = width >= 700;
+    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78.0 : 250.0) : 0.0;
+    final availableWidth = (width - sidebarWidth - 32).clamp(280.0, double.infinity);
 
-    final isLargeScreen = width > 800;
-    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 40; // Alignement des marges avec la veille
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
+    final colPref = ref.watch(columnPreferenceProvider('notebook'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final order = ref.watch(notebookNotesOrderProvider);
     final pinned = ref.watch(notebookPinnedNotesProvider);
@@ -296,7 +293,24 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
         }).toList()
       );
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < cards.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -420,17 +434,28 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 final listContent = ListView(
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
                   children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 24, top: 8),
-                        child: Text(
-                          'Mon Carnet',
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 24, top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(width: 40),
+                          Expanded(
+                            child: Text(
+                              'Mon Carnet',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                           ),
-                        ),
+                          const EskoliaColumnSwitcherButton(
+                            screenKey: 'notebook',
+                            maxColumns: 4,
+                          ),
+                        ],
                       ),
                     ),
                     gridContent,

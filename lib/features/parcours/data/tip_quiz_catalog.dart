@@ -7,12 +7,13 @@ import 'tip_catalog_loader.dart';
 enum QuizCatalogTrack {
   optimusOnly, // Parcours Officiel Optimus
   terrain,     // Thèmes Terrain — banques hors-parcours ajoutées par le prof
+  exams,       // Examens Blancs — 8 épreuves transversales (280 questions)
   labo,        // Créations de la communauté (Firestore)
-  both,        // Optimus + Terrain (toutes les banques hors-labo)
+  both,        // Optimus + Terrain + Examens (toutes les banques hors-labo)
   teacher,     // Quiz créés par les admins/profs (Firestore — teacher_quizzes)
 }
 
-/// Référence d'un bloc de questions (Chapitre ou Thème)
+/// Référence d'un bloc de questions (Chapitre ou Thème ou Examen Blanc)
 class TipQuizChapterRef {
   const TipQuizChapterRef({
     required this.sectionId,
@@ -48,6 +49,7 @@ class TipQuizCatalog {
 
   static QuizCatalogTrack parseTrackQuery(String? q) {
     if (q == 'terrain' || q == 'themes') return QuizCatalogTrack.terrain;
+    if (q == 'exams' || q == 'exam_blanc' || q == 'examens') return QuizCatalogTrack.exams;
     if (q == 'labo') return QuizCatalogTrack.labo;
     return QuizCatalogTrack.optimusOnly;
   }
@@ -64,7 +66,19 @@ class TipQuizCatalog {
     {'id': 'TRN08', 'title': 'Virtualisation',           'path': 'data/tip-quiz/theme8_virtualisation.json'},
   ];
 
-  /// Charge tous les chapitres disponibles : Officiel → Terrain → Labo.
+  /// Examens Blancs — 8 sujets transversaux complets (280 questions).
+  static const List<Map<String, String>> _examThemes = [
+    {'id': 'EXAM01', 'title': 'Examen Blanc 01 — Sujet Alpha', 'path': 'data/exam/exam01.json'},
+    {'id': 'EXAM02', 'title': 'Examen Blanc 02 — Sujet Beta', 'path': 'data/exam/exam02.json'},
+    {'id': 'EXAM03', 'title': 'Examen Blanc 03 — Sujet Gamma', 'path': 'data/exam/exam03.json'},
+    {'id': 'EXAM04', 'title': 'Examen Blanc 04 — Sujet Delta', 'path': 'data/exam/exam04.json'},
+    {'id': 'EXAM05', 'title': 'Examen Blanc 05 — Sujet Epsilon', 'path': 'data/exam/exam05.json'},
+    {'id': 'EXAM06', 'title': 'Examen Blanc 06 — Sujet Zeta', 'path': 'data/exam/exam06.json'},
+    {'id': 'EXAM07', 'title': 'Examen Blanc 07 — Sujet Eta', 'path': 'data/exam/exam07.json'},
+    {'id': 'EXAM08', 'title': 'Examen Blanc 08 — Sujet Theta', 'path': 'data/exam/exam08.json'},
+  ];
+
+  /// Charge tous les chapitres disponibles : Officiel → Terrain → Examens Blancs → Labo.
   static Future<List<TipQuizChapterRef>> loadChaptersWithQuiz() async {
     if (_cache != null) return _cache!;
 
@@ -95,7 +109,22 @@ class TipQuizCatalog {
       }
     }
 
-    // 3. Labo — entrée unique représentant les questions approuvées (Firestore)
+    // 3. Examens Blancs (8 sujets transversaux)
+    for (final e in _examThemes) {
+      final path = e['path']!;
+      if (await TipCatalogLoader.assetExists(path)) {
+        out.add(TipQuizChapterRef(
+          sectionId: 'EXAMS',
+          sectionTitle: 'Examens Blancs',
+          moduleId: 'exam_${e['id']}',
+          chapterTitle: e['title']!,
+          quizAssetPath: path,
+          track: QuizCatalogTrack.exams,
+        ));
+      }
+    }
+
+    // 4. Labo — entrée unique représentant les questions approuvées (Firestore)
     out.add(TipQuizChapterRef(
       sectionId: 'LABO',
       sectionTitle: 'Le Labo',
@@ -165,6 +194,8 @@ class TipQuizCatalog {
         return 'Optimus · ${ref.sectionTitle} — ${ref.chapterTitle}';
       case QuizCatalogTrack.terrain:
         return 'Terrain · ${ref.chapterTitle}';
+      case QuizCatalogTrack.exams:
+        return 'Examen Blanc · ${ref.chapterTitle}';
       case QuizCatalogTrack.labo:
         return 'Labo · Questions approuvées';
       case QuizCatalogTrack.both:
@@ -180,6 +211,7 @@ class TipQuizCatalog {
   }
 
   static String? fallbackContextLineForAssetPath(String assetPath) {
+    if (assetPath.contains('data/exam') || assetPath.contains('exam/')) return 'Examen Blanc';
     if (assetPath.contains('quiz/optimus')) return 'Parcours Optimus';
     if (assetPath.contains('tip-quiz')) return 'Terrain';
     if (assetPath.contains('quiz/themes')) return 'Terrain';
@@ -192,10 +224,17 @@ class TipQuizCatalog {
     if (track == QuizCatalogTrack.terrain) {
       return path.contains('tip-quiz') || path.contains('quiz/themes');
     }
+    if (track == QuizCatalogTrack.exams) {
+      return path.contains('data/exam') || path.contains('exam/');
+    }
     if (track == QuizCatalogTrack.labo) return path == laboSentinelPath || path.contains('labo');
     if (track == QuizCatalogTrack.teacher) return path.startsWith(teacherSentinelPrefix);
     if (track == QuizCatalogTrack.both) {
-      return path.contains('quiz/optimus') || path.contains('tip-quiz') || path.contains('quiz/themes');
+      return path.contains('quiz/optimus') ||
+          path.contains('tip-quiz') ||
+          path.contains('quiz/themes') ||
+          path.contains('data/exam') ||
+          path.contains('exam/');
     }
     return false;
   }
@@ -213,6 +252,15 @@ class TipQuizCatalog {
     if (paths.length == 1) {
       final p = paths.first;
       if (p == laboSentinelPath) return 'Le Labo';
+      if (p.contains('exam01')) return 'Examen Blanc 01 (Alpha)';
+      if (p.contains('exam02')) return 'Examen Blanc 02 (Beta)';
+      if (p.contains('exam03')) return 'Examen Blanc 03 (Gamma)';
+      if (p.contains('exam04')) return 'Examen Blanc 04 (Delta)';
+      if (p.contains('exam05')) return 'Examen Blanc 05 (Epsilon)';
+      if (p.contains('exam06')) return 'Examen Blanc 06 (Zeta)';
+      if (p.contains('exam07')) return 'Examen Blanc 07 (Eta)';
+      if (p.contains('exam08')) return 'Examen Blanc 08 (Theta)';
+      if (p.contains('exam')) return 'Examen Blanc';
       if (p.contains('module-01')) return 'Support utilisateur';
       if (p.contains('module-02')) return 'Hardware';
       if (p.contains('module-03')) return 'Systèmes';
@@ -240,6 +288,7 @@ class TipQuizCatalog {
   }
 
   static String moduleIdForQuizAssetPath(String path) {
+    if (path.contains('exam')) return 'exam_blanc';
     if (path.contains('module-01')) return 'optimus_01';
     if (path.contains('module-02')) return 'optimus_02';
     if (path.contains('module-03')) return 'optimus_03';

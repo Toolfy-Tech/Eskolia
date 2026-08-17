@@ -49,22 +49,22 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
     final width = MediaQuery.sizeOf(context).width;
+    final isDesktopOrTablet = width >= 700;
+    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
+    final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
     int numColumns;
-    if (width > 1200) {
+    double cardWidth;
+    if (availableWidth >= 1050) {
       numColumns = 3;
-    } else if (width > 800) {
+      cardWidth = (availableWidth - 32) / 3;
+    } else if (availableWidth >= 660) {
       numColumns = 2;
+      cardWidth = (availableWidth - 16) / 2;
     } else {
       numColumns = 1;
+      cardWidth = availableWidth;
     }
-
-    // Déterminer la largeur des cartes
-    final sidebarWidth = width > 800 ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 48; // marges et padding
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
 
     final rawOrder = ref.watch(soloCardsOrderProvider);
     final pinned = ref.watch(soloPinnedCardsProvider);
@@ -75,9 +75,6 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
     // Filtrer les cartes
     final order = rawOrder.where((key) {
       if (key == 'feature:solo_true_false' || key == 'feature:tp' || key == 'tp') {
-        return false;
-      }
-      if (key == 'feature:solo_quiz_ai' && !isAiActive) {
         return false;
       }
       return true;
@@ -493,7 +490,7 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
                 sectionName: 'SOLO',
                 color: displayAccentColor,
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: Row(
                   children: [
@@ -502,80 +499,104 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
                         onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
                         child: Text(
                           displayTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.outfit(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                     if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 2),
                       IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
                         tooltip: 'Comment ça marche ?',
                         onPressed: () => _showInfoDialog(context, key),
                         icon: const Icon(
                           Icons.info_outline_rounded,
                           color: Colors.white60,
-                          size: 16,
+                          size: 15,
                         ),
                       ),
                     ],
                   ],
                 ),
               ),
+              const SizedBox(width: 4),
               IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                 tooltip: isCollapsed ? 'Afficher' : 'Masquer',
                 onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
                 icon: Icon(
                   isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
                   color: isCollapsed ? Colors.white70 : displayAccentColor,
-                  size: 18,
+                  size: 19,
                 ),
               ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                 icon: const Icon(
-                  Icons.edit_note_rounded,
+                  Icons.more_vert_rounded,
                   color: Colors.white70,
-                  size: 20,
+                  size: 19,
                 ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(soloPinnedCardsProvider.notifier).togglePin(key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
+                tooltip: 'Options de la carte',
+                color: EskoliaTokens.surface1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
                 ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
+                onSelected: (action) {
+                  if (action == 'settings') {
+                    showHomeCardSettingsDialog(context, ref, key);
+                  } else if (action == 'pin') {
+                    ref.read(soloPinnedCardsProvider.notifier).togglePin(key);
+                  } else if (action == 'home') {
+                    if (isAddedToHome) {
+                      ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+                    } else {
+                      ref.read(homeCardsOrderProvider.notifier).addCard(key);
+                    }
                   }
                 },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
+                itemBuilder: (ctx) => [
+                  const PopupMenuItem(
+                    value: 'settings',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
+                        SizedBox(width: 10),
+                        Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'pin',
+                    child: Row(
+                      children: [
+                        Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? displayAccentColor : Colors.white70, size: 18),
+                        const SizedBox(width: 10),
+                        Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'home',
+                    child: Row(
+                      children: [
+                        Icon(isAddedToHome ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded, color: isAddedToHome ? EskoliaTokens.error : EskoliaTokens.cyan, size: 18),
+                        const SizedBox(width: 10),
+                        Text(isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

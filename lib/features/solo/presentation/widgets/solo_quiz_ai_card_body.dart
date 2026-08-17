@@ -9,6 +9,8 @@ import '../../../notebook/data/note_ai_generator.dart';
 import '../../../notebook/data/notebook_repository.dart';
 import '../../../notebook/data/note_model.dart';
 import '../../../ai/data/ai_key_repository.dart';
+import '../../../ai/data/ai_provider.dart';
+import '../../../ai/data/ai_quiz_generator_service.dart';
 import '../../../quiz/services/quiz_repository.dart';
 import '../../../../core/widgets/bottom_nav.dart';
 
@@ -81,12 +83,12 @@ class _SoloQuizAiCardBodyState extends ConsumerState<SoloQuizAiCardBody> {
 
     setState(() {
       _loading = true;
-      _loadingText = 'Vérification de la clé IA...';
+      _loadingText = 'Vérification de la connexion IA...';
     });
 
     try {
-      final aiState = await AiKeyRepository().watch().first;
-      if (!aiState.isConnected || aiState.apiKey == null) {
+      final aiState = await AiKeyRepository().load();
+      if (!aiState.isConnected || (aiState.apiKey == null && !aiState.provider.isLocal)) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -99,8 +101,9 @@ class _SoloQuizAiCardBodyState extends ConsumerState<SoloQuizAiCardBody> {
         return;
       }
 
-      setState(() => _loadingText = 'L\'IA formule les questions...');
-      final buffer = StringBuffer();
+      final geminiModel = await AiKeyRepository().loadGeminiModel();
+
+      setState(() => _loadingText = 'L\'IA formule vos questions...');
       
       final String difficultyLabel;
       if (_selectedDifficulties.length == 3 || _selectedDifficulties.isEmpty) {
@@ -110,34 +113,17 @@ class _SoloQuizAiCardBodyState extends ConsumerState<SoloQuizAiCardBody> {
       }
 
       final title = _sourceType == 'note' ? _selectedNote!.title : prompt;
+      final noteText = _sourceType == 'note' ? _selectedNote!.content : null;
 
-      if (_sourceType == 'note') {
-        await for (final token in NoteAiGenerator().streamQuiz(
-          apiKey: aiState.apiKey!,
-          provider: aiState.provider,
-          noteContent: _selectedNote!.content,
-          noteTitle: _selectedNote!.title,
-        )) {
-          buffer.write(token);
-        }
-      } else {
-        await for (final token in NoteAiGenerator().streamQuizFromTheme(
-          apiKey: aiState.apiKey!,
-          provider: aiState.provider,
-          theme: prompt,
-          questionCount: _questionCount,
-          difficulty: difficultyLabel,
-        )) {
-          buffer.write(token);
-        }
-      }
-
-      setState(() => _loadingText = 'Analyse du quiz généré...');
-      final raw = NoteAiGenerator.extractJson(buffer.toString());
-      
-      setState(() => _loadingText = 'Préparation de la session...');
-      final repository = QuizRepository();
-      final session = await repository.buildFromNotebookQuizJson(raw, title);
+      final session = await AiQuizGeneratorService().generateQuizSession(
+        apiKey: aiState.apiKey ?? '',
+        provider: aiState.provider,
+        topic: title,
+        count: _questionCount,
+        difficulty: difficultyLabel,
+        noteContent: noteText,
+        geminiModel: aiState.provider == AiProvider.gemini ? geminiModel : null,
+      );
 
       if (!mounted) return;
       context.push('/quiz/run', extra: session);
@@ -145,7 +131,7 @@ class _SoloQuizAiCardBodyState extends ConsumerState<SoloQuizAiCardBody> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur lors de la génération par l\'IA : $e'),
+            content: Text('Erreur IA : $e'),
             backgroundColor: EskoliaTokens.error,
           ),
         );

@@ -14,6 +14,7 @@ class QuizState {
   final int lives;
   final int revealedIndicesCount;
   final List<bool> ticketChecks;
+  final int? selectedQcmIndex;
 
   QuizState({
     this.session,
@@ -26,6 +27,7 @@ class QuizState {
     this.lives = 3,
     this.revealedIndicesCount = 0,
     this.ticketChecks = const [],
+    this.selectedQcmIndex,
   });
 
   QuizState copyWith({
@@ -39,6 +41,8 @@ class QuizState {
     int? lives,
     int? revealedIndicesCount,
     List<bool>? ticketChecks,
+    int? selectedQcmIndex,
+    bool clearSelectedQcm = false,
   }) {
     return QuizState(
       session: session ?? this.session,
@@ -51,6 +55,7 @@ class QuizState {
       lives: lives ?? this.lives,
       revealedIndicesCount: revealedIndicesCount ?? this.revealedIndicesCount,
       ticketChecks: ticketChecks ?? this.ticketChecks,
+      selectedQcmIndex: clearSelectedQcm ? null : (selectedQcmIndex ?? this.selectedQcmIndex),
     );
   }
 }
@@ -89,6 +94,25 @@ class QuizNotifier extends Notifier<QuizState> {
     }
   }
 
+  void restartSession() {
+    final s = state.session;
+    if (s == null) return;
+    final resetSession = QuizSession(
+      sessionId: s.sessionId,
+      title: s.title,
+      questions: s.questions,
+      currentIndex: 0,
+      userScores: List<double?>.filled(s.questions.length, null),
+      startTime: DateTime.now(),
+      runMode: s.runMode,
+      timed: s.timed,
+      isMistakesSession: s.isMistakesSession,
+      isDailyRandom: s.isDailyRandom,
+      isPoolOnly: s.isPoolOnly,
+    );
+    _setupSession(resetSession);
+  }
+
   void _setupSession(QuizSession session) {
     state = QuizState(
       session: session,
@@ -106,6 +130,7 @@ class QuizNotifier extends Notifier<QuizState> {
     
     state = state.copyWith(
       revealedIndicesCount: 0,
+      clearSelectedQcm: true,
       ticketChecks: (q.type == 'ticket' && q.checklist != null)
           ? List.filled(q.checklist!.length, false)
           : [],
@@ -137,10 +162,54 @@ class QuizNotifier extends Notifier<QuizState> {
     state = state.copyWith(isFlipped: true, isTimedOut: true);
   }
 
+  void selectQcmOption(int index) {
+    if (state.isFlipped || state.isValidated) return;
+    state = state.copyWith(selectedQcmIndex: index);
+  }
+
   void reveal() {
     if (state.isFlipped) return;
     _timer?.cancel();
     state = state.copyWith(isFlipped: true, isTimedOut: false);
+  }
+
+  Future<void> revealAndScoreQcm() async {
+    if (state.isFlipped) return;
+    _timer?.cancel();
+
+    final s = state.session;
+    if (s == null) {
+      reveal();
+      return;
+    }
+    final idx = s.currentIndex;
+    final q = s.questions[idx];
+    final selectedIdx = state.selectedQcmIndex;
+    final options = q.options ?? [];
+
+    bool isCorrect = false;
+    if (selectedIdx != null && selectedIdx >= 0 && selectedIdx < options.length) {
+      final chosen = options[selectedIdx].trim().toLowerCase();
+      final expected = q.answer.trim().toLowerCase();
+      isCorrect = chosen == expected;
+    }
+
+    final score = isCorrect ? 1.0 : 0.0;
+    final scores = List<double?>.from(s.userScores);
+    scores[idx] = score;
+
+    state = state.copyWith(
+      session: s.copyWith(userScores: scores),
+      isFlipped: true,
+      isValidated: true,
+      isTimedOut: false,
+    );
+
+    if (isCorrect) {
+      await _lacunesRepo.removeIfCorrect(q);
+    } else {
+      await _lacunesRepo.addWrong(q);
+    }
   }
 
   Future<void> revealAndScoreSequence(List<String> userOrder, List<String> correctOrder) async {

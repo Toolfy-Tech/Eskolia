@@ -240,13 +240,21 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
     final user = _user!;
     final width = MediaQuery.sizeOf(context).width;
 
+    final isDesktopOrTablet = width >= 700;
+    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
+    final availableWidth = (width - sidebarWidth - 40).clamp(280.0, double.infinity);
+
     int numColumns;
-    if (width > 1200) {
+    double cardWidth;
+    if (availableWidth >= 1050) {
       numColumns = 3;
-    } else if (width > 800) {
+      cardWidth = (availableWidth - 32) / 3;
+    } else if (availableWidth >= 660) {
       numColumns = 2;
+      cardWidth = (availableWidth - 16) / 2;
     } else {
       numColumns = 1;
+      cardWidth = availableWidth;
     }
 
     final subSources = ref.watch(homeSubscribedSourcesProvider);
@@ -263,13 +271,6 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
       }
     }
     veilleKeys.add('add_source');
-
-    final isLargeScreen = width > 800;
-    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 40;
-    final cardWidth = numColumns > 1
-        ? (availableWidth - (16 * (numColumns - 1))) / numColumns
-        : (width - 40);
 
     final controlBar = Padding(
       padding: const EdgeInsets.only(bottom: 8),

@@ -19,6 +19,7 @@ import '../services/quiz_repository.dart';
 import '../components/quiz_question_context_row.dart';
 import '../viewmodels/quiz_notifier.dart';
 import 'quiz_result_screen.dart';
+import '../../exam/data/exam_repository.dart';
 
 
 class QuizScreen extends ConsumerStatefulWidget {
@@ -99,6 +100,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   void _onReveal() {
     final state = ref.read(quizProvider(widget.sessionId));
     final q = state.session?.questions[state.session!.currentIndex];
+    if (q?.type == 'qcm' || (q?.options != null && q!.options!.length >= 2 && q.type != 'sequence' && q.type != 'association')) {
+      ref.read(quizProvider(widget.sessionId).notifier).revealAndScoreQcm();
+      return;
+    }
     if (q?.type == 'sequence' && q?.answerSequence != null && _sequenceOrder.isNotEmpty) {
       ref.read(quizProvider(widget.sessionId).notifier)
           .revealAndScoreSequence(_sequenceOrder, q!.answerSequence!);
@@ -153,8 +158,14 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         }
       }
     }
+
+    if (s.sessionId.startsWith('exam_') && s.questions.isNotEmpty) {
+      final percent = (totalScore / s.questions.length) * 100;
+      final examId = s.sessionId.replaceFirst('exam_', '');
+      ExamRepository.instance.saveExamScore(examId, percent);
+    }
     
-    await Navigator.of(context).push<bool>(
+    final replayed = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (ctx) => QuizResultScreen(
           sessionId: s.sessionId,
@@ -174,8 +185,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       ),
     );
     if (!mounted) return;
-    // On peut soit quitter soit relancer
-    ref.read(quizProvider(widget.sessionId).notifier).initSession(widget.sessionId);
+    if (replayed == true) {
+      ref.read(quizProvider(widget.sessionId).notifier).restartSession();
+    }
   }
 
   @override
@@ -446,7 +458,9 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             ),
         ],
         const SizedBox(height: 16),
-        if (q.type == 'sequence') ...[
+        if (q.type == 'qcm' || (q.options != null && q.options!.length >= 2 && q.type != 'sequence' && q.type != 'association')) ...[
+          _buildQcmOptions(state, q),
+        ] else if (q.type == 'sequence') ...[
           _buildSequenceReorder(q),
         ] else if (q.type == 'association') ...[
           _buildAssociationWidget(q),
@@ -462,6 +476,110 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           ),
         ],
       ],
+    );
+  }
+
+  Widget _buildQcmOptions(QuizState state, QuizQuestion q) {
+    final options = q.options ?? [];
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    return Column(
+      children: List.generate(options.length, (index) {
+        final opt = options[index];
+        final isSelected = state.selectedQcmIndex == index;
+        final isFlipped = state.isFlipped || state.isValidated;
+        final isAnswer = opt.trim().toLowerCase() == q.answer.trim().toLowerCase();
+
+        Color borderColor = Colors.white.withValues(alpha: 0.12);
+        Color bgColor = Colors.white.withValues(alpha: 0.04);
+        Color badgeColor = Colors.white24;
+        Color textColor = Colors.white.withValues(alpha: 0.9);
+
+        if (isFlipped) {
+          if (isAnswer) {
+            borderColor = EskoliaTokens.success.withValues(alpha: 0.8);
+            bgColor = EskoliaTokens.success.withValues(alpha: 0.15);
+            badgeColor = EskoliaTokens.success;
+            textColor = Colors.white;
+          } else if (isSelected) {
+            borderColor = EskoliaTokens.error.withValues(alpha: 0.8);
+            bgColor = EskoliaTokens.error.withValues(alpha: 0.15);
+            badgeColor = EskoliaTokens.error;
+            textColor = Colors.white70;
+          }
+        } else if (isSelected) {
+          borderColor = EskoliaTokens.cyan.withValues(alpha: 0.8);
+          bgColor = EskoliaTokens.cyan.withValues(alpha: 0.12);
+          badgeColor = EskoliaTokens.cyan;
+          textColor = Colors.white;
+        }
+
+        final letter = index < letters.length ? letters[index] : '${index + 1}';
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: isFlipped
+                ? null
+                : () => ref.read(quizProvider(widget.sessionId).notifier).selectQcmOption(index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: borderColor,
+                  width: isSelected || (isFlipped && isAnswer) ? 1.5 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: badgeColor.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: badgeColor.withValues(alpha: 0.5)),
+                    ),
+                    child: Text(
+                      letter,
+                      style: TextStyle(
+                        color: isFlipped && isAnswer
+                            ? EskoliaTokens.success
+                            : (isSelected ? EskoliaTokens.cyan : Colors.white70),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      opt,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 14,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                  if (isFlipped && isAnswer)
+                    const Icon(Icons.check_circle_rounded, color: EskoliaTokens.success, size: 20)
+                  else if (isFlipped && isSelected && !isAnswer)
+                    const Icon(Icons.cancel_rounded, color: EskoliaTokens.error, size: 20)
+                  else if (isSelected)
+                    const Icon(Icons.radio_button_checked_rounded, color: EskoliaTokens.cyan, size: 18),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 

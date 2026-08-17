@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/eskolia_tokens.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
+import '../theme/theme_palette_provider.dart';
 import '../../features/podcasts/data/podcast_player_service.dart';
 import '../../features/podcasts/presentation/podcast_mini_player.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
@@ -42,6 +43,7 @@ class SidebarOrderNotifier extends Notifier<List<String>> {
     '/home',
     '/veille',
     '/parcours',
+    '/exams',
     '/solo',
     '/tp',
     '/lobbys',
@@ -108,7 +110,7 @@ final aiConnectionStateProvider = StreamProvider<AiConnectionState>((ref) {
   return AiKeyRepository().watch();
 });
 
-class EskoliaBottomNav extends StatelessWidget {
+class EskoliaBottomNav extends ConsumerWidget {
   const EskoliaBottomNav({
     super.key,
     required this.currentPath,
@@ -130,6 +132,12 @@ class EskoliaBottomNav extends StatelessWidget {
     path: '/parcours',
     emoji: '\u{1F4DA}',
     label: 'Parcours',
+  );
+  static const _NavItem _exams = _NavItem(
+    path: '/exams',
+    emoji: '🎓',
+    label: 'Examens Blancs',
+    customColor: Color(0xFFFFB300),
   );
   static const _NavItem _solo = _NavItem(
     path: '/solo',
@@ -188,12 +196,18 @@ class EskoliaBottomNav extends StatelessWidget {
   );
 
 
+  static const _NavItem _menu = _NavItem(
+    path: '#menu',
+    emoji: '☰',
+    label: 'Menu',
+  );
+
   static List<_NavItem> _itemsFor() => [
         _accueil,
         _parcours,
+        _exams,
         _solo,
-        _tp,
-        _multijoueur,
+        _menu,
       ];
 
   static int _indexForPath(String path, List<_NavItem> items) {
@@ -208,7 +222,7 @@ class EskoliaBottomNav extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
     final neon = Theme.of(context).extension<NeonTheme>();
 
@@ -217,6 +231,7 @@ class EskoliaBottomNav extends StatelessWidget {
 
     return _buildBar(
       context,
+      ref,
       items: _itemsFor(),
       glassBorder: glassBorder,
       neon: neon,
@@ -224,7 +239,8 @@ class EskoliaBottomNav extends StatelessWidget {
   }
 
   Widget _buildBar(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required List<_NavItem> items,
     required Color glassBorder,
     required NeonTheme? neon,
@@ -299,9 +315,13 @@ class EskoliaBottomNav extends StatelessWidget {
                     active: active,
                     neon: neon,
                     onTap: () async {
+                      final target = item.path;
+                      if (target == '#menu') {
+                        ref.read(mobileDrawerOpenProvider.notifier).open();
+                        return;
+                      }
                       final router = GoRouter.of(context);
                       final current = GoRouterState.of(context).uri.path;
-                      final target = item.path;
                       final normalizedCurrent = current == '/classement'
                           ? '/leaderboard'
                           : current;
@@ -331,6 +351,17 @@ class EskoliaBottomNav extends StatelessWidget {
   }
 }
 
+class MobileDrawerOpenNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void open() => state = true;
+  void close() => state = false;
+  void toggle() => state = !state;
+}
+
+final mobileDrawerOpenProvider = NotifierProvider.autoDispose<MobileDrawerOpenNotifier, bool>(MobileDrawerOpenNotifier.new);
+
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key, required this.child});
 
@@ -349,7 +380,7 @@ class _MainShellState extends ConsumerState<MainShell> {
     final topPad = MediaQuery.of(context).padding.top;
     final bottomInset = MediaQuery.of(context).padding.bottom;
     final width = MediaQuery.sizeOf(context).width;
-    final isLargeScreen = width > 800;
+    final isDesktopOrTablet = width >= 700;
 
     final hasPodcast = ref.watch(
       podcastPlayerProvider.select((s) => s.podcast != null),
@@ -359,8 +390,8 @@ class _MainShellState extends ConsumerState<MainShell> {
         ? _miniPlayerHeight + _miniPlayerBottomGap
         : 0;
 
-    if (isLargeScreen) {
-      // Layout Desktop / Web avec Sidebar fixe et élargie
+    if (isDesktopOrTablet) {
+      // Layout Desktop & Tablette avec Sidebar latérale
       return Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
@@ -413,8 +444,10 @@ class _MainShellState extends ConsumerState<MainShell> {
       );
     }
 
-    // Layout Mobile avec Sidebar rétractable toujours visible (mode compact de 78px par défaut)
-    final collapsed = ref.watch(sidebarCollapsedProvider);
+    // Layout Mobile (Smartphones < 700px) : Pleine largeur d'écran + Barre de navigation inférieure
+    final isDrawerOpen = ref.watch(mobileDrawerOpenProvider);
+    final routerPath = GoRouterState.of(context).uri.path;
+    final bottomNavReserve = 86.0 + bottomInset + miniPlayerReserve;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -423,13 +456,12 @@ class _MainShellState extends ConsumerState<MainShell> {
         children: [
           const EskoliaAmbientBackground(),
           
-          // Contenu principal, toujours décalé de 78px pour laisser la sidebar visible
+          // Contenu principal plein écran sur smartphone
           Positioned.fill(
             child: Padding(
               padding: EdgeInsets.only(
-                left: 78.0,
                 top: topPad + kTipsBannerHeight,
-                bottom: miniPlayerReserve,
+                bottom: bottomNavReserve,
               ),
               child: widget.child,
             ),
@@ -438,43 +470,17 @@ class _MainShellState extends ConsumerState<MainShell> {
           // Tips Banner
           Positioned(
             top: 0,
-            left: 78.0,
+            left: 0,
             right: 0,
             child: const EskoliaTipsBanner(),
           ),
 
-          // Filtre d'assombrissement dynamique (scrim) quand la sidebar est étendue sur mobile
-          Positioned.fill(
-            child: IgnorePointer(
-              ignoring: collapsed,
-              child: GestureDetector(
-                onTap: () {
-                  ref.read(sidebarCollapsedProvider.notifier).setCollapsed(true);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 240),
-                  color: collapsed
-                      ? Colors.transparent
-                      : Colors.black.withValues(alpha: 0.55),
-                ),
-              ),
-            ),
-          ),
-
-          // Sidebar persistante sur le côté gauche
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            child: const EskoliaSidebar(),
-          ),
-
-          // Podcast Mini Player décalé pour ne pas chevaucher la sidebar
+          // Podcast Mini Player au-dessus de la barre de navigation
           if (hasPodcast)
             Positioned(
-              left: 78.0 + 14,
-              right: 14,
-              bottom: 14 + bottomInset,
+              left: 16,
+              right: 16,
+              bottom: 84 + bottomInset,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 440),
@@ -482,6 +488,43 @@ class _MainShellState extends ConsumerState<MainShell> {
                 ),
               ),
             ),
+
+          // Barre de navigation inférieure flottante Eskolia
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 10 + bottomInset,
+            child: EskoliaBottomNav(currentPath: routerPath),
+          ),
+
+          // Filtre d'assombrissement (scrim) quand le menu modal est ouvert
+          if (isDrawerOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  ref.read(mobileDrawerOpenProvider.notifier).close();
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 240),
+                  color: Colors.black.withValues(alpha: 0.65),
+                ),
+              ),
+            ),
+
+          // Tiroir de menu latéral coulissant pour mobile
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 260),
+            curve: Curves.easeInOut,
+            left: isDrawerOpen ? 0 : -290,
+            top: 0,
+            bottom: 0,
+            width: 280,
+            child: EskoliaSidebar(
+              onNavItemTapped: () {
+                ref.read(mobileDrawerOpenProvider.notifier).close();
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -498,8 +541,10 @@ class EskoliaSidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final collapsed = ref.watch(sidebarCollapsedProvider);
-    final width = collapsed ? 78.0 : 250.0;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final isDesktopOrTablet = screenWidth >= 700;
+    final collapsed = isDesktopOrTablet ? ref.watch(sidebarCollapsedProvider) : false;
+    final width = isDesktopOrTablet ? (collapsed ? 72.0 : 250.0) : 280.0;
     final routerState = GoRouterState.of(context);
     final path = routerState.uri.path;
 
@@ -512,6 +557,7 @@ class EskoliaSidebar extends ConsumerWidget {
       '/home': EskoliaBottomNav._accueil,
       '/veille': EskoliaBottomNav._veille,
       '/parcours': EskoliaBottomNav._parcours,
+      '/exams': EskoliaBottomNav._exams,
       '/solo': EskoliaBottomNav._solo,
       '/tp': EskoliaBottomNav._tp,
       '/lobbys': EskoliaBottomNav._multijoueur,
@@ -543,22 +589,24 @@ class EskoliaSidebar extends ConsumerWidget {
       }
     }
 
+    final palette = ref.watch(themePaletteProvider);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 240),
       width: width,
       height: double.infinity,
       decoration: BoxDecoration(
-        color: EskoliaTokens.surface1.withValues(alpha: 0.90),
+        color: palette.sidebarBg.withValues(alpha: 0.96),
         border: Border(
           right: BorderSide(
-            color: EskoliaTokens.cyan.withValues(alpha: 0.25),
+            color: palette.sidebarBorder,
             width: 1.0,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 16,
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 20,
             offset: const Offset(4, 0),
           ),
         ],
@@ -571,10 +619,10 @@ class EskoliaSidebar extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: collapsed
-                  ? const Center(
+                  ? Center(
                       child: Icon(
                         Icons.school_rounded,
-                        color: EskoliaTokens.cyan,
+                        color: palette.primaryAccent,
                         size: 28,
                       ),
                     )
@@ -583,9 +631,9 @@ class EskoliaSidebar extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.school_rounded,
-                              color: EskoliaTokens.cyan,
+                              color: palette.primaryAccent,
                               size: 28,
                             ),
                             const SizedBox(width: 10),
@@ -600,14 +648,31 @@ class EskoliaSidebar extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.notifications_none_rounded,
-                            color: Colors.white70,
-                            size: 22,
-                          ),
-                          tooltip: 'Notifications',
-                          onPressed: () => context.push('/notifications'),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.notifications_none_rounded,
+                                color: Colors.white70,
+                                size: 22,
+                              ),
+                              tooltip: 'Notifications',
+                              onPressed: () {
+                                if (onNavItemTapped != null) onNavItemTapped!();
+                                context.push('/notifications');
+                              },
+                            ),
+                            if (!isDesktopOrTablet)
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.close_rounded,
+                                  color: Colors.white70,
+                                  size: 22,
+                                ),
+                                tooltip: 'Fermer',
+                                onPressed: onNavItemTapped,
+                              ),
+                          ],
                         ),
                       ],
                     ),
@@ -683,6 +748,128 @@ class EskoliaSidebar extends ConsumerWidget {
                 ),
               ),
             ),
+            // Sélecteur de Thème de Couleurs
+            if (collapsed)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Center(
+                  child: PopupMenuButton<EskoliaThemeId>(
+                    tooltip: 'Changer d\'ambiance (${ref.watch(themePaletteProvider).label})',
+                    padding: EdgeInsets.zero,
+                    color: EskoliaTokens.surface1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                    ),
+                    icon: Icon(
+                      Icons.palette_outlined,
+                      color: ref.watch(themePaletteProvider).primaryAccent,
+                      size: 20,
+                    ),
+                    onSelected: (theme) => ref.read(themePaletteProvider.notifier).setTheme(theme),
+                    itemBuilder: (ctx) => EskoliaThemeId.values.map((theme) {
+                      final isSelected = ref.watch(themePaletteProvider).themeId == theme;
+                      return PopupMenuItem(
+                        value: theme,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 14,
+                              height: 14,
+                              decoration: BoxDecoration(
+                                color: theme.accentColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              theme.label,
+                              style: TextStyle(
+                                color: isSelected ? theme.accentColor : Colors.white,
+                                fontSize: 13,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.palette_outlined, size: 14, color: ref.watch(themePaletteProvider).primaryAccent),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'AMBIANCE',
+                            style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: EskoliaThemeId.values.map((theme) {
+                          final isSelected = ref.watch(themePaletteProvider).themeId == theme;
+                          return Tooltip(
+                            message: theme.label,
+                            child: InkWell(
+                              onTap: () => ref.read(themePaletteProvider.notifier).setTheme(theme),
+                              borderRadius: BorderRadius.circular(20),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 26,
+                                height: 26,
+                                decoration: BoxDecoration(
+                                  color: theme.accentColor,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected ? Colors.white : Colors.transparent,
+                                    width: 2.5,
+                                  ),
+                                  boxShadow: isSelected
+                                      ? [
+                                          BoxShadow(
+                                            color: theme.accentColor.withValues(alpha: 0.6),
+                                            blurRadius: 10,
+                                            spreadRadius: 1,
+                                          ),
+                                        ]
+                                      : [],
+                                ),
+                                child: isSelected
+                                    ? const Center(
+                                        child: Icon(Icons.check, size: 13, color: Colors.black),
+                                      )
+                                    : null,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             const Divider(color: Colors.white12, height: 1),
             // Profil Utilisateur
             userAsyncValue.when(
@@ -719,17 +906,17 @@ class EskoliaSidebar extends ConsumerWidget {
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
-                                    color: EskoliaTokens.cyan.withValues(alpha: 0.2),
+                                    color: palette.primaryAccent.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: EskoliaTokens.cyan.withValues(alpha: 0.5),
+                                      color: palette.primaryAccent.withValues(alpha: 0.5),
                                     ),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     initial,
-                                    style: const TextStyle(
-                                      color: EskoliaTokens.cyan,
+                                    style: TextStyle(
+                                      color: palette.primaryAccent,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -744,17 +931,17 @@ class EskoliaSidebar extends ConsumerWidget {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: EskoliaTokens.cyan.withValues(alpha: 0.2),
+                                    color: palette.primaryAccent.withValues(alpha: 0.2),
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: EskoliaTokens.cyan.withValues(alpha: 0.5),
+                                      color: palette.primaryAccent.withValues(alpha: 0.5),
                                     ),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     initial,
-                                    style: const TextStyle(
-                                      color: EskoliaTokens.cyan,
+                                    style: TextStyle(
+                                      color: palette.primaryAccent,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
@@ -841,11 +1028,15 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = EskoliaTokens.cyan;
-    final hoverColor = EskoliaTokens.cyan.withValues(alpha: 0.12);
+    final palette = ref.watch(themePaletteProvider);
+    final itemCustomColor = widget.item.customColor;
+    final activeColor = itemCustomColor ?? palette.primaryAccent;
+    final hoverColor = (itemCustomColor ?? palette.primaryAccent).withValues(alpha: 0.14);
     final borderColor = widget.active
         ? activeColor
-        : (_isHovered ? activeColor.withValues(alpha: 0.4) : Colors.transparent);
+        : (itemCustomColor != null
+            ? itemCustomColor.withValues(alpha: 0.3)
+            : (_isHovered ? activeColor.withValues(alpha: 0.4) : Colors.transparent));
 
     final isAiPath = widget.item.path == '/ai/setup';
     Color? customIconColor;
@@ -855,7 +1046,7 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
       customIconColor = isAiActive ? EskoliaTokens.success : EskoliaTokens.error;
     }
 
-    final displayIconColor = customIconColor ?? (widget.active ? activeColor : Colors.white70);
+    final displayIconColor = customIconColor ?? (widget.active ? activeColor : (itemCustomColor ?? Colors.white70));
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -881,12 +1072,19 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
               boxShadow: widget.active
                   ? [
                       BoxShadow(
-                        color: activeColor.withValues(alpha: 0.1),
+                        color: activeColor.withValues(alpha: 0.15),
                         blurRadius: 10,
                         spreadRadius: -2,
                       ),
                     ]
-                  : null,
+                  : (itemCustomColor != null
+                      ? [
+                          BoxShadow(
+                            color: itemCustomColor.withValues(alpha: 0.08),
+                            blurRadius: 6,
+                          ),
+                        ]
+                      : null),
             ),
             child: widget.collapsed
                 ? Tooltip(
@@ -909,8 +1107,10 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
                       Text(
                         widget.item.label,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: widget.active ? 1.0 : 0.7),
-                          fontWeight: widget.active ? FontWeight.bold : FontWeight.normal,
+                          color: itemCustomColor != null
+                              ? (widget.active ? itemCustomColor : itemCustomColor.withValues(alpha: 0.9))
+                              : Colors.white.withValues(alpha: widget.active ? 1.0 : 0.7),
+                          fontWeight: (widget.active || itemCustomColor != null) ? FontWeight.bold : FontWeight.normal,
                           fontSize: 14.5,
                           fontFamily: 'Outfit',
                         ),
@@ -931,12 +1131,14 @@ class _NavItem {
     required this.label,
     // ignore: unused_element_parameter
     this.iconAsset,
+    this.customColor,
   });
 
   final String path;
   final String emoji;
   final String label;
   final String? iconAsset;
+  final Color? customColor;
 }
 
 class _NavCell extends StatelessWidget {

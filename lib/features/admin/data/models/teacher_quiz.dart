@@ -63,6 +63,8 @@ class TeacherQuizQuestion {
     this.contextLine,
     this.indices = const [],
     this.items = const [],
+    this.pairs = const [],
+    this.checklist = const [],
   });
 
   final String question;
@@ -73,18 +75,37 @@ class TeacherQuizQuestion {
   final String? contextLine;
   final List<String> indices;
   final List<String> items;
+  final List<List<String>> pairs;
+  final List<String> checklist;
 
-  static TeacherQuizQuestion fromMap(Map<String, dynamic> m) =>
-      TeacherQuizQuestion(
-        question: m['question'] as String? ?? '',
-        answer: m['answer'] as String? ?? '',
-        difficulty: m['difficulty'] as String? ?? 'moyen',
-        hint: m['hint'] as String? ?? '',
-        type: m['type'] as String? ?? 'classic',
-        contextLine: m['contextLine'] as String?,
-        indices: List<String>.from(m['indices'] as List? ?? []),
-        items: List<String>.from(m['items'] as List? ?? []),
-      );
+  static TeacherQuizQuestion fromMap(Map<String, dynamic> m) {
+    final rawPairs = m['pairs'];
+    final pairs = <List<String>>[];
+    if (rawPairs is List) {
+      for (final p in rawPairs) {
+        if (p is List && p.length >= 2) {
+          pairs.add([p[0].toString(), p[1].toString()]);
+        } else if (p is Map) {
+          final l = p['left']?.toString() ?? '';
+          final r = p['right']?.toString() ?? '';
+          if (l.isNotEmpty && r.isNotEmpty) pairs.add([l, r]);
+        }
+      }
+    }
+
+    return TeacherQuizQuestion(
+      question: m['question'] as String? ?? '',
+      answer: m['answer'] as String? ?? '',
+      difficulty: m['difficulty'] as String? ?? 'moyen',
+      hint: m['hint'] as String? ?? '',
+      type: m['type'] as String? ?? 'classic',
+      contextLine: m['contextLine'] as String?,
+      indices: List<String>.from(m['indices'] as List? ?? []),
+      items: List<String>.from(m['items'] as List? ?? []),
+      pairs: pairs,
+      checklist: List<String>.from(m['checklist'] as List? ?? []),
+    );
+  }
 
   Map<String, dynamic> toMap() => {
         'question': question,
@@ -95,5 +116,7 @@ class TeacherQuizQuestion {
         'contextLine': contextLine,
         'indices': indices,
         'items': items,
+        'pairs': pairs,
+        'checklist': checklist,
       };
 }

@@ -1,0 +1,227 @@
+{
+  "id": "tp_exam_francis",
+  "title": "Épreuve Pratique TIP — Sujet Principal (Francis)",
+  "subtitle": "Poste de travail bureautique, handicap physique, partitionnement D: et sécurisation stricte",
+  "candidateName": "Francis Dupont",
+  "companyName": "Entreprise Martin",
+  "role": "Collaborateur Bureautique",
+  "accessibilityContext": "Débutant en informatique avec un handicap physique reconnu au niveau du membre supérieur droit. Nécessite une ergonomie adaptée pour utilisation à une seule main ou main gauche.",
+  "vmInfo": {
+    "vmName": "MV-Client",
+    "targetHostname": "MV-Martin",
+    "os": "Windows 11 Professionnel (English)",
+    "adminUser": "Mvadmin",
+    "adminPassword": "EpreuveTIP@1",
+    "tpmKey": "Epreuve TIP@1",
+    "userAccount": {
+      "username": "francis.Dupont",
+      "fullName": "Francis Dupont",
+      "password": "YOLOTIP@1",
+      "isAdministrator": false
+    }
+  },
+  "tasks": [
+    {
+      "id": "task_1",
+      "order": 1,
+      "title": "Gestion du stockage virtuel",
+      "points": 1.0,
+      "instruction": "Ajoutez un second disque virtuel de 20 Go à la machine virtuelle MV-Client dans votre hyperviseur (VirtualBox, VMware ou Hyper-V).",
+      "guiSteps": "1. Éteindre la VM si nécessaire.\n2. Ouvrir les paramètres de la VM dans l'hyperviseur.\n3. Aller dans 'Storage' (Stockage) > Contrôleur SATA/NVMe.\n4. Cliquer sur 'Add Hard Disk' (Ajouter un disque dur) > 'Create New Disk'.\n5. Définir une taille fixe ou dynamique de 20 GB et valider.",
+      "powerShellScript": "# Sous Hyper-V :\nNew-VHD -Path 'C:\\VMs\\MV-Client\\Data20GB.vhdx' -SizeBytes 20GB -Dynamic\nAdd-VMHardDiskDrive -VMName 'MV-Client' -Path 'C:\\VMs\\MV-Client\\Data20GB.vhdx'",
+      "captureExpected": "Capture des paramètres de stockage de l'hyperviseur montrant le disque système et le second disque de 20 Go attaché à MV-Client."
+    },
+    {
+      "id": "task_2",
+      "order": 2,
+      "title": "Démarrage sécurisé et session administrateur",
+      "points": 1.0,
+      "instruction": "Démarrez MV-Client, saisissez la clé de chiffrement TPM obligatoire fournie ('Epreuve TIP@1') et ouvrez la session avec le compte Mvadmin.",
+      "guiSteps": "1. Démarrer la machine virtuelle.\n2. Lors de l'invite TPM / BitLocker, saisir la clé de chiffrement : Epreuve TIP@1.\n3. Sur l'écran de connexion Windows 11, sélectionner l'utilisateur 'Mvadmin' et saisir le mot de passe : EpreuveTIP@1.",
+      "powerShellScript": "# Vérification de l'état TPM et de l'utilisateur connecté :\nGet-Tpm\nwhoami",
+      "captureExpected": "Capture de l'écran Windows 11 avec la session 'Mvadmin' ouverte et le Bureau affiché."
+    },
+    {
+      "id": "task_3",
+      "order": 3,
+      "title": "Protection du système (Point de restauration)",
+      "points": 1.0,
+      "instruction": "Créez immédiatement un point de restauration système nommé explicitement 'EtatInitial'.",
+      "guiSteps": "1. Ouvrir le menu Démarrer, taper 'Create a restore point' et appuyer sur Entrée.\n2. Dans l'onglet 'System Protection', vérifier que la protection est 'On' sur le lecteur C: (sinon cliquer sur 'Configure' > 'Turn on system protection').\n3. Cliquer sur le bouton 'Create...'.\n4. Nommer le point de restauration : EtatInitial.\n5. Cliquer sur 'Create' puis attendre la confirmation 'The restore point was created successfully'.",
+      "powerShellScript": "# Activer la protection système sur C: et créer le point de restauration\nEnable-ComputerRestore -Drive 'C:\\'\nCheckpoint-Computer -Description 'EtatInitial' -RestorePointType 'MODIFY_SETTINGS'",
+      "captureExpected": "Capture de la boîte de dialogue de création ou de la liste des points de restauration affichant 'EtatInitial'."
+    },
+    {
+      "id": "task_4",
+      "order": 4,
+      "title": "Maintenance logicielle (Pause Windows Update)",
+      "points": 1.0,
+      "instruction": "Reportez temporairement les mises à jour Windows Update à la date la plus éloignée possible réglementairement.",
+      "guiSteps": "1. Ouvrir Settings (Win + I) > 'Windows Update'.\n2. Dans la section 'Pause updates', cliquer sur le menu déroulant à côté de 'Pause for 1 week'.\n3. Sélectionner le délai maximal autorisé par le système (ex: 'Pause for 5 weeks').",
+      "powerShellScript": "# Vérification de l'état de pause des mises à jour\nGet-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseUpdatesExpiryTime' -ErrorAction SilentlyContinue",
+      "captureExpected": "Capture de la page Settings > Windows Update montrant le message 'Updates paused until [Date la plus lointaine]'."
+    },
+    {
+      "id": "task_5",
+      "order": 5,
+      "title": "Préparation des volumes (Disque D: DATA)",
+      "points": 1.0,
+      "instruction": "Initialisez et partitionnez le nouveau disque de 20 Go dans son intégralité en système de fichiers NTFS. Nommez ce volume DATA et attribuez-lui la lettre de lecteur D:.",
+      "guiSteps": "1. Faire un clic droit sur le menu Démarrer > 'Disk Management' (ou Win + X > Disk Management).\n2. Si la pop-up 'Initialize Disk' apparaît, choisir 'GPT' et cliquer sur OK.\n3. Sur l'espace non alloué (Unallocated) du disque de 20 Go, faire un clic droit > 'New Simple Volume...'.\n4. Suivre l'assistant : Taille maximale (20480 Mo), Assigner la lettre 'D', Formater en 'NTFS', Volume label : 'DATA'.\n5. Cocher 'Perform a quick format' et cliquer sur 'Finish'.",
+      "powerShellScript": "# Initialisation, partitionnement et formatage automatique en PowerShell\nGet-Disk | Where-Object PartitionStyle -eq 'RAW' | Initialize-Disk -PartitionStyle GPT -PassThru |\n  New-Partition -DriveLetter 'D' -UseMaximumSize |\n  Format-Volume -FileSystem NTFS -NewFileSystemLabel 'DATA' -Confirm:$false",
+      "captureExpected": "Capture de la fenêtre 'Disk Management' et de l'Explorateur de fichiers montrant le lecteur 'DATA (D:)' de 20 Go au format NTFS."
+    },
+    {
+      "id": "task_6",
+      "order": 6,
+      "title": "Configuration réseau fixe (IP statique)",
+      "points": 1.0,
+      "instruction": "Configurez l'adressage IP de la carte réseau (en mode Bridge) : Adresse IP : 192.168.n.1, Masque : 255.255.255.0 (/24), Passerelle et DNS déterminés selon le réseau de votre centre.",
+      "guiSteps": "1. Ouvrir 'Settings' > 'Network & internet' > 'Advanced network settings' > 'More network adapter options' (ou taper 'ncpa.cpl' dans Win + R).\n2. Clic droit sur 'Ethernet' > 'Properties'.\n3. Double-cliquer sur 'Internet Protocol Version 4 (TCP/IPv4)'.\n4. Cocher 'Use the following IP address'.\n5. Renseigner l'IP (192.168.x.1), le masque (255.255.255.0), la passerelle et les serveurs DNS.\n6. Cliquer sur OK pour valider.",
+      "powerShellScript": "# Exemple pour l'interface Ethernet avec passerelle 192.168.1.254 et DNS 192.168.1.254\n$adapter = Get-NetAdapter | Where-Object Status -eq 'Up'\nNew-NetIPAddress -InterfaceIndex $adapter.ifIndex -IPAddress '192.168.1.1' -PrefixLength 24 -DefaultGateway '192.168.1.254'\nSet-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses ('192.168.1.254', '1.1.1.1')",
+      "captureExpected": "Capture de la fenêtre de propriétés IPv4 ou de la commande 'ipconfig /all' dans PowerShell montrant la configuration IP complète."
+    },
+    {
+      "id": "task_7",
+      "order": 7,
+      "title": "Gestion des utilisateurs (Compte local Francis)",
+      "points": 1.0,
+      "instruction": "Créez un nouveau compte utilisateur local pour le collaborateur nommé Francis Dupont au format Prenom.Nom (francis.Dupont) avec le mot de passe YOLOTIP@1.",
+      "guiSteps": "1. Appuyer sur Win + R, taper 'lusrmgr.msc' et valider.\n2. Cliquer sur le dossier 'Users' > Clic droit dans la zone blanche > 'New User...'.\n3. Username : francis.Dupont\n4. Full name : Francis Dupont\n5. Password & Confirm password : YOLOTIP@1\n6. Décocher 'User must change password at next logon' et cocher 'Password never expires'.\n7. Cliquer sur 'Create' puis 'Close'.",
+      "powerShellScript": "$secPass = ConvertTo-SecureString 'YOLOTIP@1' -AsPlainText -Force\nNew-LocalUser -Name 'francis.Dupont' -FullName 'Francis Dupont' -Password $secPass -Description 'Compte utilisateur Francis Dupont' -PasswordNeverExpires",
+      "captureExpected": "Capture de la console 'Local Users and Groups' montrant le compte 'francis.Dupont' créé."
+    },
+    {
+      "id": "task_8",
+      "order": 8,
+      "title": "Identité de la machine (Renommage du poste)",
+      "points": 1.0,
+      "instruction": "Renommez l'ordinateur MV-Client avec le nom standardisé MV-Martin.",
+      "guiSteps": "1. Ouvrir Settings (Win + I) > 'System'.\n2. En haut, cliquer sur 'Rename' sous le nom actuel de l'ordinateur (ou 'About' > 'Rename this PC').\n3. Saisir le nouveau nom : MV-Martin.\n4. Cliquer sur 'Next' puis sur 'Restart later' pour effectuer les autres opérations avant redémarrage.",
+      "powerShellScript": "Rename-Computer -NewName 'MV-Martin' -Force",
+      "captureExpected": "Capture de la fenêtre Settings > About ou System Properties montrant le nom de machine 'MV-Martin'."
+    },
+    {
+      "id": "task_9",
+      "order": 9,
+      "title": "Profil utilisateur et redirection de dossier",
+      "points": 1.0,
+      "instruction": "Fermez la session administrateur et ouvrez une session Windows avec le nouveau compte francis.Dupont. Délocalisez (déplacez) le dossier spécial Documents de son profil utilisateur vers la partition D: (ex: D:\\Documents ou D:\\Documents_Francis).",
+      "guiSteps": "1. Fermer la session Mvadmin et se connecter avec 'francis.Dupont' (MDP : YOLOTIP@1).\n2. Ouvrir l'Explorateur de fichiers (Win + E).\n3. Dans le volet de navigation gauche, faire un clic droit sur 'Documents' > 'Properties'.\n4. Aller dans l'onglet 'Location'.\n5. Cliquer sur 'Move...' et sélectionner ou créer un dossier sur le disque 'D:\\Documents'.\n6. Cliquer sur 'Apply', confirmer le déplacement de tous les fichiers existants en cliquant sur 'Yes', puis 'OK'.",
+      "powerShellScript": "# Délocalisation du chemin du dossier Documents dans le registre utilisateur courant\n$newPath = 'D:\\Documents'\nif (!(Test-Path $newPath)) { New-Item -ItemType Directory -Path $newPath -Force }\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name 'Personal' -Value $newPath",
+      "captureExpected": "Capture de l'onglet 'Location' des propriétés du dossier Documents montrant le chemin 'D:\\...' et capture de l'arborescence du disque D:."
+    },
+    {
+      "id": "task_10",
+      "order": 10,
+      "title": "Sécurité des données (Permissions NTFS)",
+      "points": 1.0,
+      "instruction": "Paramétrez les autorisations de sécurité NTFS sur le dossier de données déplacé pour garantir que seul Francis Dupont (et les administrateurs/SYSTEM pour la maintenance) dispose d'un accès à ses documents.",
+      "guiSteps": "1. Faire un clic droit sur le dossier 'D:\\Documents' > 'Properties' > onglet 'Security'.\n2. Cliquer sur 'Advanced'.\n3. Cliquer sur 'Disable inheritance' (Désactiver l'héritage) > choisir 'Convert inherited permissions into explicit permissions on this object'.\n4. Supprimer les groupes 'Users' ou 'Authenticated Users' de la liste.\n5. S'assurer que 'francis.Dupont' a les droits 'Full Control' ou 'Modify'.\n6. Valider par 'Apply' et 'OK'.",
+      "powerShellScript": "$acl = Get-Acl 'D:\\Documents'\n$acl.SetAccessRuleProtection($true, $false) # Coupe l'héritage sans copier les droits hérités inutiles\n$ruleUser = New-Object System.Security.AccessControl.FileSystemAccessRule('francis.Dupont', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleAdmin = New-Object System.Security.AccessControl.FileSystemAccessRule('Administrators', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleSystem = New-Object System.Security.AccessControl.FileSystemAccessRule('SYSTEM', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$acl.SetAccessRule($ruleUser)\n$acl.SetAccessRule($ruleAdmin)\n$acl.SetAccessRule($ruleSystem)\nSet-Acl -Path 'D:\\Documents' -AclObject $acl",
+      "captureExpected": "Capture de la fenêtre 'Advanced Security Settings for Documents' montrant l'héritage désactivé et les autorisations exclusives."
+    },
+    {
+      "id": "task_11",
+      "order": 11,
+      "title": "Accessibilité (Adaptation Handicap membre supérieur droit)",
+      "points": 1.0,
+      "instruction": "Modifiez les paramètres ergonomiques de l'environnement système de Windows 11 pour adapter le poste au handicap du membre supérieur droit de Francis (ex: permutation des boutons de souris pour gaucher, touches rémanentes / Sticky Keys pour raccourcis à une main). Justifiez votre choix par écrit.",
+      "guiSteps": "1. Ouvrir Settings (Win + I) > 'Bluetooth & devices' > 'Mouse'.\n2. Dans 'Primary mouse button', sélectionner 'Right' pour permettre une utilisation confortable de la souris de la main gauche.\n3. Aller dans 'Accessibility' > 'Keyboard'.\n4. Activer 'Sticky Keys' (Touches rémanentes) pour permettre d'exécuter les combinaisons de touches (Ctrl+C, Ctrl+Alt+Suppr) en appuyant sur une seule touche à la fois.\n5. Optionnel : Activer 'Mouse Keys' (Contrôler la souris avec le pavé numérique).",
+      "powerShellScript": "# Activation des touches rémanentes (StickyKeys) dans le registre utilisateur\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Accessibility\\StickyKeys' -Name 'Flags' -Value '511'\n# Permutation bouton principal souris (1 = Gaucher / bouton droit principal)\n[System.Runtime.InteropServices.Marshal]::GetLastWin32Error() | Out-Null\nAdd-Type -TypeDefinition @\"\nusing System;\nusing System.Runtime.InteropServices;\npublic class MouseSwap {\n    [DllImport(\"user32.dll\")]\n    public static extern Int32 SwapMouseButton(Int32 bSwap);\n}\n\"@\n[MouseSwap]::SwapMouseButton(1)",
+      "captureExpected": "Capture de l'écran Settings > Mouse ou Settings > Accessibility > Keyboard montrant les options activées + commentaire écrit de justification."
+    },
+    {
+      "id": "task_12",
+      "order": 12,
+      "title": "Confort utilisateur (Raccourci Bureau)",
+      "points": 1.0,
+      "instruction": "Ajoutez un raccourci direct vers le dossier « Documents » situé sur D: sur le bureau de la session de Francis.",
+      "guiSteps": "1. Sur le Bureau de Francis, faire un clic droit dans le vide > 'New' > 'Shortcut'.\n2. Dans la boîte de dialogue, saisir l'emplacement : D:\\Documents (ou cliquer sur 'Browse...' et sélectionner le dossier).\n3. Cliquer sur 'Next'.\n4. Nommer le raccourci : 'Mes Documents' ou 'Documents'.\n5. Cliquer sur 'Finish'.",
+      "powerShellScript": "$wshShell = New-Object -ComObject WScript.Shell\n$desktopPath = [Environment]::GetFolderPath('Desktop')\n$shortcut = $wshShell.CreateShortcut(\"$desktopPath\\Mes Documents.lnk\")\n$shortcut.TargetPath = 'D:\\Documents'\n$shortcut.Description = 'Accès direct aux documents de travail de Francis'\n$shortcut.Save()",
+      "captureExpected": "Capture du bureau de Francis montrant l'icône de raccourci vers le dossier Documents sur D:."
+    },
+    {
+      "id": "task_13",
+      "order": 13,
+      "title": "Sécurité réseau (Règles Pare-feu Sortant)",
+      "points": 1.0,
+      "instruction": "Configurez les règles du pare-feu Windows Defender pour bloquer strictement tout accès vers l'extérieur (Internet).",
+      "guiSteps": "1. Appuyer sur Win + R, taper 'wf.msc' (Windows Defender Firewall with Advanced Security) et valider.\n2. Clic droit sur 'Windows Defender Firewall with Advanced Security on Local Computer' en haut à gauche > 'Properties'.\n3. Pour chaque profil actif (Domain, Private, Public), dans la ligne 'Outbound connections', remplacer 'Allow (default)' par 'Block'.\n4. Cliquer sur 'Apply' puis sur 'OK'.",
+      "powerShellScript": "# Blocage des connexions sortantes par défaut sur tous les profils de pare-feu\nSet-NetFirewallProfile -Profile Domain,Public,Private -DefaultOutboundAction Block",
+      "captureExpected": "Capture des propriétés du pare-feu Windows montrant 'Outbound connections: Block' sur les profils actifs."
+    },
+    {
+      "id": "task_14",
+      "order": 14,
+      "title": "Sauvegarde du système (Snapshot / Image)",
+      "points": 1.0,
+      "instruction": "Effectuez une sauvegarde complète de la machine virtuelle MV-Client (Instantané / Snapshot dans l'hyperviseur ou Image Système). Insérez la capture illustrant la méthode et commentez votre choix technique.",
+      "guiSteps": "1. Dans l'interface de l'hyperviseur (ex: VirtualBox / VMware / Hyper-V).\n2. Sélectionner la VM MV-Client.\n3. Aller dans 'Snapshots' / 'Checkpoints' > Cliquer sur 'Take...' / 'Create Checkpoint'.\n4. Nommer l'instantané : 'Sauvegarde_Fin_Etape1_Poste_Pret'.\n5. Ajouter une description : 'Sauvegarde post-configuration complète : partition D:, compte Francis, droits NTFS, règles Firewall et accessibilité'.",
+      "powerShellScript": "# Sous Hyper-V en PowerShell :\nCheckpoint-VM -Name 'MV-Client' -SnapshotName 'Sauvegarde_Fin_Etape1_Poste_Pret'",
+      "captureExpected": "Capture de l'arbre des instantanés (Snapshots) dans l'hyperviseur affichant le snapshot nommé avec sa date et heure."
+    }
+  ],
+  "tutorialGuide": {
+    "title": "Livrable Partie 2 — Guide du Tutoriel Utilisateur",
+    "documentName": "Tutoriel Francis",
+    "targetAudience": "Francis Dupont (Utilisateur débutant, adaptation poste)",
+    "maxPages": 10,
+    "formalRequirements": [
+      "Page de titre soignée (Titre, Auteur, Date, Logo entreprise Martin).",
+      "Sommaire généré automatiquement sous Microsoft Word / LibreOffice.",
+      "Contenu structuré en deux parties distinctes avec titres hiérarchisés.",
+      "Captures d'écran claires, rognées, agrandies et fléchées/encadrées en rouge.",
+      "Numérotation de page en pied de page (ex: Page X sur Y) et en-tête avec rappel du document.",
+      "Style rédactionnel bienveillant, vulgarisé, sans jargon technique complexe."
+    ],
+    "modules": [
+      {
+        "moduleNumber": 1,
+        "title": "Comment retrouver un document perdu sur son ordinateur",
+        "description": "Procédure complète pour localiser un fichier égaré selon les 3 méthodes incontournables pour un débutant.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Utiliser la barre de recherche rapide de Windows",
+            "instruction": "Cliquer sur la loupe dans la barre des tâches ou appuyer sur la touche Windows. Taper directement le nom du fichier ou un mot-clé contenu dans le document. Cliquer sur l'onglet 'Documents' pour filtrer les résultats."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Rechercher dans le dossier 'Téléchargements'",
+            "instruction": "Ouvrir l'Explorateur de fichiers (icône dossier jaune), cliquer sur 'Téléchargements' (Downloads) dans le volet de gauche. Trier par 'Date de modification' pour voir les derniers fichiers reçus par e-mail ou téléchargés."
+          },
+          {
+            "stepNumber": 3,
+            "stepTitle": "Fouiller et restaurer depuis la Corbeille",
+            "instruction": "Double-cliquer sur l'icône 'Corbeille' du Bureau. Rechercher le fichier supprimé par erreur. Faire un clic droit sur le fichier > 'Restaurer' (Restore). Le fichier retourne automatiquement à son emplacement d'origine."
+          }
+        ]
+      },
+      {
+        "moduleNumber": 2,
+        "title": "Comment effacer l'historique et les données de navigation",
+        "description": "Procédure pour nettoyer son navigateur en cas de bug d'affichage ou pour préserver sa confidentialité.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Ouvrir les paramètres d'historique",
+            "instruction": "Dans Microsoft Edge ou Google Chrome, cliquer sur les trois petits points (...) en haut à droite, puis sur 'Historique' (ou utiliser le raccourci clavier Ctrl + H)."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Effacer les données de navigation",
+            "instruction": "Cliquer sur 'Effacer les données de navigation' (icône poubelle). Choisir la période 'Toutes les données' (All time). Cocher 'Historique de navigation', 'Cookies' et 'Images en cache', puis cliquer sur 'Effacer maintenant'."
+          }
+        ]
+      }
+    ],
+    "evaluationRubric": [
+      { "criterion": "Page de titre et sommaire automatique", "maxPoints": 1.0, "details": "Présence d'une page de garde professionnelle et table des matières générée par les styles Word." },
+      { "criterion": "Structure et clarté de la Partie 1 (Recherche de document)", "maxPoints": 2.0, "details": "Couverture des 3 méthodes (Recherche Windows, Téléchargements, Corbeille) avec captures fléchées." },
+      { "criterion": "Structure et clarté de la Partie 2 (Historique navigateur)", "maxPoints": 1.5, "details": "Étapes pas-à-pas illustrées pour vider le cache et l'historique du navigateur." },
+      { "criterion": "Qualité visuelle et pédagogie (Captures, fléchage, langage)", "maxPoints": 1.0, "details": "Captures lisibles, encadrés d'attention/astuces, vocabulaire simple et respectueux." },
+      { "criterion": "Respect des contraintes formelles (Pagination, <= 10 pages)", "maxPoints": 0.5, "details": "Pied de page avec numéros, document inférieur ou égal à 10 pages." }
+    ]
+  }
+}

@@ -40,6 +40,7 @@ class AiChatService {
     bool jsonMode = false,
     String ollamaBaseUrl = 'http://localhost:11434',
     String ollamaModel = 'gemma3',
+    String? geminiModel,
   }) {
     return switch (provider) {
       AiProvider.ollama => OllamaService(dio: _dio).streamGenerate(
@@ -52,7 +53,7 @@ class AiChatService {
       AiProvider.anthropic => _streamAnthropic(
           apiKey, messages, systemPrompt, maxTokens, temperature),
       AiProvider.gemini => _streamGemini(
-          apiKey, messages, systemPrompt, temperature, jsonMode),
+          apiKey, messages, systemPrompt, temperature, jsonMode, geminiModel),
       _ => _streamOpenAICompat(
           apiKey, provider, messages, systemPrompt, maxTokens, temperature, jsonMode),
     };
@@ -201,8 +202,8 @@ class AiChatService {
     String? systemPrompt,
     double temperature,
     bool jsonMode,
+    String? explicitModel,
   ) async* {
-    // Concatene system + messages en un seul bloc texte.
     final buf = StringBuffer();
     if (systemPrompt != null && systemPrompt.isNotEmpty) {
       buf.writeln(systemPrompt);
@@ -213,18 +214,17 @@ class AiChatService {
     }
     final promptText = buf.toString().trim();
 
-    final prefs      = await SharedPreferences.getInstance();
-    var geminiModel = prefs.getString('gemini_model') ?? 'gemini-2.5-flash';
+    final prefs = await SharedPreferences.getInstance();
+    final geminiModel = explicitModel ?? prefs.getString('gemini_model') ?? 'gemini-2.0-flash';
 
     Response<dynamic> response;
     try {
       response = await _postGemini(key, geminiModel, promptText);
     } on DioException catch (e) {
       final status = e.response?.statusCode;
-      if (geminiModel == 'gemini-2.5-flash' && (status == 503 || status == 429)) {
+      if (geminiModel == 'gemini-2.0-flash' && (status == 503 || status == 429)) {
         try {
-          geminiModel = 'gemini-2.0-flash';
-          response = await _postGemini(key, geminiModel, promptText);
+          response = await _postGemini(key, 'gemini-1.5-flash', promptText);
         } on DioException catch (fallbackErr) {
           throw _dioError(fallbackErr);
         }
@@ -295,7 +295,7 @@ class AiChatService {
   // ── Test de connexion ─────────────────────────────────────────────────────
 
   /// Retourne null si la cle est valide, ou le message d'erreur reel sinon.
-  Future<String?> testKey(String key, AiProvider provider) async {
+  Future<String?> testKey(String key, AiProvider provider, {String? geminiModel}) async {
     try {
       var received = false;
       await for (final chunk in streamChat(
@@ -303,13 +303,14 @@ class AiChatService {
         provider: provider,
         messages: const [AiMessage(role: 'user', content: 'Reply with OK only.')],
         maxTokens: 10,
+        geminiModel: geminiModel,
       )) {
         if (chunk.isNotEmpty) received = true;
         break; // premier token suffit
       }
       // Gemini retourne un seul chunk — stream vide = parsing a echoue
       if (!received && provider == AiProvider.gemini) {
-        return 'Reponse Gemini vide ou format inattendu — verifie le modele gemini-2.5-flash.';
+        return 'Reponse Gemini vide ou format inattendu.';
       }
       return null; // succes
     } catch (e) {

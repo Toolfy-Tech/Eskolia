@@ -1,0 +1,227 @@
+{
+  "id": "tp_exam_marc",
+  "title": "Épreuve Pratique TIP — Variante 2 (Marc)",
+  "subtitle": "RH nomade & télétravail, motricité/audition, volumes D: RH & E: ARCHIVES, pare-feu SMB 445",
+  "candidateName": "Marc Lambert",
+  "companyName": "Cabinet RH Solutions",
+  "role": "Chargé de Recrutement Nomade",
+  "accessibilityContext": "Modèle de travail hybride (présentiel et télétravail nomade). Présente un handicap associant un léger tremblement des membres supérieurs (touches filtres nécessaires) et un déficit auditif modéré (alertes visuelles à l'écran).",
+  "vmInfo": {
+    "vmName": "MV-Marc",
+    "targetHostname": "PC-RH-MARC",
+    "os": "Windows 11 Professionnel (English)",
+    "adminUser": "Mvadmin",
+    "adminPassword": "EpreuveTIP@1",
+    "tpmKey": "SecureRH@2026",
+    "userAccount": {
+      "username": "Marc.Lambert",
+      "fullName": "Marc Lambert",
+      "password": "Recrutement!2026",
+      "isAdministrator": false
+    }
+  },
+  "tasks": [
+    {
+      "id": "task_1",
+      "order": 1,
+      "title": "Gestion du stockage virtuel",
+      "points": 1.0,
+      "instruction": "Ajoutez un second disque virtuel de 40 Go à la machine virtuelle MV-Marc dans votre hyperviseur.",
+      "guiSteps": "1. Éteindre la VM MV-Marc.\n2. Ouvrir les paramètres de la VM dans l'hyperviseur.\n3. Aller dans 'Storage' > Contrôleur SATA/NVMe.\n4. Cliquer sur 'Add Hard Disk' > Créer un nouveau disque de 40 GB et valider.",
+      "powerShellScript": "# Sous Hyper-V :\nNew-VHD -Path 'C:\\VMs\\MV-Marc\\DataRH40GB.vhdx' -SizeBytes 40GB -Dynamic\nAdd-VMHardDiskDrive -VMName 'MV-Marc' -Path 'C:\\VMs\\MV-Marc\\DataRH40GB.vhdx'",
+      "captureExpected": "Capture des paramètres de stockage de l'hyperviseur montrant le disque de 40 Go connecté à MV-Marc."
+    },
+    {
+      "id": "task_2",
+      "order": 2,
+      "title": "Démarrage sécurisé et session administrateur",
+      "points": 1.0,
+      "instruction": "Démarrez MV-Marc et saisissez la clé de chiffrement TPM obligatoire fournie ('SecureRH@2026'). Ouvrez la session avec le compte Mvadmin (MDP : EpreuveTIP@1).",
+      "guiSteps": "1. Démarrer la VM MV-Marc.\n2. Entrer la clé TPM : SecureRH@2026.\n3. Se connecter avec le compte administrateur 'Mvadmin' (MDP : EpreuveTIP@1).",
+      "powerShellScript": "Get-Tpm\nwhoami",
+      "captureExpected": "Capture du bureau Windows 11 avec la session Mvadmin active."
+    },
+    {
+      "id": "task_3",
+      "order": 3,
+      "title": "Protection du système (Point de restauration)",
+      "points": 1.0,
+      "instruction": "Créez immédiatement un point de restauration système nommé explicitement 'MasterRH_Clean'.",
+      "guiSteps": "1. Menu Démarrer > 'Create a restore point'.\n2. Vérifier la protection sur C: > Cliquer sur 'Create...'.\n3. Saisir : MasterRH_Clean.\n4. Cliquer sur 'Create' et attendre la confirmation.",
+      "powerShellScript": "Enable-ComputerRestore -Drive 'C:\\'\nCheckpoint-Computer -Description 'MasterRH_Clean' -RestorePointType 'MODIFY_SETTINGS'",
+      "captureExpected": "Capture confirmant la création du point de restauration 'MasterRH_Clean'."
+    },
+    {
+      "id": "task_4",
+      "order": 4,
+      "title": "Maintenance logicielle (Pause Windows Update)",
+      "points": 1.0,
+      "instruction": "Reportez temporairement les mises à jour Windows Update au délai maximal autorisé par le système.",
+      "guiSteps": "1. Settings > 'Windows Update'.\n2. 'Pause updates' > Sélectionner la durée maximale autorisée.",
+      "powerShellScript": "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseUpdatesExpiryTime' -ErrorAction SilentlyContinue",
+      "captureExpected": "Capture de la page Windows Update montrant les mises à jour en pause."
+    },
+    {
+      "id": "task_5",
+      "order": 5,
+      "title": "Préparation des volumes (Double partition D: et E:)",
+      "points": 1.0,
+      "instruction": "Initialisez le disque de 40 Go en GPT et partitionnez-le en deux volumes distincts formatés en NTFS : Volume 1 (25 Go) nommé 'DONNEES_RH' lettre D:, Volume 2 (15 Go) nommé 'ARCHIVES' lettre E:.",
+      "guiSteps": "1. Ouvrir 'Disk Management' (Win + X > Disk Management).\n2. Initialiser le disque de 40 Go en GPT.\n3. Clic droit sur l'espace non alloué > 'New Simple Volume...' > Taille : 25600 Mo (25 Go), Lettre 'D', Nom : 'DONNEES_RH', NTFS.\n4. Clic droit sur l'espace restant (15 Go) > 'New Simple Volume...' > Reste de la taille, Lettre 'E', Nom : 'ARCHIVES', NTFS.",
+      "powerShellScript": "# Initialisation et création des 2 partitions NTFS en PowerShell\n$disk = Get-Disk | Where-Object PartitionStyle -eq 'RAW'\nInitialize-Disk -Number $disk.Number -PartitionStyle GPT\n$partD = New-Partition -DiskNumber $disk.Number -Size 25GB -DriveLetter 'D'\nFormat-Volume -Partition $partD -FileSystem NTFS -NewFileSystemLabel 'DONNEES_RH' -Confirm:$false\n$partE = New-Partition -DiskNumber $disk.Number -UseMaximumSize -DriveLetter 'E'\nFormat-Volume -Partition $partE -FileSystem NTFS -NewFileSystemLabel 'ARCHIVES' -Confirm:$false",
+      "captureExpected": "Capture de Disk Management affichant les 2 volumes 'DONNEES_RH (D:)' de 25 Go et 'ARCHIVES (E:)' de 15 Go."
+    },
+    {
+      "id": "task_6",
+      "order": 6,
+      "title": "Configuration réseau fixe (IP statique)",
+      "points": 1.0,
+      "instruction": "Configurez l'adressage IP de la carte réseau (mode Bridge) : IP 10.0.5.50, Masque 255.255.255.0 (/24), Passerelle 10.0.5.1, DNS 1.1.1.1.",
+      "guiSteps": "1. Ouvrir 'ncpa.cpl' > Clic droit sur 'Ethernet' > 'Properties' > 'IPv4'.\n2. Saisir IP : 10.0.5.50, Masque : 255.255.255.0, Passerelle : 10.0.5.1, DNS : 1.1.1.1.\n3. Valider.",
+      "powerShellScript": "$adapter = Get-NetAdapter | Where-Object Status -eq 'Up'\nNew-NetIPAddress -InterfaceIndex $adapter.ifIndex -IPAddress '10.0.5.50' -PrefixLength 24 -DefaultGateway '10.0.5.1'\nSet-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses ('1.1.1.1')",
+      "captureExpected": "Capture des paramètres IPv4 ou du résultat de 'ipconfig /all'."
+    },
+    {
+      "id": "task_7",
+      "order": 7,
+      "title": "Gestion des utilisateurs (Compte local Marc)",
+      "points": 1.0,
+      "instruction": "Créez un nouveau compte utilisateur local standard pour le collaborateur nommé Marc Lambert au format Prenom.Nom (Marc.Lambert) avec le mot de passe Recrutement!2026.",
+      "guiSteps": "1. Ouvrir 'lusrmgr.msc'.\n2. 'Users' > 'New User...'.\n3. Username : Marc.Lambert, Full name : Marc Lambert, Password : Recrutement!2026.\n4. Cocher 'Password never expires' et valider.",
+      "powerShellScript": "$secPass = ConvertTo-SecureString 'Recrutement!2026' -AsPlainText -Force\nNew-LocalUser -Name 'Marc.Lambert' -FullName 'Marc Lambert' -Password $secPass -Description 'Chargé de recrutement Marc Lambert' -PasswordNeverExpires",
+      "captureExpected": "Capture de lusrmgr.msc affichant le compte 'Marc.Lambert'."
+    },
+    {
+      "id": "task_8",
+      "order": 8,
+      "title": "Identité de la machine (Renommage du poste)",
+      "points": 1.0,
+      "instruction": "Renommez l'ordinateur MV-Marc avec le nom standardisé PC-RH-MARC.",
+      "guiSteps": "1. Settings > System > About > 'Rename this PC'.\n2. Nommer : PC-RH-MARC.\n3. Valider par 'Next'.",
+      "powerShellScript": "Rename-Computer -NewName 'PC-RH-MARC' -Force",
+      "captureExpected": "Capture de Settings > System montrant le nom 'PC-RH-MARC'."
+    },
+    {
+      "id": "task_9",
+      "order": 9,
+      "title": "Profil utilisateur et redirection de dossiers (Documents & Pictures)",
+      "points": 1.0,
+      "instruction": "Fermez la session administrateur et ouvrez une session avec Marc.Lambert. Redirigez le dossier 'Documents' vers 'D:\\Donnees_Marc' et le dossier 'Pictures' vers 'E:\\Archives_Photos'.",
+      "guiSteps": "1. Ouvrir la session de Marc.Lambert.\n2. Clic droit sur 'Documents' > 'Properties' > 'Location' > 'Move...' > Pointer vers 'D:\\Donnees_Marc' > Valider et déplacer les fichiers.\n3. Clic droit sur 'Pictures' (Images) > 'Properties' > 'Location' > 'Move...' > Pointer vers 'E:\\Archives_Photos' > Valider et déplacer les fichiers.",
+      "powerShellScript": "$pathDocs = 'D:\\Donnees_Marc'\n$pathPics = 'E:\\Archives_Photos'\nif (!(Test-Path $pathDocs)) { New-Item -ItemType Directory -Path $pathDocs -Force }\nif (!(Test-Path $pathPics)) { New-Item -ItemType Directory -Path $pathPics -Force }\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name 'Personal' -Value $pathDocs\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name 'My Pictures' -Value $pathPics",
+      "captureExpected": "Capture des onglets Location de Documents (D:\\Donnees_Marc) et Pictures (E:\\Archives_Photos)."
+    },
+    {
+      "id": "task_10",
+      "order": 10,
+      "title": "Sécurité des données (Permissions NTFS)",
+      "points": 1.0,
+      "instruction": "Paramétrez les autorisations de sécurité NTFS sur 'D:\\Donnees_Marc' : attribuez le droit 'Modify' à Marc.Lambert et interdisez formellement tout accès en lecture/écriture aux comptes invités et au groupe 'Everyone'.",
+      "guiSteps": "1. Clic droit sur 'D:\\Donnees_Marc' > 'Properties' > 'Security' > 'Advanced'.\n2. 'Disable inheritance' > 'Convert inherited permissions...'.\n3. Supprimer 'Users' et 'Everyone' s'ils sont présents.\n4. Donner 'Modify' à Marc.Lambert, 'Full Control' aux Administrateurs et à SYSTEM.\n5. Valider.",
+      "powerShellScript": "$acl = Get-Acl 'D:\\Donnees_Marc'\n$acl.SetAccessRuleProtection($true, $false)\n$ruleMarc = New-Object System.Security.AccessControl.FileSystemAccessRule('Marc.Lambert', 'Modify', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleAdmin = New-Object System.Security.AccessControl.FileSystemAccessRule('Administrators', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleSystem = New-Object System.Security.AccessControl.FileSystemAccessRule('SYSTEM', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$acl.SetAccessRule($ruleMarc)\n$acl.SetAccessRule($ruleAdmin)\n$acl.SetAccessRule($ruleSystem)\nSet-Acl -Path 'D:\\Donnees_Marc' -AclObject $acl",
+      "captureExpected": "Capture des paramètres de sécurité avancés sur D:\\Donnees_Marc démontrant l'accès restreint."
+    },
+    {
+      "id": "task_11",
+      "order": 11,
+      "title": "Accessibilité (Tremblements & Déficit auditif)",
+      "points": 1.0,
+      "instruction": "Modifiez les paramètres ergonomiques de Windows 11 pour adapter le poste à la motricité et à l'audition de Marc : Activez les Touches filtres (Filter Keys) pour ignorer les frappes involontaires répétées, et activez les alertes visuelles d'écran (Flash screen during audio notifications) pour compenser le déficit auditif. Justifiez vos choix par écrit.",
+      "guiSteps": "1. Ouvrir Settings > 'Accessibility' > 'Keyboard'.\n2. Activer 'Filter Keys' (Touches filtres) et régler pour ignorer les frappes répétées rapides.\n3. Aller dans 'Accessibility' > 'Audio'.\n4. Dans 'Flash my screen during audio notifications', sélectionner 'Flash the title bar of the active window' ou 'Flash the entire screen'.",
+      "powerShellScript": "# Configuration des alertes visuelles d'écran dans le registre\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Accessibility\\SoundSentry' -Name 'Flags' -Value '3'\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Accessibility\\SoundSentry' -Name 'WindowsEffect' -Value '1'",
+      "captureExpected": "Capture des pages Settings > Keyboard (Filter Keys On) et Settings > Audio (Flash screen actif) + justification."
+    },
+    {
+      "id": "task_12",
+      "order": 12,
+      "title": "Confort utilisateur (Raccourci Bureau)",
+      "points": 1.0,
+      "instruction": "Créez un raccourci direct vers le dossier 'D:\\Donnees_Marc' sur le bureau de la session de Marc.",
+      "guiSteps": "1. Clic droit sur le Bureau de Marc > 'New' > 'Shortcut'.\n2. Saisir : D:\\Donnees_Marc.\n3. Nommer : 'Dossiers RH'.\n4. Valider.",
+      "powerShellScript": "$wshShell = New-Object -ComObject WScript.Shell\n$desktopPath = [Environment]::GetFolderPath('Desktop')\n$shortcut = $wshShell.CreateShortcut(\"$desktopPath\\Dossiers RH.lnk\")\n$shortcut.TargetPath = 'D:\\Donnees_Marc'\n$shortcut.Description = 'Accès direct aux dossiers RH'\n$shortcut.Save()",
+      "captureExpected": "Capture du bureau de Marc montrant le raccourci 'Dossiers RH'."
+    },
+    {
+      "id": "task_13",
+      "order": 13,
+      "title": "Sécurité réseau (Blocage Pare-feu SMB port 445 en Public)",
+      "points": 1.0,
+      "instruction": "Configurez une règle de pare-feu Windows Defender bloquant le port 445 (partage SMB) sur les profils publics (Inbound & Outbound) afin de protéger les données RH lors des sessions nomades et télétravail.",
+      "guiSteps": "1. Ouvrir 'wf.msc'.\n2. Dans 'Inbound Rules' > 'New Rule...' > Port > TCP 445 > Block > Cocher uniquement le profil 'Public' > Nom : 'Block_Inbound_SMB_Public'.\n3. Dans 'Outbound Rules' > 'New Rule...' > Port > TCP 445 > Block > Cocher uniquement le profil 'Public' > Nom : 'Block_Outbound_SMB_Public'.",
+      "powerShellScript": "New-NetFirewallRule -DisplayName 'Block_Inbound_SMB_Public' -Direction Inbound -Protocol TCP -LocalPort 445 -Action Block -Profile Public -Description 'Protection anti-propagation SMB sur réseaux publics nomades'\nNew-NetFirewallRule -DisplayName 'Block_Outbound_SMB_Public' -Direction Outbound -Protocol TCP -RemotePort 445 -Action Block -Profile Public -Description 'Interdiction d exfiltration SMB sur réseaux publics nomades'",
+      "captureExpected": "Capture de la console 'wf.msc' affichant les règles de blocage du port 445 sur le profil Public."
+    },
+    {
+      "id": "task_14",
+      "order": 14,
+      "title": "Sauvegarde du système (Snapshot / Instantané)",
+      "points": 1.0,
+      "instruction": "Effectuez une sauvegarde complète de la machine virtuelle MV-Marc (Snapshot / Instantané dans l'hyperviseur). Insérez la capture et justifiez votre choix.",
+      "guiSteps": "1. Sélectionner MV-Marc dans l'hyperviseur.\n2. Créer un instantané nommé : 'Snapshot_Recette_Master_Marc'.\n3. Renseigner la description technique.",
+      "powerShellScript": "Checkpoint-VM -Name 'MV-Marc' -SnapshotName 'Snapshot_Recette_Master_Marc'",
+      "captureExpected": "Capture de l'arborescence des snapshots affichant l'instantané de fin de configuration."
+    }
+  ],
+  "tutorialGuide": {
+    "title": "Livrable Partie 2 — Guide du Tutoriel Utilisateur",
+    "documentName": "Tutoriel Marc",
+    "targetAudience": "Marc Lambert (Chargé de recrutement nomade, télétravail)",
+    "maxPages": 10,
+    "formalRequirements": [
+      "Page de titre soignée avec mention du document, auteur et cabinet RH Solutions.",
+      "Sommaire généré automatiquement.",
+      "Structuration en deux parties distinctes : Sécurité du poste / Session et Détection du Phishing.",
+      "Captures d'écran fléchées et encadrées.",
+      "Numérotation de page en pied de page.",
+      "Conseils de sécurité pragmatiques adaptés au travail nomade."
+    ],
+    "modules": [
+      {
+        "moduleNumber": 1,
+        "title": "Sécurité du poste et gestion de la session Windows",
+        "description": "Les deux réflexes de sécurité indispensables lors des déplacements et du travail en espace partagé.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Verrouiller instantanément sa session lors de tout départ physique",
+            "instruction": "Prendre le réflexe systématique d'appuyer sur la touche Windows + L (Win + L) dès que vous quittez votre bureau, même pour quelques instants. L'écran se verrouille instantanément sans fermer vos applications de travail en cours."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Modifier son mot de passe de session en toute autonomie",
+            "instruction": "Appuyer sur la combinaison de touches Ctrl + Alt + Suppr > Cliquer sur 'Changer un mot de passe' (Change a password). Saisir l'ancien mot de passe, puis deux fois le nouveau mot de passe robuste (12+ caractères avec majuscules, minuscules, chiffres et caractères spéciaux)."
+          }
+        ]
+      },
+      {
+        "moduleNumber": 2,
+        "title": "Sensibilisation et détection des e-mails de Phishing (Hameçonnage)",
+        "description": "Guide méthodologique pour identifier un courriel suspect avant d'ouvrir une pièce jointe ou de cliquer sur un lien.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Vérifier l'adresse e-mail réelle de l'expéditeur",
+            "instruction": "Ne pas se fier uniquement au nom affiché. Cliquer sur l'expéditeur ou survoler son adresse pour vérifier le domaine exact (ex: verifier @entreprise-rh.com et non @entreprise-rh-support.com)."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Survoler les liens hypertextes sans cliquer (Règle du survol)",
+            "instruction": "Passer le curseur de la souris sur tout bouton ou lien dans l'e-mail sans cliquer. L'URL de destination réelle apparaît dans une bulle ou en bas de la fenêtre. Si le domaine est incohérent ou raccourci, ne jamais cliquer."
+          },
+          {
+            "stepNumber": 3,
+            "stepTitle": "Réflexe de signalement à l'équipe support",
+            "instruction": "En cas de doute sur un e-mail reçu, ne pas ouvrir les pièces jointes (.exe, .zip, .xlsm suspects) et transférer immédiatement le message à l'adresse support DSI ou cliquer sur le bouton 'Signaler comme hameçonnage'."
+          }
+        ]
+      }
+    ],
+    "evaluationRubric": [
+      { "criterion": "Page de titre et sommaire automatique", "maxPoints": 1.0, "details": "Page de garde professionnelle et table des matières automatique présente." },
+      { "criterion": "Qualité de la Partie 1 (Verrouillage Win+L & Changement MDP)", "maxPoints": 1.5, "details": "Procédure claire et illustrée pour sécuriser sa session physique." },
+      { "criterion": "Qualité de la Partie 2 (Détection du Phishing & Réflexes)", "maxPoints": 2.0, "details": "Conseils concrets de vérification d'adresses, liens et signalement DSI." },
+      { "criterion": "Pertinence des captures, fléchage et pédagogie", "maxPoints": 1.0, "details": "Captures pertinentes illustrant un faux e-mail et des liens de test." },
+      { "criterion": "Respect des contraintes (Pagination, <= 10 pages)", "maxPoints": 0.5, "details": "Formatage et pagination respectés." }
+    ]
+  }
+}

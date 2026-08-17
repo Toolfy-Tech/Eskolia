@@ -194,6 +194,11 @@ class FeatureInfoResolver {
       description: 'Améliorez votre culture technique grâce à nos astuces quotidiennes.\n\n• **Astuce du jour** : Découvrez chaque jour un raccourci clavier, une commande utile ou une bonne pratique système.\n• **Veille technologique** : Restez informé des nouveautés et des évolutions du monde informatique.\n• **Mise en favoris** : Enregistrez les astuces les plus utiles pour les retrouver en un clic.',
       emoji: '💡',
     ),
+    'feature:tp_osi': FeatureInfo(
+      title: 'Modèle OSI',
+      description: 'Ateliers pratiques interactifs dédiés à la maîtrise du modèle OSI (7 couches).\n\n• **Le Tri Sélectif** : Classification de cartes (matériels, protocoles, PDU) vers les 7 couches avec séries sans-faute.\n• **Le Voyage du Paquet** : Puzzle séquentiel pour comprendre visuellement l\'encapsulation (7 ➔ 1) et la décapsulation (1 ➔ 7).\n• **L\'Enquêteur OSI** : Analyse de pannes et tickets d\'incident réels pour diagnostiquer la couche en cause et choisir la bonne action de support.',
+      emoji: '🌐',
+    ),
     'favoris': FeatureInfo(
       title: 'Mes Favoris',
       description: 'Votre bibliothèque personnelle de contenus enregistrés.\n\n• **Sauvegarde rapide** : Ajoutez des cours, des astuces ou des articles de veille en favoris depuis l\'application.\n• **Accès hors-ligne** : Retrouvez vos favoris rapidement pour réviser sans perdre de temps à les chercher.\n• **Organisation libre** : Supprimez ou mettez en avant vos favoris au fil de vos besoins.',

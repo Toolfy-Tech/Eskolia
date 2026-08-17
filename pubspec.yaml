@@ -74,12 +74,16 @@ flutter:
     - data/quiz/themes/
     # Thèmes Terrain — banques hors-parcours ajoutées par le prof.
     - data/tip-quiz/
+    # Examens blancs spéciaux
+    - data/exam/
     # Scénarios TP Active Directory.
     - assets/tp/AD/
     # Scénarios TP Scripting PowerShell.
     - assets/tp/PS/
     # Scénarios TP Réseau Packet Tracer.
     - assets/tp/PT/
+    # Épreuves Pratiques TP Examens Blancs.
+    - assets/tp/exam_tp/
     # Template téléchargeable pour l'import de quiz personnalisé.
     - assets/templates/
     # Visuels DALL-E — logos, fonds, badges, icônes nav.

@@ -1,0 +1,222 @@
+{
+  "id": "tp_exam_sylvain",
+  "title": "Épreuve Pratique TIP — Variante 3 (Sylvain)",
+  "subtitle": "Atelier logistique, dyslexie & confort visuel, volume S: STOCK, pare-feu RDP 3389",
+  "candidateName": "Sylvain Brun",
+  "companyName": "Entreprise LogiStock",
+  "role": "Préparateur de Commandes Atelier",
+  "accessibilityContext": "Débutant avec des troubles cognitifs légers reconnus (dyslexie sévère et fatigabilité en lecture prolongée). Nécessite un environnement visuel épuré sans animations distrayantes, des icônes agrandies, et l'usage de la synthèse vocale pour écouter les consignes.",
+  "vmInfo": {
+    "vmName": "MV-Sylvain",
+    "targetHostname": "MV-ATELIER-01",
+    "os": "Windows 11 Professionnel (English)",
+    "adminUser": "TechAdmin",
+    "adminPassword": "LogiTech@2026",
+    "tpmKey": "LogiStock#2026",
+    "userAccount": {
+      "username": "Sylvain.Brun",
+      "fullName": "Sylvain Brun",
+      "password": "AtelierLogi@1",
+      "isAdministrator": false
+    }
+  },
+  "tasks": [
+    {
+      "id": "task_1",
+      "order": 1,
+      "title": "Gestion du stockage virtuel",
+      "points": 1.0,
+      "instruction": "Ajoutez un second disque virtuel de 15 Go à la machine virtuelle MV-Sylvain dans votre hyperviseur.",
+      "guiSteps": "1. Éteindre la VM MV-Sylvain si nécessaire.\n2. Ouvrir les paramètres de la VM dans l'hyperviseur.\n3. Aller dans 'Storage' > Contrôleur SATA/NVMe.\n4. Ajouter un nouveau disque dur de 15 GB et valider.",
+      "powerShellScript": "# Sous Hyper-V :\nNew-VHD -Path 'C:\\VMs\\MV-Sylvain\\Stock15GB.vhdx' -SizeBytes 15GB -Dynamic\nAdd-VMHardDiskDrive -VMName 'MV-Sylvain' -Path 'C:\\VMs\\MV-Sylvain\\Stock15GB.vhdx'",
+      "captureExpected": "Capture des paramètres de stockage de l'hyperviseur affichant le disque de 15 Go attaché à MV-Sylvain."
+    },
+    {
+      "id": "task_2",
+      "order": 2,
+      "title": "Démarrage sécurisé et session administrateur",
+      "points": 1.0,
+      "instruction": "Démarrez MV-Sylvain et saisissez la clé de chiffrement TPM obligatoire fournie ('LogiStock#2026'). Ouvrez la session avec le compte TechAdmin (MDP : LogiTech@2026).",
+      "guiSteps": "1. Démarrer la VM.\n2. Entrer la clé TPM : LogiStock#2026.\n3. Ouvrir la session Windows avec l'utilisateur 'TechAdmin' (MDP : LogiTech@2026).",
+      "powerShellScript": "Get-Tpm\nwhoami",
+      "captureExpected": "Capture du bureau Windows 11 avec la session TechAdmin ouverte."
+    },
+    {
+      "id": "task_3",
+      "order": 3,
+      "title": "Protection du système (Point de restauration)",
+      "points": 1.0,
+      "instruction": "Créez immédiatement un point de restauration système nommé explicitement 'InitStock2026'.",
+      "guiSteps": "1. Démarrer > 'Create a restore point'.\n2. Vérifier la protection sur C: > 'Create...'.\n3. Saisir : InitStock2026.\n4. Valider par 'Create'.",
+      "powerShellScript": "Enable-ComputerRestore -Drive 'C:\\'\nCheckpoint-Computer -Description 'InitStock2026' -RestorePointType 'MODIFY_SETTINGS'",
+      "captureExpected": "Capture confirmant la création réussie du point de restauration 'InitStock2026'."
+    },
+    {
+      "id": "task_4",
+      "order": 4,
+      "title": "Maintenance logicielle (Pause Windows Update)",
+      "points": 1.0,
+      "instruction": "Suspendez temporairement les mises à jour Windows Update au délai maximal proposé par le système.",
+      "guiSteps": "1. Settings > 'Windows Update'.\n2. 'Pause updates' > Choisir le délai maximal (ex: 5 semaines).",
+      "powerShellScript": "Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseUpdatesExpiryTime' -ErrorAction SilentlyContinue",
+      "captureExpected": "Capture de la page Windows Update montrant les mises à jour suspendues."
+    },
+    {
+      "id": "task_5",
+      "order": 5,
+      "title": "Préparation des volumes (Disque S: STOCK)",
+      "points": 1.0,
+      "instruction": "Initialisez le nouveau disque de 15 Go en GPT et formatez-le intégralement en NTFS. Nommez ce volume 'STOCK' et attribuez-lui la lettre de lecteur 'S:'.",
+      "guiSteps": "1. Ouvrir 'Disk Management' (Win + X > Disk Management).\n2. Initialiser le disque de 15 Go en GPT.\n3. Clic droit sur l'espace non alloué > 'New Simple Volume...' > Lettre 'S', NTFS, Nom du volume : 'STOCK'.\n4. Valider et formater.",
+      "powerShellScript": "Get-Disk | Where-Object PartitionStyle -eq 'RAW' | Initialize-Disk -PartitionStyle GPT -PassThru |\n  New-Partition -DriveLetter 'S' -UseMaximumSize |\n  Format-Volume -FileSystem NTFS -NewFileSystemLabel 'STOCK' -Confirm:$false",
+      "captureExpected": "Capture de Disk Management montrant le volume 'STOCK (S:)' de 15 Go en NTFS."
+    },
+    {
+      "id": "task_6",
+      "order": 6,
+      "title": "Configuration réseau fixe (IP statique)",
+      "points": 1.0,
+      "instruction": "Configurez l'adressage IP de la carte réseau (mode Bridge) : IP 172.16.20.10, Masque 255.255.0.0 (/16), Passerelle 172.16.0.1, DNS 172.16.0.1.",
+      "guiSteps": "1. Ouvrir 'ncpa.cpl' > Clic droit sur 'Ethernet' > 'Properties' > 'IPv4'.\n2. Saisir IP : 172.16.20.10, Masque : 255.255.0.0, Passerelle : 172.16.0.1, DNS : 172.16.0.1.\n3. Valider.",
+      "powerShellScript": "$adapter = Get-NetAdapter | Where-Object Status -eq 'Up'\nNew-NetIPAddress -InterfaceIndex $adapter.ifIndex -IPAddress '172.16.20.10' -PrefixLength 16 -DefaultGateway '172.16.0.1'\nSet-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses ('172.16.0.1')",
+      "captureExpected": "Capture des propriétés IPv4 ou de 'ipconfig /all' avec l'IP 172.16.20.10 et le masque /16."
+    },
+    {
+      "id": "task_7",
+      "order": 7,
+      "title": "Gestion des utilisateurs (Compte local Sylvain)",
+      "points": 1.0,
+      "instruction": "Créez un nouveau compte utilisateur local standard pour le collaborateur nommé Sylvain Brun au format Prenom.Nom (Sylvain.Brun) avec le mot de passe AtelierLogi@1.",
+      "guiSteps": "1. Ouvrir 'lusrmgr.msc'.\n2. 'Users' > 'New User...'.\n3. Username : Sylvain.Brun, Full name : Sylvain Brun, Password : AtelierLogi@1.\n4. Cocher 'Password never expires' et valider.",
+      "powerShellScript": "$secPass = ConvertTo-SecureString 'AtelierLogi@1' -AsPlainText -Force\nNew-LocalUser -Name 'Sylvain.Brun' -FullName 'Sylvain Brun' -Password $secPass -Description 'Préparateur de commandes Sylvain Brun' -PasswordNeverExpires",
+      "captureExpected": "Capture de lusrmgr.msc montrant le compte 'Sylvain.Brun'."
+    },
+    {
+      "id": "task_8",
+      "order": 8,
+      "title": "Identité de la machine (Renommage du poste)",
+      "points": 1.0,
+      "instruction": "Renommez l'ordinateur MV-Sylvain avec le nom standardisé MV-ATELIER-01.",
+      "guiSteps": "1. Settings > System > About > 'Rename this PC'.\n2. Saisir : MV-ATELIER-01.\n3. Valider par 'Next'.",
+      "powerShellScript": "Rename-Computer -NewName 'MV-ATELIER-01' -Force",
+      "captureExpected": "Capture de Settings > System affichant le nom de poste 'MV-ATELIER-01'."
+    },
+    {
+      "id": "task_9",
+      "order": 9,
+      "title": "Profil utilisateur et redirection de dossier (Downloads)",
+      "points": 1.0,
+      "instruction": "Fermez la session administrateur et ouvrez une session avec Sylvain.Brun. Délocalisez son dossier spécial 'Downloads' (Téléchargements) vers 'S:\\Stock_Fichiers'.",
+      "guiSteps": "1. Ouvrir la session de Sylvain.Brun.\n2. Clic droit sur 'Downloads' (Téléchargements) > 'Properties' > onglet 'Location'.\n3. Cliquer sur 'Move...' > Sélectionner ou créer 'S:\\Stock_Fichiers'.\n4. Valider par 'Apply' et accepter le déplacement des fichiers.",
+      "powerShellScript": "$newDownloads = 'S:\\Stock_Fichiers'\nif (!(Test-Path $newDownloads)) { New-Item -ItemType Directory -Path $newDownloads -Force }\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name '{374DE290-123F-4565-9164-39C4925E467B}' -Value $newDownloads\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders' -Name '{7D83EE9B-2244-4E70-B1F5-54F5E64B3B8F}' -Value $newDownloads",
+      "captureExpected": "Capture de l'onglet Location de Downloads montrant 'S:\\Stock_Fichiers'."
+    },
+    {
+      "id": "task_10",
+      "order": 10,
+      "title": "Sécurité des données (Permissions NTFS sans suppression racine)",
+      "points": 1.0,
+      "instruction": "Sur 'S:\\Stock_Fichiers', attribuez les droits de lecture et écriture stricts à Sylvain.Brun, mais désactivez/retirez le droit spécial de suppression sur le dossier racine pour éviter les suppressions accidentelles de répertoires d'atelier.",
+      "guiSteps": "1. Clic droit sur 'S:\\Stock_Fichiers' > 'Properties' > 'Security' > 'Advanced'.\n2. 'Disable inheritance' > 'Convert...'.\n3. Supprimer 'Users'.\n4. Éditer la règle pour 'Sylvain.Brun' : Cliquer sur 'Show advanced permissions' > Décocher 'Delete' et 'Delete subfolders and files' sur le dossier racine 'This folder only' tout en conservant 'Read & Execute' et 'Write'.\n5. Valider.",
+      "powerShellScript": "$acl = Get-Acl 'S:\\Stock_Fichiers'\n$acl.SetAccessRuleProtection($true, $false)\n$rights = [System.Security.AccessControl.FileSystemRights]'ReadAndExecute, Write, Modify'\n$ruleSylvain = New-Object System.Security.AccessControl.FileSystemAccessRule('Sylvain.Brun', $rights, 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleAdmin = New-Object System.Security.AccessControl.FileSystemAccessRule('Administrators', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$ruleSystem = New-Object System.Security.AccessControl.FileSystemAccessRule('SYSTEM', 'FullControl', 'ContainerInherit,ObjectInherit', 'None', 'Allow')\n$acl.SetAccessRule($ruleSylvain)\n$acl.SetAccessRule($ruleAdmin)\n$acl.SetAccessRule($ruleSystem)\nSet-Acl -Path 'S:\\Stock_Fichiers' -AclObject $acl",
+      "captureExpected": "Capture des autorisations de sécurité avancées sur S:\\Stock_Fichiers montrant la protection contre la suppression accidentelle."
+    },
+    {
+      "id": "task_11",
+      "order": 11,
+      "title": "Accessibilité (Dyslexie & Confort visuel)",
+      "points": 1.0,
+      "instruction": "Modifiez les paramètres ergonomiques de Windows 11 pour adapter le poste aux difficultés de lecture de Sylvain : Désactivez les animations superflues (Animation effects : Off), augmentez la taille des icônes du bureau et configurez le confort visuel. Justifiez vos choix par écrit.",
+      "guiSteps": "1. Ouvrir Settings > 'Accessibility' > 'Visual effects'.\n2. Désactiver 'Animation effects' (Basculer sur 'Off') pour éviter les distractions visuelles et soulager la charge cognitive.\n3. Sur le Bureau, faire un clic droit > 'View' > Cocher 'Large icons' pour faciliter le repérage visuel des applications d'atelier.\n4. Dans Microsoft Edge, aller dans Paramètres > Apparence > Choisir une police claire et lisible (ex: Arial ou Comic Sans).",
+      "powerShellScript": "# Désactivation des effets d'animation système dans le registre utilisateur\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'UserPreferencesMask' -Value ([byte[]](0x90,0x12,0x03,0x80,0x10,0x00,0x00,0x00))\nSet-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'IconsOnly' -Value 0",
+      "captureExpected": "Capture de la page Settings > Visual effects (Animations Off) et du Bureau avec les grandes icônes + justification écrite."
+    },
+    {
+      "id": "task_12",
+      "order": 12,
+      "title": "Confort utilisateur (Raccourci Bureau)",
+      "points": 1.0,
+      "instruction": "Créez un raccourci direct vers le dossier 'S:\\Stock_Fichiers' directement sur le bureau de la session de Sylvain.",
+      "guiSteps": "1. Clic droit sur le Bureau de Sylvain > 'New' > 'Shortcut'.\n2. Saisir : S:\\Stock_Fichiers.\n3. Nommer le raccourci : 'Dossier Stock Atelier'.\n4. Valider.",
+      "powerShellScript": "$wshShell = New-Object -ComObject WScript.Shell\n$desktopPath = [Environment]::GetFolderPath('Desktop')\n$shortcut = $wshShell.CreateShortcut(\"$desktopPath\\Dossier Stock Atelier.lnk\")\n$shortcut.TargetPath = 'S:\\Stock_Fichiers'\n$shortcut.Description = 'Accès direct aux fichiers de stock atelier'\n$shortcut.Save()",
+      "captureExpected": "Capture du bureau de Sylvain avec le raccourci 'Dossier Stock Atelier'."
+    },
+    {
+      "id": "task_13",
+      "order": 13,
+      "title": "Sécurité réseau (Blocage Pare-feu RDP port 3389 entrant)",
+      "points": 1.0,
+      "instruction": "Configurez les règles du pare-feu Windows Defender pour bloquer toutes les connexions entrantes non autorisées sur le port 3389 (Bureau à distance - RDP) afin de sécuriser le terminal d'atelier.",
+      "guiSteps": "1. Ouvrir 'wf.msc'.\n2. Clic droit sur 'Inbound Rules' > 'New Rule...'.\n3. Choisir 'Port' > 'TCP' > Port local spécifique : 3389.\n4. Choisir 'Block the connection'.\n5. Cocher tous les profils (Domain, Private, Public).\n6. Nommer la règle : 'Block_Inbound_RDP_Port_3389' et valider.",
+      "powerShellScript": "New-NetFirewallRule -DisplayName 'Block_Inbound_RDP_Port_3389' -Direction Inbound -Protocol TCP -LocalPort 3389 -Action Block -Profile Any -Description 'Sécurisation du terminal atelier : interdiction de prise en main RDP externe non autorisée'",
+      "captureExpected": "Capture de 'wf.msc' affichant la règle de blocage du port entrant 3389 RDP."
+    },
+    {
+      "id": "task_14",
+      "order": 14,
+      "title": "Sauvegarde du système (Snapshot / Instantané)",
+      "points": 1.0,
+      "instruction": "Effectuez une sauvegarde complète de la machine virtuelle MV-Sylvain (Snapshot / Instantané dans l'hyperviseur). Insérez la capture et justifiez votre choix.",
+      "guiSteps": "1. Sélectionner MV-Sylvain dans l'hyperviseur.\n2. Prendre un instantané nommé : 'Snapshot_Recette_Atelier_Sylvain'.\n3. Saisir la description technique.",
+      "powerShellScript": "Checkpoint-VM -Name 'MV-Sylvain' -SnapshotName 'Snapshot_Recette_Atelier_Sylvain'",
+      "captureExpected": "Capture de l'arbre des instantanés affichant la sauvegarde complète de fin d'étape 1."
+    }
+  ],
+  "tutorialGuide": {
+    "title": "Livrable Partie 2 — Guide du Tutoriel Utilisateur",
+    "documentName": "Tutoriel Sylvain",
+    "targetAudience": "Sylvain Brun (Préparateur de commandes atelier, dyslexie)",
+    "maxPages": 10,
+    "formalRequirements": [
+      "Page de titre soignée avec mention de l'atelier LogiStock.",
+      "Sommaire automatique clair.",
+      "Structuration en deux parties distinctes : Synthèse vocale / Lecture audio et Gestion des impressions.",
+      "Captures d'écran aérées, très visuelles et fléchées de manière épurée.",
+      "Numérotation de page en pied de page.",
+      "Phrases courtes, verbes d'action directs, police très lisible sans surcharge de texte."
+    ],
+    "modules": [
+      {
+        "moduleNumber": 1,
+        "title": "Utilisation de la lecture à voix haute des documents (Synthèse vocale)",
+        "description": "Comment écouter un document PDF de consigne ou une page web avec Microsoft Edge sans fatigue visuelle.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Lancer la lecture à voix haute dans Microsoft Edge",
+            "instruction": "Ouvrir le document PDF ou la page web dans Microsoft Edge. Appuyer sur le raccourci clavier Ctrl + Maj + U (ou faire un clic droit sur le texte > 'Lire à voix haute'). Le texte commence à être lu automatiquement avec un surlignage mot par mot."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Contrôler la lecture et ajuster la vitesse de la voix",
+            "instruction": "Utiliser la barre de contrôle en haut de l'écran pour mettre en pause, reculer ou avancer. Cliquer sur 'Options de voix' pour choisir une voix naturelle et ajuster la vitesse de diction selon votre confort."
+          }
+        ]
+      },
+      {
+        "moduleNumber": 2,
+        "title": "Gestion des impressions et déblocage de la file d'attente",
+        "description": "Comment imprimer un bordereau/étiquette et purger la file d'attente Windows en cas de document coincé.",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "stepTitle": "Lancer une impression et vérifier l'imprimante par défaut",
+            "instruction": "Dans votre application ou visualiseur de bordereaux, appuyer sur Ctrl + P. Vérifier que l'imprimante de l'atelier est bien sélectionnée, vérifier le nombre d'exemplaires et cliquer sur 'Imprimer'."
+          },
+          {
+            "stepNumber": 2,
+            "stepTitle": "Consulter et purger la file d'attente en cas de blocage",
+            "instruction": "Double-cliquer sur la petite icône d'imprimante à côté de l'horloge Windows (ou aller dans Settings > Bluetooth & devices > Printers & scanners > Cliquer sur l'imprimante > 'Open print queue'). Si un document affiche 'Erreur', faire un clic droit dessus > 'Annuler' (Cancel) pour débloquer les impressions suivantes."
+          }
+        ]
+      }
+    ],
+    "evaluationRubric": [
+      { "criterion": "Page de titre et sommaire automatique", "maxPoints": 1.0, "details": "Page de garde soignée et table des matières générée automatiquement." },
+      { "criterion": "Qualité de la Partie 1 (Synthèse vocale Edge Ctrl+Maj+U)", "maxPoints": 2.0, "details": "Procédure d'écoute et de réglage des voix parfaitement vulgarisée." },
+      { "criterion": "Qualité de la Partie 2 (Impression & Purge de file d'attente)", "maxPoints": 1.5, "details": "Étapes claires pour lancer une impression et annuler un document bloqué." },
+      { "criterion": "Qualité des captures d'écran et adaptation dyslexie", "maxPoints": 1.0, "details": "Mise en page aérée, gros boutons fléchés, instructions concises." },
+      { "criterion": "Respect des contraintes (Pagination, <= 10 pages)", "maxPoints": 0.5, "details": "Pagination et limites respectées." }
+    ]
+  }
+}

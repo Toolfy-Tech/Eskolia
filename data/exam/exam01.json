@@ -1,0 +1,449 @@
+{
+  "quiz": {
+    "title": "Épreuve Blanche 1 — Sujet Alpha (Simulation Complète TIP)",
+    "description": "Examen blanc transversal complet évaluant les 8 compétences professionnelles du REAC pour le titre Technicien Informatique de Proximité (Niveau 4).",
+    "author": "Formateur Eskolia",
+    "category": "Examen Blanc"
+  },
+  "questions": [
+    {
+      "id": "eb1_q1",
+      "type": "classic",
+      "question": "Un utilisateur appelle le centre de services car son ordinateur refuse de démarrer après un orage. Quelle est la toute première question de qualification à poser pour distinguer un problème d'alimentation secteur d'une panne interne ?",
+      "answer": "Demander à l'utilisateur de vérifier si le voyant lumineux de la prise/multiprise ou du bloc d'alimentation (PSU) est allumé et tester le branchement sur une autre prise murale connue comme fonctionnelle.",
+      "explanation": "Selon la démarche méthodique de diagnostic, on commence toujours par la Couche 1 (alimentation et couche physique) avant d'envisager une panne de carte mère ou de processeur.",
+      "difficulty": "facile",
+      "context": "Support & Qualification"
+    },
+    {
+      "id": "eb1_q2",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les étapes de qualification et de traitement d'une demande au centre de services (Service Desk) selon les bonnes pratiques ITIL.",
+      "answer": "1. Accueil de l'utilisateur et recueil des symptômes\n2. Enregistrement du ticket dans l'outil de gestion (GLPI/ITSM)\n3. Qualification (demande de service ou incident) et catégorisation\n4. Évaluation de la priorité en croisant urgence et impact\n5. Diagnostic technique et application de la procédure de résolution\n6. Vérification du fonctionnement avec l'utilisateur et clôture",
+      "items": [
+        "Accueil de l'utilisateur et recueil des symptômes",
+        "Enregistrement du ticket dans l'outil de gestion (GLPI/ITSM)",
+        "Qualification (demande de service ou incident) et catégorisation",
+        "Évaluation de la priorité en croisant urgence et impact",
+        "Diagnostic technique et application de la procédure de résolution",
+        "Vérification du fonctionnement avec l'utilisateur et clôture"
+      ],
+      "explanation": "Le cycle de vie standard d'un ticket impose d'enregistrer et de qualifier l'incident avec son niveau de priorité avant d'engager le diagnostic, et d'obtenir l'accord de l'utilisateur avant toute clôture définitive.",
+      "difficulty": "moyen",
+      "context": "ITIL & Support"
+    },
+    {
+      "id": "eb1_q3",
+      "type": "association",
+      "question": "Associe chaque niveau de support à son rôle et périmètre d'intervention typique.",
+      "answer": "Support N1 -> Réception, qualification initiale et résolution des incidents simples/courants, Support N2 -> Résolution des incidents techniques complexes nécessitant des droits avancés ou déplacement, Support N3 -> Expertise approfondie sur les systèmes, réseau, infrastructures et support éditeur/constructeur",
+      "pairs": [
+        ["Support N1", "Réception, qualification initiale et résolution des incidents simples/courants"],
+        ["Support N2", "Résolution des incidents techniques complexes nécessitant des droits avancés ou déplacement"],
+        ["Support N3", "Expertise approfondie sur les systèmes, réseau, infrastructures et support éditeur/constructeur"]
+      ],
+      "explanation": "Le technicien informatique de proximité opère principalement en N1 et N2 de proximité, et doit savoir escalader proprement vers le N3 en fournissant un rapport précis.",
+      "difficulty": "facile",
+      "context": "Organisation du Support"
+    },
+    {
+      "id": "eb1_q4",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que son poste de travail s'éteint brutalement après 15 à 20 minutes d'utilisation lorsqu'il lance des traitements de calculs volumineux. Trouve la cause racine de la panne.",
+      "answer": "Surchauffe thermique du processeur (CPU) entraînant une mise en sécurité de la carte mère (throttling puis coupure thermique), causée par de la pâte thermique asséchée ou un ventilateur encrassé/défaillant.",
+      "indices": [
+        "Indice 1 : Le PC redémarre sans problème immédiatement après quelques minutes de repos, mais recoupe plus vite lors du second test.",
+        "Indice 2 : L'utilitaire HWiNFO64 relève une température CPU à 98°C au repos et le ventilateur tourne à sa vitesse maximale avec un bruit important.",
+        "Indice 3 : Le journal d'événements Système (eventvwr) consigne l'Event ID 41 avec mention d'arrêt critique non planifié sans code d'erreur de pilote (BSOD)."
+      ],
+      "explanation": "Une coupure nette sous charge sans écran bleu pointe directement vers une mise en sécurité thermique matérielle du processeur pour éviter sa destruction physique.",
+      "difficulty": "difficile",
+      "context": "Diagnostic Hardware"
+    },
+    {
+      "id": "eb1_q5",
+      "type": "ticket",
+      "question": "Ticket #1042 — 'Bonjour, j'ai renversé du café sur mon clavier d'ordinateur portable professionnel. Certaines touches écrivent des caractères bizarres et d'autres ne fonctionnent plus.'",
+      "answer": "Mettre l'ordinateur portable immédiatement hors tension, débrancher l'alimentation, retirer la batterie si amovible, et remplacer le clavier/poste après vérification d'absence de court-circuit interne.",
+      "checklist": [
+        "Demander à l'utilisateur d'éteindre immédiatement l'ordinateur portable et de débrancher le chargeur secteur",
+        "Récupérer le matériel en atelier pour inspection visuelle des composants internes et séchage complet",
+        "Fournir un poste temporaire de prêt ou un clavier USB externe de dépannage immédiat",
+        "Remplacer le module clavier défectueux et consigner l'intervention dans le ticket GLPI"
+      ],
+      "explanation": "Le premier réflexe face à un déversement de liquide est d'isoler électriquement l'appareil pour prévenir l'oxydation des pistes de la carte mère et les courts-circuits destructeurs.",
+      "difficulty": "moyen",
+      "context": "Support Matériel"
+    },
+    {
+      "id": "eb1_q6",
+      "type": "classic",
+      "question": "Pourquoi est-il strictement interdit d'ouvrir le boîtier d'une alimentation de PC (PSU) ou d'un onduleur (UPS), même après les avoir débranchés de la prise secteur murale ?",
+      "answer": "Parce que les gros condensateurs internes stockent des charges électriques à haute tension dangereuses pouvant provoquer une électrisation ou une électrocution mortelle plusieurs heures après la mise hors tension.",
+      "explanation": "Dans le cadre de l'habilitation électrique BS et des règles de sécurité des personnes, les blocs d'alimentation et les onduleurs sont des modules scellés non réparables par le technicien de proximité : en cas de panne, ils sont remplacés intégralement.",
+      "difficulty": "moyen",
+      "context": "Sécurité Électrique & Habilitation BS"
+    },
+    {
+      "id": "eb1_q7",
+      "type": "association",
+      "question": "Associe chaque composant matériel à son symptôme caractéristique de défaillance.",
+      "answer": "Pile bouton CMOS CR2032 épuisée -> L'horloge et la date du système se réinitialisent à chaque redémarrage, Barrette de mémoire RAM défectueuse -> Écrans bleus aléatoires (BSOD) et échec au test Memtest86, Disque dur mécanique HDD en fin de vie -> Bruits de cliquetis réguliers (head crash) et ralentissements extrêmes, Câble réseau RJ45 défectueux -> La carte réseau négocie une vitesse limitée à 100 Mb/s au lieu de 1 Gb/s",
+      "pairs": [
+        ["Pile bouton CMOS CR2032 épuisée", "L'horloge et la date du système se réinitialisent à chaque redémarrage"],
+        ["Barrette de mémoire RAM défectueuse", "Écrans bleus aléatoires (BSOD) et échec au test Memtest86"],
+        ["Disque dur mécanique HDD en fin de vie", "Bruits de cliquetis réguliers (head crash) et ralentissements extrêmes"],
+        ["Câble réseau RJ45 défectueux", "La carte réseau négocie une vitesse limitée à 100 Mb/s au lieu de 1 Gb/s"]
+      ],
+      "explanation": "Chaque composant physique présente des alertes de pannes spécifiques qu'un technicien doit identifier immédiatement lors du diagnostic préliminaire.",
+      "difficulty": "facile",
+      "context": "Maintenance Matérielle"
+    },
+    {
+      "id": "eb1_q8",
+      "type": "classic",
+      "question": "Un technicien doit préparer un disque SSD de 4 To sous Windows 11. Quelle table de partitionnement doit-il obligatoirement sélectionner et pourquoi ?",
+      "answer": "La table de partitionnement GPT (GUID Partition Table), car l'ancienne table MBR est limitée à une capacité maximale de 2 To par disque et à 4 partitions principales.",
+      "explanation": "GPT est le standard associé à l'UEFI (requis pour Windows 11). Il permet d'adresser des disques bien supérieurs à 2 To et de créer jusqu'à 128 partitions sans partition étendue.",
+      "difficulty": "facile",
+      "context": "Systèmes & Stockage"
+    },
+    {
+      "id": "eb1_q9",
+      "type": "sequence",
+      "question": "Remets dans l'ordre les actions pour intégrer proprement un poste client Windows 11 à un domaine Active Directory existant.",
+      "answer": "1. Configurer la carte réseau du poste client pour pointer vers l'adresse IP du serveur DNS Active Directory\n2. Renommer le poste client selon la convention de nommage de l'entreprise et redémarrer\n3. Renseigner le nom de domaine dans les paramètres système et fournir les identifiants d'un compte autorisé à la jonction\n4. Redémarrer l'ordinateur pour valider la prise en compte du domaine\n5. Ouvrir la première session utilisateur avec les identifiants du compte de domaine et vérifier l'application des GPO",
+      "items": [
+        "Configure la carte réseau du poste client pour pointer vers l'adresse IP du serveur DNS Active Directory",
+        "Renommer le poste client selon la convention de nommage de l'entreprise et redémarrer",
+        "Renseigner le nom de domaine dans les paramètres système et fournir les identifiants d'un compte autorisé à la jonction",
+        "Redémarrer l'ordinateur pour valider la prise en compte du domaine",
+        "Ouvrir la première session utilisateur avec les identifiants du compte de domaine et vérifier l'application des GPO"
+      ],
+      "explanation": "Le prérequis absolu à la jonction de domaine est la résolution DNS : sans le DNS du contrôleur de domaine, le client ne trouvera pas les enregistrements SRV du domaine.",
+      "difficulty": "moyen",
+      "context": "Active Directory & Déploiement"
+    },
+    {
+      "id": "eb1_q10",
+      "type": "classic",
+      "question": "Quelle est la commande PowerShell à exécuter sur un poste client pour forcer le rafraîchissement immédiat des stratégies de groupe (GPO) appliquées à la machine et à l'utilisateur ?",
+      "answer": "gpupdate /force",
+      "explanation": "La commande gpupdate /force réapplique immédiatement toutes les GPO sans attendre le cycle de rafraîchissement automatique de Windows en arrière-plan.",
+      "difficulty": "facile",
+      "context": "Administration Windows"
+    },
+    {
+      "id": "eb1_q11",
+      "type": "diagnostic_indices",
+      "question": "Un poste client obtient l'adresse IP 192.168.10.45/24, le masque 255.255.255.0, la passerelle 192.168.10.1 et le DNS 192.168.10.10. Il peut joindre l'intranet local mais aucun site web externe. Identifie la cause racine.",
+      "answer": "La passerelle par défaut (le routeur de sortie) est indisponible ou n'effectue pas la translation d'adresses (NAT) vers la liaison Internet.",
+      "indices": [
+        "Indice 1 : La commande ping 127.0.0.1 et ping 192.168.10.10 (serveur DNS/AD local) répondent avec 0% de perte.",
+        "Indice 2 : La commande nslookup google.fr échoue avec un message de timeout du serveur DNS qui ne parvient pas à transférer la requête vers les redirecteurs externes.",
+        "Indice 3 : La commande ping 192.168.10.1 (adresse de la passerelle) renvoie 'Délai d'attente de la demande dépassé'."
+      ],
+      "explanation": "Le poste communique parfaitement avec le sous-réseau local (DNS/AD joignables), mais la passerelle 192.168.10.1 ne répond pas, bloquant tout le trafic sortant hors du réseau local.",
+      "difficulty": "moyen",
+      "context": "Diagnostic Réseau"
+    },
+    {
+      "id": "eb1_q12",
+      "type": "classic",
+      "question": "Quelle est la plage d'adresses IPv4 réservée par convention à l'auto-configuration APIPA lorsque le client ne reçoit aucune réponse d'un serveur DHCP ?",
+      "answer": "169.254.0.0 à 169.254.255.255 (avec le masque 255.255.0.0 ou /16).",
+      "explanation": "Une adresse en 169.254.x.x indique que le client est isolé et n'a pas pu joindre de serveur DHCP valide sur son segment réseau.",
+      "difficulty": "facile",
+      "context": "Réseau Fondamental"
+    },
+    {
+      "id": "eb1_q13",
+      "type": "ticket",
+      "question": "Ticket #2109 — 'Le directeur financier doit accueillir un auditeur externe dans son bureau. Il demande à ce qu'on lui donne l'accès Wi-Fi d'entreprise sécurisé réservé aux salariés.'",
+      "answer": "Refuser l'accès au réseau interne d'entreprise et connecter l'auditeur sur le VLAN Wi-Fi Invités/Visiteurs isolé.",
+      "checklist": [
+        "Expliquer avec pédagogie la règle de sécurité interdisant aux équipements non gérés l'accès au réseau de production",
+        "Fournir un compte d'accès temporaire sur le portail captif du Wi-Fi Invités",
+        "Vérifier que le Wi-Fi Invités bénéficie bien de l'isolation des clients (pas de communication poste à poste)",
+        "Contrôler que l'auditeur a bien accès à Internet pour ses besoins professionnels"
+      ],
+      "explanation": "Un appareil personnel ou externe ne doit jamais être connecté au réseau interne de production pour éviter toute propagation de menace ou écoute réseau clandestine.",
+      "difficulty": "moyen",
+      "context": "Cybersécurité & Posture"
+    },
+    {
+      "id": "eb1_q14",
+      "type": "association",
+      "question": "Associe chaque technologie Wi-Fi à sa norme IEEE officielle.",
+      "answer": "Wi-Fi 4 -> 802.11n, Wi-Fi 5 -> 802.11ac, Wi-Fi 6 -> 802.11ax, Wi-Fi 7 -> 802.11be",
+      "pairs": [
+        ["Wi-Fi 4", "802.11n"],
+        ["Wi-Fi 5", "802.11ac"],
+        ["Wi-Fi 6", "802.11ax"],
+        ["Wi-Fi 7", "802.11be"]
+      ],
+      "explanation": "La dénomination simplifiée Wi-Fi 4/5/6/7 correspond aux évolutions des normes de transmission hertzienne de l'IEEE.",
+      "difficulty": "facile",
+      "context": "Réseau Sans-Fil"
+    },
+    {
+      "id": "eb1_q15",
+      "type": "classic",
+      "question": "Dans un sous-réseau IPv4 défini par l'adresse réseau 192.168.50.0/26, calcule le masque sous forme décimale, le nombre d'adresses IP utilisables pour les hôtes, ainsi que l'adresse de broadcast.",
+      "answer": "Masque : 255.255.255.192. Nombre d'hôtes utilisables : 62 (2^6 - 2). Adresse de broadcast : 192.168.50.63.",
+      "explanation": "Un préfixe /26 laisse 6 bits pour la partie hôte (32 - 26 = 6). 2^6 = 64 adresses totales. La plage s'étend de 192.168.50.0 (réseau) à 192.168.50.63 (broadcast), avec 62 adresses assignables de .1 à .62.",
+      "difficulty": "difficile",
+      "context": "Calculs de Sous-Réseaux"
+    },
+    {
+      "id": "eb1_q16",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les 4 étapes du processus DORA d'attribution d'une adresse IP par un serveur DHCP.",
+      "answer": "1. Discover : le client émet une requête en broadcast (UDP 67) pour localiser un serveur DHCP\n2. Offer : le serveur DHCP propose un bail avec une adresse IP disponible (UDP 68)\n3. Request : le client accepte formellement l'offre et demande l'attribution du bail\n4. Acknowledge : le serveur DHCP valide la location et enregistre le bail dans sa base",
+      "items": [
+        "Discover : le client émet une requête en broadcast (UDP 67) pour localiser un serveur DHCP",
+        "Offer : le serveur DHCP propose un bail avec une adresse IP disponible (UDP 68)",
+        "Request : le client accepte formellement l'offre et demande l'attribution du bail",
+        "Acknowledge : le serveur DHCP valide la location et enregistre le bail dans sa base"
+      ],
+      "explanation": "Le protocole DHCP repose sur l'échange standard DORA (Discover, Offer, Request, Acknowledge) en paquets UDP.",
+      "difficulty": "moyen",
+      "context": "Services Réseau"
+    },
+    {
+      "id": "eb1_q17",
+      "type": "classic",
+      "question": "Quelle est la différence fondamentale entre les protocoles de messagerie POP3 et IMAP pour la consultation des courriels par un utilisateur ?",
+      "answer": "POP3 télécharge les messages sur le poste local et les supprime généralement du serveur (pas de synchronisation multi-appareils), tandis qu'IMAP synchronise l'ensemble des dossiers et messages directement sur le serveur en temps réel.",
+      "explanation": "En environnement d'entreprise où les utilisateurs utilisent à la fois PC portable et smartphone, IMAP ou Exchange/M365 sont obligatoires pour maintenir une boîte mail synchronisée.",
+      "difficulty": "facile",
+      "context": "Messagerie & Applications"
+    },
+    {
+      "id": "eb1_q18",
+      "type": "classic",
+      "question": "Un utilisateur malvoyant éprouve des difficultés à lire les textes sur son nouvel écran 27 pouces. Quel raccourci clavier Windows natif permet d'ouvrir immédiatement le centre des paramètres d'accessibilité ?",
+      "answer": "Win + U",
+      "explanation": "Le raccourci Win + U ouvre directement la section Accessibilité des Paramètres Windows pour ajuster la taille du texte, la loupe (Win + +) ou le contraste élevé.",
+      "difficulty": "facile",
+      "context": "Accessibilité Numérique"
+    },
+    {
+      "id": "eb1_q19",
+      "type": "association",
+      "question": "Associe chaque outil d'administration Windows à son fichier exécutable / console MMC.",
+      "answer": "Éditeur du Registre système -> regedit.exe, Observateur d'événements -> eventvwr.msc, Utilisateurs et ordinateurs Active Directory -> dsa.msc, Gestion des disques et volumes -> diskmgmt.msc, Gestionnaire des services Windows -> services.msc",
+      "pairs": [
+        ["Éditeur du Registre système", "regedit.exe"],
+        ["Observateur d'événements", "eventvwr.msc"],
+        ["Utilisateurs et ordinateurs Active Directory", "dsa.msc"],
+        ["Gestion des disques et volumes", "diskmgmt.msc"],
+        ["Gestionnaire des services Windows", "services.msc"]
+      ],
+      "explanation": "La maîtrise des raccourcis de consoles d'administration accélère considérablement les diagnostics et interventions de maintenance.",
+      "difficulty": "facile",
+      "context": "Outils d'Administration"
+    },
+    {
+      "id": "eb1_q20",
+      "type": "ticket",
+      "question": "Ticket #3055 — 'L'assistante de direction signale que plusieurs documents sensibles qu'elle a modifiés sur le dossier partagé Commun de l'équipe ont été accidentellement supprimés par un stagiaire.'",
+      "answer": "Restaurer les fichiers depuis la dernière sauvegarde saine et restructurer les permissions NTFS selon la méthode AGDLP pour restreindre les droits d'écriture/suppression.",
+      "checklist": [
+        "Restaurer immédiatement les documents supprimés depuis les clichés instantanés (VSS) ou la sauvegarde quotidienne",
+        "Analyser les ACL NTFS du dossier partagé en question",
+        "Créer un groupe Domaine Local spécifique avec droit de Lecture Seule pour les stagiaires (GDL_Commun_RO)",
+        "Retirer les stagiaires du groupe ayant les droits de Modification/Contrôle Total"
+      ],
+      "explanation": "L'application du principe de moindre privilège via les groupes AGDLP permet d'éviter les suppressions non intentionnelles sur les répertoires partagés.",
+      "difficulty": "moyen",
+      "context": "Active Directory & Partages"
+    },
+    {
+      "id": "eb1_q21",
+      "type": "classic",
+      "question": "Quels sont les deux composants logiciels distincts indispensables à la mise en place d'un déploiement PXE via WDS, et quels sont leurs rôles respectifs ?",
+      "answer": "Le fichier boot.wim (qui contient l'environnement minimal Windows PE pour démarrer la machine et lancer l'assistant réseau) et le fichier install.wim (qui contient le système d'exploitation complet ou le Master à appliquer sur le disque dur).",
+      "explanation": "Le boot.wim est le programme d'amorçage et d'outillage exécuté en mémoire RAM, tandis que install.wim est l'image finale déployée sur la machine cible.",
+      "difficulty": "moyen",
+      "context": "Déploiement WDS"
+    },
+    {
+      "id": "eb1_q22",
+      "type": "sequence",
+      "question": "Remets dans l'ordre chronologique les actions de sécurisation d'un compte utilisateur lors du départ définitif d'un collaborateur de l'entreprise.",
+      "answer": "1. Désactiver immédiatement le compte utilisateur dans Active Directory / Entra ID (ne pas le supprimer)\n2. Révoquer toutes les sessions actives, connexions VPN et jetons d'accès mobiles\n3. Rediriger la boîte de messagerie professionnelle vers le responsable de service si nécessaire\n4. Déplacer l'objet utilisateur dans une Unité d'Organisation (OU) dédiée aux comptes désactivés\n5. Supprimer l'appartenance de l'utilisateur à tous les groupes de sécurité et de distribution\n6. Archiver les données et supprimer définitivement le compte après le délai de rétention légal",
+      "items": [
+        "Désactiver immédiatement le compte utilisateur dans Active Directory / Entra ID (ne pas le supprimer)",
+        "Révoquer toutes les sessions actives, connexions VPN et jetons d'accès mobiles",
+        "Rediriger la boîte de messagerie professionnelle vers le responsable de service si nécessaire",
+        "Déplacer l'objet utilisateur dans une Unité d'Organisation (OU) dédiée aux comptes désactivés",
+        "Supprimer l'appartenance de l'utilisateur à tous les groupes de sécurité et de distribution",
+        "Archiver les données et supprimer définitivement le compte après le délai de rétention légal"
+      ],
+      "explanation": "On ne supprime jamais immédiatement un compte car son SID unique deviendrait irrécupérable. On désactive, révoque les accès, déplace l'objet, puis on applique la politique de rétention.",
+      "difficulty": "moyen",
+      "context": "Sécurité & Cycle de vie des comptes"
+    },
+    {
+      "id": "eb1_q23",
+      "type": "classic",
+      "question": "Pourquoi la fonctionnalité BitLocker exige-t-elle la présence d'une puce TPM 2.0 sur la carte mère d'un ordinateur portable professionnel ?",
+      "answer": "Pour stocker les clés de chiffrement de manière hautement sécurisée au niveau matériel et vérifier l'intégrité de la séquence de démarrage (BIOS/firmware) avant de libérer la clé de déverrouillage.",
+      "explanation": "Le module TPM (Trusted Platform Module) empêche l'extraction des données si le disque est retiré physiquement et monté sur un autre PC, ou si le firmware a été altéré par un malware de type bootkit.",
+      "difficulty": "moyen",
+      "context": "Sécurité & Chiffrement"
+    },
+    {
+      "id": "eb1_q24",
+      "type": "association",
+      "question": "Associe chaque type d'événement Windows à son Event ID critique dans l'Observateur d'événements (eventvwr).",
+      "answer": "Connexion d'une session réussie -> Event ID 4624 (Sécurité), Échec d'authentification (mot de passe incorrect) -> Event ID 4625 (Sécurité), Verrouillage automatique d'un compte utilisateur -> Event ID 4740 (Sécurité), Arrêt critique ou coupure d'alimentation inattendue -> Event ID 41 (Système)",
+      "pairs": [
+        ["Connexion d'une session réussie", "Event ID 4624 (Sécurité)"],
+        ["Échec d'authentification (mot de passe incorrect)", "Event ID 4625 (Sécurité)"],
+        ["Verrouillage automatique d'un compte utilisateur", "Event ID 4740 (Sécurité)"],
+        ["Arrêt critique ou coupure d'alimentation inattendue", "Event ID 41 (Système)"]
+      ],
+      "explanation": "Ces identifiants d'événements sont les premiers filtres à appliquer pour auditer les tentatives d'intrusion et les arrêts brutaux du matériel.",
+      "difficulty": "moyen",
+      "context": "Audit & Logs"
+    },
+    {
+      "id": "eb1_q25",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale que plusieurs applications se ferment toutes seules avec des erreurs de corruption de fichiers DLL après une mise à jour Windows interrompue. Identifie la méthode de réparation à appliquer.",
+      "answer": "Exécuter l'utilitaire SFC (sfc /scannow), suivi si nécessaire de DISM (/Online /Cleanup-Image /RestoreHealth) puis d'un second scan SFC.",
+      "indices": [
+        "Indice 1 : Le matériel (disque SSD et RAM) est en parfait état de santé selon CrystalDiskInfo et Memtest86.",
+        "Indice 2 : La commande 'sfc /scannow' renvoie le message : 'La protection des ressources Windows a trouvé des fichiers endommagés mais n'a pas pu les réparer'.",
+        "Indice 3 : Le magasin local des composants (WinSxS) nécessite une restauration d'intégrité depuis les serveurs officiels de mise à jour Microsoft."
+      ],
+      "explanation": "Quand SFC ne peut pas réparer un fichier car sa propre copie locale de référence est corrompue, l'outil DISM avec le paramètre RestoreHealth télécharge une version saine depuis Windows Update pour réparer le magasin.",
+      "difficulty": "moyen",
+      "context": "Maintenance Système"
+    },
+    {
+      "id": "eb1_q26",
+      "type": "classic",
+      "question": "En cas de vol avéré d'un smartphone professionnel contenant des e-mails et des documents d'entreprise configurés sous Microsoft Intune, quelle action prioritaire le technicien doit-il exécuter depuis le centre d'administration ?",
+      "answer": "Déclencher un effacement à distance de l'appareil (Wipe complet pour un appareil d'entreprise COPE, ou Wipe sélectif/retrait des données d'entreprise pour un appareil personnel en BYOD).",
+      "explanation": "L'effacement à distance piloté par le MDM garantit que les données confidentielles de l'organisation ne pourront pas être extraites par des tiers.",
+      "difficulty": "facile",
+      "context": "MDM & Mobilité"
+    },
+    {
+      "id": "eb1_q27",
+      "type": "ticket",
+      "question": "Ticket #5120 — 'Bonjour, la file d'impression du copieur comptabilité est bloquée par un document intitulé Rapport_Annuel.pdf affichant 'Suppression en cours...' depuis 2 heures. Plus personne ne peut imprimer.'",
+      "answer": "Arrêter le service Spouleur d'impression Windows, purger les fichiers temporaires dans System32\\spool\\PRINTERS, puis redémarrer le service.",
+      "checklist": [
+        "Ouvrir une console PowerShell en tant qu'administrateur",
+        "Arrêter le spouleur d'impression : Stop-Service -Name Spooler -Force",
+        "Supprimer manuellement les fichiers bloqués : Remove-Item 'C:\\Windows\\System32\\spool\\PRINTERS\\*' -Force",
+        "Relancer le service : Start-Service -Name Spooler et tester l'impression"
+      ],
+      "explanation": "Redémarrer l'imprimante ne débloque pas une file Windows corrompue. La purge physique du répertoire du spouleur est la seule méthode efficace.",
+      "difficulty": "moyen",
+      "context": "Impression & Dépannage"
+    },
+    {
+      "id": "eb1_q28",
+      "type": "classic",
+      "question": "Quelle est la durée maximale fixée par le RGPD pour notifier une violation de données personnelles à la CNIL, et quel est le devoir immédiat du technicien en cas de fuite constatée ?",
+      "answer": "La notification à la CNIL doit être faite dans un délai maximal de 72 heures après en avoir pris connaissance. Le technicien doit quant à lui alerter sans délai son responsable hiérarchique et le Délégué à la Protection des Données (DPO).",
+      "explanation": "Le technicien ne contacte pas directement la CNIL : il documente précisément l'incident technique et le remonte en urgence à sa chaîne de commandement et au DPO de l'organisme.",
+      "difficulty": "moyen",
+      "context": "RGPD & Conformité"
+    },
+    {
+      "id": "eb1_q29",
+      "type": "association",
+      "question": "Associe chaque concept de plan de continuité/reprise d'activité à sa définition officielle.",
+      "answer": "PCA (Plan de Continuité d'Activité) -> Ensemble des mesures et redondances pour maintenir le service sans interruption, PRA (Plan de Reprise d'Activité) -> Procédures et étapes techniques pour reconstruire le système après un sinistre, RPO (Recovery Point Objective) -> Quantité maximale de données perdues acceptable exprimée en durée, RTO (Recovery Time Objective) -> Durée maximale admissible d'interruption du service avant rétablissement",
+      "pairs": [
+        ["PCA (Plan de Continuité d'Activité)", "Ensemble des mesures et redondances pour maintenir le service sans interruption"],
+        ["PRA (Plan de Reprise d'Activité)", "Procédures et étapes techniques pour reconstruire le système après un sinistre"],
+        ["RPO (Recovery Point Objective)", "Quantité maximale de données perdues acceptable exprimée en durée"],
+        ["RTO (Recovery Time Objective)", "Durée maximale admissible d'interruption du service avant rétablissement"]
+      ],
+      "explanation": "Le RPO détermine la fréquence nécessaire des sauvegardes, tandis que le RTO détermine la rapidité requise pour le matériel de secours et la restauration.",
+      "difficulty": "moyen",
+      "context": "Continuité & Sauvegardes"
+    },
+    {
+      "id": "eb1_q30",
+      "type": "classic",
+      "question": "Sous Linux, quelle est la commande permettant d'attribuer les permissions Lecture/Écriture/Exécution au propriétaire, et Lecture/Exécution au groupe et aux autres utilisateurs sur un script nommé backup.sh ?",
+      "answer": "chmod 755 backup.sh (ou chmod u=rwx,go=rx backup.sh)",
+      "explanation": "En notation octale : r(4) + w(2) + x(1) = 7 pour l'utilisateur propriétaire, et r(4) + x(1) = 5 pour le groupe et les autres.",
+      "difficulty": "facile",
+      "context": "Linux Fondamental"
+    },
+    {
+      "id": "eb1_q31",
+      "type": "sequence",
+      "question": "Remets dans l'ordre les couches du modèle OSI de la plus basse (matérielle) à la plus haute (applicative).",
+      "answer": "1. Couche 1 : Physique (Câbles, signaux électriques, ondes)\n2. Couche 2 : Liaison de données (Adresses MAC, trames, Switchs)\n3. Couche 3 : Réseau (Adresses IP, paquets, Routeurs, ARP)\n4. Couche 4 : Transport (TCP/UDP, numéros de ports, segments)\n5. Couche 5 : Session (Gestion des sessions de communication)\n6. Couche 6 : Présentation (Formatage des données, chiffrement TLS/SSL)\n7. Couche 7 : Application (Services et protocoles HTTP, DNS, DHCP, SMTP)",
+      "items": [
+        "Couche 1 : Physique (Câbles, signaux électriques, ondes)",
+        "Couche 2 : Liaison de données (Adresses MAC, trames, Switchs)",
+        "Couche 3 : Réseau (Adresses IP, paquets, Routeurs, ARP)",
+        "Couche 4 : Transport (TCP/UDP, numéros de ports, segments)",
+        "Couche 5 : Session (Gestion des sessions de communication)",
+        "Couche 6 : Présentation (Formatage des données, chiffrement TLS/SSL)",
+        "Couche 7 : Application (Services et protocoles HTTP, DNS, DHCP, SMTP)"
+      ],
+      "explanation": "La méthode de diagnostic bottom-up (de bas en haut) commence toujours par la couche physique (1) avant de monter vers les couches logiques et applicatives.",
+      "difficulty": "moyen",
+      "context": "Modèle OSI & Réseau"
+    },
+    {
+      "id": "eb1_q32",
+      "type": "classic",
+      "question": "Lors de la configuration d'un commutateur réseau Cisco, pourquoi doit-on impérativement exécuter la commande 'copy running-config startup-config' après avoir modifié des paramètres de VLAN ou de ports ?",
+      "answer": "Pour copier la configuration active stockée en mémoire volatile (RAM) vers la mémoire non-volatile (NVRAM), afin d'éviter la perte des réglages lors du prochain redémarrage électrique du switch.",
+      "explanation": "Sans cette commande de sauvegarde, toute coupure électrique réinitialise l'équipement à son état précédent le redémarrage.",
+      "difficulty": "facile",
+      "context": "Configuration Réseau"
+    },
+    {
+      "id": "eb1_q33",
+      "type": "diagnostic_indices",
+      "question": "Un utilisateur signale qu'un e-mail urgent du Directeur Général lui demande d'acheter des cartes cadeaux pour un client et d'envoyer les codes par retour de mail. De quel type de cyberattaque s'agit-il ?",
+      "answer": "Une tentative d'ingénierie sociale de type 'Fraude au Président' (BEC - Business Email Compromise) / Spear Phishing.",
+      "indices": [
+        "Indice 1 : Le nom affiché dans l'expéditeur est bien celui du Directeur Général, mais l'adresse réelle est dg-direction-groupe@gmail.com au lieu du domaine officiel @entreprise.fr.",
+        "Indice 2 : Le message insiste fortement sur l'urgence absolue et demande une discrétion totale vis-à-vis des collègues.",
+        "Indice 3 : La demande contourne totalement les procédures habituelles d'achat et de validation financière de l'entreprise."
+      ],
+      "explanation": "L'attaque par fraude au président exploite le levier psychologique de l'autorité et de l'urgence pour forcer la victime à contourner les procédures de contrôle sans vérifier l'authenticité de la demande.",
+      "difficulty": "facile",
+      "context": "Ingénierie Sociale"
+    },
+    {
+      "id": "eb1_q34",
+      "type": "classic",
+      "question": "Dans le cadre de la méthode de rédaction de requêtes IA (Prompt Engineering R.O.C.T.), que représente chaque lettre de l'acronyme et quelle est la règle absolue de confidentialité à respecter ?",
+      "answer": "R = Rôle, O = Objectif, C = Contexte, T = Type de réponse (format). La règle absolue de sécurité est de ne jamais transmettre de données sensibles, mots de passe, clés d'API ou informations personnelles réelles dans un outil d'IA.",
+      "explanation": "Structurer son prompt avec la méthode R.O.C.T. garantit une réponse technique précise tout en maintenant une hygiène stricte de non-divulgation de données d'entreprise.",
+      "difficulty": "facile",
+      "context": "IA & Veille Technologique"
+    },
+    {
+      "id": "eb1_q35",
+      "type": "ticket",
+      "question": "Ticket #6012 — 'Un nouvel employé arrive lundi dans le service Marketing. Le manager demande la mise à disposition de son poste de travail, son compte de domaine, son adresse e-mail et ses accès aux dossiers partagés.'",
+      "answer": "Créer le compte Active Directory, affecter les licences Microsoft 365, intégrer l'utilisateur dans les groupes de sécurité appropriés et préparer son poste de travail masterisé.",
+      "checklist": [
+        "Créer l'utilisateur dans l'Unité d'Organisation (OU) Marketing dans dsa.msc avec obligation de changer le mot de passe à la première ouverture",
+        "Ajouter le compte au groupe global GG_Marketing (pour hériter des accès via la méthode AGDLP)",
+        "Affecter une licence Microsoft 365 Business Standard sur le portail administrateur",
+        "Déployer le poste avec le Master Windows d'entreprise, vérifier la conformité BitLocker et tester l'ouverture de session"
+      ],
+      "explanation": "La procédure d'onboarding (intégration d'un arrivant) est une mission courante du TIP associant gestion d'identité, attribution de droits de partage, licences Cloud et mise en service matérielle.",
+      "difficulty": "moyen",
+      "context": "Onboarding & Gestion de Parc"
+    }
+  ]
+}

@@ -56,6 +56,8 @@ import '../../labo/presentation/widgets/labo_contrib_card_body.dart';
 import '../../parcours/presentation/widgets/examen_blanc_card_body.dart';
 import '../../parcours/presentation/widgets/mega_lexique_card_body.dart';
 import '../../parcours/presentation/widgets/mega_mediatheque_card_body.dart';
+import '../../exam/presentation/widgets/exam_blanc_announcement_dialog.dart';
+import 'widgets/whats_new_announcement_dialog.dart';
 
 const Color _surfaceBar    = EskoliaTokens.surface2;
 const Color _redStreak     = EskoliaTokens.error;
@@ -96,8 +98,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _guardOnboarding() async {
     final done = await OnboardingPrefs.isCompleted();
-    if (!mounted || done) return;
-    context.go('/onboarding');
+    if (!mounted) return;
+    if (!done) {
+      context.go('/onboarding');
+      return;
+    }
+    // Affichage du dialogue d'annonce de la section Examens Blancs
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        ExamBlancAnnouncementDialog.showIfFirstTime(context);
+      }
+    });
   }
 
   Future<void> _loadData() async {
@@ -149,6 +160,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           });
           _triggerSectionAnimations();
           _maybeShowStreakBanner(user.streak);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) WhatsNewAnnouncementDialog.showIfFirstTime(context);
+          });
         } catch (e) {
           if (!mounted) return;
           setState(() {
@@ -738,88 +752,134 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 EskoliaCardSectionBadge(
                   sectionName: _getSectionName(key),
                   color: displayColor,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Flexible(
+                      Expanded(
                         child: Text(
                           displayTitle,
-                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.outfit(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
                       if (FeatureInfoResolver.getInfo(key) != null) ...[
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 2),
                         IconButton(
-                          constraints: const BoxConstraints(),
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
                           tooltip: 'Comment ça marche ?',
                           onPressed: () => _showInfoDialog(context, key),
                           icon: const Icon(
                             Icons.info_outline_rounded,
                             color: Colors.white60,
-                            size: 16,
+                            size: 15,
                           ),
                         ),
                       ],
                     ],
                   ),
                 ),
+                const SizedBox(width: 4),
                 IconButton(
-                  tooltip: 'Personnaliser',
-                  onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                  icon: Icon(
-                    Icons.edit_note_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 22,
-                  ),
-                ),
-                if (key == 'it_pro' ||
-                    key == 'security' ||
-                    key == 'it' ||
-                    key == 'hardware' ||
-                    key == 'software' ||
-                    key.startsWith('source:') ||
-                    key.startsWith('merge:'))
-                  IconButton(
-                    tooltip: 'Fusionner',
-                    onPressed: () => showMergeCardDialog(context, ref, key),
-                    icon: Icon(
-                      Icons.call_merge_rounded,
-                      color: slate.withValues(alpha: 0.85),
-                      size: 20,
-                    ),
-                  ),
-                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                   tooltip: isCollapsed ? 'Afficher' : 'Masquer',
                   onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
                   icon: Icon(
                     isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
                     color: slate.withValues(alpha: 0.85),
-                    size: 20,
+                    size: 19,
                   ),
                 ),
-                IconButton(
-                  tooltip: ref.watch(homePinnedCardsProvider).contains(key) ? 'Désépingler' : 'Épingler',
-                  onPressed: () => ref.read(homePinnedCardsProvider.notifier).togglePin(key),
+                PopupMenuButton<String>(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
                   icon: Icon(
-                    ref.watch(homePinnedCardsProvider).contains(key) ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                    color: ref.watch(homePinnedCardsProvider).contains(key) ? displayColor : slate.withValues(alpha: 0.5),
-                    size: 20,
+                    Icons.more_vert_rounded,
+                    color: slate.withValues(alpha: 0.85),
+                    size: 19,
                   ),
+                  tooltip: 'Options de la carte',
+                  color: EskoliaTokens.surface1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                  ),
+                  onSelected: (action) {
+                    if (action == 'settings') {
+                      showHomeCardSettingsDialog(context, ref, key);
+                    } else if (action == 'merge') {
+                      showMergeCardDialog(context, ref, key);
+                    } else if (action == 'pin') {
+                      ref.read(homePinnedCardsProvider.notifier).togglePin(key);
+                    } else if (action == 'remove') {
+                      ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+                    }
+                  },
+                  itemBuilder: (ctx) {
+                    final isPinned = ref.watch(homePinnedCardsProvider).contains(key);
+                    final canMerge = key == 'it_pro' ||
+                        key == 'security' ||
+                        key == 'it' ||
+                        key == 'hardware' ||
+                        key == 'software' ||
+                        key.startsWith('source:') ||
+                        key.startsWith('merge:');
+                    return [
+                      const PopupMenuItem(
+                        value: 'settings',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
+                            SizedBox(width: 10),
+                            Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      if (canMerge)
+                        const PopupMenuItem(
+                          value: 'merge',
+                          child: Row(
+                            children: [
+                              Icon(Icons.call_merge_rounded, color: Colors.white70, size: 18),
+                              SizedBox(width: 10),
+                              Text('Fusionner avec...', style: TextStyle(color: Colors.white, fontSize: 13)),
+                            ],
+                          ),
+                        ),
+                      PopupMenuItem(
+                        value: 'pin',
+                        child: Row(
+                          children: [
+                            Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? displayColor : Colors.white70, size: 18),
+                            const SizedBox(width: 10),
+                            Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'remove',
+                        child: Row(
+                          children: [
+                            Icon(Icons.remove_circle_outline_rounded, color: EskoliaTokens.error, size: 18),
+                            SizedBox(width: 10),
+                            Text('Retirer de l\'accueil', style: TextStyle(color: EskoliaTokens.error, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                    ];
+                  },
                 ),
               ],
             ),
@@ -2068,22 +2128,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildMain(BuildContext context) {
     final user = _user!;
     final width = MediaQuery.sizeOf(context).width;
-    final isLargeScreen = width > 800;
+    final isDesktopOrTablet = width >= 700;
 
     // Calculer la largeur des colonnes de manière adaptative
-    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 40; // 40 pour les paddings horizontaux
+    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
+    final availableWidth = (width - sidebarWidth - 40).clamp(280.0, double.infinity);
 
     double cardWidth;
     int numColumns;
-    if (width > 1200) {
+    if (availableWidth >= 1050) {
       cardWidth = (availableWidth - 32) / 3; // 3 colonnes
       numColumns = 3;
-    } else if (width > 800) {
+    } else if (availableWidth >= 660) {
       cardWidth = (availableWidth - 16) / 2; // 2 colonnes
       numColumns = 2;
     } else {
-      cardWidth = width - 40; // 1 colonne sur mobile
+      cardWidth = availableWidth; // 1 colonne sur mobile et tablette portrait
       numColumns = 1;
     }
 

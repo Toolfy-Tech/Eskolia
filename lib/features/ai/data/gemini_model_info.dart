@@ -72,9 +72,11 @@ class GeminiModelInfo {
   /// Liste par defaut si l'API est inaccessible.
   static List<GeminiModelInfo> defaults() {
     return [
-      'gemini-2.5-pro',
-      'gemini-2.5-flash',
       'gemini-2.0-flash',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro',
+      'gemini-2.5-flash',
+      'gemini-2.5-pro',
     ].map(GeminiModelInfo.from).toList()
       ..sort((a, b) {
         final t = a.sortOrder.compareTo(b.sortOrder);

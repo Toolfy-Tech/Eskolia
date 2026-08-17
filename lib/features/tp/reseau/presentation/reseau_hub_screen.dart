@@ -119,6 +119,74 @@ class ReseauHubScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 14),
+                EskoliaCardContent(
+                  accentBorderColor: EskoliaTokens.cyan,
+                  padding: const EdgeInsets.all(16),
+                  onTap: () => context.push('/tp/osi'),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: EskoliaTokens.cyan.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Text('🌐', style: TextStyle(fontSize: 22)),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'Modèle OSI',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: const Text(
+                                    '3 ATELIERS',
+                                    style: TextStyle(
+                                      color: EskoliaTokens.cyan,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Le Tri Sélectif, Le Voyage du Paquet (Encapsulation) et L\'Enquêteur OSI.',
+                              style: TextStyle(
+                                color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
+                                fontSize: 12,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.chevron_right_rounded, color: Colors.white24),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

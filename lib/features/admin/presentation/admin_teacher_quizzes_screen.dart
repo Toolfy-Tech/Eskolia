@@ -14,6 +14,8 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../lobby/data/models/custom_quiz_data.dart';
+import '../../quiz/services/quiz_template_service.dart';
+import '../../tp/exam_tp/data/tp_exam_repository.dart';
 import '../data/models/teacher_quiz.dart';
 import '../data/teacher_quiz_repository.dart';
 import 'staff_gate_scaffold.dart';
@@ -68,6 +70,8 @@ class _AdminTeacherQuizzesScreenState
                   contextLine: q.contextLine,
                   indices: q.indices,
                   items: q.items,
+                  pairs: q.pairs,
+                  checklist: q.checklist,
                 ))
             .toList(),
       );
@@ -106,47 +110,138 @@ class _AdminTeacherQuizzesScreenState
                     return const Center(child: CircularProgressIndicator());
                   }
                   final quizzes = snap.data ?? [];
-                  if (quizzes.isEmpty) {
-                    return _empty();
-                  }
-                  return ListView.builder(
+                  return ListView(
                     padding: EdgeInsets.fromLTRB(
                       EskoliaLayout.screenPaddingH,
                       16,
                       EskoliaLayout.screenPaddingH,
                       EskoliaLayout.screenPaddingBottom + 80,
                     ),
-                    itemCount: quizzes.length,
-                    itemBuilder: (_, i) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _QuizCard(
-                        quiz: quizzes[i],
-                        onTap: () => context.push(
-                          '/admin/teacher-quizzes/${quizzes[i].id}',
-                        ),
-                        onTogglePublish: (val) =>
-                            _repo.togglePublished(quizzes[i].id, val),
+                    children: [
+                      // Carte Contrôle TP VM
+                      StreamBuilder<bool>(
+                        stream: TpExamRepository.instance.watchTpExamEnabled(),
+                        builder: (context, snapTp) {
+                          final isEnabled = snapTp.data ?? false;
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: isEnabled
+                                  ? EskoliaTokens.cyan.withValues(alpha: 0.12)
+                                  : Colors.amber.shade900.withValues(alpha: 0.20),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: isEnabled
+                                    ? EskoliaTokens.cyan.withValues(alpha: 0.5)
+                                    : Colors.amberAccent.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text('🛠️', style: TextStyle(fontSize: 26)),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'Épreuves Pratiques TP VM',
+                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13.5),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: isEnabled ? Colors.green.shade900 : Colors.amber.shade900,
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              isEnabled ? 'VISIBLE' : 'MASQUÉ',
+                                              style: TextStyle(
+                                                color: isEnabled ? Colors.greenAccent : Colors.amberAccent,
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        isEnabled
+                                            ? 'Les 4 TP VM sont débloqués pour les élèves.'
+                                            : 'Les 4 TP VM sont masqués aux élèves.',
+                                        style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 11),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Switch.adaptive(
+                                  value: isEnabled,
+                                  activeColor: EskoliaTokens.cyan,
+                                  onChanged: (val) async {
+                                    await TpExamRepository.instance.setTpExamEnabled(val);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    ),
+                      if (quizzes.isEmpty)
+                        _empty()
+                      else
+                        ...quizzes.map(
+                          (q) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _QuizCard(
+                              quiz: q,
+                              onTap: () => context.push(
+                                '/admin/teacher-quizzes/${q.id}',
+                              ),
+                              onTogglePublish: (val) =>
+                                  _repo.togglePublished(q.id, val),
+                            ),
+                          ),
+                        ),
+                    ],
                   );
                 },
               ),
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _importing ? null : _importJson,
-          backgroundColor: EskoliaTokens.violetSoft,
-          icon: _importing
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
-                )
-              : const Icon(Icons.upload_file_rounded, color: Colors.white),
-          label: const Text('Importer JSON',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        floatingActionButton: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton.extended(
+              heroTag: 'fab_download_template',
+              onPressed: () => QuizTemplateService.downloadTemplate(context),
+              backgroundColor: EskoliaTokens.surface1,
+              icon: const Icon(Icons.file_download_outlined, color: EskoliaTokens.cyan),
+              label: const Text('Modèle JSON',
+                  style: TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(width: 12),
+            FloatingActionButton.extended(
+              heroTag: 'fab_import_quiz',
+              onPressed: _importing ? null : _importJson,
+              backgroundColor: EskoliaTokens.violetSoft,
+              icon: _importing
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.upload_file_rounded, color: Colors.white),
+              label: const Text('Importer JSON',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+            ),
+          ],
         ),
       ),
     );

@@ -5,6 +5,7 @@ class TpCardsOrderNotifier extends Notifier<List<String>> {
   static const String _prefKey = 'eskolia_tp_cards_order_v1';
   static const List<String> _defaultOrder = [
     'feature:tp_reseau',
+    'feature:tp_osi',
     'feature:tp_ad',
     'feature:tp_powershell',
     'feature:tp_packet_tracer',

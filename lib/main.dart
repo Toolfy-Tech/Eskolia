@@ -9,6 +9,7 @@ import 'core/router/app_router.dart';
 import 'core/services/firebase_service.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_palette_provider.dart';
 
 Future<void> main() async {
   if (kIsWeb) {
@@ -101,14 +102,16 @@ Future<void> main() async {
   );
 }
 
-class EskoliaApp extends StatelessWidget {
+class EskoliaApp extends ConsumerWidget {
   const EskoliaApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final palette = ref.watch(themePaletteProvider);
+
     return MaterialApp.router(
       title: 'Eskolia',
-      theme: AppTheme.dark,
+      theme: AppTheme.fromPalette(palette),
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       scrollBehavior: const EskoliaScrollBehavior(),

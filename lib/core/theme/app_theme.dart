@@ -7,38 +7,36 @@ import '../constants/eskolia_tokens.dart';
 import '../constants/typography.dart';
 import 'app_theme_extensions.dart';
 import 'eskolia_layout.dart';
-import 'eskolia_visual.dart';
+import 'theme_palette_provider.dart';
 
 abstract final class AppTheme {
   AppTheme._();
 
-  // Aliases locaux — couleurs specifiques au MaterialTheme (pas dans les tokens metier)
-  static const Color _primary       = EskoliaTokens.violetSoft;
-  static const Color _secondary     = EskoliaTokens.pink;
-  static const Color _accent        = Color(0xFF43E97B); // vert neon role tertiary
-  static const Color _background    = EskoliaVisual.bgDeep;
-  static const Color _surface       = EskoliaVisual.bgElevated;
   static const Color _textPrimary   = EskoliaTokens.textPrimary;
   static const Color _textSecondary = EskoliaTokens.textSecondary;
 
-  static ThemeData get dark {
-    const overlay = Color(0x14FFFFFF);
-    const borderGlass = Color(0x55FFFFFF);
-    const borderGlassFocused = Color(0x806C3CE1);
+  static ThemeData get dark => fromPalette(const EskoliaThemePalette(themeId: EskoliaThemeId.tardisCyan));
+
+  static ThemeData fromPalette(EskoliaThemePalette palette) {
+    final primary = palette.primaryAccent;
+    final background = palette.bgBase;
+    final surface = palette.bgSurface;
+    final borderGlass = palette.cardBorder;
+    final borderGlassFocused = palette.cardBorderGlow;
 
     final colorScheme = ColorScheme.dark(
-      primary: _primary,
-      onPrimary: _textPrimary,
-      secondary: _secondary,
-      onSecondary: _textPrimary,
-      tertiary: _accent,
-      onTertiary: _background,
-      surface: _surface,
+      primary: primary,
+      onPrimary: Colors.black,
+      secondary: primary,
+      onSecondary: Colors.black,
+      tertiary: palette.surfaceElevated,
+      onTertiary: _textPrimary,
+      surface: surface,
       onSurface: _textPrimary,
-      error: Color(0xFFFF5252),
+      error: const Color(0xFFFF5252),
       onError: _textPrimary,
       outline: borderGlass,
- );
+    );
 
     final base = ThemeData(
       useMaterial3: true,
@@ -47,18 +45,18 @@ abstract final class AppTheme {
       fontFamily: GoogleFonts.inter().fontFamily,
       extensions: <ThemeExtension<dynamic>>[
         GlassmorphismTheme(
-          glassColor: _surface.withValues(alpha: 0.12),
-          borderColor: _primary.withValues(alpha: 0.35),
+          glassColor: surface.withValues(alpha: 0.20),
+          borderColor: primary.withValues(alpha: 0.35),
           blur: 14,
         ),
         NeonTheme(
-          neonColor: _primary,
-          shadowColor: _primary,
+          neonColor: primary,
+          shadowColor: primary,
           intensity: 1.0,
         ),
       ],
-      scaffoldBackgroundColor: _background,
-      canvasColor: _background,
+      scaffoldBackgroundColor: background,
+      canvasColor: background,
       textTheme: EskoliaTypography.textTheme(),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
@@ -77,9 +75,9 @@ abstract final class AppTheme {
         titleTextStyle: EskoliaTypography.body(),
         subtitleTextStyle: EskoliaTypography.body(_textSecondary),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: _accent,
-        linearTrackColor: Color(0x22FFFFFF),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: primary,
+        linearTrackColor: primary.withValues(alpha: 0.15),
       ),
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -92,54 +90,58 @@ abstract final class AppTheme {
         actionsIconTheme: const IconThemeData(color: _textPrimary, size: 24),
       ),
       cardTheme: CardThemeData(
-        color: _surface,
+        color: palette.surfaceCard,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
+          side: BorderSide(color: borderGlass, width: 1),
         ),
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
       ),
       dividerTheme: DividerThemeData(
-        color: _textSecondary.withValues(alpha: 0.25),
+        color: primary.withValues(alpha: 0.15),
         thickness: 1,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: _surface,
+        backgroundColor: palette.surfaceElevated,
         contentTextStyle: EskoliaTypography.body(),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd)),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: _surface,
+        backgroundColor: palette.surfaceElevated,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(EskoliaTokens.radiusXl),
+          side: BorderSide(color: borderGlass, width: 1),
+        ),
         titleTextStyle: EskoliaTypography.h2(),
         contentTextStyle: EskoliaTypography.body(_textSecondary),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: overlay,
-        hoverColor: overlay,
+        fillColor: palette.surfaceCard,
+        hoverColor: palette.surfaceElevated,
         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         hintStyle: EskoliaTypography.body(_textSecondary),
         labelStyle: EskoliaTypography.label(_textSecondary),
-        floatingLabelStyle: EskoliaTypography.label(_primary),
+        floatingLabelStyle: EskoliaTypography.label(primary),
         prefixIconColor: _textSecondary,
         suffixIconColor: _textSecondary,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
-          borderSide: const BorderSide(color: borderGlass, width: 1),
+          borderSide: BorderSide(color: borderGlass, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
-          borderSide: const BorderSide(color: borderGlass, width: 1),
+          borderSide: BorderSide(color: borderGlass, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
-          borderSide: const BorderSide(color: borderGlassFocused, width: 1.5),
+          borderSide: BorderSide(color: borderGlassFocused, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(EskoliaTokens.radiusMd),
@@ -157,48 +159,54 @@ abstract final class AppTheme {
         style: ButtonStyle(
           elevation: const WidgetStatePropertyAll(0),
           shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-          foregroundColor: const WidgetStatePropertyAll(_textPrimary),
-          backgroundColor: const WidgetStatePropertyAll(_primary),
+          foregroundColor: const WidgetStatePropertyAll(Colors.black),
+          backgroundColor: WidgetStatePropertyAll(primary),
           padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           ),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
-          textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
+          textStyle: WidgetStatePropertyAll(
+            GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: ButtonStyle(
           elevation: const WidgetStatePropertyAll(0),
-          foregroundColor: const WidgetStatePropertyAll(_textPrimary),
-          backgroundColor: const WidgetStatePropertyAll(_secondary),
+          foregroundColor: const WidgetStatePropertyAll(Colors.black),
+          backgroundColor: WidgetStatePropertyAll(primary),
           padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           ),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
-          textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
+          textStyle: WidgetStatePropertyAll(
+            GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: const WidgetStatePropertyAll(_textPrimary),
+          foregroundColor: WidgetStatePropertyAll(primary),
           padding: const WidgetStatePropertyAll(
             EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           ),
           side: WidgetStateProperty.resolveWith((states) {
             final pressed = states.contains(WidgetState.pressed);
             return BorderSide(
-              color: _textSecondary.withValues(alpha: pressed ? 0.65 : 0.45),
+              color: primary.withValues(alpha: pressed ? 0.9 : 0.6),
               width: 1.25,
             );
           }),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
-          textStyle: WidgetStatePropertyAll(EskoliaTypography.label()),
+          textStyle: WidgetStatePropertyAll(
+            GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
           backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
         ),
       ),
@@ -208,9 +216,11 @@ abstract final class AppTheme {
             if (states.contains(WidgetState.disabled)) {
               return _textSecondary.withValues(alpha: 0.4);
             }
-            return _primary;
+            return primary;
           }),
-          textStyle: WidgetStatePropertyAll(EskoliaTypography.label(_primary)),
+          textStyle: WidgetStatePropertyAll(
+            GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 14, color: primary),
+          ),
         ),
       ),
     );
