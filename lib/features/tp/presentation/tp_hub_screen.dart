@@ -420,8 +420,9 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
           final key = keys[index];
           final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
           if (isCollapsed) return 65.0;
-          if (key == 'feature:tp_itil' || key == 'feature:tp_glpi') return 200.0;
-          return 360.0;
+          if (key == 'feature:tp_scenario') return 520.0;
+          if (key == 'feature:tp_itil' || key == 'feature:tp_glpi') return 220.0;
+          return 400.0;
         },
       );
 

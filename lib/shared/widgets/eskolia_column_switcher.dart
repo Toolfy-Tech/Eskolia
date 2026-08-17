@@ -285,8 +285,9 @@ class EskoliaColumnSwitcherButton extends ConsumerWidget {
   }
 }
 
-/// Répartit dynamiquement des éléments dans N colonnes selon la hauteur estimée (Masonry / Shortest Column First)
-/// pour éviter les vides verticaux lorsqu'une carte est haute (ex: cours déroulé) et les autres repliées.
+/// Répartit dynamiquement des éléments dans N colonnes pour égaliser au mieux la hauteur des colonnes (LPT / Bin-Balancing).
+/// Place les cartes les plus hautes en premier, puis remplit les colonnes les plus courtes avec les cartes plus petites.
+/// À l'intérieur de chaque colonne, l'ordre d'origine des éléments est préservé.
 List<List<T>> distributeMasonryColumns<T>({
   required List<T> items,
   required int numColumns,
@@ -296,21 +297,45 @@ List<List<T>> distributeMasonryColumns<T>({
     return [items];
   }
 
-  final cols = List.generate(numColumns, (_) => <T>[]);
+  // 1. Associer chaque élément à son index initial et à sa hauteur estimée
+  final indexedItems = List.generate(items.length, (index) {
+    final item = items[index];
+    final h = estimateHeight(item);
+    return (originalIndex: index, item: item, height: h);
+  });
+
+  // 2. Trier par hauteur décroissante (les plus hautes cartes en premier)
+  // En cas d'égalité de hauteur, préserver l'ordre d'origine
+  final sorted = List.of(indexedItems)
+    ..sort((a, b) {
+      final cmp = b.height.compareTo(a.height);
+      if (cmp != 0) return cmp;
+      return a.originalIndex.compareTo(b.originalIndex);
+    });
+
+  // 3. Assigner chaque élément à la colonne qui a la hauteur cumulée minimale à cet instant
+  final colBuckets = List.generate(numColumns, (_) => <({int originalIndex, T item, double height})>[]);
   final colHeights = List.filled(numColumns, 0.0);
 
-  for (final item in items) {
+  for (final entry in sorted) {
     int minCol = 0;
     for (var c = 1; c < numColumns; c++) {
       if (colHeights[c] < colHeights[minCol]) {
         minCol = c;
       }
     }
-    cols[minCol].add(item);
-    colHeights[minCol] += estimateHeight(item) + 16.0;
+    colBuckets[minCol].add(entry);
+    colHeights[minCol] += entry.height + 16.0;
   }
 
-  return cols;
+  // 4. À l'intérieur de chaque colonne, trier par `originalIndex` pour préserver l'ordre naturel de lecture
+  final result = <List<T>>[];
+  for (final bucket in colBuckets) {
+    bucket.sort((a, b) => a.originalIndex.compareTo(b.originalIndex));
+    result.add(bucket.map((e) => e.item).toList());
+  }
+
+  return result;
 }
 
 /// Helper pour construire un Row de colonnes avec espacement vertical et horizontal

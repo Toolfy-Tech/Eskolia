@@ -2223,99 +2223,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return 180.0;
       }
 
-      if (numColumns >= 4) {
-        final cols = List.generate(4, (_) => <Widget>[]);
-        final heights = List.filled(4, 0.0);
-        for (var i = 0; i < keys.length; i++) {
-          final key = keys[i];
-          final card = cards[i];
-          final h = estimateCardHeight(key);
-          int shortest = 0;
-          for (int c = 1; c < 4; c++) {
-            if (heights[c] < heights[shortest]) shortest = c;
-          }
-          cols[shortest].add(card);
-          heights[shortest] += h + 16.0;
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[0]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[1]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[2]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[3]))),
-          ],
-        );
-      } else if (numColumns == 3) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        final col3 = <Widget>[];
-        double h1 = 0.0;
-        double h2 = 0.0;
-        double h3 = 0.0;
+      final columns = distributeMasonryColumns<int>(
+        items: List.generate(keys.length, (i) => i),
+        numColumns: numColumns,
+        estimateHeight: (index) => estimateCardHeight(keys[index]),
+      );
 
-        for (var i = 0; i < keys.length; i++) {
-          final key = keys[i];
-          final card = cards[i];
-          final h = estimateCardHeight(key);
-
-          if (h1 <= h2 && h1 <= h3) {
-            col1.add(card);
-            h1 += h + 16.0;
-          } else if (h2 <= h1 && h2 <= h3) {
-            col2.add(card);
-            h2 += h + 16.0;
-          } else {
-            col3.add(card);
-            h3 += h + 16.0;
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(col2))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(col3))),
-          ],
-        );
-      } else if (numColumns == 2) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        double h1 = 0.0;
-        double h2 = 0.0;
-
-        for (var i = 0; i < keys.length; i++) {
-          final key = keys[i];
-          final card = cards[i];
-          final h = estimateCardHeight(key);
-
-          if (h1 <= h2) {
-            col1.add(card);
-            h1 += h + 16.0;
-          } else {
-            col2.add(card);
-            h2 += h + 16.0;
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(col2))),
-          ],
-        );
-      } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _addSpacing(cards),
-        );
-      }
+      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
+      return buildMasonryColumnsRow(columns: widgetColumns);
     }
 
     Widget content;

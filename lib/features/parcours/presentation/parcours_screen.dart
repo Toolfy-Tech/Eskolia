@@ -419,9 +419,11 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
           final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
           if (isCollapsed) return 65.0;
           if (key == 'feature:cours') return 750.0;
+          if (key == 'feature:media') return 600.0;
           if (key == 'feature:podcasts') return 360.0;
           if (key == 'feature:lexique') return 340.0;
-          return 260.0;
+          if (key == 'feature:validations') return 320.0;
+          return 300.0;
         },
       );
 
