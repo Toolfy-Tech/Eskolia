@@ -61,6 +61,12 @@ class _TextScaleDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return MediaQuery.withNoTextScaling(
+      child: _buildDialog(context, ref),
+    );
+  }
+
+  Widget _buildDialog(BuildContext context, WidgetRef ref) {
     final currentScale = ref.watch(textScaleProvider);
     final percentage = (currentScale * 100).round();
 

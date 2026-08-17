@@ -753,6 +753,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Ligne 1 : Badge + Titre + Info
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
@@ -764,130 +765,131 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          displayTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                      if (FeatureInfoResolver.getInfo(key) != null) ...[
-                        const SizedBox(width: 2),
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
-                          tooltip: 'Comment ça marche ?',
-                          onPressed: () => _showInfoDialog(context, key),
-                          icon: const Icon(
-                            Icons.info_outline_rounded,
-                            color: Colors.white60,
-                            size: 15,
-                          ),
-                        ),
-                      ],
-                    ],
+                  child: Text(
+                    displayTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                  onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                  icon: Icon(
-                    isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 19,
+                if (FeatureInfoResolver.getInfo(key) != null) ...[
+                  const SizedBox(width: 4),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+                    tooltip: 'Comment ça marche ?',
+                    onPressed: () => _showInfoDialog(context, key),
+                    icon: const Icon(
+                      Icons.info_outline_rounded,
+                      color: Colors.white60,
+                      size: 15,
+                    ),
                   ),
-                ),
-                PopupMenuButton<String>(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  icon: Icon(
-                    Icons.more_vert_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 19,
-                  ),
-                  tooltip: 'Options de la carte',
-                  color: EskoliaTokens.surface1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-                  ),
-                  onSelected: (action) {
-                    if (action == 'settings') {
-                      showHomeCardSettingsDialog(context, ref, key);
-                    } else if (action == 'merge') {
-                      showMergeCardDialog(context, ref, key);
-                    } else if (action == 'pin') {
-                      ref.read(homePinnedCardsProvider.notifier).togglePin(key);
-                    } else if (action == 'remove') {
-                      ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                    }
-                  },
-                  itemBuilder: (ctx) {
-                    final isPinned = ref.watch(homePinnedCardsProvider).contains(key);
-                    final canMerge = key == 'it_pro' ||
-                        key == 'security' ||
-                        key == 'it' ||
-                        key == 'hardware' ||
-                        key == 'software' ||
-                        key.startsWith('source:') ||
-                        key.startsWith('merge:');
-                    return [
-                      const PopupMenuItem(
-                        value: 'settings',
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
-                            SizedBox(width: 10),
-                            Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
-                          ],
-                        ),
-                      ),
-                      if (canMerge)
-                        const PopupMenuItem(
-                          value: 'merge',
-                          child: Row(
-                            children: [
-                              Icon(Icons.call_merge_rounded, color: Colors.white70, size: 18),
-                              SizedBox(width: 10),
-                              Text('Fusionner avec...', style: TextStyle(color: Colors.white, fontSize: 13)),
-                            ],
-                          ),
-                        ),
-                      PopupMenuItem(
-                        value: 'pin',
-                        child: Row(
-                          children: [
-                            Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? displayColor : Colors.white70, size: 18),
-                            const SizedBox(width: 10),
-                            Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
-                          ],
-                        ),
-                      ),
-                      const PopupMenuItem(
-                        value: 'remove',
-                        child: Row(
-                          children: [
-                            Icon(Icons.remove_circle_outline_rounded, color: EskoliaTokens.error, size: 18),
-                            SizedBox(width: 10),
-                            Text('Retirer de l\'accueil', style: TextStyle(color: EskoliaTokens.error, fontSize: 13)),
-                          ],
-                        ),
-                      ),
-                    ];
-                  },
-                ),
+                ],
               ],
             ),
+          ),
+          const SizedBox(height: 4),
+          // Ligne 2 : Actions (Plier/Déplier, Menu d'options)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 4),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 19,
+                ),
+                tooltip: 'Options de la carte',
+                color: EskoliaTokens.surface1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
+                onSelected: (action) {
+                  if (action == 'settings') {
+                    showHomeCardSettingsDialog(context, ref, key);
+                  } else if (action == 'merge') {
+                    showMergeCardDialog(context, ref, key);
+                  } else if (action == 'pin') {
+                    ref.read(homePinnedCardsProvider.notifier).togglePin(key);
+                  } else if (action == 'remove') {
+                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+                  }
+                },
+                itemBuilder: (ctx) {
+                  final isPinned = ref.watch(homePinnedCardsProvider).contains(key);
+                  final canMerge = key == 'it_pro' ||
+                      key == 'security' ||
+                      key == 'it' ||
+                      key == 'hardware' ||
+                      key == 'software' ||
+                      key.startsWith('source:') ||
+                      key.startsWith('merge:');
+                  return [
+                    const PopupMenuItem(
+                      value: 'settings',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
+                          SizedBox(width: 10),
+                          Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    if (canMerge)
+                      const PopupMenuItem(
+                        value: 'merge',
+                        child: Row(
+                          children: [
+                            Icon(Icons.call_merge_rounded, color: Colors.white70, size: 18),
+                            SizedBox(width: 10),
+                            Text('Fusionner avec...', style: TextStyle(color: Colors.white, fontSize: 13)),
+                          ],
+                        ),
+                      ),
+                    PopupMenuItem(
+                      value: 'pin',
+                      child: Row(
+                        children: [
+                          Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? displayColor : Colors.white70, size: 18),
+                          const SizedBox(width: 10),
+                          Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'remove',
+                      child: Row(
+                        children: [
+                          Icon(Icons.remove_circle_outline_rounded, color: EskoliaTokens.error, size: 18),
+                          SizedBox(width: 10),
+                          Text('Retirer de l\'accueil', style: TextStyle(color: EskoliaTokens.error, fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+              ),
+            ],
           ),
           if (!isCollapsed || key == 'feature:parcours' || key == 'feature:podcasts') ...[
             const SizedBox(height: 12),

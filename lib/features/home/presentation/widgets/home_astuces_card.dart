@@ -177,21 +177,22 @@ class _HomeAstucesCardState extends ConsumerState<HomeAstucesCard> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Ligne 1 : Badge + Titre
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse('astuces'),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 EskoliaCardSectionBadge(
                   sectionName: 'VEILLE',
                   color: accentColor,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     displayTitle,
-                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.outfit(
                       color: Colors.white,
                       fontSize: 16,
@@ -199,69 +200,89 @@ class _HomeAstucesCardState extends ConsumerState<HomeAstucesCard> {
                     ),
                   ),
                 ),
-                IconButton(
-                  tooltip: 'Mélanger les astuces',
-                  onPressed: () {
-                    _shuffleTips();
-                    _startAutoScroll();
-                  },
-                  icon: const Icon(
-                    Icons.shuffle_rounded,
-                    color: slate,
-                    size: 20,
-                  ),
-                ),
-                IconButton(
-                  tooltip: 'Personnaliser',
-                  onPressed: () => showHomeCardSettingsDialog(context, ref, 'astuces'),
-                  icon: Icon(
-                    Icons.edit_note_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 22,
-                  ),
-                ),
-
-                IconButton(
-                  tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                  onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse('astuces'),
-                  icon: Icon(
-                    isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 20,
-                  ),
-                ),
-                IconButton(
-                  tooltip: isPinned ? 'Désépingler' : 'Épingler',
-                  onPressed: () {
-                    if (widget.isVeilleScreen) {
-                      ref.read(veillePinnedCardsProvider.notifier).togglePin('astuces');
-                    } else {
-                      ref.read(homePinnedCardsProvider.notifier).togglePin('astuces');
-                    }
-                  },
-                  icon: Icon(
-                    isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                    color: isPinned ? accentColor : slate.withValues(alpha: 0.5),
-                    size: 20,
-                  ),
-                ),
-                IconButton(
-                  tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                  onPressed: () {
-                    if (isAddedToHome) {
-                      ref.read(homeCardsOrderProvider.notifier).removeCard('astuces');
-                    } else {
-                      ref.read(homeCardsOrderProvider.notifier).addCard('astuces');
-                    }
-                  },
-                  icon: Icon(
-                    isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                    color: isAddedToHome ? EskoliaTokens.cyan : slate.withValues(alpha: 0.5),
-                    size: 20,
-                  ),
-                ),
               ],
             ),
+          ),
+          const SizedBox(height: 4),
+          // Ligne 2 : Actions
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: 'Mélanger les astuces',
+                onPressed: () {
+                  _shuffleTips();
+                  _startAutoScroll();
+                },
+                icon: const Icon(
+                  Icons.shuffle_rounded,
+                  color: slate,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 2),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse('astuces'),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 2),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: 'Personnaliser',
+                onPressed: () => showHomeCardSettingsDialog(context, ref, 'astuces'),
+                icon: Icon(
+                  Icons.edit_note_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 2),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isPinned ? 'Désépingler' : 'Épingler',
+                onPressed: () {
+                  if (widget.isVeilleScreen) {
+                    ref.read(veillePinnedCardsProvider.notifier).togglePin('astuces');
+                  } else {
+                    ref.read(homePinnedCardsProvider.notifier).togglePin('astuces');
+                  }
+                },
+                icon: Icon(
+                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
+                  color: isPinned ? accentColor : slate.withValues(alpha: 0.5),
+                  size: 17,
+                ),
+              ),
+              const SizedBox(width: 2),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
+                onPressed: () {
+                  if (isAddedToHome) {
+                    ref.read(homeCardsOrderProvider.notifier).removeCard('astuces');
+                  } else {
+                    ref.read(homeCardsOrderProvider.notifier).addCard('astuces');
+                  }
+                },
+                icon: Icon(
+                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
+                  color: isAddedToHome ? EskoliaTokens.cyan : slate.withValues(alpha: 0.5),
+                  size: 17,
+                ),
+              ),
+            ],
           ),
           if (!isCollapsed) ...[
             const SizedBox(height: 4),

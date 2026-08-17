@@ -345,6 +345,7 @@ class _HomeMergedCardState extends ConsumerState<HomeMergedCard> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Ligne 1 : Badge + Titre
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(widget.mergeKey),
@@ -367,76 +368,83 @@ class _HomeMergedCardState extends ConsumerState<HomeMergedCard> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                  onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(widget.mergeKey),
-                  icon: Icon(
-                    isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 19,
-                  ),
-                ),
-                PopupMenuButton<String>(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  icon: Icon(
-                    Icons.more_vert_rounded,
-                    color: slate.withValues(alpha: 0.85),
-                    size: 19,
-                  ),
-                  tooltip: 'Options de la carte',
-                  color: EskoliaTokens.surface1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-                  ),
-                  onSelected: (action) {
-                    if (action == 'settings') {
-                      showHomeCardSettingsDialog(context, ref, widget.mergeKey);
-                    } else if (action == 'unmerge') {
-                      ref.read(homeCardsOrderProvider.notifier).unmergeCard(widget.mergeKey);
-                    } else if (action == 'pin') {
-                      ref.read(homePinnedCardsProvider.notifier).togglePin(widget.mergeKey);
-                    }
-                  },
-                  itemBuilder: (ctx) => [
-                    const PopupMenuItem(
-                      value: 'settings',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
-                          SizedBox(width: 10),
-                          Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'unmerge',
-                      child: Row(
-                        children: [
-                          Icon(Icons.call_split_rounded, color: Colors.white70, size: 18),
-                          SizedBox(width: 10),
-                          Text('Séparer les cartes', style: TextStyle(color: Colors.white, fontSize: 13)),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'pin',
-                      child: Row(
-                        children: [
-                          Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? accentColor : Colors.white70, size: 18),
-                          const SizedBox(width: 10),
-                          Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
+          ),
+          const SizedBox(height: 4),
+          // Ligne 2 : Actions
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(widget.mergeKey),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 4),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  color: slate.withValues(alpha: 0.85),
+                  size: 19,
+                ),
+                tooltip: 'Options de la carte',
+                color: EskoliaTokens.surface1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
+                onSelected: (action) {
+                  if (action == 'settings') {
+                    showHomeCardSettingsDialog(context, ref, widget.mergeKey);
+                  } else if (action == 'unmerge') {
+                    ref.read(homeCardsOrderProvider.notifier).unmergeCard(widget.mergeKey);
+                  } else if (action == 'pin') {
+                    ref.read(homePinnedCardsProvider.notifier).togglePin(widget.mergeKey);
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  const PopupMenuItem(
+                    value: 'settings',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
+                        SizedBox(width: 10),
+                        Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'unmerge',
+                    child: Row(
+                      children: [
+                        Icon(Icons.call_split_rounded, color: Colors.white70, size: 18),
+                        SizedBox(width: 10),
+                        Text('Séparer les cartes', style: TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'pin',
+                    child: Row(
+                      children: [
+                        Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? accentColor : Colors.white70, size: 18),
+                        const SizedBox(width: 10),
+                        Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           if (!isCollapsed) ...[
             const SizedBox(height: 4),

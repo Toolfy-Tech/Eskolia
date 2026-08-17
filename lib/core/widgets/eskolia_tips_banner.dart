@@ -3,20 +3,22 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants/eskolia_tokens.dart';
 import '../data/eskolia_tips_data.dart';
+import '../theme/text_scale_provider.dart';
 
 const double kTipsBannerHeight = 44.0;
 
-class EskoliaTipsBanner extends StatefulWidget {
+class EskoliaTipsBanner extends ConsumerStatefulWidget {
   const EskoliaTipsBanner({super.key});
 
   @override
-  State<EskoliaTipsBanner> createState() => _EskoliaTipsBannerState();
+  ConsumerState<EskoliaTipsBanner> createState() => _EskoliaTipsBannerState();
 }
 
-class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
+class _EskoliaTipsBannerState extends ConsumerState<EskoliaTipsBanner> {
   late int _index;
   Timer? _timer;
 
@@ -40,6 +42,9 @@ class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
   @override
   Widget build(BuildContext context) {
     final topPad = MediaQuery.of(context).padding.top;
+    final currentScale = ref.watch(textScaleProvider);
+    final isZoomed = (currentScale - 1.0).abs() > 0.04;
+
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -57,7 +62,7 @@ class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
           padding: EdgeInsets.only(top: topPad),
           child: Row(
             children: [
-              const SizedBox(width: 16),
+              const SizedBox(width: 14),
               const Text('💡', style: TextStyle(fontSize: 14)),
               const SizedBox(width: 8),
               Expanded(
@@ -76,7 +81,52 @@ class _EskoliaTipsBannerState extends State<EskoliaTipsBanner> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 6),
+              // Bouton Zoom & Lisibilité toujours accessible en haut de l'écran
+              Tooltip(
+                message: 'Zoom & Lisibilité (${(currentScale * 100).round()}%)',
+                child: InkWell(
+                  onTap: () => showTextScaleDialog(context, ref),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isZoomed
+                          ? EskoliaTokens.cyan.withValues(alpha: 0.2)
+                          : Colors.white.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isZoomed
+                            ? EskoliaTokens.cyan.withValues(alpha: 0.5)
+                            : Colors.white.withValues(alpha: 0.1),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.search_rounded,
+                          size: 14,
+                          color: isZoomed ? EskoliaTokens.cyan : Colors.white70,
+                        ),
+                        if (isZoomed) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            '${(currentScale * 100).round()}%',
+                            style: const TextStyle(
+                              color: EskoliaTokens.cyan,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 14),
             ],
           ),
         ),

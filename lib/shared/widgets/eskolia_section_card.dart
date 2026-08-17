@@ -58,54 +58,56 @@ class EskoliaSectionCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header Row
+          // Header Ligne 1 : Badge + Titre + Info
           Row(
             children: [
               EskoliaCardSectionBadge(
                 sectionName: badge,
                 color: displayAccentColor,
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(6),
-                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Text(
-                            displayTitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(
-                              color: Colors.white,
-                              fontSize: 15.5,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Text(
+                      displayTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (info != null || onInfoTap != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
-                        padding: EdgeInsets.zero,
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: onInfoTap ?? () => _showDefaultInfoDialog(context, info!),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
+                  ),
                 ),
               ),
+              if (info != null || onInfoTap != null) ...[
+                const SizedBox(width: 4),
+                IconButton(
+                  constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
+                  padding: EdgeInsets.zero,
+                  tooltip: 'Comment ça marche ?',
+                  onPressed: onInfoTap ?? () => _showDefaultInfoDialog(context, info!),
+                  icon: const Icon(
+                    Icons.info_outline_rounded,
+                    color: Colors.white60,
+                    size: 16,
+                  ),
+                ),
+              ],
+            ],
+          ),
 
+          const SizedBox(height: 4),
+
+          // Header Ligne 2 : Actions (Plier, Personnaliser, Épingler, Ajouter Accueil, etc.)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               // Extra header actions (e.g. shuffle)
               ...extraHeaderActions,
 
@@ -121,6 +123,7 @@ class EskoliaSectionCard extends ConsumerWidget {
                   size: 18,
                 ),
               ),
+              const SizedBox(width: 2),
 
               // Bouton Personnaliser
               IconButton(
@@ -140,9 +143,10 @@ class EskoliaSectionCard extends ConsumerWidget {
                   size: 20,
                 ),
               ),
+              const SizedBox(width: 2),
 
               // Bouton Épingler localement
-              if (onTogglePin != null)
+              if (onTogglePin != null) ...[
                 IconButton(
                   constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                   padding: EdgeInsets.zero,
@@ -154,6 +158,8 @@ class EskoliaSectionCard extends ConsumerWidget {
                     size: 16,
                   ),
                 ),
+                const SizedBox(width: 2),
+              ],
 
               // Bouton Ajouter / Retirer de l'accueil
               if (onToggleHome != null)
