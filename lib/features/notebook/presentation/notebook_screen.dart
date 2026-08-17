@@ -294,70 +294,16 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
         }).toList()
       );
 
-      if (numColumns >= 4) {
-        final cols = List.generate(4, (_) => <Widget>[]);
-        for (var i = 0; i < cards.length; i++) {
-          cols[i % 4].add(cards[i]);
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: addSpacing(cols[0]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(cols[1]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(cols[2]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(cols[3]))),
-          ],
-        );
-      } else if (numColumns == 3) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        final col3 = <Widget>[];
-        for (var i = 0; i < cards.length; i++) {
-          if (i % 3 == 0) {
-            col1.add(cards[i]);
-          } else if (i % 3 == 1) {
-            col2.add(cards[i]);
-          } else {
-            col3.add(cards[i]);
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(col2))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(col3))),
-          ],
-        );
-      } else if (numColumns == 2) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        for (var i = 0; i < cards.length; i++) {
-          if (i % 2 == 0) {
-            col1.add(cards[i]);
-          } else {
-            col2.add(cards[i]);
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: addSpacing(col2))),
-          ],
-        );
-      } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: addSpacing(cards),
-        );
-      }
+      final columns = distributeMasonryColumns<Widget>(
+        items: cards,
+        numColumns: numColumns,
+        estimateHeight: (card) {
+          if (card is _AddNoteGridCard) return 100.0;
+          return 200.0;
+        },
+      );
+
+      return buildMasonryColumnsRow(columns: columns);
     }
 
     return Scaffold(

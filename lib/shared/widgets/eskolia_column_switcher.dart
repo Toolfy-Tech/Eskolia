@@ -284,3 +284,72 @@ class EskoliaColumnSwitcherButton extends ConsumerWidget {
     );
   }
 }
+
+/// Répartit dynamiquement des éléments dans N colonnes selon la hauteur estimée (Masonry / Shortest Column First)
+/// pour éviter les vides verticaux lorsqu'une carte est haute (ex: cours déroulé) et les autres repliées.
+List<List<T>> distributeMasonryColumns<T>({
+  required List<T> items,
+  required int numColumns,
+  required double Function(T item) estimateHeight,
+}) {
+  if (numColumns <= 1 || items.isEmpty) {
+    return [items];
+  }
+
+  final cols = List.generate(numColumns, (_) => <T>[]);
+  final colHeights = List.filled(numColumns, 0.0);
+
+  for (final item in items) {
+    int minCol = 0;
+    for (var c = 1; c < numColumns; c++) {
+      if (colHeights[c] < colHeights[minCol]) {
+        minCol = c;
+      }
+    }
+    cols[minCol].add(item);
+    colHeights[minCol] += estimateHeight(item) + 16.0;
+  }
+
+  return cols;
+}
+
+/// Helper pour construire un Row de colonnes avec espacement vertical et horizontal
+Widget buildMasonryColumnsRow({
+  required List<List<Widget>> columns,
+  double spacing = 16.0,
+}) {
+  if (columns.isEmpty) return const SizedBox.shrink();
+  if (columns.length == 1) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: _addVerticalSpacing(columns[0], spacing),
+    );
+  }
+
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      for (var i = 0; i < columns.length; i++) ...[
+        if (i > 0) SizedBox(width: spacing),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: _addVerticalSpacing(columns[i], spacing),
+          ),
+        ),
+      ],
+    ],
+  );
+}
+
+List<Widget> _addVerticalSpacing(List<Widget> list, double spacing) {
+  if (list.isEmpty) return [];
+  final res = <Widget>[];
+  for (var i = 0; i < list.length; i++) {
+    res.add(list[i]);
+    if (i < list.length - 1) {
+      res.add(SizedBox(height: spacing));
+    }
+  }
+  return res;
+}

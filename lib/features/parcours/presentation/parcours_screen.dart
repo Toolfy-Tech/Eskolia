@@ -419,74 +419,27 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
   Widget _buildCardsGrid(BuildContext context, FormationModel formation, double cardWidth, int numColumns) {
     final rawOrder = ref.watch(parcoursCardsOrderProvider);
     final pinned = ref.watch(parcoursPinnedCardsProvider);
+    final settingsMap = ref.watch(homeCardSettingsProvider);
 
     Widget buildGrid(List<String> keys) {
       final cards = keys.map((key) => _buildCardByKey(key, formation, cardWidth)).toList();
 
-      if (numColumns >= 4) {
-        final cols = List.generate(4, (_) => <Widget>[]);
-        for (var i = 0; i < keys.length; i++) {
-          cols[i % 4].add(cards[i]);
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: _addSpacing(cols[0]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(cols[1]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(cols[2]))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(cols[3]))),
-          ],
-        );
-      } else if (numColumns == 3) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        final col3 = <Widget>[];
-        for (var i = 0; i < keys.length; i++) {
-          if (i % 3 == 0) {
-            col1.add(cards[i]);
-          } else if (i % 3 == 1) {
-            col2.add(cards[i]);
-          } else {
-            col3.add(cards[i]);
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: _addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(col2))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(col3))),
-          ],
-        );
-      } else if (numColumns == 2) {
-        final col1 = <Widget>[];
-        final col2 = <Widget>[];
-        for (var i = 0; i < keys.length; i++) {
-          if (i % 2 == 0) {
-            col1.add(cards[i]);
-          } else {
-            col2.add(cards[i]);
-          }
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Column(children: _addSpacing(col1))),
-            const SizedBox(width: 16),
-            Expanded(child: Column(children: _addSpacing(col2))),
-          ],
-        );
-      } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _addSpacing(cards),
-        );
-      }
+      final columns = distributeMasonryColumns<int>(
+        items: List.generate(keys.length, (i) => i),
+        numColumns: numColumns,
+        estimateHeight: (index) {
+          final key = keys[index];
+          final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
+          if (isCollapsed) return 65.0;
+          if (key == 'feature:cours') return 750.0;
+          if (key == 'feature:podcasts') return 360.0;
+          if (key == 'feature:lexique') return 340.0;
+          return 260.0;
+        },
+      );
+
+      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
+      return buildMasonryColumnsRow(columns: widgetColumns);
     }
 
     if (pinned.isEmpty) {
