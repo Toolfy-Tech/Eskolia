@@ -62,12 +62,14 @@ const List<AppNewsItem> kAppNewsFeed = [
   ),
 ];
 
-class DismissedNewsNotifier extends StateNotifier<Set<String>> {
-  DismissedNewsNotifier() : super(<String>{}) {
-    _loadFromPrefs();
-  }
-
+class DismissedNewsNotifier extends Notifier<Set<String>> {
   static const String _prefKey = 'eskolia_dismissed_news_ids_v1';
+
+  @override
+  Set<String> build() {
+    _loadFromPrefs();
+    return <String>{};
+  }
 
   Future<void> _loadFromPrefs() async {
     try {
@@ -95,9 +97,9 @@ class DismissedNewsNotifier extends StateNotifier<Set<String>> {
   }
 }
 
-final dismissedNewsProvider = StateNotifierProvider<DismissedNewsNotifier, Set<String>>((ref) {
-  return DismissedNewsNotifier();
-});
+final dismissedNewsProvider = NotifierProvider<DismissedNewsNotifier, Set<String>>(
+  DismissedNewsNotifier.new,
+);
 
 final activeAppNewsProvider = Provider<List<AppNewsItem>>((ref) {
   final dismissed = ref.watch(dismissedNewsProvider);
