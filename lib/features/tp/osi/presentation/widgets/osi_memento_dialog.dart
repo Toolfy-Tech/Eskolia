@@ -261,32 +261,38 @@ class _OsiMementoDialogState extends State<OsiMementoDialog> {
           initiallyExpanded: true,
           tilePadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
-          leading: OsiLayerBadge(layerNumber: layer.number),
-          title: Row(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  '${layer.name} (${layer.englishName})',
-                  style: GoogleFonts.outfit(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  OsiLayerBadge(layerNumber: layer.number),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: layer.accentColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: layer.accentColor.withValues(alpha: 0.3)),
+                    ),
+                    child: Text(
+                      layer.pdu,
+                      style: TextStyle(
+                        color: layer.accentColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: layer.accentColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  layer.pdu,
-                  style: TextStyle(
-                    color: layer.accentColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                  ),
+              const SizedBox(height: 8),
+              Text(
+                '${layer.name} (${layer.englishName})',
+                style: GoogleFonts.outfit(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
             ],
@@ -298,6 +304,7 @@ class _OsiMementoDialogState extends State<OsiMementoDialog> {
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.75),
                 fontSize: 12.5,
+                height: 1.35,
               ),
             ),
           ),

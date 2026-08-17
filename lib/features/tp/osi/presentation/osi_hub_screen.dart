@@ -326,42 +326,65 @@ class OsiHubScreen extends ConsumerWidget {
           ...layers.map((layer) {
             return InkWell(
               onTap: () => OsiMementoDialog.show(context, initialLayer: layer.number),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: layer.accentColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: layer.accentColor.withValues(alpha: 0.2)),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: layer.accentColor.withValues(alpha: 0.25)),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    OsiLayerBadge(layerNumber: layer.number, compact: true),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${layer.name} • PDU : ${layer.pdu}',
-                            style: TextStyle(
-                              color: layer.accentColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        OsiLayerBadge(layerNumber: layer.number, compact: true),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: layer.accentColor.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: layer.accentColor.withValues(alpha: 0.3)),
+                              ),
+                              child: Text(
+                                'PDU : ${layer.pdu}',
+                                style: TextStyle(
+                                  color: layer.accentColor,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                          Text(
-                            layer.keyProtocols.take(4).join(', '),
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 11.5,
-                            ),
-                          ),
-                        ],
+                            const SizedBox(width: 6),
+                            const Icon(Icons.chevron_right_rounded, color: Colors.white54, size: 18),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${layer.name} (${layer.englishName})',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Icon(Icons.chevron_right_rounded, color: Colors.white30, size: 18),
+                    const SizedBox(height: 3),
+                    Text(
+                      layer.keyProtocols.join(', '),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.75),
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -355,31 +355,39 @@ class _WhatsNewAnnouncementDialogState extends State<WhatsNewAnnouncementDialog>
   }
 
   Widget _buildBottomNav(_WhatsNewPageData page) {
+    final isLastPage = _currentPage == _pages.length - 1;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.02),
         border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.08))),
       ),
       child: Row(
         children: [
-          if (_currentPage > 0)
+          TextButton.icon(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close_rounded, size: 16),
+            label: const Text('Quitter'),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white60,
+              textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (_currentPage > 0) ...[
+            const SizedBox(width: 4),
             TextButton.icon(
               onPressed: _prevPage,
-              icon: const Icon(Icons.arrow_back_rounded, size: 16),
+              icon: const Icon(Icons.arrow_back_rounded, size: 15),
               label: const Text('Précédent'),
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white60,
                 textStyle: const TextStyle(fontSize: 12.5),
               ),
-            )
-          else
-            Text(
-              'Page ${_currentPage + 1} / ${_pages.length}',
-              style: const TextStyle(color: Colors.white38, fontSize: 12),
             ),
+          ],
           const Spacer(),
-          ElevatedButton(
+          ElevatedButton.icon(
             onPressed: _nextPage,
             style: ElevatedButton.styleFrom(
               backgroundColor: page.accentColor,
@@ -388,7 +396,11 @@ class _WhatsNewAnnouncementDialogState extends State<WhatsNewAnnouncementDialog>
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             ),
-            child: Text(page.actionButtonLabel),
+            icon: Icon(
+              isLastPage ? Icons.rocket_launch_rounded : Icons.arrow_forward_rounded,
+              size: 16,
+            ),
+            label: Text(isLastPage ? 'Terminer 🚀' : 'Suivant'),
           ),
         ],
       ),
