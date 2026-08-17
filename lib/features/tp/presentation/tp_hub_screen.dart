@@ -12,6 +12,9 @@ import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
+import '../../../shared/widgets/eskolia_section_card.dart';
 import '../../solo/data/practical_missions_firestore_repository.dart';
 import '../../../core/services/asset_cache_service.dart';
 import 'tp_scenario_screen.dart';
@@ -43,137 +46,35 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
 
 
 
-  Widget _buildEskoliaPremiumCard({
+  Widget _buildInteractiveCard({
     required String key,
     required String title,
     required String defaultEmoji,
     required Color accentColor,
-    required bool isExpanded,
-    required VoidCallback onToggle,
     required Widget body,
     List<Widget>? headerActions,
   }) {
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    
     final isPinned = ref.watch(tpPinnedCardsProvider).contains(key);
     final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-    return EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'TP',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: onToggle,
-                        child: Text(
-                          displayTitle,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: () => _showInfoDialog(context, key),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              if (headerActions != null) ...headerActions,
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isExpanded ? 'Masquer' : 'Afficher',
-                onPressed: onToggle,
-                icon: Icon(
-                  isExpanded ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                  color: isExpanded ? displayAccentColor : Colors.white70,
-                  size: 18,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(tpPinnedCardsProvider.notifier).togglePin(key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                  }
-                },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: body,
-            ),
-            crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-          ),
-        ],
-      ),
+    return EskoliaSectionCard(
+      cardKey: key,
+      badge: 'TP',
+      title: title,
+      accentColor: accentColor,
+      isPinned: isPinned,
+      onTogglePin: () => ref.read(tpPinnedCardsProvider.notifier).togglePin(key),
+      isAddedToHome: isAddedToHome,
+      onToggleHome: () {
+        if (isAddedToHome) {
+          ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+        } else {
+          ref.read(homeCardsOrderProvider.notifier).addCard(key);
+        }
+      },
+      onInfoTap: () => _showInfoDialog(context, key),
+      extraHeaderActions: headerActions ?? const [],
+      body: body,
     );
   }
 
@@ -224,130 +125,6 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildComingSoonCard({
-    required String id,
-    required String title,
-    required String description,
-    required String emoji,
-    required Color accentColor,
-  }) {
-    final key = 'feature:$id';
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    
-    final isPinned = ref.watch(tpPinnedCardsProvider).contains(key);
-    final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
-
-    Widget body = (id == 'tp_itil') ? const TpItilCardBody() : const TpGlpiCardBody();
-
-    return EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'TP',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        displayTitle,
-                        style: GoogleFonts.outfit(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: () => _showInfoDialog(context, key),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: const Text(
-                  'BIENTÔT',
-                  style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(tpPinnedCardsProvider.notifier).togglePin(key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                  }
-                },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          body,
-        ],
-      ),
     );
   }
 
@@ -509,20 +286,16 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
   }
 
   Widget _buildCardByKey(String key, double cardWidth) {
-    final isExpanded = !(ref.watch(homeCardSettingsProvider)[key]?.isCollapsed ?? false);
-
     if (key == 'feature:tp_reseau') {
       return _buildCardByKeyForReseau(key, cardWidth);
     } else if (key == 'feature:tp_osi') {
       return _buildDraggableCard(
         key,
-        _buildEskoliaPremiumCard(
+        _buildInteractiveCard(
           key: key,
           title: 'Modèle OSI',
           defaultEmoji: '🌐',
           accentColor: EskoliaTokens.cyan,
-          isExpanded: isExpanded,
-          onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
           body: const TpOsiCardBody(),
         ),
         cardWidth,
@@ -530,13 +303,11 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     } else if (key == 'feature:tp_ad') {
       return _buildDraggableCard(
         key,
-        _buildEskoliaPremiumCard(
+        _buildInteractiveCard(
           key: key,
           title: 'Active Directory',
           defaultEmoji: '👥',
           accentColor: EskoliaTokens.info,
-          isExpanded: isExpanded,
-          onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
           body: const TpActiveDirectoryCardBody(),
         ),
         cardWidth,
@@ -544,13 +315,11 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     } else if (key == 'feature:tp_powershell') {
       return _buildDraggableCard(
         key,
-        _buildEskoliaPremiumCard(
+        _buildInteractiveCard(
           key: key,
           title: 'Scripting PowerShell',
           defaultEmoji: '💻',
           accentColor: EskoliaTokens.violet,
-          isExpanded: isExpanded,
-          onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
           body: const TpPowerShellCardBody(),
         ),
         cardWidth,
@@ -558,13 +327,11 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     } else if (key == 'feature:tp_packet_tracer') {
       return _buildDraggableCard(
         key,
-        _buildEskoliaPremiumCard(
+        _buildInteractiveCard(
           key: key,
           title: 'Packet Tracer',
           defaultEmoji: '⚡',
           accentColor: EskoliaTokens.cyan,
-          isExpanded: isExpanded,
-          onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
           body: const TpPacketTracerCardBody(),
         ),
         cardWidth,
@@ -572,24 +339,52 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     } else if (key == 'feature:tp_itil') {
       return _buildDraggableCard(
         key,
-        _buildComingSoonCard(
-          id: 'tp_itil',
+        _buildInteractiveCard(
+          key: key,
           title: 'Gestion de Tickets (ITIL)',
-          description: 'Apprends à gérer un Service Desk comme un pro.',
-          emoji: '🎟️',
+          defaultEmoji: '🎟️',
           accentColor: EskoliaTokens.violet,
+          headerActions: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              margin: const EdgeInsets.only(right: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'BIENTÔT',
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+          body: const TpItilCardBody(),
         ),
         cardWidth,
       );
     } else if (key == 'feature:tp_glpi') {
       return _buildDraggableCard(
         key,
-        _buildComingSoonCard(
-          id: 'tp_glpi',
+        _buildInteractiveCard(
+          key: key,
           title: 'TP GLPI',
-          description: 'Déploiement et configuration de GLPI pour la gestion d\'actifs et de tickets.',
-          emoji: '📦',
+          defaultEmoji: '📦',
           accentColor: EskoliaTokens.textDisabled,
+          headerActions: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              margin: const EdgeInsets.only(right: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'BIENTÔT',
+                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+          body: const TpGlpiCardBody(),
         ),
         cardWidth,
       );
@@ -598,16 +393,13 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
   }
 
   Widget _buildCardByKeyForReseau(String key, double cardWidth) {
-    final isExpanded = !(ref.watch(homeCardSettingsProvider)[key]?.isCollapsed ?? false);
     return _buildDraggableCard(
       key,
-      _buildEskoliaPremiumCard(
+      _buildInteractiveCard(
         key: key,
         title: 'Réseau & Adressage IP',
         defaultEmoji: '🌐',
         accentColor: EskoliaTokens.cyan,
-        isExpanded: isExpanded,
-        onToggle: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
         body: const TpReseauCardBody(),
       ),
       cardWidth,
@@ -633,7 +425,24 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     Widget buildGrid(List<String> keys) {
       final cards = keys.map((key) => _buildCardByKey(key, cardWidth)).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: _addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -706,21 +515,31 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.screenPaddingH;
     final width = MediaQuery.sizeOf(context).width;
+    final isDesktopOrTablet = width >= 700;
 
-    int numColumns;
-    if (width > 1200) {
-      numColumns = 3;
-    } else if (width > 800) {
-      numColumns = 2;
-    } else {
-      numColumns = 1;
-    }
+    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
+    final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
-    final sidebarWidth = width > 800 ? (ref.watch(sidebarCollapsedProvider) ? 78 : 250) : 0;
-    final availableWidth = width - sidebarWidth - 48;
-    final cardWidth = numColumns == 3
-        ? (availableWidth - 32) / 3
-        : (numColumns == 2 ? (availableWidth - 16) / 2 : (width - 40));
+    final colPref = ref.watch(columnPreferenceProvider('tp'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
+
+    final rawOrder = ref.watch(tpCardsOrderProvider);
+
+    const availableTpCards = [
+      EskoliaCardOption(key: 'feature:tp_reseau', title: 'Réseau & Adressage IP', emoji: '🌐'),
+      EskoliaCardOption(key: 'feature:tp_osi', title: 'Modèle OSI', emoji: '🌐'),
+      EskoliaCardOption(key: 'feature:tp_ad', title: 'Active Directory', emoji: '👥'),
+      EskoliaCardOption(key: 'feature:tp_powershell', title: 'Scripting PowerShell', emoji: '💻'),
+      EskoliaCardOption(key: 'feature:tp_packet_tracer', title: 'Packet Tracer', emoji: '⚡'),
+      EskoliaCardOption(key: 'feature:tp_itil', title: 'Gestion de Tickets (ITIL)', emoji: '🎟️'),
+      EskoliaCardOption(key: 'feature:tp_glpi', title: 'TP GLPI', emoji: '📦'),
+    ];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -732,19 +551,15 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
             child: ListView(
               padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
               children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 24, top: 8),
-                    child: Text(
-                      'Travaux Pratiques',
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
+                EskoliaPageHeaderToolbar(
+                  title: 'Travaux Pratiques',
+                  screenKey: 'tp',
+                  onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(rawOrder),
+                  onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(rawOrder),
+                  availableCards: availableTpCards,
+                  maxColumns: 4,
                 ),
+                const SizedBox(height: 12),
                 _buildCardsGrid(context, cardWidth, numColumns),
               ],
             ),
