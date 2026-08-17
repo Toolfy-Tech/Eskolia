@@ -28,6 +28,8 @@ import 'widgets/home_merged_card.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/utils/feature_info_resolver.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
 import '../../parcours/presentation/providers/parcours_providers.dart';
 import '../../parcours/presentation/parcours_screen.dart';
 import '../../tp/presentation/tp_hub_screen.dart';
@@ -2131,81 +2133,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final user = _user!;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktopOrTablet = width >= 700;
-
-    // Calculer la largeur des colonnes de manière adaptative
     final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
     final availableWidth = (width - sidebarWidth - 40).clamp(280.0, double.infinity);
 
-    double cardWidth;
-    int numColumns;
-    if (availableWidth >= 1050) {
-      cardWidth = (availableWidth - 32) / 3; // 3 colonnes
-      numColumns = 3;
-    } else if (availableWidth >= 660) {
-      cardWidth = (availableWidth - 16) / 2; // 2 colonnes
-      numColumns = 2;
-    } else {
-      cardWidth = availableWidth; // 1 colonne sur mobile et tablette portrait
-      numColumns = 1;
-    }
+    final colPref = ref.watch(columnPreferenceProvider('home'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final order = ref.watch(homeCardsOrderProvider);
     final pinned = ref.watch(homePinnedCardsProvider);
     final settingsMap = ref.watch(homeCardSettingsProvider);
 
-    // L'accueil affiche tout ce qui est dans l'ordre choisi (dashboard modulable)
     final displayKeys = order;
-    if (kDebugMode) {
-      print('EskoliaDebug: displayKeys = $displayKeys');
-      for (final k in displayKeys) {
-        final settings = settingsMap[k];
-        print('EskoliaDebug: key=$k, title=${settings?.title}, isCollapsed=${settings?.isCollapsed}');
-      }
-    }
 
-    final controlBar = Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Row(
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  ref.read(homeCardSettingsProvider.notifier).collapseAll(displayKeys);
-                },
-                icon: const Icon(Icons.unfold_less_rounded, color: Colors.white70, size: 18),
-                label: const Text(
-                  'Tout masquer',
-                  style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.05),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              TextButton.icon(
-                onPressed: () {
-                  ref.read(homeCardSettingsProvider.notifier).expandAll(displayKeys);
-                },
-                icon: const Icon(Icons.unfold_more_rounded, color: Colors.white70, size: 18),
-                label: const Text(
-                  'Tout afficher',
-                  style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.05),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    const availableHomeCards = [
+      EskoliaCardOption(key: 'messages', title: 'Messages d\'accueil', emoji: '👋'),
+      EskoliaCardOption(key: 'astuces', title: 'Astuces Pro', emoji: '💡'),
+      EskoliaCardOption(key: 'it_pro', title: 'Veille Générale', emoji: '🖥️'),
+      EskoliaCardOption(key: 'security', title: 'Sécurité & Menaces', emoji: '🛡️'),
+      EskoliaCardOption(key: 'hardware', title: 'Veille Hardware', emoji: '🔌'),
+      EskoliaCardOption(key: 'software', title: 'Veille Software', emoji: '💿'),
+      EskoliaCardOption(key: 'favoris', title: 'Articles Favoris', emoji: '❤️'),
+      EskoliaCardOption(key: 'feature:parcours', title: 'Formation TIP', emoji: '🎓'),
+      EskoliaCardOption(key: 'feature:examen_blanc', title: 'Examens Blancs TIP', emoji: '🏆'),
+      EskoliaCardOption(key: 'feature:podcasts', title: 'Podcasts de cours', emoji: '🎧'),
+      EskoliaCardOption(key: 'feature:solo_quiz', title: 'Générateur de Quiz', emoji: '🎮'),
+      EskoliaCardOption(key: 'feature:solo_quiz_ai', title: 'Génération IA', emoji: '🧠'),
+      EskoliaCardOption(key: 'feature:solo_lacunes', title: 'Mes fautes', emoji: '❌'),
+      EskoliaCardOption(key: 'feature:solo_pool', title: 'À revoir', emoji: '📌'),
+      EskoliaCardOption(key: 'feature:lobbys_active', title: 'Salons Actifs', emoji: '👥'),
+      EskoliaCardOption(key: 'feature:lobbys_create', title: 'Créer un Salon', emoji: '➕'),
+      EskoliaCardOption(key: 'feature:duel_quick', title: 'Défi Express', emoji: '⚡'),
+      EskoliaCardOption(key: 'feature:notebook', title: 'Mon Bloc-notes', emoji: '📝'),
+      EskoliaCardOption(key: 'feature:docs_search', title: 'Recherche de Mémos', emoji: '📖'),
+      EskoliaCardOption(key: 'feature:leaderboard_mini', title: 'Classement', emoji: '🏆'),
+    ];
 
     Widget buildGrid(List<String> keys) {
       final cards = keys.map((key) {
@@ -2250,7 +2217,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return 180.0;
       }
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        final heights = List.filled(4, 0.0);
+        for (var i = 0; i < keys.length; i++) {
+          final key = keys[i];
+          final card = cards[i];
+          final h = estimateCardHeight(key);
+          int shortest = 0;
+          for (int c = 1; c < 4; c++) {
+            if (heights[c] < heights[shortest]) shortest = c;
+          }
+          cols[shortest].add(card);
+          heights[shortest] += h + 16.0;
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -2324,8 +2317,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          controlBar,
-          const SizedBox(height: 12),
           _buildEmptyPlaceholder(context),
         ],
       );
@@ -2337,8 +2328,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         content = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            controlBar,
-            const SizedBox(height: 12),
             buildGrid(displayKeys),
           ],
         );
@@ -2346,8 +2335,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         content = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            controlBar,
-            const SizedBox(height: 12),
             _buildSectionHeader('Épinglées'),
             buildGrid(pinnedKeys),
             const SizedBox(height: 24),
@@ -2363,29 +2350,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24, top: 8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Mon Accueil',
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.info_outline_rounded, color: EskoliaTokens.cyan, size: 20),
-                    tooltip: 'Fonctionnement des cartes',
-                    onPressed: () => _showCardsInfoDialog(context),
-                  ),
-                ],
-              ),
-            ),
+          EskoliaPageHeaderToolbar(
+            title: 'Mon Accueil',
+            screenKey: 'home',
+            onInfoTap: () => _showCardsInfoDialog(context),
+            onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(displayKeys),
+            onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(displayKeys),
+            availableCards: availableHomeCards,
+            maxColumns: 4,
           ),
           // Nouveautés & Flash Info (Cartes dismissibles)
           HomeNewsCardsSection(numColumns: numColumns),

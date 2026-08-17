@@ -25,6 +25,8 @@ import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
+import '../../../shared/widgets/eskolia_section_card.dart';
 import 'widgets/lobby_create_card_body.dart';
 import 'widgets/lobby_create_ai_card_body.dart';
 import 'widgets/lobby_join_private_card_body.dart';
@@ -197,126 +199,26 @@ class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
     required Color accentColor,
     required Widget body,
   }) {
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    final isCollapsed = settings?.isCollapsed ?? false;
-    
     final isPinned = ref.watch(lobbyPinnedCardsProvider).contains(key);
     final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-    return EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'MULTI',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                        child: Text(
-                          displayTitle,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: () => _showInfoDialog(context, key),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                icon: Icon(
-                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  color: isCollapsed ? Colors.white70 : displayAccentColor,
-                  size: 18,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(lobbyPinnedCardsProvider.notifier).togglePin(key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                  }
-                },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: body,
-            ),
-            crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-          ),
-        ],
-      ),
+    return EskoliaSectionCard(
+      cardKey: key,
+      badge: 'MULTI',
+      title: title,
+      accentColor: accentColor,
+      isPinned: isPinned,
+      onTogglePin: () => ref.read(lobbyPinnedCardsProvider.notifier).togglePin(key),
+      isAddedToHome: isAddedToHome,
+      onToggleHome: () {
+        if (isAddedToHome) {
+          ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+        } else {
+          ref.read(homeCardsOrderProvider.notifier).addCard(key);
+        }
+      },
+      onInfoTap: () => _showInfoDialog(context, key),
+      body: body,
     );
   }
 
@@ -785,117 +687,37 @@ class _LobbyListScreenState extends ConsumerState<LobbyListScreen>
             child: ListView(
               padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Text(
-                      'Multijoueur',
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+                EskoliaPageHeaderToolbar(
+                  title: 'Multijoueur',
+                  screenKey: 'lobbys',
+                  onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(order),
+                  onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(order),
+                  extraActions: [
+                    TextButton(
+                      onPressed: _joinByCode,
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const EskoliaColumnSwitcherButton(
-                            screenKey: 'lobbys',
-                            maxColumns: 4,
-                          ),
-                          const SizedBox(width: 4),
-                          TextButton(
-                            onPressed: _joinByCode,
-                            child: Text(
-                              'Code',
-                              style: TextStyle(
-                                color: _cyan,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final orderHome = ref.watch(homeCardsOrderProvider);
-                              final activePinned = orderHome.contains('feature:lobbys_active');
-                              final createPinned = orderHome.contains('feature:lobbys_create');
-                              final createAiPinned = orderHome.contains('feature:lobbys_create_ai');
-                              final joinPrivatePinned = orderHome.contains('feature:lobbys_join_private');
-                              final duelPinned = orderHome.contains('feature:duel_quick');
-
-                              return PopupMenuButton<String>(
-                                icon: const Icon(Icons.add_circle_outline_rounded, color: Colors.white70),
-                                tooltip: 'Gérer les cartes d\'accueil',
-                                onSelected: (key) {
-                                  final pinnedHome = orderHome.contains(key);
-                                  if (pinnedHome) {
-                                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                                  } else {
-                                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                                  }
-                                },
-                                itemBuilder: (ctx) => [
-                                  PopupMenuItem(
-                                    value: 'feature:lobbys_active',
-                                    child: Row(
-                                      children: [
-                                        Icon(activePinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
-                                        const SizedBox(width: 8),
-                                        Text(activePinned ? 'Retirer "Lobbies Actifs" de l\'accueil' : 'Ajouter "Lobbies Actifs" à l\'accueil', style: const TextStyle(fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'feature:lobbys_create',
-                                    child: Row(
-                                      children: [
-                                        Icon(createPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
-                                        const SizedBox(width: 8),
-                                        Text(createPinned ? 'Retirer "Créer Salon" de l\'accueil' : 'Ajouter "Créer Salon" à l\'accueil', style: const TextStyle(fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'feature:lobbys_create_ai',
-                                    child: Row(
-                                      children: [
-                                        Icon(createAiPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
-                                        const SizedBox(width: 8),
-                                        Text(createAiPinned ? 'Retirer "Créer Salon IA" de l\'accueil' : 'Ajouter "Créer Salon IA" à l\'accueil', style: const TextStyle(fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'feature:lobbys_join_private',
-                                    child: Row(
-                                      children: [
-                                        Icon(joinPrivatePinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
-                                        const SizedBox(width: 8),
-                                        Text(joinPrivatePinned ? 'Retirer "Rejoindre par Code" de l\'accueil' : 'Ajouter "Rejoindre par Code" à l\'accueil', style: const TextStyle(fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'feature:duel_quick',
-                                    child: Row(
-                                      children: [
-                                        Icon(duelPinned ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 16),
-                                        const SizedBox(width: 8),
-                                        Text(duelPinned ? 'Retirer "Défi Express" de l\'accueil' : 'Ajouter "Défi Express" à l\'accueil', style: const TextStyle(fontSize: 12)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ],
+                      child: Text(
+                        'Code',
+                        style: TextStyle(
+                          color: _cyan,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
+                  availableCards: const [
+                    EskoliaCardOption(key: 'feature:lobbys_active', title: 'Salons Actifs', emoji: '🎮'),
+                    EskoliaCardOption(key: 'feature:lobbys_create', title: 'Créer un Salon', emoji: '➕'),
+                    EskoliaCardOption(key: 'feature:lobbys_create_ai', title: 'Créer Salon IA', emoji: '🧠'),
+                    EskoliaCardOption(key: 'feature:lobbys_join_private', title: 'Rejoindre par Code', emoji: '🔑'),
+                    EskoliaCardOption(key: 'feature:duel_quick', title: 'Défi Express', emoji: '⚡'),
+                  ],
+                  maxColumns: 4,
                 ),
                 const SizedBox(height: 24),
                 content,

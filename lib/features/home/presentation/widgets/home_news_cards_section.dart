@@ -220,7 +220,10 @@ class HomeNewsCardsSection extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Nouveauté "${item.title}" masquée.'),
-                      duration: const Duration(seconds: 3),
+                      duration: const Duration(milliseconds: 2000),
+                      behavior: SnackBarBehavior.floating,
+                      showCloseIcon: true,
+                      closeIconColor: Colors.white70,
                       backgroundColor: EskoliaTokens.surface2,
                       action: SnackBarAction(
                         label: 'Annuler',

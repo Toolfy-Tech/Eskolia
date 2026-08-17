@@ -19,6 +19,7 @@ import '../../../core/utils/eskolia_icons.dart';
 import '../../../core/widgets/bottom_nav.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../ai/data/ai_key_repository.dart';
 import '../data/note_ai_generator.dart';
@@ -431,33 +432,25 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                   );
                 }
 
+                final noteCardOptions = notes.map((n) {
+                  final t = n.title.trim().isEmpty ? 'Sans titre' : n.title.trim();
+                  return EskoliaCardOption(key: 'note:${n.id}', title: t, emoji: '📝');
+                }).toList();
+
+                final noteKeys = notes.map((n) => 'note:${n.id}').toList();
+
                 final listContent = ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 24, top: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 40),
-                          Expanded(
-                            child: Text(
-                              'Mon Carnet',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                          const EskoliaColumnSwitcherButton(
-                            screenKey: 'notebook',
-                            maxColumns: 4,
-                          ),
-                        ],
-                      ),
+                    EskoliaPageHeaderToolbar(
+                      title: 'Mon Carnet',
+                      screenKey: 'notebook',
+                      onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(noteKeys),
+                      onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(noteKeys),
+                      availableCards: noteCardOptions,
+                      maxColumns: 4,
                     ),
+                    const SizedBox(height: 12),
                     gridContent,
                   ],
                 );

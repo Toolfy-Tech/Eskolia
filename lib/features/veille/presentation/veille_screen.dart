@@ -22,6 +22,8 @@ import '../../home/presentation/widgets/home_astuces_card.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import 'package:flutter/foundation.dart';
 import '../../../core/widgets/bottom_nav.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
 
 const Color _surfaceBar = EskoliaTokens.surface2;
 const Color _redStreak  = EskoliaTokens.error;
@@ -244,18 +246,14 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
     final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
     final availableWidth = (width - sidebarWidth - 40).clamp(280.0, double.infinity);
 
-    int numColumns;
-    double cardWidth;
-    if (availableWidth >= 1050) {
-      numColumns = 3;
-      cardWidth = (availableWidth - 32) / 3;
-    } else if (availableWidth >= 660) {
-      numColumns = 2;
-      cardWidth = (availableWidth - 16) / 2;
-    } else {
-      numColumns = 1;
-      cardWidth = availableWidth;
-    }
+    final colPref = ref.watch(columnPreferenceProvider('veille'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final subSources = ref.watch(homeSubscribedSourcesProvider);
     final order = ref.watch(veilleCardsOrderProvider);
@@ -272,72 +270,40 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
     }
     veilleKeys.add('add_source');
 
-    final controlBar = Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton.icon(
-            onPressed: () => showHomeSourcesDialog(context, ref),
-            icon: const Icon(Icons.add_circle_outline_rounded, color: EskoliaTokens.cyan, size: 18),
-            label: const Text(
-              'Flux & Sources',
-              style: TextStyle(color: EskoliaTokens.cyan, fontSize: 12, fontWeight: FontWeight.w700),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.1),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: const BorderSide(color: EskoliaTokens.cyan, width: 1.5),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  ref.read(homeCardSettingsProvider.notifier).collapseAll(veilleKeys);
-                },
-                icon: const Icon(Icons.unfold_less_rounded, color: Colors.white70, size: 18),
-                label: const Text(
-                  'Tout masquer',
-                  style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.05),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-              const SizedBox(width: 8),
-              TextButton.icon(
-                onPressed: () {
-                  ref.read(homeCardSettingsProvider.notifier).expandAll(veilleKeys);
-                },
-                icon: const Icon(Icons.unfold_more_rounded, color: Colors.white70, size: 18),
-                label: const Text(
-                  'Tout afficher',
-                  style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.05),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    const availableVeilleCards = [
+      EskoliaCardOption(key: 'messages', title: 'Messages', emoji: '👋'),
+      EskoliaCardOption(key: 'astuces', title: 'Astuces', emoji: '💡'),
+      EskoliaCardOption(key: 'it_pro', title: 'Veille IT Générale', emoji: '🖥️'),
+      EskoliaCardOption(key: 'it', title: 'Veille IT', emoji: '💻'),
+      EskoliaCardOption(key: 'security', title: 'Sécurité & Menaces', emoji: '🛡️'),
+      EskoliaCardOption(key: 'hardware', title: 'Veille Hardware', emoji: '🔌'),
+      EskoliaCardOption(key: 'software', title: 'Veille Software', emoji: '💿'),
+      EskoliaCardOption(key: 'favoris', title: 'Articles Favoris', emoji: '❤️'),
+    ];
 
     Widget buildGrid(List<String> keys) {
       final cards = keys.map((key) {
         return _buildDraggableCard(key, _buildCardByKey(key, user), cardWidth);
       }).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: _addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -426,21 +392,35 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24, top: 8),
-              child: Text(
-                'Espace Veille',
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w800,
+          EskoliaPageHeaderToolbar(
+            title: 'Espace Veille',
+            screenKey: 'veille',
+            onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(veilleKeys),
+            onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(veilleKeys),
+            extraActions: [
+              TextButton.icon(
+                onPressed: () => showHomeSourcesDialog(context, ref),
+                icon: const Icon(Icons.rss_feed_rounded, color: EskoliaTokens.cyan, size: 16),
+                label: const Text(
+                  'Flux & Sources',
+                  style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11.5, fontWeight: FontWeight.w700),
+                ),
+                style: TextButton.styleFrom(
+                  backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.1),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: EskoliaTokens.cyan, width: 1.5),
+                  ),
                 ),
               ),
-            ),
+            ],
+            availableCards: availableVeilleCards,
+            maxColumns: 4,
           ),
-          controlBar,
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           gridContent,
         ],
       ),

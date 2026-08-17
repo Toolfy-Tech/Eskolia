@@ -18,6 +18,8 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
+import '../../../shared/widgets/eskolia_section_card.dart';
 import 'docs_mini_course_dialog.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import 'providers/docs_providers.dart';
@@ -239,6 +241,17 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
       );
     }
 
+    const availableDocsCards = [
+      EskoliaCardOption(key: 'feature:docs_mes_cours', title: 'Mes cours sauvegardés', emoji: '📚'),
+      EskoliaCardOption(key: 'feature:docs_mes_quiz', title: 'Mes quiz sauvegardés', emoji: '🎮'),
+      EskoliaCardOption(key: 'feature:docs_rgpd', title: 'RGPD (UE)', emoji: '⚖️'),
+      EskoliaCardOption(key: 'feature:docs_cnil', title: 'CNIL & Règlements', emoji: '🏛️'),
+      EskoliaCardOption(key: 'feature:docs_anssi', title: 'ANSSI & bonnes pratiques', emoji: '🛡️'),
+      EskoliaCardOption(key: 'feature:docs_itil', title: 'ITIL 4 (Services IT)', emoji: '🎟️'),
+      EskoliaCardOption(key: 'feature:docs_osi', title: 'Modèle OSI & réseaux', emoji: '🌐'),
+      EskoliaCardOption(key: 'feature:docs_technician', title: 'Technicien - Bonnes pratiques', emoji: '💡'),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -249,30 +262,15 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
             child: ListView(
               padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24, top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 40),
-                      Expanded(
-                        child: Text(
-                          '📁 Docs métier',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                      const EskoliaColumnSwitcherButton(
-                        screenKey: 'docs',
-                        maxColumns: 4,
-                      ),
-                    ],
-                  ),
+                EskoliaPageHeaderToolbar(
+                  title: 'Docs métier',
+                  screenKey: 'docs',
+                  onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(order),
+                  onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(order),
+                  availableCards: availableDocsCards,
+                  maxColumns: 4,
                 ),
+                const SizedBox(height: 12),
                 content,
                 const SizedBox(height: 40),
                 Text(
@@ -613,142 +611,29 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
     required Widget body,
     VoidCallback? onCardTap,
   }) {
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    final isCollapsed = settings?.isCollapsed ?? false;
-    
     final isPinned = ref.watch(docsPinnedCardsProvider).contains(key);
     final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-    Widget cardWidget = EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'DOCS',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                        child: Text(
-                          displayTitle,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (key == 'feature:docs_mes_cours' || key == 'feature:docs_mes_quiz') ...[
-                      const SizedBox(width: 6),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        tooltip: 'Comment organiser',
-                        onPressed: () => _showOrganizerTutoDialog(context, key),
-                        icon: Icon(
-                          Icons.info_outline_rounded,
-                          color: displayAccentColor.withValues(alpha: 0.8),
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                icon: Icon(
-                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  color: isCollapsed ? Colors.white70 : displayAccentColor,
-                  size: 18,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(docsPinnedCardsProvider.notifier).togglePin(key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                  }
-                },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: body,
-            ),
-            crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-          ),
-        ],
-      ),
+    return EskoliaSectionCard(
+      cardKey: key,
+      badge: 'DOCS',
+      title: title,
+      accentColor: accentColor,
+      isPinned: isPinned,
+      onTogglePin: () => ref.read(docsPinnedCardsProvider.notifier).togglePin(key),
+      isAddedToHome: isAddedToHome,
+      onToggleHome: () {
+        if (isAddedToHome) {
+          ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+        } else {
+          ref.read(homeCardsOrderProvider.notifier).addCard(key);
+        }
+      },
+      onInfoTap: (key == 'feature:docs_mes_cours' || key == 'feature:docs_mes_quiz')
+          ? () => _showOrganizerTutoDialog(context, key)
+          : null,
+      body: body,
     );
-
-    if (onCardTap != null) {
-      cardWidget = Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onCardTap,
-          borderRadius: BorderRadius.circular(16),
-          splashColor: displayAccentColor.withValues(alpha: 0.12),
-          highlightColor: displayAccentColor.withValues(alpha: 0.06),
-          child: cardWidget,
-        ),
-      );
-    }
-
-    return cardWidget;
   }
 
   void _showOrganizerTutoDialog(BuildContext context, String key) {

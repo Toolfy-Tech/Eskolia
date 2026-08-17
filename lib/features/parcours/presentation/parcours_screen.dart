@@ -14,6 +14,9 @@ import '../../../core/theme/tip_section_theme.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
+import '../../../shared/widgets/eskolia_section_card.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../economy/data/achievement_triggers.dart';
 import '../../economy/data/daily_quest_reward_service.dart';
@@ -254,131 +257,26 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
     required Widget body,
     bool disableCollapseAnimation = false,
   }) {
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    final isCollapsed = settings?.isCollapsed ?? false;
-    
     final isPinned = ref.watch(parcoursPinnedCardsProvider).contains(key.startsWith('feature:') ? key.substring(8) : key);
     final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-    return EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'PARCOURS',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                        child: Text(
-                          displayTitle,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 4),
-                      IconButton(
-                        constraints: const BoxConstraints(),
-                        padding: const EdgeInsets.all(4),
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: () => _showInfoDialog(context, key),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                icon: Icon(
-                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  color: isCollapsed ? Colors.white70 : displayAccentColor,
-                  size: 18,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: 'Personnaliser',
-                onPressed: () => showHomeCardSettingsDialog(context, ref, key),
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isPinned ? 'Désépingler' : 'Épingler localement',
-                onPressed: () => ref.read(parcoursPinnedCardsProvider.notifier).togglePin(key.startsWith('feature:') ? key.substring(8) : key),
-                icon: Icon(
-                  isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                  color: isPinned ? displayAccentColor : Colors.white38,
-                  size: 16,
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(4),
-                tooltip: isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil',
-                onPressed: () {
-                  if (isAddedToHome) {
-                    ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                  } else {
-                    ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                  }
-                },
-                icon: Icon(
-                  isAddedToHome ? Icons.add_circle_rounded : Icons.add_circle_outline_rounded,
-                  color: isAddedToHome ? EskoliaTokens.cyan : Colors.white38,
-                  size: 16,
-                ),
-              ),
-            ],
-          ),
-          disableCollapseAnimation
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 14),
-                  child: body,
-                )
-              : AnimatedCrossFade(
-                  firstChild: const SizedBox.shrink(),
-                  secondChild: Padding(
-                    padding: const EdgeInsets.only(top: 14),
-                    child: body,
-                  ),
-                  crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 250),
-                ),
-        ],
-      ),
+    return EskoliaSectionCard(
+      cardKey: key,
+      badge: 'PARCOURS',
+      title: title,
+      accentColor: accentColor,
+      isPinned: isPinned,
+      onTogglePin: () => ref.read(parcoursPinnedCardsProvider.notifier).togglePin(key.startsWith('feature:') ? key.substring(8) : key),
+      isAddedToHome: isAddedToHome,
+      onToggleHome: () {
+        if (isAddedToHome) {
+          ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+        } else {
+          ref.read(homeCardsOrderProvider.notifier).addCard(key);
+        }
+      },
+      onInfoTap: () => _showInfoDialog(context, key),
+      body: body,
     );
   }
 
@@ -524,7 +422,24 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
     Widget buildGrid(List<String> keys) {
       final cards = keys.map((key) => _buildCardByKey(key, formation, cardWidth)).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: _addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: _addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -602,18 +517,25 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
     final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
     final availableWidth = (screenWidth - sidebarWidth - 48).clamp(280.0, double.infinity);
 
-    int numColumns;
-    double cardWidth;
-    if (availableWidth >= 1050) {
-      numColumns = 3;
-      cardWidth = (availableWidth - 32) / 3;
-    } else if (availableWidth >= 660) {
-      numColumns = 2;
-      cardWidth = (availableWidth - 16) / 2;
-    } else {
-      numColumns = 1;
-      cardWidth = availableWidth;
-    }
+    final colPref = ref.watch(columnPreferenceProvider('parcours'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
+
+    const availableParcoursCards = [
+      EskoliaCardOption(key: 'feature:parcours', title: 'Formation TIP', emoji: '🎓'),
+      EskoliaCardOption(key: 'feature:podcasts', title: 'Podcasts de cours', emoji: '🎧'),
+      EskoliaCardOption(key: 'feature:examen_blanc', title: 'Examens Blancs TIP', emoji: '🏆'),
+      EskoliaCardOption(key: 'feature:lexique', title: 'Lexique & Glossaire', emoji: '📖'),
+      EskoliaCardOption(key: 'feature:mediatheque', title: 'Médiathèque Vidéos & PDF', emoji: '🎬'),
+    ];
+
+    final rawOrder = ref.watch(parcoursCardsOrderProvider);
+    final allParcoursKeys = rawOrder.map((k) => k.startsWith('feature:') ? k : 'feature:$k').toList();
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -665,19 +587,15 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
                           120,
                         ),
                         children: [
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 24, top: 8),
-                              child: Text(
-                                'Mon Syllabus',
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
+                          EskoliaPageHeaderToolbar(
+                            title: 'Mon Syllabus',
+                            screenKey: 'parcours',
+                            onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(allParcoursKeys),
+                            onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(allParcoursKeys),
+                            availableCards: availableParcoursCards,
+                            maxColumns: 4,
                           ),
+                          const SizedBox(height: 12),
                           _buildCardsGrid(context, formation, cardWidth, numColumns),
                         ],
                       );

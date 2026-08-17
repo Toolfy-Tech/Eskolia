@@ -12,6 +12,9 @@ import '../../../core/theme/eskolia_layout.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_column_switcher.dart';
+import '../../../shared/widgets/eskolia_page_header_toolbar.dart';
+import '../../../shared/widgets/eskolia_section_card.dart';
 import '../../../core/widgets/bottom_nav.dart';
 import '../../home/presentation/providers/home_providers.dart';
 import '../../home/presentation/widgets/home_card_settings_dialog.dart';
@@ -53,18 +56,14 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
     final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
     final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
-    int numColumns;
-    double cardWidth;
-    if (availableWidth >= 1050) {
-      numColumns = 3;
-      cardWidth = (availableWidth - 32) / 3;
-    } else if (availableWidth >= 660) {
-      numColumns = 2;
-      cardWidth = (availableWidth - 16) / 2;
-    } else {
-      numColumns = 1;
-      cardWidth = availableWidth;
-    }
+    final colPref = ref.watch(columnPreferenceProvider('solo'));
+    final colRes = ColumnResolution.compute(
+      preference: colPref,
+      availableWidth: availableWidth,
+      maxAutoColumns: 4,
+    );
+    final numColumns = colRes.columns;
+    final cardWidth = colRes.cardWidth;
 
     final rawOrder = ref.watch(soloCardsOrderProvider);
     final pinned = ref.watch(soloPinnedCardsProvider);
@@ -79,6 +78,15 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
       }
       return true;
     }).toList();
+
+    const availableSoloCards = [
+      EskoliaCardOption(key: 'feature:solo_quiz', title: 'Générateur de Quiz', emoji: '🎮'),
+      EskoliaCardOption(key: 'feature:solo_quiz_ai', title: 'Génération avec IA', emoji: '🧠'),
+      EskoliaCardOption(key: 'feature:solo_lacunes', title: 'Mes fautes', emoji: '❌'),
+      EskoliaCardOption(key: 'feature:solo_pool', title: 'À revoir', emoji: '📌'),
+      EskoliaCardOption(key: 'feature:flashcards', title: 'Flashcards', emoji: '📚'),
+      EskoliaCardOption(key: 'feature:lexique', title: 'Lexique & Glossaire', emoji: '📖'),
+    ];
 
     List<Widget> addSpacing(List<Widget> list) {
       if (list.isEmpty) return [];
@@ -97,7 +105,24 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
         return _buildDraggableCard(key, _buildCardContent(key, context), cardWidth);
       }).toList();
 
-      if (numColumns == 3) {
+      if (numColumns >= 4) {
+        final cols = List.generate(4, (_) => <Widget>[]);
+        for (var i = 0; i < keys.length; i++) {
+          cols[i % 4].add(cards[i]);
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: Column(children: addSpacing(cols[0]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[1]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[2]))),
+            const SizedBox(width: 16),
+            Expanded(child: Column(children: addSpacing(cols[3]))),
+          ],
+        );
+      } else if (numColumns == 3) {
         final col1 = <Widget>[];
         final col2 = <Widget>[];
         final col3 = <Widget>[];
@@ -176,19 +201,15 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
             child: ListView(
               padding: EdgeInsets.fromLTRB(hPad, 16, hPad, 120),
               children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 24, top: 8),
-                    child: Text(
-                      'Entraînement Solo',
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
+                EskoliaPageHeaderToolbar(
+                  title: 'Entraînement Solo',
+                  screenKey: 'solo',
+                  onCollapseAll: () => ref.read(homeCardSettingsProvider.notifier).collapseAll(order),
+                  onExpandAll: () => ref.read(homeCardSettingsProvider.notifier).expandAll(order),
+                  availableCards: availableSoloCards,
+                  maxColumns: 4,
                 ),
+                const SizedBox(height: 12),
                 content,
                 const SizedBox(height: 40),
                 Text(
@@ -467,150 +488,26 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
     required Color accentColor,
     required Widget body,
   }) {
-    final settingsMap = ref.watch(homeCardSettingsProvider);
-    final settings = settingsMap[key];
-    final displayTitle = settings?.title.isNotEmpty == true ? settings!.title : title;
-    final isCollapsed = settings?.isCollapsed ?? false;
-    
     final isPinned = ref.watch(soloPinnedCardsProvider).contains(key);
     final isAddedToHome = ref.watch(homeCardsOrderProvider).contains(key);
-    final displayAccentColor = settings != null
-        ? Color(settings.colorHex)
-        : (isPinned ? EskoliaTokens.cyan : accentColor);
 
-    return EskoliaCardContent(
-      accentBorderColor: displayAccentColor,
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              EskoliaCardSectionBadge(
-                sectionName: 'SOLO',
-                color: displayAccentColor,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                        child: Text(
-                          displayTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (FeatureInfoResolver.getInfo(key) != null) ...[
-                      const SizedBox(width: 2),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minWidth: 26, minHeight: 26),
-                        tooltip: 'Comment ça marche ?',
-                        onPressed: () => _showInfoDialog(context, key),
-                        icon: const Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.white60,
-                          size: 15,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 4),
-              IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(key),
-                icon: Icon(
-                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  color: isCollapsed ? Colors.white70 : displayAccentColor,
-                  size: 19,
-                ),
-              ),
-              PopupMenuButton<String>(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                icon: const Icon(
-                  Icons.more_vert_rounded,
-                  color: Colors.white70,
-                  size: 19,
-                ),
-                tooltip: 'Options de la carte',
-                color: EskoliaTokens.surface1,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-                ),
-                onSelected: (action) {
-                  if (action == 'settings') {
-                    showHomeCardSettingsDialog(context, ref, key);
-                  } else if (action == 'pin') {
-                    ref.read(soloPinnedCardsProvider.notifier).togglePin(key);
-                  } else if (action == 'home') {
-                    if (isAddedToHome) {
-                      ref.read(homeCardsOrderProvider.notifier).removeCard(key);
-                    } else {
-                      ref.read(homeCardsOrderProvider.notifier).addCard(key);
-                    }
-                  }
-                },
-                itemBuilder: (ctx) => [
-                  const PopupMenuItem(
-                    value: 'settings',
-                    child: Row(
-                      children: [
-                        Icon(Icons.edit_note_rounded, color: Colors.white70, size: 18),
-                        SizedBox(width: 10),
-                        Text('Personnaliser', style: TextStyle(color: Colors.white, fontSize: 13)),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'pin',
-                    child: Row(
-                      children: [
-                        Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined, color: isPinned ? displayAccentColor : Colors.white70, size: 18),
-                        const SizedBox(width: 10),
-                        Text(isPinned ? 'Désépingler' : 'Épingler', style: const TextStyle(color: Colors.white, fontSize: 13)),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'home',
-                    child: Row(
-                      children: [
-                        Icon(isAddedToHome ? Icons.remove_circle_outline_rounded : Icons.add_circle_outline_rounded, color: isAddedToHome ? EskoliaTokens.error : EskoliaTokens.cyan, size: 18),
-                        const SizedBox(width: 10),
-                        Text(isAddedToHome ? 'Retirer de l\'accueil' : 'Ajouter à l\'accueil', style: const TextStyle(color: Colors.white, fontSize: 13)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: Padding(
-              padding: const EdgeInsets.only(top: 14),
-              child: body,
-            ),
-            crossFadeState: !isCollapsed ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-          ),
-        ],
-      ),
+    return EskoliaSectionCard(
+      cardKey: key,
+      badge: 'SOLO',
+      title: title,
+      accentColor: accentColor,
+      isPinned: isPinned,
+      onTogglePin: () => ref.read(soloPinnedCardsProvider.notifier).togglePin(key),
+      isAddedToHome: isAddedToHome,
+      onToggleHome: () {
+        if (isAddedToHome) {
+          ref.read(homeCardsOrderProvider.notifier).removeCard(key);
+        } else {
+          ref.read(homeCardsOrderProvider.notifier).addCard(key);
+        }
+      },
+      onInfoTap: () => _showInfoDialog(context, key),
+      body: body,
     );
   }
 
