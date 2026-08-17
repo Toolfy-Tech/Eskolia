@@ -10,6 +10,7 @@ import 'core/services/firebase_service.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_palette_provider.dart';
+import 'core/theme/text_scale_provider.dart';
 
 Future<void> main() async {
   if (kIsWeb) {
@@ -108,6 +109,7 @@ class EskoliaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final palette = ref.watch(themePaletteProvider);
+    final textScale = ref.watch(textScaleProvider);
 
     return MaterialApp.router(
       title: 'Eskolia',
@@ -115,6 +117,14 @@ class EskoliaApp extends ConsumerWidget {
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       scrollBehavior: const EskoliaScrollBehavior(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(textScale),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }

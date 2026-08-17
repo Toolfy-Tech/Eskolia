@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
+import '../../../core/theme/text_scale_provider.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../data/repositories/user_repository.dart';
 import '../../../shared/widgets/eskolia_ambient_background.dart';
@@ -16,14 +18,14 @@ import '../../auth/data/user_model.dart';
 import '../data/settings_repository.dart';
 
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final SettingsRepository _repo = SettingsRepository();
   AppSettings? _settings;
   bool _loading = true;
@@ -246,6 +248,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       activeTrackColor: EskoliaTokens.cyan,
                                       onChanged: (v) => _save(_settings!
                                           .copyWith(vibrationEnabled: v)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                _sectionCard(
+                                  title: 'Affichage & Lisibilité',
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.zoom_in_rounded, color: EskoliaTokens.cyan),
+                                      title: Text(
+                                        'Taille du texte et Zoom',
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+                                      ),
+                                      subtitle: Text(
+                                        'Échelle actuelle : ${(ref.watch(textScaleProvider) * 100).round()}%',
+                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
+                                      ),
+                                      trailing: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          '${(ref.watch(textScaleProvider) * 100).round()}%',
+                                          style: const TextStyle(color: EskoliaTokens.cyan, fontWeight: FontWeight.bold, fontSize: 12),
+                                        ),
+                                      ),
+                                      onTap: () => showTextScaleDialog(context, ref),
                                     ),
                                   ],
                                 ),

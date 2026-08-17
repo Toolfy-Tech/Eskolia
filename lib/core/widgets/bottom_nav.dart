@@ -10,6 +10,7 @@ import '../constants/eskolia_tokens.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
 import '../theme/theme_palette_provider.dart';
+import '../theme/text_scale_provider.dart';
 import '../../features/podcasts/data/podcast_player_service.dart';
 import '../../features/podcasts/presentation/podcast_mini_player.dart';
 import '../../shared/widgets/eskolia_ambient_background.dart';
@@ -652,6 +653,17 @@ class EskoliaSidebar extends ConsumerWidget {
                           children: [
                             IconButton(
                               icon: const Icon(
+                                Icons.zoom_in_rounded,
+                                color: Colors.white70,
+                                size: 22,
+                              ),
+                              tooltip: 'Zoom & Lisibilité',
+                              onPressed: () {
+                                showTextScaleDialog(context, ref);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(
                                 Icons.notifications_none_rounded,
                                 color: Colors.white70,
                                 size: 22,
@@ -748,8 +760,22 @@ class EskoliaSidebar extends ConsumerWidget {
                 ),
               ),
             ),
-            // Sélecteur de Thème de Couleurs
-            if (collapsed)
+            // Sélecteur de Thème de Couleurs & Zoom
+            if (collapsed) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Center(
+                  child: IconButton(
+                    tooltip: 'Zoom & Lisibilité (${(ref.watch(textScaleProvider) * 100).round()}%)',
+                    icon: const Icon(
+                      Icons.zoom_in_rounded,
+                      color: Colors.white70,
+                      size: 20,
+                    ),
+                    onPressed: () => showTextScaleDialog(context, ref),
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Center(
@@ -796,8 +822,8 @@ class EskoliaSidebar extends ConsumerWidget {
                     }).toList(),
                   ),
                 ),
-              )
-            else
+              ),
+            ] else ...[
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 child: Container(
@@ -870,6 +896,57 @@ class EskoliaSidebar extends ConsumerWidget {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 6),
+                child: InkWell(
+                  onTap: () => showTextScaleDialog(context, ref),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.zoom_in_rounded, size: 15, color: ref.watch(themePaletteProvider).primaryAccent),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'ZOOM & LISIBILITÉ',
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: ref.watch(themePaletteProvider).primaryAccent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '${(ref.watch(textScaleProvider) * 100).round()}%',
+                            style: TextStyle(
+                              color: ref.watch(themePaletteProvider).primaryAccent,
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
             const Divider(color: Colors.white12, height: 1),
             // Profil Utilisateur
             userAsyncValue.when(
