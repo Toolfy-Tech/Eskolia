@@ -345,30 +345,17 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
           child: child,
         );
 
-        Widget mainChild;
-        if (isWebOrDesktop) {
-          mainChild = Draggable<String>(
-            key: ValueKey('${key}_drag'),
-            data: key,
-            feedback: feedbackWidget,
-            childWhenDragging: Opacity(
-              opacity: 0.15,
-              child: cardWidget,
-            ),
+        final mainChild = LongPressDraggable<String>(
+          key: ValueKey('${key}_drag'),
+          data: key,
+          delay: const Duration(milliseconds: 700),
+          feedback: feedbackWidget,
+          childWhenDragging: Opacity(
+            opacity: 0.15,
             child: cardWidget,
-          );
-        } else {
-          mainChild = LongPressDraggable<String>(
-            key: ValueKey('${key}_drag'),
-            data: key,
-            feedback: feedbackWidget,
-            childWhenDragging: Opacity(
-              opacity: 0.15,
-              child: cardWidget,
-            ),
-            child: cardWidget,
-          );
-        }
+          ),
+          child: cardWidget,
+        );
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 150),

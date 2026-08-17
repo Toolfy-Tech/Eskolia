@@ -19,7 +19,7 @@ class TextScaleNotifier extends Notifier<double> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final val = prefs.getDouble(_prefKey);
-      if (val != null && val >= 0.80 && val <= 1.50) {
+      if (val != null && val >= 0.80 && val <= 2.10) {
         state = val;
       }
     } catch (e) {
@@ -28,7 +28,7 @@ class TextScaleNotifier extends Notifier<double> {
   }
 
   Future<void> setScale(double newScale) async {
-    final clamped = newScale.clamp(0.85, 1.40);
+    final clamped = newScale.clamp(0.85, 2.00);
     final rounded = (clamped * 100).round() / 100.0;
     state = rounded;
     try {
@@ -67,9 +67,11 @@ class _TextScaleDialog extends ConsumerWidget {
     final presets = [
       (scale: 0.90, label: '90%', desc: 'Compact'),
       (scale: 1.00, label: '100%', desc: 'Normal'),
-      (scale: 1.10, label: '110%', desc: 'Confort'),
-      (scale: 1.20, label: '120%', desc: 'Grand'),
-      (scale: 1.30, label: '130%', desc: 'Très grand'),
+      (scale: 1.15, label: '115%', desc: 'Confort'),
+      (scale: 1.30, label: '130%', desc: 'Grand'),
+      (scale: 1.50, label: '150%', desc: 'Très grand'),
+      (scale: 1.75, label: '175%', desc: 'Maxi'),
+      (scale: 2.00, label: '200%', desc: 'Ultra'),
     ];
 
     return AlertDialog(
@@ -211,8 +213,8 @@ class _TextScaleDialog extends ConsumerWidget {
                       child: Slider(
                         value: currentScale,
                         min: 0.85,
-                        max: 1.40,
-                        divisions: 11,
+                        max: 2.00,
+                        divisions: 23,
                         label: '$percentage %',
                         onChanged: (val) {
                           ref.read(textScaleProvider.notifier).setScale(val);

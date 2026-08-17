@@ -489,30 +489,17 @@ class _VeilleScreenState extends ConsumerState<VeilleScreen> {
           child: child,
         );
 
-        Widget mainChild;
-        if (isWebOrDesktop) {
-          mainChild = Draggable<String>(
-            key: ValueKey(key),
-            data: key,
-            feedback: feedbackWidget,
-            childWhenDragging: Opacity(
-              opacity: 0.2,
-              child: cardWidget,
-            ),
+        final mainChild = LongPressDraggable<String>(
+          key: ValueKey(key),
+          data: key,
+          delay: const Duration(milliseconds: 700),
+          feedback: feedbackWidget,
+          childWhenDragging: Opacity(
+            opacity: 0.2,
             child: cardWidget,
-          );
-        } else {
-          mainChild = LongPressDraggable<String>(
-            key: ValueKey(key),
-            data: key,
-            feedback: feedbackWidget,
-            childWhenDragging: Opacity(
-              opacity: 0.2,
-              child: cardWidget,
-            ),
-            child: cardWidget,
-          );
-        }
+          ),
+          child: cardWidget,
+        );
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 180),

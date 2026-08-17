@@ -111,7 +111,7 @@ final aiConnectionStateProvider = StreamProvider<AiConnectionState>((ref) {
   return AiKeyRepository().watch();
 });
 
-class EskoliaBottomNav extends ConsumerWidget {
+class EskoliaBottomNav extends ConsumerStatefulWidget {
   const EskoliaBottomNav({
     super.key,
     required this.currentPath,
@@ -196,20 +196,40 @@ class EskoliaBottomNav extends ConsumerWidget {
     label: 'Administration',
   );
 
-
   static const _NavItem _menu = _NavItem(
     path: '#menu',
     emoji: '☰',
     label: 'Menu',
   );
 
-  static List<_NavItem> _itemsFor() => [
-        _accueil,
-        _parcours,
-        _exams,
-        _solo,
-        _menu,
-      ];
+  static const Map<String, _NavItem> _allNavMap = {
+    '/home': _accueil,
+    '/veille': _veille,
+    '/parcours': _parcours,
+    '/exams': _exams,
+    '/solo': _solo,
+    '/tp': _tp,
+    '/lobbys': _multijoueur,
+    '/ai/setup': _ai,
+    '/notebook': _notebook,
+    '/docs': _docs,
+    '/leaderboard': _leaderboard,
+    '/achievements': _achievements,
+    '/labo': _labo,
+    '/settings': _settings,
+    '/admin': _admin,
+  };
+
+  static List<_NavItem> _itemsFor(WidgetRef ref) {
+    final order = ref.watch(sidebarOrderProvider);
+    final list = <_NavItem>[];
+    for (final path in order) {
+      final item = _allNavMap[path];
+      if (item != null) list.add(item);
+    }
+    list.add(_menu);
+    return list;
+  }
 
   static int _indexForPath(String path, List<_NavItem> items) {
     final normalized = path == '/classement' ? '/leaderboard' : path;
@@ -223,33 +243,59 @@ class EskoliaBottomNav extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EskoliaBottomNav> createState() => _EskoliaBottomNavState();
+}
+
+class _EskoliaBottomNavState extends ConsumerState<EskoliaBottomNav> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant EskoliaBottomNav oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentPath != widget.currentPath) {
+      _scrollToActive();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToActive());
+  }
+
+  void _scrollToActive() {
+    if (!_scrollController.hasClients) return;
+    final items = EskoliaBottomNav._itemsFor(ref);
+    final index = EskoliaBottomNav._indexForPath(widget.currentPath, items);
+    if (index >= 0) {
+      final targetOffset = (index * 76.0) - (MediaQuery.sizeOf(context).width / 2) + 38.0;
+      _scrollController.animateTo(
+        targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final glass = Theme.of(context).extension<GlassmorphismTheme>();
     final neon = Theme.of(context).extension<NeonTheme>();
 
     final glassBorder =
         glass?.borderColor.withValues(alpha: 0.5) ?? Colors.white24;
 
-    return _buildBar(
-      context,
-      ref,
-      items: _itemsFor(),
-      glassBorder: glassBorder,
-      neon: neon,
-    );
-  }
-
-  Widget _buildBar(
-    BuildContext context,
-    WidgetRef ref, {
-    required List<_NavItem> items,
-    required Color glassBorder,
-    required NeonTheme? neon,
-  }) {
-    final index = _indexForPath(currentPath, items);
+    final items = EskoliaBottomNav._itemsFor(ref);
+    final index = EskoliaBottomNav._indexForPath(widget.currentPath, items);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(40),
@@ -257,20 +303,20 @@ class EskoliaBottomNav extends ConsumerWidget {
             filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
             child: Container(
               constraints: const BoxConstraints(
-                minHeight: 72,
-                maxHeight: 110,
-                maxWidth: 540,
+                minHeight: 70,
+                maxHeight: 88,
+                maxWidth: 620,
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    EskoliaTokens.surface2.withValues(alpha: 0.55),
-                    EskoliaTokens.surface1.withValues(alpha: 0.65),
-                    EskoliaTokens.bgBase.withValues(alpha: 0.70),
+                    EskoliaTokens.surface2.withValues(alpha: 0.70),
+                    EskoliaTokens.surface1.withValues(alpha: 0.80),
+                    EskoliaTokens.bgBase.withValues(alpha: 0.88),
                   ],
                   stops: const [0.0, 0.45, 1.0],
                 ),
@@ -305,44 +351,50 @@ class EskoliaBottomNav extends ConsumerWidget {
                   ),
                 ],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(items.length, (i) {
-                  final item = items[i];
-                  final active = i == index;
-                  return _NavCell(
-                    key: ValueKey(item.path),
-                    item: item,
-                    active: active,
-                    neon: neon,
-                    onTap: () async {
-                      final target = item.path;
-                      if (target == '#menu') {
-                        ref.read(mobileDrawerOpenProvider.notifier).open();
-                        return;
-                      }
-                      final router = GoRouter.of(context);
-                      final current = GoRouterState.of(context).uri.path;
-                      final normalizedCurrent = current == '/classement'
-                          ? '/leaderboard'
-                          : current;
-                      final normalizedTarget = target == '/classement'
-                          ? '/leaderboard'
-                          : target;
-                      if (normalizedCurrent != normalizedTarget &&
-                          isQuizPlaySessionPath(normalizedCurrent)) {
-                        final ok = await confirmNavigateAwayFromQuiz(context);
-                        if (!context.mounted || !ok) return;
-                      }
-                      if (!context.mounted) return;
-                      if (target == '/ai/setup') {
-                        router.push(target);
-                      } else {
-                        router.go(target);
-                      }
-                    },
-                  );
-                }),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(items.length, (i) {
+                    final item = items[i];
+                    final active = i == index;
+                    return _NavCell(
+                      key: ValueKey(item.path),
+                      item: item,
+                      active: active,
+                      neon: neon,
+                      onTap: () async {
+                        final target = item.path;
+                        if (target == '#menu') {
+                          ref.read(mobileDrawerOpenProvider.notifier).open();
+                          return;
+                        }
+                        final router = GoRouter.of(context);
+                        final current = GoRouterState.of(context).uri.path;
+                        final normalizedCurrent = current == '/classement'
+                            ? '/leaderboard'
+                            : current;
+                        final normalizedTarget = target == '/classement'
+                            ? '/leaderboard'
+                            : target;
+                        if (normalizedCurrent != normalizedTarget &&
+                            isQuizPlaySessionPath(normalizedCurrent)) {
+                          final ok = await confirmNavigateAwayFromQuiz(context);
+                          if (!context.mounted || !ok) return;
+                        }
+                        if (!context.mounted) return;
+                        if (target == '/ai/setup') {
+                          router.push(target);
+                        } else {
+                          router.go(target);
+                        }
+                      },
+                    );
+                  }),
+                ),
               ),
             ),
           ),
@@ -509,6 +561,23 @@ class _MainShellState extends ConsumerState<MainShell> {
                   duration: const Duration(milliseconds: 240),
                   color: Colors.black.withValues(alpha: 0.65),
                 ),
+              ),
+            ),
+
+          // Détecteur de geste pour glisser depuis le bord gauche et ouvrir le tiroir
+          if (!isDrawerOpen)
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 24,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragUpdate: (details) {
+                  if (details.primaryDelta != null && details.primaryDelta! > 6) {
+                    ref.read(mobileDrawerOpenProvider.notifier).open();
+                  }
+                },
               ),
             ),
 
