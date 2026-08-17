@@ -58,6 +58,8 @@ import '../../parcours/presentation/widgets/mega_lexique_card_body.dart';
 import '../../parcours/presentation/widgets/mega_mediatheque_card_body.dart';
 import '../../exam/presentation/widgets/exam_blanc_announcement_dialog.dart';
 import 'widgets/whats_new_announcement_dialog.dart';
+import 'widgets/home_news_cards_section.dart';
+import 'providers/home_news_provider.dart';
 
 const Color _surfaceBar    = EskoliaTokens.surface2;
 const Color _redStreak     = EskoliaTokens.error;
@@ -2385,6 +2387,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ),
+          // Nouveautés & Flash Info (Cartes dismissibles)
+          HomeNewsCardsSection(numColumns: numColumns),
           _animatedSection(0, content),
         ],
       ),
@@ -2459,6 +2463,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           actions: [
+            TextButton.icon(
+              onPressed: () {
+                ref.read(dismissedNewsProvider.notifier).restoreAllNews();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Toutes les cartes de nouveautés ont été réaffichées.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.refresh_rounded, size: 16),
+              label: const Text('Réafficher les nouveautés masquées'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white60,
+                textStyle: const TextStyle(fontSize: 11.5),
+              ),
+            ),
             TextButton(
               onPressed: () => Navigator.pop(context),
               style: TextButton.styleFrom(
