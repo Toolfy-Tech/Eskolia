@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +11,7 @@ import '../../../shared/widgets/eskolia_ambient_background.dart';
 import '../../../shared/widgets/eskolia_app_bar.dart';
 import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../../admin/data/staff_capability.dart';
+import '../../lobby/data/lobby_repository.dart';
 import '../../quiz/services/quiz_template_service.dart';
 import '../../tp/exam_tp/data/tp_exam_repository.dart';
 import '../../tp/exam_tp/models/tp_exam_model.dart';
@@ -33,6 +35,7 @@ class _ExamsScreenState extends State<ExamsScreen> {
   List<TpExamScenario> _tpScenarios = [];
   bool _loading = true;
   bool _isStaff = false;
+  String? _loadingLobbyExamId;
 
   @override
   void initState() {
@@ -74,6 +77,73 @@ class _ExamsScreenState extends State<ExamsScreen> {
   void _startExam(ExamQuizItem exam) {
     final session = _examRepo.buildExamSession(exam);
     context.push('/quiz/run', extra: session);
+  }
+
+  Future<void> _startExamLobby(ExamQuizItem exam) async {
+    setState(() => _loadingLobbyExamId = exam.id);
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
+      String name = 'Hôte';
+      if (uid != 'guest') {
+        final userDoc = await UserRepository().getUserById(uid);
+        if (userDoc != null && userDoc.username.isNotEmpty) {
+          name = userDoc.username;
+        }
+      }
+
+      final customQs = exam.questions.map((q) => {
+        'id': q.id,
+        'type': q.type,
+        'question': q.question,
+        'answer': q.answerSequence ?? q.answer,
+        'explanation': q.explanation,
+        'options': q.options,
+        'checklist': q.checklist,
+        'indices': q.indices,
+        'contextLine': q.contextLine,
+        'difficulty': q.difficultyBucket,
+      }).toList();
+
+      final lobbyId = await LobbyRepository().createLobby(LobbyModel(
+        id: '',
+        title: 'Examen : ${exam.title}',
+        subject: 'Examen Blanc · ${exam.questionCount} questions',
+        hostName: name,
+        hostAvatar: '🎓',
+        currentPlayers: 1,
+        maxPlayers: kLobbyMaxPlayers,
+        status: 'waiting',
+        difficulty: 'Examen Blanc',
+        quizId: 'custom',
+        createdAt: DateTime.now(),
+        hostId: uid,
+        questionAssetPaths: const [],
+        customQuestionsJson: jsonEncode(customQs),
+        isPrivate: false,
+        correctionMode: 'after_each', // Correction après chaque question
+        timed: false,
+        questionCount: exam.questionCount,
+        difficultyFilters: const ['facile', 'moyen', 'difficile', 'unknown'],
+        playerMeta: [
+          PlayerMeta(userId: uid, displayName: name, avatar: '🎓'),
+        ],
+      ));
+
+      if (mounted) {
+        setState(() => _loadingLobbyExamId = null);
+        context.push('/lobbys/$lobbyId');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _loadingLobbyExamId = null);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erreur lors de la création du salon : $e'),
+            backgroundColor: EskoliaTokens.error,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -671,23 +741,60 @@ class _ExamsScreenState extends State<ExamsScreen> {
           const Divider(color: Colors.white10, height: 1),
           const SizedBox(height: 10),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              _buildMetaChip(Icons.help_outline_rounded, '${exam.questionCount} questions'),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: _buildMetaChip(Icons.help_outline_rounded, '${exam.questionCount} questions'),
+              ),
               const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () => _startExam(exam),
-                icon: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.black),
-                label: Text(
-                  exam.isCompleted ? 'Rejouer' : 'Démarrer',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: accent,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 0,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Bouton pour lancer directement un salon multijoueur avec correction entre chaque question
+                  OutlinedButton.icon(
+                    onPressed: _loadingLobbyExamId == exam.id ? null : () => _startExamLobby(exam),
+                    icon: _loadingLobbyExamId == exam.id
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 1.5, color: EskoliaTokens.cyan),
+                          )
+                        : const Icon(Icons.groups_rounded, size: 15, color: EskoliaTokens.cyan),
+                    label: const Text(
+                      'Créer un Salon (Correction live)',
+                      style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: EskoliaTokens.cyan),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.10),
+                      side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.45)),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Bouton Solo Démarrer
+                  ElevatedButton.icon(
+                    onPressed: () => _startExam(exam),
+                    icon: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.black),
+                    label: Text(
+                      exam.isCompleted ? 'Rejouer en solo' : 'Démarrer en solo',
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
