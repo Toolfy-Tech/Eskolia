@@ -159,6 +159,7 @@ class _TechNewsSectionState extends ConsumerState<TechNewsSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Ligne 1 : Badge + Titre
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
@@ -181,32 +182,40 @@ class _TechNewsSectionState extends ConsumerState<TechNewsSection> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  tooltip: isCollapsed ? 'Afficher' : 'Masquer',
-                  onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
-                  icon: Icon(
-                    isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                    color: _slateLight.withValues(alpha: 0.85),
-                    size: 19,
-                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          // Ligne 2 : Actions (Plier/Déplier, Menu d'options)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: isCollapsed ? 'Afficher' : 'Masquer',
+                onPressed: () => ref.read(homeCardSettingsProvider.notifier).toggleCollapse(cardKey),
+                icon: Icon(
+                  isCollapsed ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                  color: _slateLight.withValues(alpha: 0.85),
+                  size: 18,
                 ),
-                PopupMenuButton<String>(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
-                  icon: Icon(
-                    Icons.more_vert_rounded,
-                    color: _slateLight.withValues(alpha: 0.85),
-                    size: 19,
-                  ),
-                  tooltip: 'Options de la carte',
-                  color: EskoliaTokens.surface1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
-                  ),
+              ),
+              const SizedBox(width: 4),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  color: _slateLight.withValues(alpha: 0.85),
+                  size: 19,
+                ),
+                tooltip: 'Options de la carte',
+                color: EskoliaTokens.surface1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+                ),
                   onSelected: (action) {
                     if (action == 'refresh') {
                       _load();
@@ -300,7 +309,6 @@ class _TechNewsSectionState extends ConsumerState<TechNewsSection> {
                 ),
               ],
             ),
-          ),
           if (!isCollapsed) ...[
             const SizedBox(height: 4),
             Text(

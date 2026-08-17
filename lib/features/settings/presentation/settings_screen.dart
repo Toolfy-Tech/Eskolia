@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/services/eskolia_folder_service.dart';
 import '../../../core/theme/eskolia_visual.dart';
+import '../../../core/theme/sidebar_button_colors_provider.dart';
+import '../../../core/theme/theme_palette_provider.dart';
 import '../../../core/theme/text_scale_provider.dart';
 import '../../../core/utils/eskolia_snackbar.dart';
 import '../../../data/repositories/user_repository.dart';
@@ -277,6 +279,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         ),
                                       ),
                                       onTap: () => showTextScaleDialog(context, ref),
+                                    ),
+                                    const Divider(color: Colors.white10, height: 1),
+                                    ListTile(
+                                      leading: const Icon(Icons.color_lens_rounded, color: EskoliaTokens.violetSoft),
+                                      title: Text(
+                                        'Couleurs des boutons de la barre latérale',
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+                                      ),
+                                      subtitle: Text(
+                                        'Personnaliser les couleurs du menu et de la barre latérale',
+                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
+                                      ),
+                                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white60),
+                                      onTap: () => showSidebarButtonColorsDialog(context, ref),
                                     ),
                                   ],
                                 ),

@@ -34,20 +34,6 @@ class SoloScreen extends ConsumerStatefulWidget {
 }
 
 class _SoloScreenState extends ConsumerState<SoloScreen> {
-  Timer? _dragDebounceTimer;
-  String? _hoveredDragKey;
-  final Map<String, GlobalKey> _cardKeys = {};
-
-  GlobalKey _getOrCreateKey(String cardKey) {
-    return _cardKeys.putIfAbsent(cardKey, () => GlobalKey(debugLabel: cardKey));
-  }
-
-  @override
-  void dispose() {
-    _dragDebounceTimer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final hPad = EskoliaLayout.lessonHorizontalPadding(context);
@@ -100,49 +86,6 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
       return res;
     }
 
-    Widget buildGrid(List<String> keys) {
-      final settingsMap = ref.watch(homeCardSettingsProvider);
-      final cards = keys.map((key) {
-        return _buildDraggableCard(key, _buildCardContent(key, context), cardWidth);
-      }).toList();
-
-      final columns = distributeMasonryColumns<int>(
-        items: List.generate(keys.length, (i) => i),
-        numColumns: numColumns,
-        estimateHeight: (index) {
-          final key = keys[index];
-          final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
-          if (isCollapsed) return 65.0;
-          if (key == 'feature:solo_quiz') return 340.0;
-          if (key == 'feature:solo_lacunes') return 380.0;
-          return 300.0;
-        },
-      );
-
-      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
-      return buildMasonryColumnsRow(columns: widgetColumns);
-    }
-
-    Widget content;
-    if (pinned.isEmpty) {
-      content = buildGrid(order);
-    } else {
-      final pinnedKeys = order.where((k) => pinned.contains(k)).toList();
-      final otherKeys = order.where((k) => !pinned.contains(k)).toList();
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildSectionHeader('Épinglées'),
-          buildGrid(pinnedKeys),
-          if (otherKeys.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            _buildSectionHeader('Autres'),
-            buildGrid(otherKeys),
-          ],
-        ],
-      );
-    }
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -162,7 +105,13 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
                   maxColumns: 4,
                 ),
                 const SizedBox(height: 12),
-                content,
+                EskoliaMultiColumnBoard(
+                  screenKey: 'solo',
+                  activeKeys: order,
+                  numColumns: numColumns,
+                  cardWidth: cardWidth,
+                  cardBuilder: (ctx, key) => _buildCardContent(key, ctx),
+                ),
                 const SizedBox(height: 40),
                 Text(
                   'Mode Active Recall activé : toutes les réponses sont à saisir librement pour un ancrage mémoriel maximal.',
@@ -179,150 +128,6 @@ class _SoloScreenState extends ConsumerState<SoloScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 12),
-      child: Row(
-        children: [
-          const SizedBox(width: 4),
-          Text(
-            title.toUpperCase(),
-            style: GoogleFonts.outfit(
-              color: Colors.white60,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.5,
-            ),
-          ),
-          const SizedBox(width: 8),
-          const Expanded(
-            child: Divider(
-              color: Colors.white12,
-              thickness: 1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDraggableCard(String key, Widget child, double width) {
-    final isWebOrDesktop = kIsWeb || 
-        defaultTargetPlatform == TargetPlatform.macOS || 
-        defaultTargetPlatform == TargetPlatform.windows || 
-        defaultTargetPlatform == TargetPlatform.linux;
-
-    final feedbackWidget = Material(
-      color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.015,
-        child: Transform.scale(
-          scale: 1.02,
-          child: Opacity(
-            opacity: 0.85,
-            child: Container(
-              width: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return DragTarget<String>(
-      key: _getOrCreateKey(key),
-      onWillAcceptWithDetails: (details) {
-        final dragKey = details.data;
-        if (dragKey != key) {
-          if (_hoveredDragKey != key) {
-            _hoveredDragKey = key;
-            _dragDebounceTimer?.cancel();
-            _dragDebounceTimer = Timer(const Duration(milliseconds: 60), () {
-              if (mounted && _hoveredDragKey == key) {
-                final pinned = ref.read(soloPinnedCardsProvider);
-                final isDragPinned = pinned.contains(dragKey);
-                final isTargetPinned = pinned.contains(key);
-
-                if (isDragPinned != isTargetPinned) {
-                  ref.read(soloPinnedCardsProvider.notifier).togglePin(dragKey);
-                }
-
-                final order = ref.read(soloCardsOrderProvider);
-                final oldIdx = order.indexOf(dragKey);
-                final newIdx = order.indexOf(key);
-                if (oldIdx != -1 && newIdx != -1) {
-                  ref.read(soloCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
-                }
-              }
-            });
-          }
-        }
-        return true;
-      },
-      onLeave: (data) {
-        if (_hoveredDragKey == key) {
-          _dragDebounceTimer?.cancel();
-          _hoveredDragKey = null;
-        }
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        final cardWidget = SizedBox(
-          width: width,
-          child: child,
-        );
-
-        final mainChild = LongPressDraggable<String>(
-          key: ValueKey('${key}_drag'),
-          data: key,
-          delay: const Duration(milliseconds: 700),
-          feedback: feedbackWidget,
-          childWhenDragging: Opacity(
-            opacity: 0.15,
-            child: cardWidget,
-          ),
-          child: cardWidget,
-        );
-
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: mainChild,
-          ),
-        );
-      },
     );
   }
 

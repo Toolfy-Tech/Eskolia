@@ -56,9 +56,6 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
   late AnimationController _pulseController;
   int _streamRetry = 0;
 
-  Timer? _dragDebounceTimer;
-  String? _hoveredDragKey;
-
   @override
   void initState() {
     super.initState();
@@ -89,7 +86,6 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
   @override
   void dispose() {
     _pulseController.dispose();
-    _dragDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -117,123 +113,6 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildDraggableCard(String key, Widget child, double width) {
-    final isWebOrDesktop = kIsWeb || 
-        defaultTargetPlatform == TargetPlatform.macOS || 
-        defaultTargetPlatform == TargetPlatform.windows || 
-        defaultTargetPlatform == TargetPlatform.linux;
-
-    final feedbackWidget = Material(
-      color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.035,
-        child: Transform.scale(
-          scale: 1.04,
-          child: Opacity(
-            opacity: 0.9,
-            child: Container(
-              width: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.45),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return DragTarget<String>(
-      key: ValueKey(key),
-      onWillAcceptWithDetails: (details) {
-        final dragKey = details.data;
-        if (dragKey != key) {
-          if (_hoveredDragKey != key) {
-            _hoveredDragKey = key;
-            _dragDebounceTimer?.cancel();
-            _dragDebounceTimer = Timer(const Duration(milliseconds: 150), () {
-              if (mounted && _hoveredDragKey == key) {
-                final pinned = ref.read(parcoursPinnedCardsProvider);
-                final isDragPinned = pinned.contains(dragKey);
-                final isTargetPinned = pinned.contains(key);
-
-                if (isDragPinned != isTargetPinned) {
-                  ref.read(parcoursPinnedCardsProvider.notifier).togglePin(dragKey);
-                }
-
-                final order = ref.read(parcoursCardsOrderProvider);
-                final oldIdx = order.indexOf(dragKey);
-                final newIdx = order.indexOf(key);
-                if (oldIdx != -1 && newIdx != -1) {
-                  ref.read(parcoursCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
-                }
-              }
-            });
-          }
-        }
-        return true;
-      },
-      onLeave: (data) {
-        if (_hoveredDragKey == key) {
-          _dragDebounceTimer?.cancel();
-          _hoveredDragKey = null;
-        }
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        final cardWidget = SizedBox(
-          width: width,
-          child: child,
-        );
-
-        final mainChild = LongPressDraggable<String>(
-          key: ValueKey(key),
-          data: key,
-          delay: const Duration(milliseconds: 700),
-          feedback: feedbackWidget,
-          childWhenDragging: Opacity(
-            opacity: 0.2,
-            child: cardWidget,
-          ),
-          child: cardWidget,
-        );
-
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: mainChild,
-          ),
-        );
-      },
     );
   }
 
@@ -325,130 +204,62 @@ class _ParcoursScreenState extends ConsumerState<ParcoursScreen>
     final isCollapsed = settings?.isCollapsed ?? false;
 
     if (key == 'formation') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: 'feature:parcours',
-          title: displayTitle.isNotEmpty ? displayTitle : formation.title,
-          defaultEmoji: '🎓',
-          accentColor: _violetBrand,
-          body: _FormationCardBody(formation: formation, accentColor: _violetBrand),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: 'feature:parcours',
+        title: displayTitle.isNotEmpty ? displayTitle : formation.title,
+        defaultEmoji: '🎓',
+        accentColor: _violetBrand,
+        body: _FormationCardBody(formation: formation, accentColor: _violetBrand),
       );
     } else if (key == 'podcasts') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: 'feature:podcasts',
-          title: displayTitle.isNotEmpty ? displayTitle : 'Podcast TIP',
-          defaultEmoji: '🎙️',
-          accentColor: EskoliaTokens.violet,
-          disableCollapseAnimation: true,
-          body: _PodcastsCardBody(isCollapsed: isCollapsed),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: 'feature:podcasts',
+        title: displayTitle.isNotEmpty ? displayTitle : 'Podcast TIP',
+        defaultEmoji: '🎙️',
+        accentColor: EskoliaTokens.violet,
+        disableCollapseAnimation: true,
+        body: _PodcastsCardBody(isCollapsed: isCollapsed),
       );
     } else if (key == 'examen_blanc') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: 'feature:examen_blanc',
-          title: displayTitle.isNotEmpty ? displayTitle : 'Validation TIP',
-          defaultEmoji: '🏆',
-          accentColor: EskoliaTokens.amber,
-          body: ExamenBlancCardBody(formation: formation),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: 'feature:examen_blanc',
+        title: displayTitle.isNotEmpty ? displayTitle : 'Validation TIP',
+        defaultEmoji: '🏆',
+        accentColor: EskoliaTokens.amber,
+        body: ExamenBlancCardBody(formation: formation),
       );
     } else if (key == 'lexique') {
       final accent = settings != null ? Color(settings.colorHex) : EskoliaTokens.orange;
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: 'feature:lexique',
-          title: displayTitle.isNotEmpty ? displayTitle : 'Lexique TIP',
-          defaultEmoji: '📖',
-          accentColor: accent,
-          body: MegaLexiqueCardBody(accentColor: accent),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: 'feature:lexique',
+        title: displayTitle.isNotEmpty ? displayTitle : 'Lexique TIP',
+        defaultEmoji: '📖',
+        accentColor: accent,
+        body: MegaLexiqueCardBody(accentColor: accent),
       );
     } else if (key == 'mediatheque') {
       final accent = settings != null ? Color(settings.colorHex) : EskoliaTokens.violetSoft;
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: 'feature:mediatheque',
-          title: displayTitle.isNotEmpty ? displayTitle : 'Média TIP',
-          defaultEmoji: '📁',
-          accentColor: accent,
-          body: MegaMediathequeCardBody(accentColor: accent),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: 'feature:mediatheque',
+        title: displayTitle.isNotEmpty ? displayTitle : 'Média TIP',
+        defaultEmoji: '📁',
+        accentColor: accent,
+        body: MegaMediathequeCardBody(accentColor: accent),
       );
     }
     return const SizedBox.shrink();
   }
 
-  List<Widget> _addSpacing(List<Widget> list) {
-    if (list.isEmpty) return [];
-    final res = <Widget>[];
-    for (var i = 0; i < list.length; i++) {
-      res.add(list[i]);
-      if (i < list.length - 1) {
-        res.add(const SizedBox(height: 16));
-      }
-    }
-    return res;
-  }
-
   Widget _buildCardsGrid(BuildContext context, FormationModel formation, double cardWidth, int numColumns) {
     final rawOrder = ref.watch(parcoursCardsOrderProvider);
-    final pinned = ref.watch(parcoursPinnedCardsProvider);
-    final settingsMap = ref.watch(homeCardSettingsProvider);
 
-    Widget buildGrid(List<String> keys) {
-      final cards = keys.map((key) => _buildCardByKey(key, formation, cardWidth)).toList();
-
-      final columns = distributeMasonryColumns<int>(
-        items: List.generate(keys.length, (i) => i),
-        numColumns: numColumns,
-        estimateHeight: (index) {
-          final key = keys[index];
-          final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
-          if (isCollapsed) return 65.0;
-          if (key == 'feature:cours') return 750.0;
-          if (key == 'feature:media') return 600.0;
-          if (key == 'feature:podcasts') return 360.0;
-          if (key == 'feature:lexique') return 340.0;
-          if (key == 'feature:validations') return 320.0;
-          return 300.0;
-        },
-      );
-
-      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
-      return buildMasonryColumnsRow(columns: widgetColumns);
-    }
-
-    if (pinned.isEmpty) {
-      return buildGrid(rawOrder);
-    } else {
-      final pinnedKeys = rawOrder.where((k) => pinned.contains(k)).toList();
-      final otherKeys = rawOrder.where((k) => !pinned.contains(k)).toList();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildSectionHeader('Épinglées'),
-          buildGrid(pinnedKeys),
-          if (otherKeys.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            _buildSectionHeader('Autres'),
-            buildGrid(otherKeys),
-          ],
-        ],
-      );
-    }
+    return EskoliaMultiColumnBoard(
+      screenKey: 'parcours',
+      activeKeys: rawOrder,
+      numColumns: numColumns,
+      cardWidth: cardWidth,
+      cardBuilder: (ctx, key) => _buildCardByKey(key, formation, cardWidth),
+    );
   }
 
   @override

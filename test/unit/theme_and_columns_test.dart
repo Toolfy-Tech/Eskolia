@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:eskolia/core/theme/sidebar_button_colors_provider.dart';
 import 'package:eskolia/core/theme/theme_palette_provider.dart';
 import 'package:eskolia/shared/widgets/eskolia_column_switcher.dart';
 
@@ -54,6 +55,26 @@ void main() {
       // 400px width with 240px min card width should clamp 3 or 4 cols to 1
       final clamped = ColumnResolution.compute(preference: 4, availableWidth: 400);
       expect(clamped.columns, 1);
+    });
+  });
+
+  group('Sidebar Button Colors & Board Distribution Tests', () {
+    test('Default sidebar button colors contain all primary paths', () {
+      expect(kDefaultSidebarButtonColors['/home'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/exams'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/veille'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/solo'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/tp'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/notebook'], isNotNull);
+      expect(kDefaultSidebarButtonColors['/docs'], isNotNull);
+    });
+
+    test('distributeMasonryColumns balances items across columns', () {
+      final items = ['c1', 'c2', 'c3', 'c4', 'c5'];
+      final cols = distributeMasonryColumns(items: items, numColumns: 2);
+      expect(cols.length, 2);
+      expect(cols[0], ['c1', 'c3', 'c5']);
+      expect(cols[1], ['c2', 'c4']);
     });
   });
 }

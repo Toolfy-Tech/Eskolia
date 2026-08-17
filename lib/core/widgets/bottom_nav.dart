@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/eskolia_tokens.dart';
 import '../router/quiz_play_session.dart';
 import '../theme/app_theme_extensions.dart';
+import '../theme/sidebar_button_colors_provider.dart';
 import '../theme/theme_palette_provider.dart';
 import '../theme/text_scale_provider.dart';
 import '../../features/podcasts/data/podcast_player_service.dart';
@@ -848,6 +849,20 @@ class EskoliaSidebar extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Center(
+                  child: IconButton(
+                    tooltip: 'Couleurs des boutons de la barre latérale',
+                    icon: Icon(
+                      Icons.color_lens_outlined,
+                      color: ref.watch(themePaletteProvider).primaryAccent,
+                      size: 20,
+                    ),
+                    onPressed: () => showSidebarButtonColorsDialog(context, ref),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Center(
                   child: PopupMenuButton<EskoliaThemeId>(
                     tooltip: 'Changer d\'ambiance (${ref.watch(themePaletteProvider).label})',
                     padding: EdgeInsets.zero,
@@ -894,7 +909,43 @@ class EskoliaSidebar extends ConsumerWidget {
               ),
             ] else ...[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                child: InkWell(
+                  onTap: () => showSidebarButtonColorsDialog(context, ref),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.color_lens_outlined, size: 15, color: ref.watch(themePaletteProvider).primaryAccent),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'COULEURS DU MENU',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.chevron_right_rounded, color: Colors.white38, size: 16),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
@@ -1068,7 +1119,7 @@ class EskoliaSidebar extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
                             )
                           : Column(
                               mainAxisSize: MainAxisSize.min,
@@ -1175,13 +1226,17 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
   @override
   Widget build(BuildContext context) {
     final palette = ref.watch(themePaletteProvider);
-    final itemCustomColor = widget.item.customColor;
+    final customColors = ref.watch(sidebarButtonColorsProvider);
+    final userColorInt = customColors[widget.item.path];
+    final defaultItemColor = widget.item.customColor ?? kDefaultSidebarButtonColors[widget.item.path];
+    final itemCustomColor = userColorInt != null ? Color(userColorInt) : defaultItemColor;
+
     final activeColor = itemCustomColor ?? palette.primaryAccent;
     final hoverColor = (itemCustomColor ?? palette.primaryAccent).withValues(alpha: 0.14);
     final borderColor = widget.active
         ? activeColor
         : (itemCustomColor != null
-            ? itemCustomColor.withValues(alpha: 0.3)
+            ? itemCustomColor.withValues(alpha: 0.35)
             : (_isHovered ? activeColor.withValues(alpha: 0.4) : Colors.transparent));
 
     final isAiPath = widget.item.path == '/ai/setup';
@@ -1211,14 +1266,14 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: widget.active
-                  ? activeColor.withValues(alpha: 0.08)
+                  ? activeColor.withValues(alpha: 0.10)
                   : (_isHovered ? hoverColor : Colors.transparent),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: borderColor, width: 1.0),
+              border: Border.all(color: borderColor, width: 1.2),
               boxShadow: widget.active
                   ? [
                       BoxShadow(
-                        color: activeColor.withValues(alpha: 0.15),
+                        color: activeColor.withValues(alpha: 0.20),
                         blurRadius: 10,
                         spreadRadius: -2,
                       ),
@@ -1226,7 +1281,7 @@ class _SidebarCellState extends ConsumerState<_SidebarCell> {
                   : (itemCustomColor != null
                       ? [
                           BoxShadow(
-                            color: itemCustomColor.withValues(alpha: 0.08),
+                            color: itemCustomColor.withValues(alpha: 0.10),
                             blurRadius: 6,
                           ),
                         ]
@@ -1287,7 +1342,7 @@ class _NavItem {
   final Color? customColor;
 }
 
-class _NavCell extends StatelessWidget {
+class _NavCell extends ConsumerWidget {
   const _NavCell({
     super.key,
     required this.item,
@@ -1302,8 +1357,13 @@ class _NavCell extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final color = active ? EskoliaTokens.textPrimary : _inactiveGray;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customColors = ref.watch(sidebarButtonColorsProvider);
+    final userColorInt = customColors[item.path];
+    final defaultItemColor = item.customColor ?? kDefaultSidebarButtonColors[item.path];
+    final itemAccent = userColorInt != null ? Color(userColorInt) : (defaultItemColor ?? EskoliaTokens.violet);
+
+    final color = active ? EskoliaTokens.textPrimary : itemAccent.withValues(alpha: 0.75);
     final intensity = neon?.intensity.clamp(0.0, 1.5) ?? 1.0;
 
     return Padding(
@@ -1313,8 +1373,8 @@ class _NavCell extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(26),
-          splashColor: EskoliaTokens.violet.withValues(alpha: 0.18),
-          highlightColor: EskoliaTokens.violet.withValues(alpha: 0.08),
+          splashColor: itemAccent.withValues(alpha: 0.18),
+          highlightColor: itemAccent.withValues(alpha: 0.08),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 240),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -1325,8 +1385,8 @@ class _NavCell extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        EskoliaTokens.violet.withValues(alpha: 0.42 * intensity),
-                        EskoliaTokens.violet.withValues(alpha: 0.18 * intensity),
+                        itemAccent.withValues(alpha: 0.42 * intensity),
+                        itemAccent.withValues(alpha: 0.18 * intensity),
                         EskoliaTokens.surface3.withValues(alpha: 0.55),
                       ],
                     )
@@ -1334,7 +1394,7 @@ class _NavCell extends StatelessWidget {
               border: Border.all(
                 color: active
                     ? Color.lerp(
-                          EskoliaTokens.violet,
+                          itemAccent,
                           _cyanGlow,
                           0.35,
                         )!
@@ -1345,7 +1405,7 @@ class _NavCell extends StatelessWidget {
               boxShadow: active
                   ? [
                       BoxShadow(
-                        color: EskoliaTokens.violet.withValues(alpha: 0.45 * intensity),
+                        color: itemAccent.withValues(alpha: 0.45 * intensity),
                         blurRadius: 18,
                         spreadRadius: -2,
                       ),
@@ -1383,11 +1443,11 @@ class _NavCell extends StatelessWidget {
                   height: 3,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(2),
-                    color: active ? _cyanGlow : Colors.transparent,
+                    color: active ? itemAccent : Colors.transparent,
                     boxShadow: active
                         ? [
                             BoxShadow(
-                              color: _cyanGlow.withValues(alpha: 0.85),
+                              color: itemAccent.withValues(alpha: 0.85),
                               blurRadius: 8,
                             ),
                           ]

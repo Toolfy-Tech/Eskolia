@@ -35,14 +35,6 @@ class TpHubScreen extends ConsumerStatefulWidget {
 }
 
 class _TpHubScreenState extends ConsumerState<TpHubScreen> {
-  Timer? _dragDebounceTimer;
-  String? _hoveredDragKey;
-
-  @override
-  void dispose() {
-    _dragDebounceTimer?.cancel();
-    super.dispose();
-  }
 
 
 
@@ -155,299 +147,109 @@ class _TpHubScreenState extends ConsumerState<TpHubScreen> {
     );
   }
 
-  Widget _buildDraggableCard(String key, Widget child, double width) {
-    final isWebOrDesktop = kIsWeb || 
-        defaultTargetPlatform == TargetPlatform.macOS || 
-        defaultTargetPlatform == TargetPlatform.windows || 
-        defaultTargetPlatform == TargetPlatform.linux;
-
-    final feedbackWidget = Material(
-      color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.035,
-        child: Transform.scale(
-          scale: 1.04,
-          child: Opacity(
-            opacity: 0.9,
-            child: Container(
-              width: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.45),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return DragTarget<String>(
-      key: ValueKey(key),
-      onWillAcceptWithDetails: (details) {
-        final dragKey = details.data;
-        if (dragKey != key) {
-          if (_hoveredDragKey != key) {
-            _hoveredDragKey = key;
-            _dragDebounceTimer?.cancel();
-            _dragDebounceTimer = Timer(const Duration(milliseconds: 150), () {
-              if (mounted && _hoveredDragKey == key) {
-                final pinned = ref.read(tpPinnedCardsProvider);
-                final isDragPinned = pinned.contains(dragKey);
-                final isTargetPinned = pinned.contains(key);
-
-                if (isDragPinned != isTargetPinned) {
-                  ref.read(tpPinnedCardsProvider.notifier).togglePin(dragKey);
-                }
-
-                final order = ref.read(tpCardsOrderProvider);
-                final oldIdx = order.indexOf(dragKey);
-                final newIdx = order.indexOf(key);
-                if (oldIdx != -1 && newIdx != -1) {
-                  ref.read(tpCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
-                }
-              }
-            });
-          }
-        }
-        return true;
-      },
-      onLeave: (data) {
-        if (_hoveredDragKey == key) {
-          _dragDebounceTimer?.cancel();
-          _hoveredDragKey = null;
-        }
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        final cardWidget = SizedBox(
-          width: width,
-          child: child,
-        );
-
-        final mainChild = LongPressDraggable<String>(
-          key: ValueKey(key),
-          data: key,
-          delay: const Duration(milliseconds: 700),
-          feedback: feedbackWidget,
-          childWhenDragging: Opacity(
-            opacity: 0.2,
-            child: cardWidget,
-          ),
-          child: cardWidget,
-        );
-
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: mainChild,
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildCardByKey(String key, double cardWidth) {
     if (key == 'feature:tp_reseau') {
       return _buildCardByKeyForReseau(key, cardWidth);
     } else if (key == 'feature:tp_osi') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'Modèle OSI',
-          defaultEmoji: '🌐',
-          accentColor: EskoliaTokens.cyan,
-          body: const TpOsiCardBody(),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: key,
+        title: 'Modèle OSI',
+        defaultEmoji: '🌐',
+        accentColor: EskoliaTokens.cyan,
+        body: const TpOsiCardBody(),
       );
     } else if (key == 'feature:tp_ad') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'Active Directory',
-          defaultEmoji: '👥',
-          accentColor: EskoliaTokens.info,
-          body: const TpActiveDirectoryCardBody(),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: key,
+        title: 'Active Directory',
+        defaultEmoji: '👥',
+        accentColor: EskoliaTokens.info,
+        body: const TpActiveDirectoryCardBody(),
       );
     } else if (key == 'feature:tp_powershell') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'Scripting PowerShell',
-          defaultEmoji: '💻',
-          accentColor: EskoliaTokens.violet,
-          body: const TpPowerShellCardBody(),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: key,
+        title: 'Scripting PowerShell',
+        defaultEmoji: '💻',
+        accentColor: EskoliaTokens.violet,
+        body: const TpPowerShellCardBody(),
       );
     } else if (key == 'feature:tp_packet_tracer') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'Packet Tracer',
-          defaultEmoji: '⚡',
-          accentColor: EskoliaTokens.cyan,
-          body: const TpPacketTracerCardBody(),
-        ),
-        cardWidth,
+      return _buildInteractiveCard(
+        key: key,
+        title: 'Packet Tracer',
+        defaultEmoji: '⚡',
+        accentColor: EskoliaTokens.cyan,
+        body: const TpPacketTracerCardBody(),
       );
     } else if (key == 'feature:tp_itil') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'Gestion de Tickets (ITIL)',
-          defaultEmoji: '🎟️',
-          accentColor: EskoliaTokens.violet,
-          headerActions: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              margin: const EdgeInsets.only(right: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Text(
-                'BIENTÔT',
-                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
-              ),
+      return _buildInteractiveCard(
+        key: key,
+        title: 'Gestion de Tickets (ITIL)',
+        defaultEmoji: '🎟️',
+        accentColor: EskoliaTokens.violet,
+        headerActions: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            margin: const EdgeInsets.only(right: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(6),
             ),
-          ],
-          body: const TpItilCardBody(),
-        ),
-        cardWidth,
+            child: const Text(
+              'BIENTÔT',
+              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+        body: const TpItilCardBody(),
       );
     } else if (key == 'feature:tp_glpi') {
-      return _buildDraggableCard(
-        key,
-        _buildInteractiveCard(
-          key: key,
-          title: 'TP GLPI',
-          defaultEmoji: '📦',
-          accentColor: EskoliaTokens.textDisabled,
-          headerActions: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              margin: const EdgeInsets.only(right: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Text(
-                'BIENTÔT',
-                style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
-              ),
+      return _buildInteractiveCard(
+        key: key,
+        title: 'TP GLPI',
+        defaultEmoji: '📦',
+        accentColor: EskoliaTokens.textDisabled,
+        headerActions: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            margin: const EdgeInsets.only(right: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(6),
             ),
-          ],
-          body: const TpGlpiCardBody(),
-        ),
-        cardWidth,
+            child: const Text(
+              'BIENTÔT',
+              style: TextStyle(color: EskoliaTokens.textSecondary, fontSize: 9, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+        body: const TpGlpiCardBody(),
       );
     }
     return const SizedBox.shrink();
   }
 
   Widget _buildCardByKeyForReseau(String key, double cardWidth) {
-    return _buildDraggableCard(
-      key,
-      _buildInteractiveCard(
-        key: key,
-        title: 'Réseau & Adressage IP',
-        defaultEmoji: '🌐',
-        accentColor: EskoliaTokens.cyan,
-        body: const TpReseauCardBody(),
-      ),
-      cardWidth,
+    return _buildInteractiveCard(
+      key: key,
+      title: 'Réseau & Adressage IP',
+      defaultEmoji: '🌐',
+      accentColor: EskoliaTokens.cyan,
+      body: const TpReseauCardBody(),
     );
-  }
-
-  List<Widget> _addSpacing(List<Widget> list) {
-    if (list.isEmpty) return [];
-    final res = <Widget>[];
-    for (var i = 0; i < list.length; i++) {
-      res.add(list[i]);
-      if (i < list.length - 1) {
-        res.add(const SizedBox(height: 16));
-      }
-    }
-    return res;
   }
 
   Widget _buildCardsGrid(BuildContext context, double cardWidth, int numColumns) {
     final rawOrder = ref.watch(tpCardsOrderProvider);
-    final pinned = ref.watch(tpPinnedCardsProvider);
-    final settingsMap = ref.watch(homeCardSettingsProvider);
 
-    Widget buildGrid(List<String> keys) {
-      final cards = keys.map((key) => _buildCardByKey(key, cardWidth)).toList();
-
-      final columns = distributeMasonryColumns<int>(
-        items: List.generate(keys.length, (i) => i),
-        numColumns: numColumns,
-        estimateHeight: (index) {
-          final key = keys[index];
-          final isCollapsed = settingsMap[key]?.isCollapsed ?? false;
-          if (isCollapsed) return 65.0;
-          if (key == 'feature:tp_scenario') return 520.0;
-          if (key == 'feature:tp_itil' || key == 'feature:tp_glpi') return 220.0;
-          return 400.0;
-        },
-      );
-
-      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
-      return buildMasonryColumnsRow(columns: widgetColumns);
-    }
-
-    if (pinned.isEmpty) {
-      return buildGrid(rawOrder);
-    } else {
-      final pinnedKeys = rawOrder.where((k) => pinned.contains(k)).toList();
-      final otherKeys = rawOrder.where((k) => !pinned.contains(k)).toList();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildSectionHeader('Épinglées'),
-          buildGrid(pinnedKeys),
-          if (otherKeys.isNotEmpty) ...[
-            const SizedBox(height: 24),
-            _buildSectionHeader('Autres'),
-            buildGrid(otherKeys),
-          ],
-        ],
-      );
-    }
+    return EskoliaMultiColumnBoard(
+      screenKey: 'tp',
+      activeKeys: rawOrder,
+      numColumns: numColumns,
+      cardWidth: cardWidth,
+      cardBuilder: (ctx, key) => _buildCardByKey(key, cardWidth),
+    );
   }
 
   @override

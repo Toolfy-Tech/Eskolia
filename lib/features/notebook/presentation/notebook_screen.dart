@@ -55,174 +55,16 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   final _repo = NotebookRepository();
   late Future<List<NoteModel>> _notesFuture;
 
-  final Map<String, GlobalKey> _cardKeys = {};
-  Timer? _dragDebounceTimer;
-  String? _hoveredDragKey;
-
-  GlobalKey _getOrCreateKey(String cardKey) {
-    return _cardKeys.putIfAbsent(cardKey, () => GlobalKey(debugLabel: cardKey));
-  }
-
   @override
   void initState() {
     super.initState();
     _load();
   }
 
-  @override
-  void dispose() {
-    _dragDebounceTimer?.cancel();
-    super.dispose();
-  }
-
   void _load() {
     setState(() {
       _notesFuture = _repo.loadAll();
     });
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 12),
-      child: Row(
-        children: [
-          const SizedBox(width: 4),
-          Text(
-            title.toUpperCase(),
-            style: GoogleFonts.outfit(
-              color: Colors.white60,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.5,
-            ),
-          ),
-          const SizedBox(width: 8),
-          const Expanded(
-            child: Divider(
-              color: Colors.white12,
-              thickness: 1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDraggableCard(String key, Widget child, double width) {
-    final isWebOrDesktop = kIsWeb || 
-        defaultTargetPlatform == TargetPlatform.macOS || 
-        defaultTargetPlatform == TargetPlatform.windows || 
-        defaultTargetPlatform == TargetPlatform.linux;
-
-    final feedbackWidget = Material(
-      color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.015,
-        child: Transform.scale(
-          scale: 1.02,
-          child: Opacity(
-            opacity: 0.85,
-            child: Container(
-              width: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.3),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return DragTarget<String>(
-      key: _getOrCreateKey(key),
-      onWillAcceptWithDetails: (details) {
-        final dragKey = details.data;
-        if (dragKey != key) {
-          if (_hoveredDragKey != key) {
-            _hoveredDragKey = key;
-            _dragDebounceTimer?.cancel();
-            _dragDebounceTimer = Timer(const Duration(milliseconds: 60), () {
-              if (mounted && _hoveredDragKey == key) {
-                final pinned = ref.read(notebookPinnedNotesProvider);
-                final isDragPinned = pinned.contains(dragKey);
-                final isTargetPinned = pinned.contains(key);
-
-                if (isDragPinned != isTargetPinned) {
-                  ref.read(notebookPinnedNotesProvider.notifier).togglePin(dragKey);
-                }
-
-                final order = ref.read(notebookNotesOrderProvider);
-                final oldIdx = order.indexOf(dragKey);
-                final newIdx = order.indexOf(key);
-                if (oldIdx != -1 && newIdx != -1) {
-                  ref.read(notebookNotesOrderProvider.notifier).reorder(oldIdx, newIdx);
-                }
-              }
-            });
-          }
-        }
-        return true;
-      },
-      onLeave: (data) {
-        if (_hoveredDragKey == key) {
-          _dragDebounceTimer?.cancel();
-          _hoveredDragKey = null;
-        }
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        final cardWidget = SizedBox(
-          width: width,
-          child: child,
-        );
-
-        final mainChild = LongPressDraggable<String>(
-          key: ValueKey('${key}_drag'),
-          data: key,
-          delay: const Duration(milliseconds: 700),
-          feedback: feedbackWidget,
-          childWhenDragging: Opacity(
-            opacity: 0.15,
-            child: cardWidget,
-          ),
-          child: cardWidget,
-        );
-
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: mainChild,
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -243,56 +85,6 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     final numColumns = colRes.columns;
     final cardWidth = colRes.cardWidth;
 
-    final order = ref.watch(notebookNotesOrderProvider);
-    final pinned = ref.watch(notebookPinnedNotesProvider);
-
-    List<Widget> addSpacing(List<Widget> list) {
-      if (list.isEmpty) return [];
-      final res = <Widget>[];
-      for (var i = 0; i < list.length; i++) {
-        res.add(list[i]);
-        if (i < list.length - 1) {
-          res.add(const SizedBox(height: 16));
-        }
-      }
-      return res;
-    }
-
-    Widget buildGrid(List<NoteModel> list, {required bool includeAddCard}) {
-      final cards = <Widget>[];
-
-      if (includeAddCard) {
-        cards.add(
-          _AddNoteGridCard(onNoteCreated: _load),
-        );
-      }
-
-      cards.addAll(
-        list.map((note) {
-          return _buildDraggableCard(
-            note.id,
-            _NoteCard(
-              key: ValueKey(note.id),
-              note: note,
-              onDeleted: _load,
-            ),
-            cardWidth,
-          );
-        }).toList()
-      );
-
-      final columns = distributeMasonryColumns<Widget>(
-        items: cards,
-        numColumns: numColumns,
-        estimateHeight: (card) {
-          if (card is _AddNoteGridCard) return 100.0;
-          return 200.0;
-        },
-      );
-
-      return buildMasonryColumnsRow(columns: columns);
-    }
-
     return Scaffold(
       extendBodyBehindAppBar: false,
       backgroundColor: Colors.transparent,
@@ -311,59 +103,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 }
                 final notes = snap.data ?? const [];
 
-                // Mettre à jour et synchroniser l'ordre de tri
-                final allIds = notes.map((n) => n.id).toList();
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) {
-                    ref.read(notebookNotesOrderProvider.notifier).updateOrder(allIds);
-                  }
-                });
-
-                // Trier les notes
-                final sortedNotes = List<NoteModel>.from(notes);
-                sortedNotes.sort((a, b) {
-                  final idxA = order.indexOf(a.id);
-                  final idxB = order.indexOf(b.id);
-                  if (idxA == -1 && idxB == -1) return 0;
-                  if (idxA == -1) return 1;
-                  if (idxB == -1) return -1;
-                  return idxA.compareTo(idxB);
-                });
-
-                final pinnedNotes = sortedNotes.where((note) => pinned.contains(note.id)).toList();
-                final otherNotes = sortedNotes.where((note) => !pinned.contains(note.id)).toList();
-
-                Widget gridContent;
-                if (notes.isEmpty) {
-                  gridContent = Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildSectionHeader('Mes Notes'),
-                      buildGrid([], includeAddCard: true),
-                    ],
-                  );
-                } else if (pinnedNotes.isEmpty) {
-                  gridContent = Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildSectionHeader('Mes Notes'),
-                      buildGrid(notes, includeAddCard: true),
-                    ],
-                  );
-                } else {
-                  gridContent = Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildSectionHeader('Épinglées'),
-                      buildGrid(pinnedNotes, includeAddCard: true),
-                      if (otherNotes.isNotEmpty) ...[
-                        const SizedBox(height: 24),
-                        _buildSectionHeader('Autres'),
-                        buildGrid(otherNotes, includeAddCard: false),
-                      ],
-                    ],
-                  );
-                }
+                final allNoteKeys = ['add_note', ...notes.map((n) => n.id)];
 
                 final noteCardOptions = notes.map((n) {
                   final t = n.title.trim().isEmpty ? 'Sans titre' : n.title.trim();
@@ -371,6 +111,27 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 }).toList();
 
                 final noteKeys = notes.map((n) => 'note:${n.id}').toList();
+
+                final gridContent = EskoliaMultiColumnBoard(
+                  screenKey: 'notebook',
+                  activeKeys: allNoteKeys,
+                  numColumns: numColumns,
+                  cardWidth: cardWidth,
+                  cardBuilder: (ctx, key) {
+                    if (key == 'add_note') {
+                      return _AddNoteGridCard(onNoteCreated: _load);
+                    }
+                    final note = notes.firstWhere(
+                      (n) => n.id == key,
+                      orElse: () => NoteModel(id: key, title: 'Note', content: '', createdAt: DateTime.now(), updatedAt: DateTime.now()),
+                    );
+                    return _NoteCard(
+                      key: ValueKey(note.id),
+                      note: note,
+                      onDeleted: _load,
+                    );
+                  },
+                );
 
                 final listContent = ListView(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),

@@ -84,8 +84,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isModuleListExpanded = false;
 
   StreamSubscription<UserModel?>? _userSub;
-  Timer? _dragDebounceTimer;
-  String? _hoveredDragKey;
 
   @override
   void initState() {
@@ -97,7 +95,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void dispose() {
     _userSub?.cancel();
-    _dragDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -1965,184 +1962,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildDraggableCard(String key, Widget child, double width) {
-    final isWebOrDesktop = kIsWeb || 
-        defaultTargetPlatform == TargetPlatform.macOS || 
-        defaultTargetPlatform == TargetPlatform.windows || 
-        defaultTargetPlatform == TargetPlatform.linux;
-
-    final feedbackWidget = Material(
-      color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.035, // ~2 degrés d'inclinaison
-        child: Transform.scale(
-          scale: 1.04, // léger zoom
-          child: Opacity(
-            opacity: 0.9,
-            child: Container(
-              width: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.45),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return DragTarget<String>(
-      key: ValueKey(key),
-      onWillAcceptWithDetails: (details) {
-        final dragKey = details.data;
-        if (dragKey != key) {
-          if (_hoveredDragKey != key) {
-            _hoveredDragKey = key;
-            _dragDebounceTimer?.cancel();
-            _dragDebounceTimer = Timer(const Duration(milliseconds: 150), () {
-              if (mounted && _hoveredDragKey == key) {
-                final pinned = ref.read(homePinnedCardsProvider);
-                final isDragPinned = pinned.contains(dragKey);
-                final isTargetPinned = pinned.contains(key);
-
-                // Si déplacement vers une section différente, on bascule l'épinglage
-                if (isDragPinned != isTargetPinned) {
-                  ref.read(homePinnedCardsProvider.notifier).togglePin(dragKey);
-                }
-
-                final order = ref.read(homeCardsOrderProvider);
-                final oldIdx = order.indexOf(dragKey);
-                final newIdx = order.indexOf(key);
-                if (oldIdx != -1 && newIdx != -1) {
-                  ref.read(homeCardsOrderProvider.notifier).reorder(oldIdx, newIdx);
-                }
-              }
-            });
-          }
-        }
-        return true;
-      },
-      onLeave: (data) {
-        if (_hoveredDragKey == key) {
-          _dragDebounceTimer?.cancel();
-          _hoveredDragKey = null;
-        }
-      },
-      builder: (context, candidateData, rejectedData) {
-        final isHovered = candidateData.isNotEmpty;
-
-        final cardWidget = SizedBox(
-          width: width,
-          child: child,
-        );
-
-        final mainChild = LongPressDraggable<String>(
-          key: ValueKey(key),
-          data: key,
-          delay: const Duration(milliseconds: 700),
-          feedback: feedbackWidget,
-          childWhenDragging: Opacity(
-            opacity: 0.2,
-            child: cardWidget,
-          ),
-          child: cardWidget,
-        );
-
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeInOut,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
-              width: 2.0,
-            ),
-            boxShadow: isHovered
-                ? [
-                    BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                      blurRadius: 12,
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: mainChild,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildEmptyPlaceholder(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: EskoliaTokens.cyan.withValues(alpha: 0.1),
-                border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.3), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                    blurRadius: 16,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text(
-                  '🚀',
-                  style: TextStyle(fontSize: 36),
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Ton Accueil Personnalisé',
-              style: GoogleFonts.outfit(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Cet espace est vide pour l\'instant.\nParcours les différentes rubriques de l\'application et clique sur l\'icône d\'épingle 📌 pour y ajouter tes outils favoris !',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: EskoliaTokens.textSecondary.withValues(alpha: 0.8),
-                fontSize: 13,
-                height: 1.4,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildMain(BuildContext context) {
     final user = _user!;
+    const hPad = 20.0;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktopOrTablet = width >= 700;
-    final sidebarWidth = isDesktopOrTablet ? (ref.watch(sidebarCollapsedProvider) ? 72 : 250) : 0;
-    final availableWidth = (width - sidebarWidth - 40).clamp(280.0, double.infinity);
+
+    final isLargeScreen = width >= 700;
+    final sidebarWidth = isLargeScreen ? (ref.watch(sidebarCollapsedProvider) ? 78.0 : 250.0) : 0.0;
+    final availableWidth = (width - sidebarWidth - (hPad * 2)).clamp(280.0, double.infinity);
 
     final colPref = ref.watch(columnPreferenceProvider('home'));
     final colRes = ColumnResolution.compute(
@@ -2153,123 +1980,118 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final numColumns = colRes.columns;
     final cardWidth = colRes.cardWidth;
 
-    final order = ref.watch(homeCardsOrderProvider);
-    final pinned = ref.watch(homePinnedCardsProvider);
-    final settingsMap = ref.watch(homeCardSettingsProvider);
+    final subscribedSources = ref.watch(homeSubscribedSourcesProvider);
+    final rawOrder = ref.watch(homeCardsOrderProvider);
+
+    final allAvailableKeys = <String>[
+      'messages',
+      'astuces',
+      'favoris',
+      'it_pro',
+      'it',
+      'security',
+      'hardware',
+      'software',
+      'feature:podcasts',
+      'feature:ai',
+      'feature:solo',
+      'feature:solo_quiz',
+      'feature:solo_quiz_ai',
+      'feature:solo_true_false',
+      'feature:solo_lacunes',
+      'feature:solo_pool',
+      'feature:flashcards',
+      'feature:flashcards_deck',
+      'feature:notebook',
+      'feature:examen_blanc',
+      'feature:parcours',
+      'feature:mediatheque',
+      'feature:lexique',
+      'feature:tp',
+      'feature:tp_reseau',
+      'feature:tp_ad',
+      'feature:tp_powershell',
+      'feature:tp_packet_tracer',
+      'feature:tp_itil',
+      'feature:tp_glpi',
+      'feature:lobbys',
+      'feature:lobbys_active',
+      'feature:lobbys_create',
+      'feature:lobbys_create_ai',
+      'feature:lobbys_join_private',
+      'feature:duel_quick',
+      'feature:classement',
+      'feature:leaderboard_mini',
+      'feature:labo',
+      'feature:labo_contrib',
+      'feature:docs',
+      'feature:docs_search',
+      ...subscribedSources.map((s) => 'source:$s'),
+    ];
+
+    final order = <String>[];
+    for (final k in rawOrder) {
+      if (allAvailableKeys.contains(k) || k.startsWith('note:') || k.startsWith('merge:') || k.startsWith('source:')) {
+        order.add(k);
+      }
+    }
+    for (final k in allAvailableKeys) {
+      if (!order.contains(k)) {
+        order.add(k);
+      }
+    }
 
     final displayKeys = order;
 
-    const availableHomeCards = [
-      EskoliaCardOption(key: 'messages', title: 'Messages d\'accueil', emoji: '👋'),
-      EskoliaCardOption(key: 'astuces', title: 'Astuces Pro', emoji: '💡'),
-      EskoliaCardOption(key: 'it_pro', title: 'Veille Générale', emoji: '🖥️'),
-      EskoliaCardOption(key: 'security', title: 'Sécurité & Menaces', emoji: '🛡️'),
-      EskoliaCardOption(key: 'hardware', title: 'Veille Hardware', emoji: '🔌'),
-      EskoliaCardOption(key: 'software', title: 'Veille Software', emoji: '💿'),
-      EskoliaCardOption(key: 'favoris', title: 'Articles Favoris', emoji: '❤️'),
-      EskoliaCardOption(key: 'feature:parcours', title: 'Formation TIP', emoji: '🎓'),
-      EskoliaCardOption(key: 'feature:examen_blanc', title: 'Examens Blancs TIP', emoji: '🏆'),
-      EskoliaCardOption(key: 'feature:podcasts', title: 'Podcasts de cours', emoji: '🎧'),
-      EskoliaCardOption(key: 'feature:solo_quiz', title: 'Générateur de Quiz', emoji: '🎮'),
-      EskoliaCardOption(key: 'feature:solo_quiz_ai', title: 'Génération IA', emoji: '🧠'),
-      EskoliaCardOption(key: 'feature:solo_lacunes', title: 'Mes fautes', emoji: '❌'),
-      EskoliaCardOption(key: 'feature:solo_pool', title: 'À revoir', emoji: '📌'),
-      EskoliaCardOption(key: 'feature:lobbys_active', title: 'Salons Actifs', emoji: '👥'),
-      EskoliaCardOption(key: 'feature:lobbys_create', title: 'Créer un Salon', emoji: '➕'),
-      EskoliaCardOption(key: 'feature:duel_quick', title: 'Défi Express', emoji: '⚡'),
-      EskoliaCardOption(key: 'feature:notebook', title: 'Mon Bloc-notes', emoji: '📝'),
-      EskoliaCardOption(key: 'feature:docs_search', title: 'Recherche de Mémos', emoji: '📖'),
-      EskoliaCardOption(key: 'feature:leaderboard_mini', title: 'Classement', emoji: '🏆'),
+    final availableHomeCards = [
+      const EskoliaCardOption(key: 'messages', title: 'Bienvenue', emoji: '👋'),
+      const EskoliaCardOption(key: 'astuces', title: 'Astuces Pro', emoji: '💡'),
+      const EskoliaCardOption(key: 'favoris', title: 'Articles Favoris', emoji: '❤️'),
+      const EskoliaCardOption(key: 'it_pro', title: 'Veille Générale', emoji: '🖥️'),
+      const EskoliaCardOption(key: 'it', title: 'Veille IT', emoji: '💻'),
+      const EskoliaCardOption(key: 'security', title: 'Sécurité & Menaces', emoji: '🛡️'),
+      const EskoliaCardOption(key: 'hardware', title: 'Veille Hardware', emoji: '🔌'),
+      const EskoliaCardOption(key: 'software', title: 'Veille Software', emoji: '💿'),
+      const EskoliaCardOption(key: 'feature:podcasts', title: 'Podcasts Audio', emoji: '🎙️'),
+      const EskoliaCardOption(key: 'feature:ai', title: 'Tuteur IA', emoji: '🧠'),
+      const EskoliaCardOption(key: 'feature:solo', title: 'Mode Solo (Quiz)', emoji: '🎮'),
+      const EskoliaCardOption(key: 'feature:parcours', title: 'Parcours', emoji: '📚'),
+      const EskoliaCardOption(key: 'feature:tp', title: 'Travaux Pratiques', emoji: '🛠️'),
+      const EskoliaCardOption(key: 'feature:lobbys', title: 'Multijoueur', emoji: '🎮'),
+      const EskoliaCardOption(key: 'feature:docs', title: 'Documentation', emoji: '📖'),
+      const EskoliaCardOption(key: 'feature:notebook', title: 'Mon Carnet', emoji: '📝'),
+      const EskoliaCardOption(key: 'feature:flashcards', title: 'Flashcards', emoji: '🗂️'),
+      const EskoliaCardOption(key: 'feature:classement', title: 'Classement', emoji: '🏆'),
     ];
-
-    Widget buildGrid(List<String> keys) {
-      final cards = keys.map((key) {
-        return _buildDraggableCard(key, _buildCardByKey(key, user), cardWidth);
-      }).toList();
-
-      double estimateCardHeight(String key) {
-        final settings = settingsMap[key];
-        final isCollapsed = settings?.isCollapsed ?? false;
-        if (isCollapsed) return 85.0;
-
-        if (key == 'feature:parcours') return 250.0;
-        if (key == 'feature:podcasts') return 160.0;
-        if (key == 'feature:examen_blanc') return 180.0;
-        if (key == 'feature:lexique') return 300.0;
-        if (key == 'feature:mediatheque') return 300.0;
-        if (key == 'feature:lobbys_active') return 260.0;
-        if (key == 'feature:lobbys_create') return 340.0;
-        if (key == 'feature:lobbys_create_ai') return 340.0;
-        if (key == 'feature:lobbys_join_private') return 160.0;
-        if (key == 'feature:labo_contrib') return 300.0;
-        if (key == 'feature:duel_quick') return 200.0;
-        if (key == 'feature:docs_search') return 220.0;
-        if (key == 'feature:leaderboard_mini') return 220.0;
-        if (key == 'feature:flashcards_deck') return 200.0;
-        if (key == 'feature:notebook') return 240.0;
-        if (key == 'messages' || key == 'astuces') {
-          final limit = settings?.limit ?? 5;
-          return 80.0 + (limit * 56.0); // 56px par ligne
-        }
-        if (key == 'it_pro' ||
-            key == 'it' ||
-            key == 'security' ||
-            key == 'hardware' ||
-            key == 'software' ||
-            key == 'favoris' ||
-            key.startsWith('source:')) {
-          final limit = settings?.limit ?? 5;
-          return 140.0 + (limit * 52.0);
-        }
-        if (key.startsWith('note:')) return 160.0;
-        return 180.0;
-      }
-
-      final columns = distributeMasonryColumns<int>(
-        items: List.generate(keys.length, (i) => i),
-        numColumns: numColumns,
-        estimateHeight: (index) => estimateCardHeight(keys[index]),
-      );
-
-      final widgetColumns = columns.map((colIndices) => colIndices.map((i) => cards[i]).toList()).toList();
-      return buildMasonryColumnsRow(columns: widgetColumns);
-    }
 
     Widget content;
     if (displayKeys.isEmpty) {
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildEmptyPlaceholder(context),
-        ],
+      content = const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 40),
+          child: Column(
+            children: [
+              Icon(Icons.dashboard_customize_outlined, size: 48, color: Colors.white30),
+              SizedBox(height: 12),
+              Text('Aucune carte affichée', style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.bold)),
+              SizedBox(height: 6),
+              Text('Personnalisez votre tableau de bord en ajoutant des cartes.', style: TextStyle(color: Colors.white38, fontSize: 12)),
+            ],
+          ),
+        ),
       );
     } else {
-      final pinnedKeys = displayKeys.where((k) => pinned.contains(k)).toList();
-      final otherKeys = displayKeys.where((k) => !pinned.contains(k)).toList();
-
-      if (pinned.isEmpty) {
-        content = Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildGrid(displayKeys),
-          ],
-        );
-      } else {
-        content = Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildSectionHeader('Épinglées'),
-            buildGrid(pinnedKeys),
-            const SizedBox(height: 24),
-            _buildSectionHeader('Autres'),
-            buildGrid(otherKeys),
-          ],
-        );
-      }
+      content = EskoliaMultiColumnBoard(
+        screenKey: 'home',
+        activeKeys: displayKeys,
+        numColumns: numColumns,
+        cardWidth: cardWidth,
+        cardBuilder: (ctx, key) => _buildCardByKey(key, user),
+      );
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+      padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 120),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
