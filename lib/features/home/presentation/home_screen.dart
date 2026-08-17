@@ -36,6 +36,7 @@ import '../../tp/presentation/tp_hub_screen.dart';
 import '../../parcours/data/parcours_repository.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/data/podcast_player_service.dart';
+import '../../podcasts/data/podcast_downloader.dart';
 import '../../solo/presentation/widgets/solo_quiz_card_body.dart';
 import '../../solo/presentation/widgets/solo_lacunes_card_body.dart';
 import '../../solo/presentation/widgets/solo_pool_card_body.dart';
@@ -1699,6 +1700,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   color: EskoliaTokens.cyan,
                   size: 18,
                 ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.download_rounded),
+                color: Colors.white60,
+                iconSize: 18,
+                tooltip: 'Télécharger',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => downloadPodcastDirectly(context, p),
+              ),
             ],
           ),
         ),
@@ -1836,6 +1847,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   IconButton(
                     icon: const Icon(Icons.skip_next_rounded, color: Colors.white70, size: 20),
                     onPressed: () => _playNextPrev(true),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(width: 6),
+                  IconButton(
+                    icon: const Icon(Icons.download_rounded, color: Colors.white70, size: 20),
+                    tooltip: 'Télécharger ce podcast',
+                    onPressed: () => downloadPodcastDirectly(context, activePodcast),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),

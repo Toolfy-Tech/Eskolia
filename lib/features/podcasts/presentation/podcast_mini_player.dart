@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/podcast_player_service.dart';
+import '../data/podcast_downloader.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 
 /// Mini-lecteur persistant affiché dans le shell quand un podcast est actif.
@@ -126,6 +127,11 @@ class PodcastMiniPlayer extends ConsumerWidget {
                             ),
                           )
                       : null,
+                ),
+                // Télécharger
+                _SeekButton(
+                  icon: Icons.download_rounded,
+                  onTap: () => downloadPodcastDirectly(context, podcast),
                 ),
                 // Fermer
                 IconButton(

@@ -23,6 +23,7 @@ import '../../economy/data/daily_quest_reward_service.dart';
 import '../../home/data/daily_quests_repository.dart';
 import '../../podcasts/data/podcast_model.dart';
 import '../../podcasts/presentation/podcast_player_card.dart';
+import '../../podcasts/data/podcast_downloader.dart';
 import '../data/parcours_repository.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 import '../../../core/utils/feature_info_resolver.dart';
@@ -874,13 +875,23 @@ class _CompactPodcastTile extends ConsumerWidget {
               ),
               if (isPlaying)
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 6.0),
                   child: Icon(
                     Icons.volume_up_rounded,
                     color: accentColor,
                     size: 14,
                   ),
                 ),
+              const SizedBox(width: 4),
+              IconButton(
+                icon: const Icon(Icons.download_rounded),
+                color: Colors.white70,
+                iconSize: 18,
+                tooltip: 'Télécharger le podcast',
+                padding: const EdgeInsets.all(4),
+                constraints: const BoxConstraints(),
+                onPressed: () => downloadPodcastDirectly(context, podcast),
+              ),
             ],
           ),
         ),
@@ -1074,6 +1085,14 @@ class _PodcastsCardBody extends ConsumerWidget {
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
+                  const SizedBox(width: 6),
+                  IconButton(
+                    icon: const Icon(Icons.download_rounded, color: Colors.white70, size: 20),
+                    tooltip: 'Télécharger ce podcast',
+                    onPressed: () => downloadPodcastDirectly(context, activePodcast),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
                 ],
               ),
             ),
@@ -1159,6 +1178,13 @@ class _PodcastsCardBody extends ConsumerWidget {
                                   style: const TextStyle(fontSize: 10),
                                 )
                               : null,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.download_rounded, color: Colors.white60, size: 18),
+                            tooltip: 'Télécharger',
+                            onPressed: () => downloadPodcastDirectly(context, p),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
                           onTap: () {
                             ref.read(podcastPlayerProvider.notifier).play(p);
                           },

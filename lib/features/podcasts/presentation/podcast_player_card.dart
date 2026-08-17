@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/widgets/eskolia_card.dart';
 import '../data/podcast_model.dart';
 import '../data/podcast_player_service.dart';
+import '../data/podcast_downloader.dart';
 import '../../../core/constants/eskolia_tokens.dart';
 
 export '../data/podcast_player_service.dart' show podcastPlayerProvider;
@@ -120,14 +121,11 @@ class PodcastPlayerCard extends ConsumerWidget {
                     icon: const Icon(Icons.download_rounded),
                     color: EskoliaTokens.textSecondary,
                     iconSize: 20,
-                    tooltip: 'Telecharger',
+                    tooltip: 'Télécharger le podcast',
                     padding: const EdgeInsets.all(8),
                     constraints: const BoxConstraints(),
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => launchUrl(
-                      Uri.parse(podcast.url),
-                      mode: LaunchMode.externalApplication,
-                    ),
+                    onPressed: () => downloadPodcastDirectly(context, podcast),
                   ),
                   const SizedBox(width: 2),
                   Icon(
