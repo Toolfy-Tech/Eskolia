@@ -159,10 +159,18 @@ final GoRouter appRouter = GoRouter(
           pageBuilder: (context, state) => eskoliaTransitionPage(child: LobbyDetailScreen(lobbyId: state.pathParameters['id']!)),
         ),
         GoRoute(
+          path: '/lobbys/:id',
+          redirect: (context, state) => '/lobby/${state.pathParameters['id']}',
+        ),
+        GoRoute(
           path: '/lobby/:id/battle',
           pageBuilder: (context, state) => eskoliaTransitionPage(
             child: BattleScreen(lobbyId: state.pathParameters['id']!),
           ),
+        ),
+        GoRoute(
+          path: '/lobbys/:id/battle',
+          redirect: (context, state) => '/lobby/${state.pathParameters['id']}/battle',
         ),
         GoRoute(
           path: '/home',

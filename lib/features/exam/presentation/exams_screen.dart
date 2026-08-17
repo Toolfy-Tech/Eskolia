@@ -131,7 +131,7 @@ class _ExamsScreenState extends State<ExamsScreen> {
 
       if (mounted) {
         setState(() => _loadingLobbyExamId = null);
-        context.push('/lobbys/$lobbyId');
+        context.push('/lobby/$lobbyId');
       }
     } catch (e) {
       if (mounted) {
@@ -704,7 +704,8 @@ class _ExamsScreenState extends State<ExamsScreen> {
                             ),
                           ),
                         ),
-                        if (exam.isCompleted)
+                        if (exam.isCompleted) ...[
+                          const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
@@ -721,6 +722,7 @@ class _ExamsScreenState extends State<ExamsScreen> {
                               ),
                             ),
                           ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -735,66 +737,56 @@ class _ExamsScreenState extends State<ExamsScreen> {
                   ],
                 ),
               ),
+              const SizedBox(width: 12),
+              // Bouton Créer un salon (en haut à droite au niveau du titre)
+              OutlinedButton.icon(
+                onPressed: _loadingLobbyExamId == exam.id ? null : () => _startExamLobby(exam),
+                icon: _loadingLobbyExamId == exam.id
+                    ? const SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(strokeWidth: 1.5, color: EskoliaTokens.cyan),
+                      )
+                    : const Icon(Icons.groups_rounded, size: 15, color: EskoliaTokens.cyan),
+                label: const Text(
+                  'Créer un salon',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: EskoliaTokens.cyan),
+                ),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.10),
+                  side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.45)),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
           const Divider(color: Colors.white10, height: 1),
           const SizedBox(height: 10),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: _buildMetaChip(Icons.help_outline_rounded, '${exam.questionCount} questions'),
-              ),
+              _buildMetaChip(Icons.help_outline_rounded, '${exam.questionCount} questions'),
               const Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Bouton pour lancer directement un salon multijoueur avec correction entre chaque question
-                  OutlinedButton.icon(
-                    onPressed: _loadingLobbyExamId == exam.id ? null : () => _startExamLobby(exam),
-                    icon: _loadingLobbyExamId == exam.id
-                        ? const SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(strokeWidth: 1.5, color: EskoliaTokens.cyan),
-                          )
-                        : const Icon(Icons.groups_rounded, size: 15, color: EskoliaTokens.cyan),
-                    label: const Text(
-                      'Créer un Salon (Correction live)',
-                      style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: EskoliaTokens.cyan),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: EskoliaTokens.cyan.withValues(alpha: 0.10),
-                      side: BorderSide(color: EskoliaTokens.cyan.withValues(alpha: 0.45)),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Bouton Solo Démarrer
-                  ElevatedButton.icon(
-                    onPressed: () => _startExam(exam),
-                    icon: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.black),
-                    label: Text(
-                      exam.isCompleted ? 'Rejouer en solo' : 'Démarrer en solo',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: accent,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      elevation: 0,
-                    ),
-                  ),
-                ],
+              // Bouton Solo Démarrer (en bas à droite)
+              ElevatedButton.icon(
+                onPressed: () => _startExam(exam),
+                icon: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.black),
+                label: Text(
+                  exam.isCompleted ? 'Rejouer' : 'Solo',
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accent,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  elevation: 0,
+                ),
               ),
             ],
           ),
