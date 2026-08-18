@@ -122,12 +122,44 @@ class _BattleScreenState extends State<BattleScreen> {
 
   PlayerState? _me(BattleState s) => s.players.where((p) => p.userId == _uid).firstOrNull;
 
+  List<String> _extractSequenceItems(BattleQuestion q) {
+    if (q.answerSequence != null && q.answerSequence!.isNotEmpty) {
+      return List<String>.from(q.answerSequence!);
+    }
+    if (q.options != null && q.options!.isNotEmpty) {
+      return List<String>.from(q.options!);
+    }
+    if (q.answer.isNotEmpty) {
+      final lines = q.answer.split(RegExp(r'\r?\n'));
+      final extracted = <String>[];
+      for (final line in lines) {
+        final cleaned = line.replaceFirst(RegExp(r'^\s*(\d+[.)\-•]|\-|\•)\s*'), '').trim();
+        if (cleaned.isNotEmpty) extracted.add(cleaned);
+      }
+      if (extracted.length >= 2) return extracted;
+    }
+    return [];
+  }
+
   void _initSequenceForQuestion(BattleQuestion q) {
-    if (q.id == _sequenceQuestionId) return;
-    if (q.options == null || q.options!.isEmpty) return;
+    if (q.id == _sequenceQuestionId && _sequenceOrder.isNotEmpty) return;
+    final items = _extractSequenceItems(q);
+    if (items.isEmpty) return;
     setState(() {
       _sequenceQuestionId = q.id;
-      _sequenceOrder = List<String>.from(q.options!)..shuffle();
+      _sequenceOrder = List<String>.from(items)..shuffle();
+      if (_sequenceOrder.length > 1 && _sequenceOrder.join(';') == items.join(';')) {
+        _sequenceOrder = _sequenceOrder.reversed.toList();
+      }
+    });
+  }
+
+  void _moveSequenceItem(int fromIndex, int toIndex) {
+    if (fromIndex < 0 || fromIndex >= _sequenceOrder.length) return;
+    if (toIndex < 0 || toIndex >= _sequenceOrder.length) return;
+    setState(() {
+      final item = _sequenceOrder.removeAt(fromIndex);
+      _sequenceOrder.insert(toIndex, item);
     });
   }
 
@@ -351,7 +383,28 @@ class _BattleScreenState extends State<BattleScreen> {
 
   Widget _buildSequenceReorder(BattleQuestion q) {
     if (_sequenceQuestionId != q.id || _sequenceOrder.isEmpty) {
-      return const Center(child: CircularProgressIndicator(color: _cyan));
+      final items = _extractSequenceItems(q);
+      if (items.isNotEmpty) {
+        _sequenceQuestionId = q.id;
+        _sequenceOrder = List<String>.from(items)..shuffle();
+        if (_sequenceOrder.length > 1 && _sequenceOrder.join(';') == items.join(';')) {
+          _sequenceOrder = _sequenceOrder.reversed.toList();
+        }
+      }
+    }
+    if (_sequenceOrder.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.04),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        ),
+        child: Text(
+          q.answer,
+          style: const TextStyle(color: Colors.white70, fontSize: 14, height: 1.5),
+        ),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -361,7 +414,7 @@ class _BattleScreenState extends State<BattleScreen> {
             Icon(Icons.swap_vert_rounded, color: _cyan, size: 16),
             SizedBox(width: 6),
             Text(
-              'GLISSE POUR ORDONNER',
+              'GLISSE OU UTILISE LES FLÈCHES POUR ORDONNER',
               style: TextStyle(color: _cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
@@ -387,7 +440,7 @@ class _BattleScreenState extends State<BattleScreen> {
           children: [
             for (int i = 0; i < _sequenceOrder.length; i++)
               _buildSequenceItem(
-                key: ValueKey(_sequenceOrder[i]),
+                key: ValueKey('battle_seq_${q.id}_${_sequenceOrder[i]}'),
                 index: i,
                 label: _sequenceOrder[i],
               ),
@@ -408,7 +461,7 @@ class _BattleScreenState extends State<BattleScreen> {
       ),
       child: Row(
         children: [
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Container(
             width: 26,
             height: 26,
@@ -422,16 +475,35 @@ class _BattleScreenState extends State<BattleScreen> {
               style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.drag_handle_rounded, color: Colors.white30, size: 20),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_upward_rounded, color: _cyan, size: 18),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: 'Monter',
+                onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_downward_rounded, color: _cyan, size: 18),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                tooltip: 'Descendre',
+                onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(right: 8, left: 2),
+                child: Icon(Icons.drag_handle_rounded, color: Colors.white30, size: 20),
+              ),
+            ],
           ),
         ],
       ),

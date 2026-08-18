@@ -78,42 +78,118 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     super.dispose();
   }
 
+  List<String> _extractSequenceItems(QuizQuestion q) {
+    if (q.answerSequence != null && q.answerSequence!.isNotEmpty) {
+      return List<String>.from(q.answerSequence!);
+    }
+    if (q.options != null && q.options!.isNotEmpty) {
+      return List<String>.from(q.options!);
+    }
+    if (q.answer.isNotEmpty) {
+      final lines = q.answer.split(RegExp(r'\r?\n'));
+      final extracted = <String>[];
+      for (final line in lines) {
+        final cleaned = line.replaceFirst(RegExp(r'^\s*(\d+[.)\-•]|\-|\•)\s*'), '').trim();
+        if (cleaned.isNotEmpty) extracted.add(cleaned);
+      }
+      if (extracted.length >= 2) return extracted;
+    }
+    return [];
+  }
+
+  bool _isOrderIdentical(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+
   void _initSequenceForQuestion(QuizQuestion q) {
-    if (q.id == _sequenceQuestionId) return;
-    if (q.options == null || q.options!.isEmpty) return;
+    if (q.id == _sequenceQuestionId && _sequenceOrder.isNotEmpty) return;
+    final items = _extractSequenceItems(q);
+    if (items.isEmpty) return;
     setState(() {
       _sequenceQuestionId = q.id;
-      _sequenceOrder = List<String>.from(q.options!)..shuffle();
+      _sequenceOrder = List<String>.from(items)..shuffle();
+      if (_sequenceOrder.length > 1 && _isOrderIdentical(_sequenceOrder, items)) {
+        _sequenceOrder = _sequenceOrder.reversed.toList();
+      }
     });
   }
 
+  void _moveSequenceItem(int fromIndex, int toIndex) {
+    if (fromIndex < 0 || fromIndex >= _sequenceOrder.length) return;
+    if (toIndex < 0 || toIndex >= _sequenceOrder.length) return;
+    setState(() {
+      final item = _sequenceOrder.removeAt(fromIndex);
+      _sequenceOrder.insert(toIndex, item);
+    });
+  }
+
+  List<List<String>> _extractPairs(QuizQuestion q) {
+    if (q.matchPairs != null && q.matchPairs!.isNotEmpty) {
+      return q.matchPairs!;
+    }
+    if (q.answer.contains('->')) {
+      final segments = q.answer.split(RegExp(r',\s*|\r?\n'));
+      final parsedPairs = <List<String>>[];
+      for (final seg in segments) {
+        final parts = seg.split('->');
+        if (parts.length == 2) {
+          final l = parts[0].trim();
+          final r = parts[1].trim();
+          if (l.isNotEmpty && r.isNotEmpty) parsedPairs.add([l, r]);
+        }
+      }
+      if (parsedPairs.isNotEmpty) return parsedPairs;
+    }
+    return [];
+  }
+
   void _initAssociationForQuestion(QuizQuestion q) {
-    if (q.id == _assocQuestionId) return;
-    if (q.matchPairs == null || q.matchPairs!.isEmpty) return;
+    if (q.id == _assocQuestionId && (_userPairings.isNotEmpty || _assocPool.isNotEmpty)) return;
+    final pairs = _extractPairs(q);
+    if (pairs.isEmpty) return;
     setState(() {
       _assocQuestionId = q.id;
       _userPairings = {};
-      _assocPool = q.matchPairs!.map((p) => p[1]).toList()..shuffle();
+      _assocPool = pairs.map((p) => p[1]).toList()..shuffle();
     });
   }
 
   void _onReveal() {
     final state = ref.read(quizProvider(widget.sessionId));
     final q = state.session?.questions[state.session!.currentIndex];
-    if (q?.type == 'qcm' || (q?.options != null && q!.options!.length >= 2 && q.type != 'sequence' && q.type != 'association')) {
+    if (q == null) return;
+
+    if (q.type == 'qcm' || (q.options != null && q.options!.length >= 2 && q.type != 'sequence' && q.type != 'association')) {
       ref.read(quizProvider(widget.sessionId).notifier).revealAndScoreQcm();
       return;
     }
-    if (q?.type == 'sequence' && q?.answerSequence != null && _sequenceOrder.isNotEmpty) {
-      ref.read(quizProvider(widget.sessionId).notifier)
-          .revealAndScoreSequence(_sequenceOrder, q!.answerSequence!);
+
+    if (q.type == 'sequence') {
+      final items = _extractSequenceItems(q);
+      if (_sequenceOrder.isNotEmpty && items.isNotEmpty) {
+        ref.read(quizProvider(widget.sessionId).notifier)
+            .revealAndScoreSequence(_sequenceOrder, items);
+        return;
+      }
+      ref.read(quizProvider(widget.sessionId).notifier).reveal();
       return;
     }
-    if (q?.type == 'association' && q?.matchPairs != null) {
-      ref.read(quizProvider(widget.sessionId).notifier)
-          .revealAndScoreAssociation(_userPairings, q!.matchPairs!);
+
+    if (q.type == 'association') {
+      final pairs = _extractPairs(q);
+      if (pairs.isNotEmpty) {
+        ref.read(quizProvider(widget.sessionId).notifier)
+            .revealAndScoreAssociation(_userPairings, pairs);
+        return;
+      }
+      ref.read(quizProvider(widget.sessionId).notifier).reveal();
       return;
     }
+
     ref.read(quizProvider(widget.sessionId).notifier).reveal();
   }
 
@@ -585,7 +661,17 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
 
   Widget _buildSequenceReorder(QuizQuestion q) {
     if (_sequenceQuestionId != q.id || _sequenceOrder.isEmpty) {
-      // Sequence broken (AI forgot items field) — show answer as plain text.
+      final items = _extractSequenceItems(q);
+      if (items.isNotEmpty) {
+        _sequenceQuestionId = q.id;
+        _sequenceOrder = List<String>.from(items)..shuffle();
+        if (_sequenceOrder.length > 1 && _isOrderIdentical(_sequenceOrder, items)) {
+          _sequenceOrder = _sequenceOrder.reversed.toList();
+        }
+      }
+    }
+
+    if (_sequenceOrder.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
@@ -599,6 +685,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         ),
       );
     }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -607,7 +694,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             const Icon(Icons.swap_vert_rounded, color: EskoliaTokens.cyan, size: 16),
             const SizedBox(width: 6),
             const Text(
-              'GLISSE POUR ORDONNER',
+              'GLISSE OU UTILISE LES FLÈCHES POUR ORDONNER',
               style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
@@ -633,7 +720,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           children: [
             for (int i = 0; i < _sequenceOrder.length; i++)
               _buildSequenceItem(
-                key: ValueKey(_sequenceOrder[i]),
+                key: ValueKey('seq_${q.id}_${_sequenceOrder[i]}'),
                 index: i,
                 label: _sequenceOrder[i],
               ),
@@ -647,7 +734,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
     return Semantics(
       key: key,
       label: "Étape numéro ${index + 1} de la séquence : $label.",
-      hint: "Glissez vers le haut ou le bas pour réorganiser cet élément dans la liste.",
+      hint: "Glissez vers le haut ou le bas ou utilisez les flèches pour réorganiser cet élément dans la liste.",
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
@@ -664,7 +751,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         ),
         child: Row(
           children: [
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Container(
               width: 26,
               height: 26,
@@ -684,16 +771,35 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: Icon(Icons.drag_handle_rounded, color: EskoliaTokens.cyan, size: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_upward_rounded, color: EskoliaTokens.cyan, size: 18),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                  tooltip: 'Monter',
+                  onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.arrow_downward_rounded, color: EskoliaTokens.cyan, size: 18),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                  tooltip: 'Descendre',
+                  onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(right: 8, left: 2),
+                  child: Icon(Icons.drag_handle_rounded, color: EskoliaTokens.cyan, size: 20),
+                ),
+              ],
             ),
           ],
         ),
@@ -702,8 +808,17 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   }
 
   Widget _buildAssociationWidget(QuizQuestion q) {
-    if (_assocQuestionId != q.id || q.matchPairs == null) return const SizedBox.shrink();
-    final pairs = q.matchPairs!;
+    if (_assocQuestionId != q.id || (_userPairings.isEmpty && _assocPool.isEmpty)) {
+      final pairs = _extractPairs(q);
+      if (pairs.isNotEmpty) {
+        _assocQuestionId = q.id;
+        _userPairings = {};
+        _assocPool = pairs.map((p) => p[1]).toList()..shuffle();
+      }
+    }
+    final pairs = _extractPairs(q);
+    if (pairs.isEmpty) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -712,7 +827,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
             const Icon(Icons.compare_arrows_rounded, color: EskoliaTokens.cyan, size: 16),
             const SizedBox(width: 6),
             const Text(
-              'GLISSE POUR ASSOCIER',
+              'GLISSE OU CLIQUE POUR ASSOCIER',
               style: TextStyle(color: EskoliaTokens.cyan, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8),
             ),
           ],
@@ -722,14 +837,28 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: _assocPool.map((item) => Draggable<String>(
-              data: item,
-              feedback: Material(
-                color: Colors.transparent,
-                child: _buildAssocChip(item, dragging: true),
+            children: _assocPool.map((item) => GestureDetector(
+              onTap: () {
+                for (final pair in pairs) {
+                  final left = pair[0];
+                  if (_userPairings[left] == null) {
+                    setState(() {
+                      _assocPool.remove(item);
+                      _userPairings[left] = item;
+                    });
+                    break;
+                  }
+                }
+              },
+              child: Draggable<String>(
+                data: item,
+                feedback: Material(
+                  color: Colors.transparent,
+                  child: _buildAssocChip(item, dragging: true),
+                ),
+                childWhenDragging: _buildAssocChip(item, ghost: true),
+                child: _buildAssocChip(item),
               ),
-              childWhenDragging: _buildAssocChip(item, ghost: true),
-              child: _buildAssocChip(item),
             )).toList(),
           ),
           const SizedBox(height: 16),
@@ -757,7 +886,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                 const SizedBox(width: 6),
                 Expanded(
                   child: DragTarget<String>(
-                    onAccept: (item) {
+                    onAcceptWithDetails: (details) {
+                      final item = details.data;
                       setState(() {
                         if (_userPairings[leftItem] != null) {
                           _assocPool.add(_userPairings[leftItem]!);
@@ -793,7 +923,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                             child: Row(
                               children: [
                                 Expanded(child: Text(placed, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3))),
-                                Icon(Icons.close_rounded, color: EskoliaTokens.cyan, size: 14),
+                                const Icon(Icons.close_rounded, color: EskoliaTokens.cyan, size: 14),
                               ],
                             ),
                           ),
@@ -1122,7 +1252,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
           ],
         ],
         const SizedBox(height: 16),
-        if (!state.isValidated && q.type != 'sequence' && q.type != 'association') ...[
+        if (!state.isValidated) ...[
           const Text(
             'Étais-tu proche de la réponse ?',
             textAlign: TextAlign.center,
@@ -1348,7 +1478,15 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
       );
     }
 
-    return const SizedBox.shrink();
+    return EskoliaButton(
+      label: 'Passer à la question suivante →',
+      icon: Icons.arrow_forward_rounded,
+      variant: EskoliaButtonVariant.secondary,
+      onPressed: () {
+        _onSubmitFeedback(false);
+        _goNextOrFinish();
+      },
+    );
   }
 
   Widget _buildTopBar(BuildContext context, QuizState state, int displayIndex, int total) {
@@ -1364,6 +1502,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         children: [
           IconButton(
             icon: const Icon(Icons.close_rounded, color: Colors.white),
+            tooltip: 'Quitter le quiz',
             onPressed: () async {
               final ok = await confirmNavigateAwayFromQuiz(context);
               if (context.mounted && ok) context.pop();
@@ -1393,11 +1532,20 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
                   backgroundColor: Colors.white10,
                   color: timerColor,
                 ),
-                Text('${state.secondsLeft}', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)), // fontSize 11 -> 15
+                Text('${state.secondsLeft}', style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
               ],
             ),
           ],
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.skip_next_rounded, color: Colors.white70),
+            tooltip: 'Passer cette question',
+            onPressed: () {
+              _onSubmitFeedback(false);
+              _goNextOrFinish();
+            },
+          ),
+          const SizedBox(width: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(

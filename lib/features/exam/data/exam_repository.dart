@@ -188,10 +188,18 @@ class ExamRepository {
     }
 
     // Séquence items
-    final rawItems = q['items'] ?? q['sequence'];
+    final rawItems = q['items'] ?? q['sequence'] ?? q['options'] ?? q['answerSequence'];
     List<String>? items;
     if (rawItems is List && rawItems.isNotEmpty) {
       items = rawItems.map((e) => e.toString().trim()).where((s) => s.isNotEmpty).toList();
+    } else if (type == 'sequence' && answerText.isNotEmpty) {
+      final lines = answerText.split(RegExp(r'\r?\n'));
+      final extracted = <String>[];
+      for (final line in lines) {
+        final cleaned = line.replaceFirst(RegExp(r'^\s*(\d+[.)\-•]|\-|\•)\s*'), '').trim();
+        if (cleaned.isNotEmpty) extracted.add(cleaned);
+      }
+      if (extracted.length >= 2) items = extracted;
     }
 
     // Paires association
@@ -209,6 +217,18 @@ class ExamRepository {
         }
       }
       if (parsedPairs.isNotEmpty) pairs = parsedPairs;
+    } else if (type == 'association' && answerText.contains('->')) {
+      final segments = answerText.split(RegExp(r',\s*|\r?\n'));
+      final parsedPairs = <List<String>>[];
+      for (final seg in segments) {
+        final parts = seg.split('->');
+        if (parts.length == 2) {
+          final l = parts[0].trim();
+          final r = parts[1].trim();
+          if (l.isNotEmpty && r.isNotEmpty) parsedPairs.add([l, r]);
+        }
+      }
+      if (parsedPairs.isNotEmpty) pairs = parsedPairs;
     }
 
     // Checklist ticket
@@ -216,6 +236,15 @@ class ExamRepository {
     List<String>? checklist;
     if (rawChecklist is List && rawChecklist.isNotEmpty) {
       checklist = rawChecklist.map((e) => e.toString().trim()).where((s) => s.isNotEmpty).toList();
+    }
+
+    // Options QCM / options
+    final rawOptions = q['options'];
+    List<String>? options;
+    if (rawOptions is List && rawOptions.isNotEmpty) {
+      options = rawOptions.map((e) => e.toString().trim()).where((s) => s.isNotEmpty).toList();
+    } else if (items != null && items.isNotEmpty) {
+      options = List<String>.from(items);
     }
 
     return QuizQuestion(
@@ -229,6 +258,7 @@ class ExamRepository {
       categoryGroup: QuestionCategoryGroup.themes,
       authorName: authorName,
       indices: indices,
+      options: options,
       answerSequence: items,
       matchPairs: pairs,
       checklist: checklist,
