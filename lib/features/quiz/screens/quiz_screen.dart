@@ -703,6 +703,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
         ReorderableListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
           onReorder: (oldIndex, newIndex) {
             setState(() {
               if (newIndex > oldIndex) newIndex--;
@@ -731,77 +732,83 @@ class _QuizScreenState extends ConsumerState<QuizScreen>
   }
 
   Widget _buildSequenceItem({required Key key, required int index, required String label}) {
-    return Semantics(
+    return ReorderableDragStartListener(
       key: key,
-      label: "Étape numéro ${index + 1} de la séquence : $label.",
-      hint: "Glissez vers le haut ou le bas ou utilisez les flèches pour réorganiser cet élément dans la liste.",
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: EskoliaTokens.surface2.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.3)),
-          boxShadow: [
-            BoxShadow(
-              color: EskoliaTokens.cyan.withValues(alpha: 0.05),
-              blurRadius: 8,
-              spreadRadius: -2,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 10),
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: EskoliaTokens.cyan.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-                border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '${index + 1}',
-                style: const TextStyle(
-                  color: EskoliaTokens.cyan,
-                  fontFamily: 'monospace',
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_upward_rounded, color: EskoliaTokens.cyan, size: 18),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                  tooltip: 'Monter',
-                  onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_downward_rounded, color: EskoliaTokens.cyan, size: 18),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                  tooltip: 'Descendre',
-                  onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(right: 8, left: 2),
-                  child: Icon(Icons.drag_handle_rounded, color: EskoliaTokens.cyan, size: 20),
+      index: index,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.grab,
+        child: Semantics(
+          label: "Étape numéro ${index + 1} de la séquence : $label.",
+          hint: "Glissez depuis n'importe où sur la carte ou utilisez les flèches pour réorganiser cet élément dans la liste.",
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            decoration: BoxDecoration(
+              color: EskoliaTokens.surface2.withValues(alpha: 0.4),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.3)),
+              boxShadow: [
+                BoxShadow(
+                  color: EskoliaTokens.cyan.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  spreadRadius: -2,
                 ),
               ],
             ),
-          ],
+            child: Row(
+              children: [
+                const SizedBox(width: 10),
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: EskoliaTokens.cyan.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: EskoliaTokens.cyan.withValues(alpha: 0.4)),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '${index + 1}',
+                    style: const TextStyle(
+                      color: EskoliaTokens.cyan,
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_upward_rounded, color: EskoliaTokens.cyan, size: 18),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                      tooltip: 'Monter',
+                      onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_downward_rounded, color: EskoliaTokens.cyan, size: 18),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                      tooltip: 'Descendre',
+                      onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8, left: 2),
+                      child: Icon(Icons.drag_handle_rounded, color: EskoliaTokens.cyan, size: 20),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

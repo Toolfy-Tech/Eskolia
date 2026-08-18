@@ -423,6 +423,7 @@ class _BattleScreenState extends State<BattleScreen> {
         ReorderableListView(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
           onReorder: (oldIndex, newIndex) {
             setState(() {
               if (newIndex > oldIndex) newIndex--;
@@ -451,61 +452,67 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   Widget _buildSequenceItem({required Key key, required int index, required String label}) {
-    return Container(
+    return ReorderableDragStartListener(
       key: key,
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: _violet.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 10),
-          Container(
-            width: 26,
-            height: 26,
-            decoration: BoxDecoration(
-              color: _violet.withValues(alpha: 0.25),
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '${index + 1}',
-              style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-            ),
+      index: index,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.grab,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.07),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: _violet.withValues(alpha: 0.25)),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
-            ),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_upward_rounded, color: _cyan, size: 18),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                tooltip: 'Monter',
-                onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
+              const SizedBox(width: 10),
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  color: _violet.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '${index + 1}',
+                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.arrow_downward_rounded, color: _cyan, size: 18),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                tooltip: 'Descendre',
-                onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.3)),
+                ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 8, left: 2),
-                child: Icon(Icons.drag_handle_rounded, color: Colors.white30, size: 20),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_upward_rounded, color: _cyan, size: 18),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                    tooltip: 'Monter',
+                    onPressed: index > 0 ? () => _moveSequenceItem(index, index - 1) : null,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_downward_rounded, color: _cyan, size: 18),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                    tooltip: 'Descendre',
+                    onPressed: index < _sequenceOrder.length - 1 ? () => _moveSequenceItem(index, index + 1) : null,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 8, left: 2),
+                    child: Icon(Icons.drag_handle_rounded, color: Colors.white30, size: 20),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
