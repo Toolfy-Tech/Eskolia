@@ -255,8 +255,91 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 ),
                                 const SizedBox(height: 16),
                                 _sectionCard(
-                                  title: 'Affichage & Lisibilité',
+                                  title: 'Affichage & Thème',
                                   children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(Icons.palette_outlined, size: 18, color: ref.watch(themePaletteProvider).primaryAccent),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                'Ambiance & Thème visuel',
+                                                style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+                                              ),
+                                              const Spacer(),
+                                              Text(
+                                                ref.watch(themePaletteProvider).label,
+                                                style: TextStyle(
+                                                  color: ref.watch(themePaletteProvider).primaryAccent,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: EskoliaThemeId.values.map((theme) {
+                                              final isSelected = ref.watch(themePaletteProvider).themeId == theme;
+                                              return Tooltip(
+                                                message: theme.label,
+                                                child: InkWell(
+                                                  onTap: () => ref.read(themePaletteProvider.notifier).setTheme(theme),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  child: AnimatedContainer(
+                                                    duration: const Duration(milliseconds: 200),
+                                                    width: 32,
+                                                    height: 32,
+                                                    decoration: BoxDecoration(
+                                                      color: theme.accentColor,
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: isSelected ? Colors.white : Colors.transparent,
+                                                        width: 2.5,
+                                                      ),
+                                                      boxShadow: isSelected
+                                                          ? [
+                                                              BoxShadow(
+                                                                color: theme.accentColor.withValues(alpha: 0.6),
+                                                                blurRadius: 10,
+                                                                spreadRadius: 1,
+                                                              ),
+                                                            ]
+                                                          : [],
+                                                    ),
+                                                    child: isSelected
+                                                        ? const Center(
+                                                            child: Icon(Icons.check, size: 16, color: Colors.black),
+                                                          )
+                                                        : null,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(color: Colors.white10, height: 1),
+                                    ListTile(
+                                      leading: const Icon(Icons.color_lens_rounded, color: EskoliaTokens.violetSoft),
+                                      title: Text(
+                                        'Couleurs des boutons de la barre latérale',
+                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
+                                      ),
+                                      subtitle: Text(
+                                        'Personnaliser les couleurs du menu et de la barre latérale',
+                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
+                                      ),
+                                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white60),
+                                      onTap: () => showSidebarButtonColorsDialog(context, ref),
+                                    ),
+                                    const Divider(color: Colors.white10, height: 1),
                                     ListTile(
                                       leading: const Icon(Icons.zoom_in_rounded, color: EskoliaTokens.cyan),
                                       title: Text(
@@ -279,20 +362,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                         ),
                                       ),
                                       onTap: () => showTextScaleDialog(context, ref),
-                                    ),
-                                    const Divider(color: Colors.white10, height: 1),
-                                    ListTile(
-                                      leading: const Icon(Icons.color_lens_rounded, color: EskoliaTokens.violetSoft),
-                                      title: Text(
-                                        'Couleurs des boutons de la barre latérale',
-                                        style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
-                                      ),
-                                      subtitle: Text(
-                                        'Personnaliser les couleurs du menu et de la barre latérale',
-                                        style: GoogleFonts.plusJakartaSans(color: EskoliaTokens.textSecondary, fontSize: 11, fontWeight: FontWeight.w500),
-                                      ),
-                                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white60),
-                                      onTap: () => showSidebarButtonColorsDialog(context, ref),
                                     ),
                                   ],
                                 ),
