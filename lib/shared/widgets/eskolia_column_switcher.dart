@@ -135,7 +135,11 @@ class EskoliaColumnSwitcherButton extends ConsumerWidget {
         side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
       ),
       onSelected: (cols) {
-        ref.read(columnPreferencesProvider.notifier).setColumns(screenKey, cols);
+        if (cols == -1) {
+          ref.read(screenColumnBoardProvider.notifier).resetBoard(screenKey);
+        } else {
+          ref.read(columnPreferencesProvider.notifier).setColumns(screenKey, cols);
+        }
       },
       itemBuilder: (ctx) => [
         PopupMenuItem(
@@ -245,6 +249,20 @@ class EskoliaColumnSwitcherButton extends ConsumerWidget {
               ],
             ),
           ),
+        const PopupMenuDivider(height: 8),
+        const PopupMenuItem(
+          value: -1,
+          child: Row(
+            children: [
+              Icon(Icons.restart_alt_rounded, color: Colors.white60, size: 18),
+              SizedBox(width: 10),
+              Text(
+                'Réinitialiser la disposition',
+                style: TextStyle(color: Colors.white70, fontSize: 12.5),
+              ),
+            ],
+          ),
+        ),
       ],
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -336,11 +354,11 @@ class ScreenColumnBoardNotifier extends Notifier<Map<String, Map<int, List<Strin
     if (activeKeys.isEmpty) return List.generate(numColumns, (_) => <String>[]);
     if (numColumns <= 1) return [List.of(activeKeys)];
 
-    final saved = state[screenKey] ?? const {};
+    final saved = state[screenKey];
     final result = List.generate(numColumns, (_) => <String>[]);
     final placed = <String>{};
 
-    if (saved.isNotEmpty) {
+    if (saved != null && saved.isNotEmpty) {
       // 1. Placer les cartes selon la configuration personnalisée de l'utilisateur
       saved.forEach((colIdx, cardList) {
         final targetCol = colIdx < numColumns ? colIdx : (colIdx % numColumns);
@@ -392,7 +410,7 @@ class ScreenColumnBoardNotifier extends Notifier<Map<String, Map<int, List<Strin
 
     // 2. Insérer dans la colonne cible
     final safeCol = targetColumn.clamp(0, numColumns - 1);
-    if (targetIndex != null && targetIndex >= 0 && targetIndex < currentCols[safeCol].length) {
+    if (targetIndex != null && targetIndex >= 0 && targetIndex <= currentCols[safeCol].length) {
       currentCols[safeCol].insert(targetIndex, cardKey);
     } else {
       currentCols[safeCol].add(cardKey);
@@ -401,7 +419,7 @@ class ScreenColumnBoardNotifier extends Notifier<Map<String, Map<int, List<Strin
     // 3. Mettre à jour l'état
     final newMap = <int, List<String>>{};
     for (var i = 0; i < currentCols.length; i++) {
-      newMap[i] = currentCols[i];
+      newMap[i] = List<String>.from(currentCols[i]);
     }
     state = {...state, screenKey: newMap};
 
@@ -411,6 +429,17 @@ class ScreenColumnBoardNotifier extends Notifier<Map<String, Map<int, List<Strin
       final jsonMap = <String, dynamic>{};
       newMap.forEach((k, v) => jsonMap[k.toString()] = v);
       await prefs.setString('$_prefPrefix$screenKey', jsonEncode(jsonMap));
+    } catch (_) {}
+  }
+
+  /// Réinitialise l'agencement personnalisé d'un écran.
+  Future<void> resetBoard(String screenKey) async {
+    final newMap = Map<String, Map<int, List<String>>>.from(state);
+    newMap.remove(screenKey);
+    state = newMap;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('$_prefPrefix$screenKey');
     } catch (_) {}
   }
 }
@@ -502,32 +531,26 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (activeKeys.isEmpty) return const SizedBox.shrink();
 
+    // Watching the state triggers immediate rebuild upon drag/move!
+    ref.watch(screenColumnBoardProvider);
+    final resolvedColumns = ref.read(screenColumnBoardProvider.notifier).getResolvedColumns(
+          screenKey: screenKey,
+          activeKeys: activeKeys,
+          numColumns: numColumns,
+        );
+
     // Mode 1 colonne (Mobile / compact)
     if (numColumns <= 1) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < activeKeys.length; i++) ...[
-            _buildDraggableCard(
-              context: context,
-              ref: ref,
-              key: activeKeys[i],
-              columnIndex: 0,
-              cardIndex: i,
-              child: cardBuilder(context, activeKeys[i]),
-              cardWidth: cardWidth,
-            ),
+            cardBuilder(context, activeKeys[i]),
             if (i < activeKeys.length - 1) SizedBox(height: spacing),
           ],
         ],
       );
     }
-
-    final resolvedColumns = ref.watch(screenColumnBoardProvider.notifier).getResolvedColumns(
-          screenKey: screenKey,
-          activeKeys: activeKeys,
-          numColumns: numColumns,
-        );
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -535,77 +558,110 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
         for (var colIdx = 0; colIdx < numColumns; colIdx++) ...[
           if (colIdx > 0) SizedBox(width: spacing),
           Expanded(
-            child: DragTarget<String>(
-              onWillAcceptWithDetails: (details) => true,
-              onAcceptWithDetails: (details) {
-                ref.read(screenColumnBoardProvider.notifier).moveCard(
-                      screenKey: screenKey,
-                      cardKey: details.data,
-                      targetColumn: colIdx,
-                      targetIndex: null, // ajout à la fin de la colonne
-                      activeKeys: activeKeys,
-                      numColumns: numColumns,
-                    );
-              },
-              builder: (context, candidateData, rejectedData) {
-                final isColHovered = candidateData.isNotEmpty;
-                final cardsInCol = resolvedColumns[colIdx];
-
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  constraints: const BoxConstraints(minHeight: 120),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isColHovered && cardsInCol.isEmpty
-                          ? EskoliaTokens.cyan.withValues(alpha: 0.8)
-                          : Colors.transparent,
-                      width: 2.0,
-                    ),
-                    color: isColHovered && cardsInCol.isEmpty
-                        ? EskoliaTokens.cyan.withValues(alpha: 0.06)
-                        : Colors.transparent,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (var cardIdx = 0; cardIdx < cardsInCol.length; cardIdx++) ...[
-                        _buildDraggableCard(
-                          context: context,
-                          ref: ref,
-                          key: cardsInCol[cardIdx],
-                          columnIndex: colIdx,
-                          cardIndex: cardIdx,
-                          child: cardBuilder(context, cardsInCol[cardIdx]),
-                          cardWidth: cardWidth,
-                        ),
-                        if (cardIdx < cardsInCol.length - 1) SizedBox(height: spacing),
-                      ],
-                      if (cardsInCol.isEmpty)
-                        _buildEmptyColumnDropZone(context, isColHovered),
-                    ],
-                  ),
-                );
-              },
+            child: _ColumnDropZone(
+              screenKey: screenKey,
+              columnIndex: colIdx,
+              numColumns: numColumns,
+              cardWidth: cardWidth,
+              spacing: spacing,
+              cardsInCol: resolvedColumns[colIdx],
+              activeKeys: activeKeys,
+              cardBuilder: cardBuilder,
             ),
           ),
         ],
       ],
     );
   }
+}
 
-  Widget _buildEmptyColumnDropZone(BuildContext context, bool isHovered) {
+class _ColumnDropZone extends ConsumerWidget {
+  const _ColumnDropZone({
+    required this.screenKey,
+    required this.columnIndex,
+    required this.numColumns,
+    required this.cardWidth,
+    required this.spacing,
+    required this.cardsInCol,
+    required this.activeKeys,
+    required this.cardBuilder,
+  });
+
+  final String screenKey;
+  final int columnIndex;
+  final int numColumns;
+  final double cardWidth;
+  final double spacing;
+  final List<String> cardsInCol;
+  final List<String> activeKeys;
+  final Widget Function(BuildContext context, String key) cardBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DragTarget<String>(
+      onWillAcceptWithDetails: (details) => true,
+      onAcceptWithDetails: (details) {
+        ref.read(screenColumnBoardProvider.notifier).moveCard(
+              screenKey: screenKey,
+              cardKey: details.data,
+              targetColumn: columnIndex,
+              targetIndex: null, // append to end of column
+              activeKeys: activeKeys,
+              numColumns: numColumns,
+            );
+      },
+      builder: (context, candidateData, rejectedData) {
+        final isColumnHovered = candidateData.isNotEmpty;
+
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          constraints: const BoxConstraints(minHeight: 140),
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isColumnHovered && cardsInCol.isEmpty
+                  ? EskoliaTokens.cyan
+                  : Colors.transparent,
+              width: 2.0,
+            ),
+            color: isColumnHovered && cardsInCol.isEmpty
+                ? EskoliaTokens.cyan.withValues(alpha: 0.08)
+                : Colors.transparent,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var cardIdx = 0; cardIdx < cardsInCol.length; cardIdx++) ...[
+                _buildDraggableCard(
+                  context: context,
+                  ref: ref,
+                  cardKey: cardsInCol[cardIdx],
+                  columnIndex: columnIndex,
+                  cardIndex: cardIdx,
+                  child: cardBuilder(context, cardsInCol[cardIdx]),
+                ),
+                if (cardIdx < cardsInCol.length - 1) SizedBox(height: spacing),
+              ],
+              if (cardsInCol.isEmpty)
+                _buildEmptyDropSlot(isColumnHovered),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEmptyDropSlot(bool isHovered) {
     return Container(
-      height: 140,
+      height: 180,
       decoration: BoxDecoration(
         color: isHovered
             ? EskoliaTokens.cyan.withValues(alpha: 0.12)
             : Colors.white.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isHovered
-              ? EskoliaTokens.cyan.withValues(alpha: 0.6)
-              : Colors.white.withValues(alpha: 0.08),
+          color: isHovered ? EskoliaTokens.cyan : Colors.white12,
           width: isHovered ? 2.0 : 1.0,
         ),
       ),
@@ -615,16 +671,24 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
           children: [
             Icon(
               Icons.add_to_photos_rounded,
-              color: isHovered ? EskoliaTokens.cyan : Colors.white24,
-              size: 24,
+              color: isHovered ? EskoliaTokens.cyan : Colors.white30,
+              size: 28,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
-              'Glisser une carte ici',
+              'Déposer une carte ici',
               style: TextStyle(
-                color: isHovered ? EskoliaTokens.cyan : Colors.white30,
+                color: isHovered ? EskoliaTokens.cyan : Colors.white38,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Colonne ${columnIndex + 1}',
+              style: TextStyle(
+                color: isHovered ? EskoliaTokens.cyan : Colors.white24,
+                fontSize: 11,
               ),
             ),
           ],
@@ -636,22 +700,32 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
   Widget _buildDraggableCard({
     required BuildContext context,
     required WidgetRef ref,
-    required String key,
+    required String cardKey,
     required int columnIndex,
     required int cardIndex,
     required Widget child,
-    required double cardWidth,
   }) {
     final feedbackWidget = Material(
       color: Colors.transparent,
-      child: Transform.rotate(
-        angle: 0.03,
-        child: Transform.scale(
-          scale: 1.03,
-          child: Opacity(
-            opacity: 0.9,
-            child: SizedBox(
-              width: cardWidth,
+      elevation: 12,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: cardWidth.clamp(240.0, 480.0)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: EskoliaTokens.cyan, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: EskoliaTokens.cyan.withValues(alpha: 0.35),
+                blurRadius: 20,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Opacity(
+              opacity: 0.95,
               child: child,
             ),
           ),
@@ -659,9 +733,96 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
       ),
     );
 
+    // Barre d'outils supérieure : poignée de glisser-déposer + sélecteurs rapides de colonne [C1] [C2]
+    final topHandleBar = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: EskoliaTokens.surface2,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+        border: Border(bottom: BorderSide(color: Colors.white.withValues(alpha: 0.08))),
+      ),
+      child: Row(
+        children: [
+          Draggable<String>(
+            data: cardKey,
+            feedback: feedbackWidget,
+            childWhenDragging: const SizedBox.shrink(),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.drag_indicator_rounded, size: 16, color: EskoliaTokens.cyan),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Col ${columnIndex + 1}',
+                    style: const TextStyle(
+                      color: EskoliaTokens.cyan,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Spacer(),
+          // Sélecteurs de colonnes rapides : [C1] [C2] [C3]
+          for (var c = 0; c < numColumns; c++) ...[
+            if (c > 0) const SizedBox(width: 4),
+            InkWell(
+              onTap: c == columnIndex
+                  ? null
+                  : () {
+                      ref.read(screenColumnBoardProvider.notifier).moveCard(
+                            screenKey: screenKey,
+                            cardKey: cardKey,
+                            targetColumn: c,
+                            activeKeys: activeKeys,
+                            numColumns: numColumns,
+                          );
+                    },
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                decoration: BoxDecoration(
+                  color: c == columnIndex
+                      ? EskoliaTokens.cyan.withValues(alpha: 0.25)
+                      : Colors.white.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: c == columnIndex
+                        ? EskoliaTokens.cyan
+                        : Colors.white12,
+                  ),
+                ),
+                child: Text(
+                  'C${c + 1}',
+                  style: TextStyle(
+                    color: c == columnIndex ? EskoliaTokens.cyan : Colors.white60,
+                    fontSize: 10,
+                    fontWeight: c == columnIndex ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+
+    final cardWithHandle = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        topHandleBar,
+        child,
+      ],
+    );
+
     return DragTarget<String>(
-      key: ValueKey(key),
-      onWillAcceptWithDetails: (details) => details.data != key,
+      key: ValueKey('target_$cardKey'),
+      onWillAcceptWithDetails: (details) => details.data != cardKey,
       onAcceptWithDetails: (details) {
         ref.read(screenColumnBoardProvider.notifier).moveCard(
               screenKey: screenKey,
@@ -675,21 +836,16 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
       builder: (context, candidateData, rejectedData) {
         final isHovered = candidateData.isNotEmpty;
 
-        final cardWidget = SizedBox(
-          width: cardWidth,
-          child: child,
-        );
-
         final mainChild = LongPressDraggable<String>(
-          key: ValueKey('${key}_drag'),
-          data: key,
-          delay: const Duration(milliseconds: 250),
+          key: ValueKey('drag_$cardKey'),
+          data: cardKey,
+          delay: const Duration(milliseconds: 150),
           feedback: feedbackWidget,
           childWhenDragging: Opacity(
-            opacity: 0.2,
-            child: cardWidget,
+            opacity: 0.25,
+            child: cardWithHandle,
           ),
-          child: cardWidget,
+          child: cardWithHandle,
         );
 
         return AnimatedContainer(
@@ -698,14 +854,14 @@ class EskoliaMultiColumnBoard extends ConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isHovered ? EskoliaTokens.cyan.withValues(alpha: 0.8) : Colors.transparent,
+              color: isHovered ? EskoliaTokens.cyan : Colors.transparent,
               width: 2.0,
             ),
             boxShadow: isHovered
                 ? [
                     BoxShadow(
-                      color: EskoliaTokens.cyan.withValues(alpha: 0.2),
-                      blurRadius: 12,
+                      color: EskoliaTokens.cyan.withValues(alpha: 0.25),
+                      blurRadius: 14,
                       spreadRadius: 2,
                     ),
                   ]

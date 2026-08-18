@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:eskolia/core/theme/sidebar_button_colors_provider.dart';
 import 'package:eskolia/core/theme/theme_palette_provider.dart';
@@ -75,6 +76,60 @@ void main() {
       expect(cols.length, 2);
       expect(cols[0], ['c1', 'c3', 'c5']);
       expect(cols[1], ['c2', 'c4']);
+    });
+
+    test('ScreenColumnBoardNotifier allows placing 4 cards on left and 1 on right', () async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(screenColumnBoardProvider.notifier);
+      final activeKeys = ['card1', 'card2', 'card3', 'card4', 'card5'];
+
+      // Move 4 cards to column 0, and card5 to column 1
+      await notifier.moveCard(
+        screenKey: 'home',
+        cardKey: 'card1',
+        targetColumn: 0,
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+      await notifier.moveCard(
+        screenKey: 'home',
+        cardKey: 'card2',
+        targetColumn: 0,
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+      await notifier.moveCard(
+        screenKey: 'home',
+        cardKey: 'card3',
+        targetColumn: 0,
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+      await notifier.moveCard(
+        screenKey: 'home',
+        cardKey: 'card4',
+        targetColumn: 0,
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+      await notifier.moveCard(
+        screenKey: 'home',
+        cardKey: 'card5',
+        targetColumn: 1,
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+
+      final resolved = notifier.getResolvedColumns(
+        screenKey: 'home',
+        activeKeys: activeKeys,
+        numColumns: 2,
+      );
+
+      expect(resolved[0], ['card1', 'card2', 'card3', 'card4']);
+      expect(resolved[1], ['card5']);
     });
   });
 }
