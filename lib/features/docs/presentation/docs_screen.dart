@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../tp/osi/presentation/widgets/osi_memento_dialog.dart';
 import '../../home/presentation/providers/home_providers.dart';
 import '../../home/presentation/widgets/home_card_settings_dialog.dart';
 import '../../../core/services/eskolia_folder_service.dart';
@@ -59,47 +60,54 @@ class DocsScreen extends ConsumerStatefulWidget {
   static const String anssiHome = 'https://www.ssi.gouv.fr/';
   static const String itilHome = 'https://www.axelos.com/best-practice-solutions/itil';
 
-  static const String rgpdBody = '• Finalité et base légale avant de traiter des données perso.\n'
-      '• Minimisation : ne collecter que le nécessaire.\n'
-      '• Droits des personnes : information, accès, rectification, effacement, '
-      'limitation, opposition, portabilité selon les cas.\n'
-      '• Sécurité : mesures techniques et organisationnelles adaptées au risque.\n'
-      '• Violation de données : analyse et notification dans les délais (souvent 72 h).\n'
-      '• Registre des traitements et AIPD lorsque requis.';
+  static const String rgpdBody =
+      '• 6 Principes Fondamentaux : Licéité, Limitation des finalités, Minimisation des données, Exactitude, Conservation limitée, Intégrité & Confidentialité (chiffrement TLS/AES).\n'
+      '• Droits des Personnes : Droit d\'accès, de rectification, d\'effacement (« droit à l\'oubli »), de limitation, de portabilité et d\'opposition.\n'
+      '• Rôle Ops & Technicien : Tenue du Registre des traitements, habilitations strictes (RBAC), interdiction formelle de copier des bases de prod en local.\n'
+      '• Violations de données : Notification obligatoire à la CNIL sous 72 h max en cas de fuite, perte ou altération de données personnelles.\n'
+      '• Sanctions : Jusqu\'à 20 millions d\'euros ou 4 % du chiffre d\'affaires mondial annuel.';
 
-  static const String cnilBody = 'La CNIL est l\'autorité française de protection des données. '
-      'Elle publie guides, modèles et recommandations (sécurité, cookies, RH, etc.) '
-      'et peut être saisie en cas de difficulté. Identifier un DPO si la taille '
-      'ou le type d\'activité l\'impose.';
+  static const String cnilBody =
+      '• Autorité française de régulation : Protège la vie privée, contrôle le respect du RGPD, accompagne la mise en conformité et sanctionne les abus.\n'
+      '• Guides & Référentiels Ops : Recommandations sécurité (mots de passe 12+ car / MFA, traçabilité des logs, politique de sauvegardes, contrôle d\'accès).\n'
+      '• Cookies & Traceurs (ePrivacy) : Recueil obligatoire du consentement préalable libre, éclairé, spécifique et univoque avant tout dépôt.\n'
+      '• AIPD (Analyse d\'Impact) : Obligatoire pour tout traitement à risque élevé pour les droits et libertés (données de santé, biométrie, surveillance).\n'
+      '• Délégué à la Protection des Données (DPO) : Interlocuteur clé de la DSI, désignation obligatoire dans le secteur public et pour les activités sensibles.';
 
-  static const String anssiBody = 'L\'ANSSI oriente la cybersécurité en France : bonnes pratiques, '
-      'guides d\'hygiène numérique, référentiels et réponse à incident. '
-      'Pour un technicien : durcissement, segmentation, journaux, sauvegardes testées, '
-      'gestion des mises à jour et culture du signalement.';
+  static const String anssiBody =
+      '• Guide d\'Hygiène Informatique (40 règles d\'or de l\'autorité nationale) :\n'
+      '• Authentification & Accès : MFA obligatoire (accès distants & comptes d\'administration), mots de passe robustes (12+ car), séparation stricte compte utilisateur / compte admin (PoLP).\n'
+      '• Maintien en Condition de Sécurité : Patch management régulier, élimination des protocoles obsolètes (SMBv1, NTLMv1, TLS 1.0/1.1), durcissement GPO.\n'
+      '• Architecture & Résilience : Segmentation étanche (VLANs filtrés, DMZ, réseau d\'admin dédié), règle de sauvegarde 3-2-1 (copie immuable / hors-ligne).\n'
+      '• Traçabilité & Supervision : Centralisation et horodatage des logs (NTP), remontée d\'alertes auprès du CERT-FR.\n'
+      '• Réflexe Incident / Ransomware : Déconnecter immédiatement du réseau (câble + Wi-Fi), ne PAS éteindre la machine (préserver la RAM), prévenir le RSSI.';
 
-  static const String itilBody = '• SVS (Service Value System) : gouvernance, pratiques, '
-      'chaîne de valeur et amélioration continue.\n'
-      '• 4 dimensions : Organisations, Information/Tech, Partenaires, Flux de valeur.\n'
-      '• Pratiques clés : gestion des incidents, des problèmes, des changements, '
-      'centre de services, SLA/OLA.\n'
-      '• Incident = interruption non planifiée. Problème = cause racine. '
-      'CMDB = inventaire des CI.\n'
-      '• 7 principes directeurs dont : focaliser sur la valeur, itérer avec feedback, simplifier.';
+  static const String itilBody =
+      '• SVS & 4 Dimensions : Organisations/Personnes, Information/Tech, Partenaires/Fournisseurs, Flux de valeur & Processus.\n'
+      '• Gestion des Incidents : Rétablir le service normal le plus rapidement possible (solutions de contournement / workarounds prioritaires).\n'
+      '• Gestion des Problèmes : Identifier la cause racine (RCA - Root Cause Analysis) et documenter les erreurs connues (Known Errors / KEDB).\n'
+      '• Gestion des Changements (Change Enablement) : Évaluation des risques, validation CAB, plan de test et plan de rollback obligatoire.\n'
+      '• Service Desk & CMDB : Point de contact unique (SPOC), gestion des SLA/OLA (GTI/GTR), cartographie des CI et de leurs dépendances.\n'
+      '• 7 Principes Directeurs : Focaliser sur la valeur, partir de l\'existant, itérer avec feedback, collaborer, penser holistique, faire simple, optimiser et automatiser.';
 
-  static const String osiBody = '• 7 couches (bas → haut) : Physique, Liaison, Réseau, '
-      'Transport, Session, Présentation, Application.\n'
-      '• Couche 3 (Réseau) : IP, routeurs. Couche 2 (Liaison) : MAC, switches.\n'
-      '• TCP (couche 4) : fiable et ordonné. UDP : rapide mais sans garantie.\n'
-      '• Encapsulation : données → segment → paquet → trame → bits.\n'
-      '• TCP/IP regroupe en 4 couches : Application, Transport, Internet, Accès réseau.';
+  static const String osiBody =
+      '• Les 7 Couches & PDU (de haut en bas) :\n'
+      '  - L7 Application (HTTP/S, DNS, DHCP, SSH, FTP) • PDU : Données\n'
+      '  - L6 Présentation (TLS/SSL, JSON, JPEG, encodage) • PDU : Données\n'
+      '  - L5 Session (RPC, NetBIOS, maintien de sessions) • PDU : Données\n'
+      '  - L4 Transport : TCP (fiable / 3-way handshake) vs UDP (rapide / temps réel) • PDU : Segments / Datagrammes\n'
+      '  - L3 Réseau : Adressage IPv4/IPv6, routage, ICMP (Ping), ARP • PDU : Paquets\n'
+      '  - L2 Liaison : Adresses MAC, trames Ethernet, Switchs L2, VLANs (802.1Q) • PDU : Trames\n'
+      '  - L1 Physique : Câblage RJ45 Cat 6, fibre optique, signaux électriques / optiques / radio • PDU : Bits\n'
+      '• Encapsulation : Données ➔ Segments ➔ Paquets ➔ Trames ➔ Bits.\n'
+      '• Diagnostics Réseau : ping, tracert, nslookup, ipconfig /all, netstat -ano, wireshark.';
 
-  static const String technicianBody = '• Moindre privilège et comptes nominatifs (éviter les comptes partagés).\n'
-      '• Traçabilité : qui a accédé à quoi, et pourquoi.\n'
-      '• Sauvegardes 3-2-1 et tests de restauration réguliers.\n'
-      '• Patchs et inventaire : savoir ce qui est exposé.\n'
-      '• Pas de copie de bases de prod sur poste non sécurisé.\n'
-      '• Chiffrement des supports nomades et des canaux sensibles.\n'
-      '• En cas d\'incident : préserver les preuves, escalader, ne pas improviser seul.';
+  static const String technicianBody =
+      '• Moindre Privilège & Identités : Séparation stricte compte utilisateur / compte admin (aucun compte partagé), modèle de tiering AD (Tier 0, Tier 1, Tier 2).\n'
+      '• Postes Clients & Données : Chiffrement intégral des disques (BitLocker / FileVault), verrouillage automatique de session (Win+L / 5 min), zéro données réelles de prod sur postes locaux.\n'
+      '• Baies de Brassage & Câblage : Repérage et étiquetage systématique des câbles RJ45, brassage propre, testeur de continuité réseau, sécurisation des ports switch (802.1X, Port Security).\n'
+      '• Gestion des Secrets & Mots de Passe : Coffre-fort chiffré partagé (KeePass, Bitwarden), aucun mot de passe en clair dans un ticket ou fichier texte.\n'
+      '• Réflexe Alerte Cyber / Ransomware : Isoler la machine du réseau (débrancher câble + couper Wi-Fi), ne PAS éteindre le PC (préserver la RAM pour l\'analyse forensic), alerter immédiatement le N2 / RSSI.';
 }
 
 class _DocsScreenState extends ConsumerState<DocsScreen> {
@@ -210,16 +218,16 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
         body: DocSectionCardBody(
           accent: EskoliaVisual.neonViolet,
           body: DocsScreen.rgpdBody,
-          linkLabel: 'Fiche CNIL sur le règlement européen',
+          linkLabel: 'Fiche CNIL sur le RGPD',
           onLink: () => openDocsUrl(context, DocsScreen.cnilRgpd),
+          onMiniCourse: () => showDocsMiniCourseDialog(
+            context,
+            title: 'Mini-formation — RGPD',
+            assetPath: DocsScreen.assetMiniRgpd,
+            officialUrl: DocsScreen.cnilRgpd,
+            officialLinkLabel: 'Fiche CNIL sur le règlement européen',
+          ),
           onQuiz: () => context.go('/quiz/quick'),
-        ),
-        onCardTap: () => showDocsMiniCourseDialog(
-          context,
-          title: 'Mini-formation — RGPD',
-          assetPath: DocsScreen.assetMiniRgpd,
-          officialUrl: DocsScreen.cnilRgpd,
-          officialLinkLabel: 'Fiche CNIL sur le règlement européen',
         ),
       );
     }
@@ -233,16 +241,16 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
         body: DocSectionCardBody(
           accent: EskoliaVisual.neonCyan,
           body: DocsScreen.cnilBody,
-          linkLabel: 'Site de la CNIL',
+          linkLabel: 'Site officiel CNIL',
           onLink: () => openDocsUrl(context, DocsScreen.cnilHome),
+          onMiniCourse: () => showDocsMiniCourseDialog(
+            context,
+            title: 'Mini-formation — CNIL',
+            assetPath: DocsScreen.assetMiniCnil,
+            officialUrl: DocsScreen.cnilHome,
+            officialLinkLabel: 'Site de la CNIL',
+          ),
           onQuiz: () => context.go('/quiz/quick'),
-        ),
-        onCardTap: () => showDocsMiniCourseDialog(
-          context,
-          title: 'Mini-formation — CNIL',
-          assetPath: DocsScreen.assetMiniCnil,
-          officialUrl: DocsScreen.cnilHome,
-          officialLinkLabel: 'Site de la CNIL',
         ),
       );
     }
@@ -256,16 +264,16 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
         body: DocSectionCardBody(
           accent: EskoliaVisual.neonGreen,
           body: DocsScreen.anssiBody,
-          linkLabel: 'Site de l\'ANSSI',
+          linkLabel: 'Site officiel ANSSI',
           onLink: () => openDocsUrl(context, DocsScreen.anssiHome),
+          onMiniCourse: () => showDocsMiniCourseDialog(
+            context,
+            title: 'Mini-formation — ANSSI',
+            assetPath: DocsScreen.assetMiniAnssi,
+            officialUrl: DocsScreen.anssiHome,
+            officialLinkLabel: 'Site de l\'ANSSI',
+          ),
           onQuiz: () => context.go('/quiz/quick'),
-        ),
-        onCardTap: () => showDocsMiniCourseDialog(
-          context,
-          title: 'Mini-formation — ANSSI',
-          assetPath: DocsScreen.assetMiniAnssi,
-          officialUrl: DocsScreen.anssiHome,
-          officialLinkLabel: 'Site de l\'ANSSI',
         ),
       );
     }
@@ -281,14 +289,14 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
           body: DocsScreen.itilBody,
           linkLabel: 'Site officiel ITIL (Axelos)',
           onLink: () => openDocsUrl(context, DocsScreen.itilHome),
+          onMiniCourse: () => showDocsMiniCourseDialog(
+            context,
+            title: 'Mini-formation — ITIL 4',
+            assetPath: DocsScreen.assetMiniItil,
+            officialUrl: DocsScreen.itilHome,
+            officialLinkLabel: 'Site officiel ITIL',
+          ),
           onQuiz: () => context.go('/quiz/quick'),
-        ),
-        onCardTap: () => showDocsMiniCourseDialog(
-          context,
-          title: 'Mini-formation — ITIL 4',
-          assetPath: DocsScreen.assetMiniItil,
-          officialUrl: DocsScreen.itilHome,
-          officialLinkLabel: 'Site officiel ITIL',
         ),
       );
     }
@@ -304,14 +312,40 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
           body: DocsScreen.osiBody,
           linkLabel: null,
           onLink: null,
+          onMiniCourse: () => showDocsMiniCourseDialog(
+            context,
+            title: 'Mini-formation — Modèle OSI',
+            assetPath: DocsScreen.assetMiniOsi,
+            officialUrl: null,
+            officialLinkLabel: null,
+          ),
           onQuiz: () => context.go('/quiz/quick'),
-        ),
-        onCardTap: () => showDocsMiniCourseDialog(
-          context,
-          title: 'Mini-formation — Modèle OSI',
-          assetPath: DocsScreen.assetMiniOsi,
-          officialUrl: null,
-          officialLinkLabel: null,
+          extraButtons: [
+            ElevatedButton.icon(
+              onPressed: () => context.go('/tp/osi'),
+              icon: const Icon(Icons.rocket_launch_rounded, size: 15),
+              label: const Text('Accéder au Hub Modèle OSI 🚀'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF34D399),
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: () => OsiMementoDialog.show(context),
+              icon: const Icon(Icons.menu_book_rounded, size: 15),
+              label: const Text('Mémento OSI 📖'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF34D399),
+                side: BorderSide(color: const Color(0xFF34D399).withValues(alpha: 0.5)),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -327,6 +361,7 @@ class _DocsScreenState extends ConsumerState<DocsScreen> {
           body: DocsScreen.technicianBody,
           linkLabel: null,
           onLink: null,
+          onQuiz: () => context.go('/quiz/quick'),
         ),
       );
     }
@@ -869,10 +904,12 @@ class DocSectionCardBody extends StatelessWidget {
     super.key,
     required this.accent,
     required this.body,
-    required this.linkLabel,
-    required this.onLink,
+    this.linkLabel,
+    this.onLink,
     this.onCardTap,
+    this.onMiniCourse,
     this.onQuiz,
+    this.extraButtons,
   });
 
   final Color accent;
@@ -880,103 +917,97 @@ class DocSectionCardBody extends StatelessWidget {
   final String? linkLabel;
   final VoidCallback? onLink;
   final VoidCallback? onCardTap;
+  final VoidCallback? onMiniCourse;
   final VoidCallback? onQuiz;
+  final List<Widget>? extraButtons;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (onCardTap != null) ...[
-          InkWell(
-            onTap: onCardTap,
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.school_outlined,
-                    size: 16,
-                    color: accent.withValues(alpha: 0.9),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Mini-formation disponible (cliquer pour ouvrir)',
-                    style: TextStyle(
-                      color: accent.withValues(alpha: 0.85),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-        ],
         Text(
           body,
           style: const TextStyle(
             color: _slate,
             fontSize: 12.5,
-            height: 1.45,
+            height: 1.5,
           ),
         ),
-        if (linkLabel != null && onLink != null) ...[
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: onLink,
-              icon: Icon(Icons.open_in_new_rounded, size: 14, color: accent),
-              label: Text(
-                linkLabel!,
-                style: TextStyle(
-                  color: accent,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
+        if (extraButtons != null && extraButtons!.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: extraButtons!,
           ),
         ],
-        if (onQuiz != null) ...[
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: GestureDetector(
-              onTap: onQuiz,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: accent.withValues(alpha: 0.15),
-                  border: Border.all(color: accent.withValues(alpha: 0.4)),
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (onMiniCourse != null || onCardTap != null)
+              OutlinedButton.icon(
+                onPressed: onMiniCourse ?? onCardTap,
+                icon: const Icon(Icons.school_outlined, size: 14),
+                label: const Text('Mini-cours complet'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: accent,
+                  side: BorderSide(color: accent.withValues(alpha: 0.5)),
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.quiz_rounded, size: 12, color: accent),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Quiz rapide',
-                      style: TextStyle(
-                        color: accent,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
+              ),
+            if (onQuiz != null)
+              InkWell(
+                onTap: onQuiz,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: accent.withValues(alpha: 0.15),
+                    border: Border.all(color: accent.withValues(alpha: 0.4)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.quiz_rounded, size: 13, color: accent),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Quiz rapide',
+                        style: TextStyle(
+                          color: accent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            if (linkLabel != null && onLink != null)
+              TextButton.icon(
+                onPressed: onLink,
+                icon: Icon(Icons.open_in_new_rounded, size: 13, color: accent),
+                label: Text(
+                  linkLabel!,
+                  style: TextStyle(
+                    color: accent,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
