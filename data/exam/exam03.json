@@ -102,11 +102,11 @@
     {
       "id": "eb3_q8",
       "type": "classic",
-      "question": "Pourquoi la commande 'rm -rf /' exécutée en tant que root sous Linux est-elle irréversible et destructrice comparée à une suppression de fichier sous Windows ?",
-      "answer": "Parce que sous Linux la commande 'rm' supprime définitivement et immédiatement les fichiers sans passer par une corbeille, et l'option '-rf' force la suppression récursive de toute l'arborescence à partir de la racine système sans demander de confirmation.",
-      "explanation": "Sous Linux, 'tout est fichier' ; supprimer la racine en mode administrateur détruit instantanément l'intégralité du système d'exploitation et des données montées[cite: 26].",
+      "question": "Pourquoi est-il fortement recommandé que les collaborateurs d'une entreprise utilisent au quotidien une session Windows avec un compte standard (utilisateur standard) plutôt qu'un compte administrateur local ?",
+      "answer": "Pour appliquer le principe de moindre privilège : un compte standard ne peut pas modifier les fichiers système, installer des programmes non approuvés ni altérer le registre, ce qui bloque la majorité des logiciels malveillants et évite les fausses manipulations destructrices.",
+      "explanation": "L'ANSSI et les bonnes pratiques de sécurité imposent des comptes standards pour le travail quotidien afin de limiter la surface d'attaque en cas d'infection par un malware.",
       "difficulty": "facile",
-      "context": "Linux & Sécurité"
+      "context": "Sécurité Windows & Droits d'Accès"
     },
     {
       "id": "eb3_q9",
@@ -128,9 +128,9 @@
     {
       "id": "eb3_q10",
       "type": "classic",
-      "question": "Quel est le rôle du protocole ARP (Address Resolution Protocol) et quelle commande permet de visualiser la table de correspondance locale sous Windows et Linux ?",
-      "answer": "ARP permet de découvrir l'adresse physique (MAC de couche 2) correspondant à une adresse logique (IPv4 de couche 3) sur le réseau local. La commande est 'arp -a' sous Windows et 'ip neigh show' (ou 'arp -a') sous Linux.",
-      "explanation": "Sans la résolution ARP, aucune trame Ethernet ne peut être encapsulée et transmise à la carte réseau destinataire sur un même réseau local[cite: 30, 32].",
+      "question": "Quel est le rôle du protocole ARP (Address Resolution Protocol) et quelle commande permet de visualiser la table de correspondance locale sous Windows ?",
+      "answer": "ARP permet de découvrir l'adresse physique (MAC de couche 2) correspondant à une adresse logique (IPv4 de couche 3) sur le réseau local. La commande sous Windows est 'arp -a'.",
+      "explanation": "Sans la résolution ARP, aucune trame Ethernet ne peut être encapsulée et transmise à la carte réseau destinataire sur un même réseau local.",
       "difficulty": "facile",
       "context": "Réseaux & Couche Liaison"
     },
@@ -216,11 +216,11 @@
     {
       "id": "eb3_q17",
       "type": "classic",
-      "question": "Quelle est la commande Linux permettant de rechercher en temps réel la présence du mot 'ERROR' dans le fichier journal d'authentification /var/log/auth.log ?",
-      "answer": "grep \"ERROR\" /var/log/auth.log (ou tail -f /var/log/auth.log | grep \"ERROR\")",
-      "explanation": "La commande 'grep' est l'outil fondamental d'analyse sous Linux pour filtrer des motifs textuels précis dans les fichiers de configuration et les journaux système de /var/log[cite: 26].",
+      "question": "Sur un poste Windows 11 très ralenti, quel outil intégré au système permet d'identifier en temps réel le processus ou l'application exacte qui consomme anormalement le processeur (CPU), la mémoire vive (RAM) ou l'activité disque ?",
+      "answer": "Le Gestionnaire des tâches (raccourci Ctrl + Maj + Échap) ou le Moniteur de ressources (resmon.exe).",
+      "explanation": "Le Gestionnaire des tâches permet de trier immédiatement les processus par consommation de ressources (CPU, Mémoire, Disque, Réseau) et d'arrêter un processus figé ou suspect.",
       "difficulty": "facile",
-      "context": "Linux & Analyse de Logs"
+      "context": "Outils de Diagnostic Windows"
     },
     {
       "id": "eb3_q18",

@@ -200,28 +200,28 @@
     {
       "id": "eb8_q16",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes d'attribution dynamique d'un VLAN à un utilisateur en fonction de son groupe Active Directory via le protocole 802.1X.",
-      "answer": "1. Le poste client se connecte à la prise réseau murale reliée au port du switch d'accès\n2. Le commutateur bloque tout le trafic et demande l'authentification de l'utilisateur (protocole EAPoL)\n3. Le poste transmet les identifiants d'ouverture de session Active Directory\n4. Le switch transfère les identifiants au serveur RADIUS (NPS) via le réseau\n5. Le serveur RADIUS valide le compte auprès du contrôleur de domaine et vérifie l'appartenance au groupe métier\n6. Le serveur RADIUS renvoie un message d'acceptation au switch avec l'ID du VLAN cible (ex: VLAN 10 - COMPTA)",
+      "question": "Remets dans l'ordre chronologique les étapes d'une séance d'assistance à distance avec un utilisateur via l'outil Quick Assist (Assistance rapide) de Windows.",
+      "answer": "1. Contacter l'utilisateur par téléphone pour qualifier sa demande et lui annoncer la session d'assistance\n2. Ouvrir l'application 'Assistance rapide' (Ctrl + Win + Q) sur le poste du technicien et générer un code de sécurité à 6 chiffres\n3. Communiquer oralement le code de sécurité à 6 chiffres à l'utilisateur\n4. L'utilisateur saisit le code dans son application Assistance rapide et clique sur 'Partager l'écran'\n5. L'utilisateur accepte la demande de contrôle complet de l'écran affichée sur son poste\n6. Réaliser le dépannage en expliquant les manipulations à l'utilisateur, puis clore la session et renseigner le ticket de support",
       "items": [
-        "Le poste client se connecte à la prise réseau murale reliée au port du switch d'accès",
-        "Le commutateur bloque tout le trafic et demande l'authentification de l'utilisateur (protocole EAPoL)",
-        "Le poste transmet les identifiants d'ouverture de session Active Directory",
-        "Le switch transfère les identifiants au serveur RADIUS (NPS) via le réseau",
-        "Le serveur RADIUS valide le compte auprès du contrôleur de domaine et vérifie l'appartenance au groupe métier",
-        "Le serveur RADIUS renvoie un message d'acceptation au switch avec l'ID du VLAN cible (ex: VLAN 10 - COMPTA)"
+        "Contacter l'utilisateur par téléphone pour qualifier sa demande et lui annoncer la session d'assistance",
+        "Ouvrir l'application 'Assistance rapide' (Ctrl + Win + Q) sur le poste du technicien et générer un code de sécurité à 6 chiffres",
+        "Communiquer oralement le code de sécurité à 6 chiffres à l'utilisateur",
+        "L'utilisateur saisit le code dans son application Assistance rapide et clique sur 'Partager l'écran'",
+        "L'utilisateur accepte la demande de contrôle complet de l'écran affichée sur son poste",
+        "Réaliser le dépannage en expliquant les manipulations à l'utilisateur, puis clore la session et renseigner le ticket de support"
       ],
-      "explanation": "L'authentification 802.1X dynamique permet d'affecter automatiquement le bon VLAN à l'utilisateur où qu'il se branche physiquement dans le bâtiment (CP 7 et CP 8)[cite: 30, 33].",
-      "difficulty": "difficile",
-      "context": "Sécurité Réseau 802.1X"
+      "explanation": "La maîtrise de l'assistance à distance sécurisée avec accord de l'utilisateur est le cœur de métier du technicien de proximité (CP 1 et CP 2).",
+      "difficulty": "facile",
+      "context": "Assistance Utilisateur & Télé-Assistance"
     },
     {
       "id": "eb8_q17",
       "type": "classic",
-      "question": "Sur un poste de travail Linux, quel est le rôle du fichier journal '/var/log/syslog' (ou '/var/log/messages') ?",
-      "answer": "Il enregistre les messages généraux et les événements du système d'exploitation, des pilotes matériels, des démons et des services en arrière-plan.",
-      "explanation": "La consultation de ce fichier journal via cat, less ou tail est le premier réflexe de diagnostic de dysfonctionnement sous Linux (CP 5)[cite: 26].",
+      "question": "Dans le cadre de la gestion écoresponsable du parc informatique (norme DEEE), quelle est la procédure obligatoire à réaliser sur les disques durs et SSD réformés avant de les remettre à une filière de recyclage ou de reconditionnement ?",
+      "answer": "Réaliser un effacement sécurisé irréversible des données (effacement cryptographique / logiciel certifié comme Blancco, ou destruction physique par broyage/démagnétisation) pour garantir la confidentialité et la conformité RGPD, et consigner le certificat de destruction dans l'inventaire.",
+      "explanation": "Le simple formatage rapide ne supprime pas les données : l'effacement certifié ou le broyage est obligatoire avant toute sortie de parc selon le REAC (CP 5 et CP 6).",
       "difficulty": "facile",
-      "context": "Linux & Logs Système"
+      "context": "Gestion des Déchets DEEE & Recyclage"
     },
     {
       "id": "eb8_q18",
@@ -240,82 +240,82 @@
     {
       "id": "eb8_q19",
       "type": "association",
-      "question": "Associe chaque type d'attaque d'ingénierie sociale à son vecteur d'approche.",
-      "answer": "Smishing -> Envoi d'un SMS frauduleux contenant un lien piégé (faux suivi de colis, alerte bancaire)[cite: 59], Whaling -> Spear phishing de haut niveau ciblant exclusivement les cadres dirigeants ou le directeur général[cite: 59], Tailgating (Filature physique) -> Suivre de près un employé badgeur pour pénétrer dans un local technique sans badger[cite: 59, 60], Clone Phishing -> Copie conforme d'un e-mail légitime déjà reçu en remplaçant la pièce jointe ou le lien par un piège[cite: 59]",
+      "question": "Associe chaque technologie de chiffrement de stockage à son environnement d'utilisation.",
+      "answer": "BitLocker -> Solution de chiffrement intégral de volume intégrée à Windows (éditions Pro et Entreprise)[cite: 47], LUKS (Linux Unified Key Setup) -> Standard de chiffrement de bloc et de partitions sous les distributions Linux, FileVault -> Solution de chiffrement matériel et logiciel intégrée nativement à macOS, BitLocker To Go -> Chiffrement sécurisé avec mot de passe pour les supports amovibles (clés USB et disques externes)[cite: 47]",
       "pairs": [
-        ["Smishing", "Envoi d'un SMS frauduleux contenant un lien piégé (faux suivi de colis, alerte bancaire)[cite: 59]"],
-        ["Whaling", "Spear phishing de haut niveau ciblant exclusivement les cadres dirigeants ou le directeur général[cite: 59]"],
-        ["Tailgating (Filature physique)", "Suivre de près un employé badgeur pour pénétrer dans un local technique sans badger[cite: 59, 60]"],
-        ["Clone Phishing", "Copie conforme d'un e-mail légitime déjà reçu en remplaçant la pièce jointe ou le lien par un piège[cite: 59]"]
+        ["BitLocker", "Solution de chiffrement intégral de volume intégrée à Windows (éditions Pro et Entreprise)[cite: 47]"],
+        ["LUKS (Linux Unified Key Setup)", "Standard de chiffrement de bloc et de partitions sous les distributions Linux"],
+        ["FileVault", "Solution de chiffrement matériel et logiciel intégrée nativement à macOS"],
+        ["BitLocker To Go", "Chiffrement sécurisé avec mot de passe pour les supports amovibles (clés USB et disques externes)[cite: 47]"]
       ],
-      "explanation": "La maîtrise des différentes variantes d'ingénierie sociale permet au technicien de former et sensibiliser efficacement les collaborateurs de l'entreprise (CP 6)[cite: 59, 67].",
-      "difficulty": "moyen",
-      "context": "Cybersécurité & Ingénierie Sociale"
+      "explanation": "Chaque système d'exploitation dispose de sa propre brique native de chiffrement pour garantir la confidentialité des données au repos en cas de vol (CP 6)[cite: 47].",
+      "difficulty": "facile",
+      "context": "Chiffrement & Systèmes"
     },
     {
       "id": "eb8_q20",
       "type": "ticket",
-      "question": "Ticket #4330 — 'Bonjour, nous devons configurer un poste pour un nouvel analyste financier qui a besoin de virtualiser des environnements de test Linux sous Hyper-V/VirtualBox, mais le logiciel indique que la virtualisation matérielle est désactivée.'",
-      "answer": "Accéder au BIOS/UEFI de la machine pour activer la technologie de virtualisation processeur Intel VT-x ou AMD-V (SVM Mode)[cite: 21].",
+      "question": "Ticket #5122 — 'Bonjour, nous devons déployer 25 postes de travail identiques pour une nouvelle équipe projet. Comment automatiser ce déploiement sans installer chaque machine manuellement ?'",
+      "answer": "Préparer une image Master personnalisée sous Windows 11 avec les logiciels requis, la généraliser avec l'utilitaire Sysprep (/generalize /oobe /shutdown), la capturer au format WIM et la déployer via un serveur WDS ou des clés USB bootables créées avec Rufus/Ventoy.",
       "checklist": [
-        "Redémarrer l'ordinateur et accéder au menu BIOS/UEFI (touche F2, F10 ou Suppr au POST)[cite: 21, 44]",
-        "Naviguer vers les paramètres avancés du processeur (CPU Configuration / Advanced)[cite: 21, 44]",
-        "Activer l'option 'Intel Virtualization Technology (VT-x)' ou 'AMD SVM Mode'[cite: 21]",
-        "Sauvegarder les paramètres (F10), redémarrer et vérifier sous Windows dans le Gestionnaire des tâches (onglet Performance > Virtualisation : Activé)[cite: 21, 50]"
+        "Installer le système de référence et les applications métiers sur un poste témoin[cite: 44]",
+        "Exécuter Sysprep pour supprimer les SID et préparer la phase OOBE[cite: 44]",
+        "Démarrer sur WinPE et capturer l'image WIM avec l'outil DISM[cite: 24, 44]",
+        "Déployer l'image sur les 25 postes cibles via amorçage réseau PXE / WDS[cite: 44]"
       ],
-      "explanation": "La virtualisation matérielle au niveau du processeur est indispensable pour exécuter des hyperviseurs et machines virtuelles 64 bits avec des performances natives (CP 4 et CP 5)[cite: 21, 25].",
-      "difficulty": "facile",
-      "context": "Hardware & Virtualisation BIOS"
+      "explanation": "La démarche industrielle de masterisation Sysprep + capture WIM garantit l'homogénéité et la rapidité du déploiement de masse (CP 4)[cite: 44].",
+      "difficulty": "moyen",
+      "context": "Déploiement de Masse & Master"
     },
     {
       "id": "eb8_q21",
       "type": "classic",
-      "question": "Quelle est la signification d'un voyant d'état ambre/orange clignotant sur l'un des tiroirs de disques durs d'un serveur rackable en production ?",
-      "answer": "Il signale une panne matérielle imminente (alerte prédictive SMART) ou un échec complet du disque dur physique dans la grappe RAID, nécessitant son remplacement rapide.",
-      "explanation": "Les contrôleurs RAID matériels pilotent des LEDs d'état (vert = OK, orange/ambre = défaillant ou en reconstruction) pour faciliter le repérage visuel du tiroir à extraire (CP 5)[cite: 40].",
+      "question": "Quelle est la différence fondamentale entre les protocoles de messagerie POP3 et IMAP pour la consultation des courriels par un utilisateur ?",
+      "answer": "POP3 télécharge les messages sur le poste local et les supprime généralement du serveur (pas de synchronisation multi-appareils), tandis qu'IMAP synchronise l'ensemble des dossiers et messages directement sur le serveur en temps réel.",
+      "explanation": "En environnement d'entreprise où les collaborateurs utilisent plusieurs appareils, IMAP ou Exchange/M365 sont obligatoires pour maintenir une boîte mail synchronisée (CP 2)[cite: 42].",
       "difficulty": "facile",
-      "context": "Serveurs & Diagnostic RAID"
+      "context": "Messagerie & Applications"
     },
     {
       "id": "eb8_q22",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de configuration d'un partage réseau masqué réservé aux administrateurs sous Windows Server.",
-      "answer": "1. Créer le dossier sur le volume de données du serveur (ex: D:\\AdminShare)\n2. Faire un clic droit > Propriétés > Partage > Partage avancé\n3. Cocher 'Partager ce dossier' et ajouter le symbole '$' à la fin du nom de partage (ex: AdminShare$)\n4. Attribuer le contrôle total aux administrateurs du domaine au niveau du partage\n5. Configurer les autorisations de sécurité NTFS pour restreindre l'accès au seul groupe des administrateurs\n6. Tester l'accès réseau en tapant le chemin UNC complet \\\\SRV-DATA\\AdminShare$",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement d'un bloc d'alimentation (PSU) défectueux dans un ordinateur de bureau ATX.",
+      "answer": "1. Débrancher le câble secteur externe et basculer l'interrupteur I/O sur 0\n2. Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique relié à la terre\n3. Déconnecter tous les câbles d'alimentation internes (ATX 24 broches, CPU 8 broches, PCIe GPU, SATA)\n4. Dévisser les 4 vis maintenant le bloc d'alimentation à l'arrière du châssis et extraire le bloc\n5. Insérer la nouvelle alimentation certifiée, visser solidement et reconnecter l'ensemble des câbles internes\n6. Refermer le boîtier, brancher le secteur et tester l'allumage complet",
       "items": [
-        "Créer le dossier sur le volume de données du serveur (ex: D:\\AdminShare)",
-        "Faire un clic droit > Propriétés > Partage > Partage avancé",
-        "Cocher 'Partager ce dossier' et ajouter le symbole '$' à la fin du nom de partage (ex: AdminShare$)",
-        "Attribuer le contrôle total aux administrateurs du domaine au niveau du partage",
-        "Configurer les autorisations de sécurité NTFS pour restreindre l'accès au seul groupe des administrateurs",
-        "Tester l'accès réseau en tapant le chemin UNC complet \\\\SRV-DATA\\AdminShare$"
+        "Débrancher le câble secteur externe et basculer l'interrupteur I/O sur 0",
+        "Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique relié à la terre",
+        "Déconnecter tous les câbles d'alimentation internes (ATX 24 broches, CPU 8 broches, PCIe GPU, SATA)",
+        "Dévisser les 4 vis maintenant le bloc d'alimentation à l'arrière du châssis et extraire le bloc",
+        "Insérer la nouvelle alimentation certifiée, visser solidement et reconnecter l'ensemble des câbles internes",
+        "Refermer le boîtier, brancher le secteur et tester l'allumage complet"
       ],
-      "explanation": "Le suffixe '$' masque le partage lors de l'exploration du réseau tout en restant parfaitement accessible si l'on connaît son chemin direct (CP 6 et CP 8)[cite: 48].",
+      "explanation": "Le remplacement méthodique d'un bloc d'alimentation prévient les erreurs de branchement et assure la sécurité électrique du technicien et des composants (CP 5)[cite: 17, 22].",
       "difficulty": "moyen",
-      "context": "Partages Réseau Masqués"
+      "context": "Maintenance Matérielle & Alimentation"
     },
     {
       "id": "eb8_q23",
       "type": "classic",
-      "question": "Pourquoi ne doit-on jamais nettoyer le registre Windows avec des outils automatisés tiers (type CCleaner) sur des postes d'entreprise managés ?",
-      "answer": "Parce que ces nettoyeurs de registre risquent de supprimer des clés de configuration d'applications métiers, des identifiants COM ou des stratégies GPO indispensables, provoquant des instabilités système sévères sans apporter aucun gain de performance mesurable.",
-      "explanation": "Le registre Windows est une base de données optimisée qui ne nécessite aucun nettoyage automatisé ; Microsoft et l'ANSSI déconseillent formellement ces pratiques en entreprise (CP 5)[cite: 51, 58].",
-      "difficulty": "facile",
-      "context": "Maintenance Système & Registre"
+      "question": "Sous Windows, quel outil en ligne de commande permet de réparer les secteurs de démarrage (MBR / VBR) et de reconstruire les fichiers de configuration de démarrage (BCD) en cas d'erreur 'No bootable device found' ?",
+      "answer": "L'utilitaire bootrec (avec les commandes bootrec /fixmbr, bootrec /fixboot, bootrec /rebuildbcd) ou bcdboot.",
+      "explanation": "Ces commandes exécutées depuis l'environnement Windows PE permettent de régénérer les fichiers de démarrage corrompus sans réinstaller l'OS (CP 5)[cite: 23, 24].",
+      "difficulty": "moyen",
+      "context": "Dépannage Boot & BCD"
     },
     {
       "id": "eb8_q24",
       "type": "association",
-      "question": "Associe chaque code de bip sonore BIOS (AMI standard) à son anomalie matérielle au POST.",
-      "answer": "1 bip court -> Test POST réussi, le matériel de base est initialisé avec succès[cite: 21, 22], Bips continus ou répétitifs -> Problème critique lié au bloc d'alimentation (PSU) ou court-circuit carte mère[cite: 17, 22], 1 bip long suivi de 2 ou 3 bips courts -> Problème d'affichage vidéo ou carte graphique (GPU) non détectée[cite: 16, 22], 3 bips longs -> Problème d'initialisation de la mémoire vive (RAM)[cite: 14, 22]",
+      "question": "Associe chaque technologie sans fil à sa portée et son usage privilégié.",
+      "answer": "Bluetooth (PAN) -> Portée courte (1 à 10 mètres) pour périphériques personnels (claviers, souris, casques)[cite: 30], Wi-Fi (LAN) -> Portée moyenne (10 à 100 mètres) pour la connectivité réseau locale des postes et terminaux[cite: 30], 4G / 5G (WAN) -> Réseau cellulaire à très large portée pour la mobilité et le haut débit extérieur, NFC -> Portée ultra-courte (quelques centimètres) pour les badges d'accès et le paiement sans contact",
       "pairs": [
-        ["1 bip court", "Test POST réussi, le matériel de base est initialisé avec succès[cite: 21, 22]"],
-        ["Bips continus ou répétitifs", "Problème critique lié au bloc d'alimentation (PSU) ou court-circuit carte mère[cite: 17, 22]"],
-        ["1 bip long suivi de 2 ou 3 bips courts", "Problème d'affichage vidéo ou carte graphique (GPU) non détectée[cite: 16, 22]"],
-        ["3 bips longs", "Problème d'initialisation de la mémoire vive (RAM)[cite: 14, 22]"]
+        ["Bluetooth (PAN)", "Portée courte (1 à 10 mètres) pour périphériques personnels (claviers, souris, casques)[cite: 30]"],
+        ["Wi-Fi (LAN)", "Portée moyenne (10 à 100 mètres) pour la connectivité réseau locale des postes et terminaux[cite: 30]"],
+        ["4G / 5G (WAN)", "Réseau cellulaire à très large portée pour la mobilité et le haut débit extérieur"],
+        ["NFC", "Portée ultra-courte (quelques centimètres) pour les badges d'accès et le paiement sans contact"]
       ],
-      "explanation": "Les codes sonores du POST permettent d'orienter le diagnostic matériel avant même l'initialisation de l'affichage vidéo (CP 5)[cite: 21, 22].",
-      "difficulty": "moyen",
-      "context": "Diagnostic Matériel POST"
+      "explanation": "La connaissance des technologies radio permet de diagnostiquer les pannes d'appairage et de conseiller les utilisateurs en situation de mobilité (CP 4 et CP 7)[cite: 30].",
+      "difficulty": "facile",
+      "context": "Technologies Sans-Fil"
     },
     {
       "id": "eb8_q25",
@@ -334,26 +334,26 @@
     {
       "id": "eb8_q26",
       "type": "classic",
-      "question": "Quelle est l'utilité du protocole HSRP (Hot Standby Router Protocol) ou VRRP configuré sur des routeurs d'entreprise ?",
-      "answer": "Il permet de créer une passerelle par défaut virtuelle redondante partagée entre deux routeurs physiques : si le routeur actif tombe en panne, le routeur de secours prend automatiquement le relais de manière transparente sans aucune coupure pour les postes clients.",
-      "explanation": "Cette redondance de passerelle élimine le point unique de défaillance (SPOF) sur l'accès vers l'extérieur (CP 7)[cite: 30, 38].",
-      "difficulty": "difficile",
-      "context": "Haute Disponibilité Réseau"
+      "question": "Pourquoi est-il impératif de configurer le réseau Wi-Fi réservé aux visiteurs ('Wi-Fi Invités') sur un VLAN séparé avec isolation des clients (AP Isolation) dans une entreprise ?",
+      "answer": "Pour empêcher les appareils externes inconnus d'accéder au réseau local interne de l'entreprise (serveurs, imprimantes, partages de fichiers) et empêcher les visiteurs d'intercepter les communications entre eux.",
+      "explanation": "Le cloisonnement du Wi-Fi Invités sur un sous-réseau étanche protège le système d'information contre les infections et les écoutes clandestines (CP 6 et CP 7).",
+      "difficulty": "facile",
+      "context": "Réseau Local & Wi-Fi Invités"
     },
     {
       "id": "eb8_q27",
       "type": "ticket",
-      "question": "Ticket #4880 — 'Bonjour, notre serveur d'annuaire Active Directory principal est tombé en panne suite à un crash matériel de carte mère. Heureusement, nous disposons d'un second contrôleur de domaine (DC2) répliqué dans l'entreprise.'",
-      "answer": "Forcer le transfert des rôles FSMO (Seize FSMO Roles) vers le second contrôleur de domaine DC2 et nettoyer les métadonnées de l'ancien DC crashé dans l'Active Directory.",
+      "question": "Ticket #4880 — 'Bonjour, un collaborateur déménage de bureau et doit installer son ordinateur de bureau avec double écran, sa station d'accueil et son téléphone IP à son nouvel emplacement.'",
+      "answer": "Organiser le démontage, le transport et le raccordement propre des équipements (câblage T568B, brassage, prises électriques ondulées) et vérifier le bon fonctionnement de l'environnement de travail.",
       "checklist": [
-        "Vérifier que le second contrôleur de domaine (DC2) est en ligne et héberge une copie saine de l'annuaire[cite: 43]",
-        "Transférer/Saisir les 5 rôles maîtres d'opérations FSMO (Schema, Domain Naming, PDC Emulator, RID Master, Infrastructure) via la commande ntdsutil ou PowerShell[cite: 43]",
-        "Nettoyer les métadonnées de l'ancien serveur défaillant (Metadata Cleanup) dans Sites et Services Active Directory",
-        "Reconfigurer les postes clients et étendues DHCP pour pointer sur le DNS de DC2 comme serveur principal[cite: 34, 43]"
+        "Étiqueter et déconnecter proprement l'ensemble des câbles et périphériques sur l'ancien bureau",
+        "Effectuer le brassage du port RJ45 de la nouvelle prise murale vers le commutateur dans la baie informatique",
+        "Installer l'unité centrale, les deux écrans et la station d'accueil sur le nouveau bureau avec un chemin de câbles soigné",
+        "Tester l'allumage, la connexion au réseau local/domaine, la téléphonie IP et la détection du double affichage avec l'utilisateur"
       ],
-      "explanation": "En cas de perte définitive d'un contrôleur de domaine détenant des rôles FSMO, la saisie forcée (Seize) permet de rétablir l'autorité sur l'annuaire (CP 8)[cite: 43].",
-      "difficulty": "difficile",
-      "context": "Active Directory & Rôles FSMO"
+      "explanation": "La réinstallation physique complète et la vérification conjointe avec l'utilisateur garantissent une reprise d'activité immédiate sans rupture de service (CP 2, CP 4 et CP 7).",
+      "difficulty": "facile",
+      "context": "Support Utilisateur & Déplacement de Poste"
     },
     {
       "id": "eb8_q28",
@@ -391,19 +391,19 @@
     {
       "id": "eb8_q31",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de résolution d'une corruption de table de routage locale sur un poste client Windows.",
-      "answer": "1. Constater l'incapacité du poste à joindre certains sous-réseaux locaux ou distants\n2. Ouvrir une invite de commandes en tant qu'administrateur\n3. Afficher la table de routage active avec la commande 'route print'\n4. Identifier la présence de routes statiques erronées ou d'une mauvaise métrique de passerelle\n5. Réinitialiser la table de routage et la pile TCP/IP avec la commande 'netsh int ip reset'\n6. Redémarrer le poste et vérifier le rétablissement de la table de routage par défaut",
+      "question": "Remets dans l'ordre chronologique les étapes d'un diagnostic méthodique de connectivité réseau sur un poste client Windows qui ne parvient plus à joindre un serveur intranet distant.",
+      "answer": "1. Tester la boucle locale interne du poste avec la commande 'ping 127.0.0.1' (vérification de la pile TCP/IP)\n2. Relever les paramètres IP configurés sur la carte réseau avec la commande 'ipconfig /all'\n3. Tester la connectivité avec la passerelle par défaut du réseau local via un ping\n4. Tester la résolution de noms avec la commande 'nslookup nom-serveur.domaine.lan'\n5. Tester la connectivité vers l'adresse IP du serveur distant avec la commande ping\n6. Tracer les sauts intermédiaires avec la commande 'tracert' pour localiser le routeur qui bloque si le ping échoue",
       "items": [
-        "Constater l'incapacité du poste à joindre certains sous-réseaux locaux ou distants",
-        "Ouvrir une invite de commandes en tant qu'administrateur",
-        "Afficher la table de routage active avec la commande 'route print'",
-        "Identifier la présence de routes statiques erronées ou d'une mauvaise métrique de passerelle",
-        "Réinitialiser la table de routage et la pile TCP/IP avec la commande 'netsh int ip reset'",
-        "Redémarrer le poste et vérifier le rétablissement de la table de routage par défaut"
+        "Tester la boucle locale interne du poste avec la commande 'ping 127.0.0.1' (vérification de la pile TCP/IP)",
+        "Relever les paramètres IP configurés sur la carte réseau avec la commande 'ipconfig /all'",
+        "Tester la connectivité avec la passerelle par défaut du réseau local via un ping",
+        "Tester la résolution de noms avec la commande 'nslookup nom-serveur.domaine.lan'",
+        "Tester la connectivité vers l'adresse IP du serveur distant avec la commande ping",
+        "Tracer les sauts intermédiaires avec la commande 'tracert' pour localiser le routeur qui bloque si le ping échoue"
       ],
-      "explanation": "La commande netsh int ip reset réécrit les clés de registre TCP/IP à leur état d'origine pour éliminer les corruptions de routage persistantes (CP 3 et CP 7)[cite: 24, 34].",
+      "explanation": "La démarche de diagnostic en escalier (pile locale -> carte IP -> passerelle -> DNS -> hôte distant -> tracert) est la méthode standard enseignée pour le titre TIP (CP 3 et CP 7).",
       "difficulty": "moyen",
-      "context": "Dépannage Réseau & Routage"
+      "context": "Diagnostic Réseau & Commandes Windows"
     },
     {
       "id": "eb8_q32",

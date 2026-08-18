@@ -79,11 +79,11 @@
     {
       "id": "eb7_q6",
       "type": "classic",
-      "question": "Quelle est la règle de calcul du pas (incrément) et du nombre d'hôtes pour un sous-réseau IPv4 défini par le préfixe CIDR /28 ?",
-      "answer": "Pour un /28, il reste 4 bits pour la partie hôte (32 - 28 = 4). Le nombre d'hôtes utilisables est de 14 (2^4 - 2 = 14). Le pas (incrément) est de 16 (256 - 240 = 16, masque 255.255.255.240).",
-      "explanation": "Le calcul binaire/CIDR permet de segmenter précisément les sous-réseaux et d'éviter le gaspillage d'adresses IP privées ou publiques (CP 7)[cite: 31].",
-      "difficulty": "moyen",
-      "context": "Calculs de Sous-Réseaux CIDR"
+      "question": "Dans le cadre du câblage d'un câble réseau Ethernet RJ45 en cuivre selon la norme standard T568B, quel est l'ordre des 8 fils de gauche à droite lorsque le connecteur est tenu languette vers le bas ?",
+      "answer": "1. Blanc/Orange, 2. Orange, 3. Blanc/Vert, 4. Bleu, 5. Blanc/Bleu, 6. Vert, 7. Blanc/Marron, 8. Marron.",
+      "explanation": "La norme T568B est le standard de câblage le plus répandu en entreprise pour garantir un raccordement direct conforme (CP 7).",
+      "difficulty": "facile",
+      "context": "Réseaux & Câblage RJ45 T568B"
     },
     {
       "id": "eb7_q7",
@@ -122,61 +122,61 @@
         "Localiser la clé du profil avec l'extension '.bak' et supprimer ou corriger la clé corrompue",
         "Redémarrer le poste et faire réouvrir la session par l'utilisateur pour recréer un profil propre"
       ],
-      "explanation": "La suppression de la clé .bak dans ProfileList force Windows à réassocier correctement le dossier de profil utilisateur sans perte de données (CP 3 et CP 5)[cite: 23, 51].",
-      "difficulty": "difficile",
-      "context": "Dépannage Profils Windows"
+      "explanation": "Windows crée une clé .bak en cas de profil corrompu : nettoyer le registre permet à Windows de réinitialiser la liaison vers le profil d'origine (CP 3 et CP 5)[cite: 23, 51].",
+      "difficulty": "moyen",
+      "context": "Dépannage Profil Utilisateur"
     },
     {
       "id": "eb7_q10",
       "type": "classic",
-      "question": "Pourquoi la certification énergétique '80 Plus' (Bronze, Silver, Gold, Platinum) sur un bloc d'alimentation (PSU) est-elle un gage de qualité pour un parc informatique ?",
-      "answer": "Elle garantit qu'au moins 80% de l'électricité consommée est effectivement convertie en courant continu pour les composants (moins de 20% de perte en chaleur), ce qui réduit la consommation électrique, l'échauffement interne et le risque d'instabilité système.",
-      "explanation": "Un bloc d'alimentation de mauvaise qualité sans certification 80 Plus chauffe excessivement et expose les composants internes à des surtensions destructrices (CP 5)[cite: 17].",
+      "question": "Quel est le rôle du connecteur d'alimentation EPS 12V 8 broches (ou 4+4 broches) situé en haut à gauche de la carte mère près du socket ?",
+      "answer": "Il fournit une alimentation électrique dédiée en +12V haute intensité réservée exclusivement aux régulateurs de tension (VRM) qui alimentent le microprocesseur (CPU).",
+      "explanation": "Ne pas brancher ce connecteur CPU empêche le processeur d'être alimenté bien que les voyants et ventilateurs du PC s'allument (CP 5)[cite: 12, 17, 22].",
       "difficulty": "facile",
-      "context": "Hardware & Rendement PSU"
+      "context": "Hardware & Alimentation CPU"
     },
     {
       "id": "eb7_q11",
       "type": "diagnostic_indices",
-      "question": "Un technicien ne parvient pas à joindre un serveur web interne en tapant son adresse IP dans le navigateur (ex: http://192.168.10.50), alors que le ping répond parfaitement (5/5 paquets reçus). Identifie la cause du dysfonctionnement.",
-      "answer": "Le service de serveur web (HTTP port 80 ou HTTPS port 443) est arrêté sur le serveur ou le pare-feu du serveur bloque les ports applicatifs tout en autorisant les requêtes ICMP (Echo Request).",
+      "question": "Un utilisateur signale que son ordinateur de bureau ne s'allume plus du tout : aucun voyant, aucun bip, aucun ventilateur ne tourne. Le technicien teste le bloc d'alimentation avec un trombone reliant la broche verte (PS-ON) et une broche noire (GND) du connecteur ATX 24 broches, et le ventilateur de l'alimentation se met à tourner. Identifie la cause du problème.",
+      "answer": "Le bouton de mise sous tension (Power Switch) de la façade du boîtier est cassé ou son câble est débranché des headers de la carte mère.",
       "indices": [
-        "Indice 1 : La couche 3 (réseau / IP) est totalement fonctionnelle comme l'atteste la réussite du ping[cite: 30, 32].",
-        "Indice 2 : La commande PowerShell 'Test-NetConnection 192.168.10.50 -Port 80' renvoie 'TcpTestSucceeded : False'[cite: 32, 54].",
-        "Indice 3 : Le service de serveur web IIS ou Apache est arrêté dans la console des services de la machine cible[cite: 23, 26]."
+        "Indice 1 : Le bloc d'alimentation et la prise secteur murale sont parfaitement fonctionnels[cite: 17, 22].",
+        "Indice 2 : Court-circuiter brièvement les deux broches 'PWR_SW' de la carte mère avec la pointe d'un tournevis démarre instantanément la machine[cite: 12, 22].",
+        "Indice 3 : Le bouton poussoir situé en façade du boîtier n'offre plus de résistance mécanique lors de l'appui[cite: 12]."
       ],
-      "explanation": "Le succès du ping valide uniquement la connectivité de couche 3 (ICMP) mais ne prouve en aucun cas que le port applicatif de couche 4/7 est en écoute et accessible (CP 3 et CP 7)[cite: 32, 34].",
+      "explanation": "Le test du tournevis sur les headers permet d'éliminer une panne de carte mère et d'isoler une défaillance physique du bouton poussoir du boîtier (CP 5)[cite: 12, 22].",
       "difficulty": "moyen",
-      "context": "Diagnostic Couches OSI"
+      "context": "Diagnostic Hardware & Headers"
     },
     {
       "id": "eb7_q12",
       "type": "classic",
-      "question": "Dans le cadre de l'accompagnement des personnes malvoyantes, quel raccourci clavier Windows permet d'activer instantanément le lecteur d'écran 'Narrateur' ?",
-      "answer": "Win + Ctrl + Entrée (ou Win + Ctrl + Enter)[cite: 27].",
-      "explanation": "Le Narrateur lit à voix haute le texte, les boutons et les éléments d'interface affichés à l'écran pour guider les personnes non-voyantes ou malvoyantes (CP 2)[cite: 27].",
+      "question": "Quelle est l'utilité du protocole ICMP (Internet Control Message Protocol) et quel outil de diagnostic populaire l'utilise pour mesurer la connectivité réseau ?",
+      "answer": "ICMP permet de transmettre des messages de contrôle, d'état et de rapport d'erreurs entre équipements réseau. Il est utilisé par les commandes ping (requêtes Echo Request / Echo Reply) et tracert (Time Exceeded).",
+      "explanation": "ICMP opère au niveau de la couche réseau (couche 3) et constitue le socle des diagnostics de base (CP 3 et CP 7)[cite: 30, 32].",
       "difficulty": "facile",
-      "context": "Accessibilité Numérique & Narrateur"
+      "context": "Réseaux & Protocole ICMP"
     },
     {
       "id": "eb7_q13",
       "type": "ticket",
-      "question": "Ticket #4180 — 'Bonjour, nous constatons que plusieurs postes du service commercial ont leur fond d'écran remplacé par une image publicitaire et que le moteur de recherche par défaut est détourné vers un site inconnu.'",
-      "answer": "Déconnecter les postes du réseau, analyser et supprimer les logiciels malveillants/extensions parasites avec un anti-malware, et verrouiller le fond d'écran et la configuration du navigateur via une GPO Active Directory[cite: 43, 57, 58].",
+      "question": "Ticket #4105 — 'Bonjour, une employée souffrant de troubles musculo-squelettiques (TMS) au poignet a des douleurs aiguës lorsqu'elle manipule la souris classique toute la journée.'",
+      "answer": "Proposer et installer une souris ergonomique verticale ou un Trackball adapté, et ajuster la hauteur du siège et de l'accoudoir pour maintenir l'avant-bras aligné (CP 2)[cite: 16, 27, 67].",
       "checklist": [
-        "Isoler les postes du réseau pour éviter toute communication avec des serveurs de commande (C2)[cite: 57]",
-        "Nettoyer les extensions de navigateurs non approuvées et réinitialiser les paramètres web[cite: 58]",
-        "Lancer une analyse complète avec Malwarebytes et vérifier les tâches planifiées[cite: 53, 58]",
-        "Déployer une GPO de restriction interdisant la modification du fond d'écran et fixant le moteur de recherche d'entreprise[cite: 43]"
+        "Tester avec l'utilisatrice une souris ergonomique verticale (angle à 57°) pour conserver le poignet en position neutre[cite: 16, 27]",
+        "Proposer un repose-poignet en gel ou un tapis ergonomique adapté",
+        "Vérifier le réglage ergonomique du poste de travail (hauteur écran et accoudoirs)",
+        "Planifier un suivi à 1 semaine avec l'utilisatrice pour évaluer le soulagement ressenti[cite: 8]"
       ],
-      "explanation": "L'éradication des adwares et pirates de navigateurs (Browser Hijackers) doit être complétée par un durcissement des stratégies GPO pour prévenir la récidive (CP 5 et CP 8)[cite: 43, 56, 58].",
-      "difficulty": "moyen",
-      "context": "Cybersécurité & Stratégies GPO"
+      "explanation": "La prévention et l'accompagnement des troubles musculo-squelettiques via des périphériques adaptés relèvent des compétences d'accompagnement de proximité (CP 2)[cite: 27, 67].",
+      "difficulty": "facile",
+      "context": "Accessibilité & Ergonomie TMS"
     },
     {
       "id": "eb7_q14",
       "type": "association",
-      "question": "Associe chaque terme de sécurité réseau à son rôle.",
+      "question": "Associe chaque élément d'architecture réseau de sécurité à sa fonction.",
       "answer": "DMZ (Zone Démilitarisée) -> Sous-réseau isolé hébergeant les serveurs publics (Web, Mail) pour protéger le réseau interne[cite: 34], NAT / PAT -> Mécanisme traduisant les adresses IP privées en une adresse IP publique avec distinction par numéros de ports[cite: 30, 34], RADIUS -> Protocole AAA centralisant l'authentification réseau des utilisateurs Wi-Fi/VPN auprès de l'Active Directory[cite: 30, 33], Bastion SSH (Jump Server) -> Serveur passerelle unique hautement sécurisé par lequel transitent tous les accès d'administration distante[cite: 34]",
       "pairs": [
         ["DMZ (Zone Démilitarisée)", "Sous-réseau isolé hébergeant les serveurs publics (Web, Mail) pour protéger le réseau interne[cite: 34]"],
@@ -191,28 +191,28 @@
     {
       "id": "eb7_q15",
       "type": "classic",
-      "question": "Quelle est la commande Linux permettant d'afficher l'espace disque disponible et utilisé de l'ensemble des systèmes de fichiers montés sous une forme lisible par un humain (en Mo et Go) ?",
-      "answer": "df -h (disk free -human readable)[cite: 26].",
-      "explanation": "La commande df -h est l'un des premiers réflexes sous Linux pour diagnostiquer un blocage de service causé par une partition saturée à 100% (/var ou racine)[cite: 26].",
+      "question": "Un utilisateur sous Windows 11 signale qu'il ne peut plus enregistrer de fichiers volumineux sur son disque principal C:. Quels outils natifs Windows permettent au technicien d'analyser l'espace disque consommé et de libérer facilement de la place en supprimant les fichiers temporaires et les anciennes versions de Windows ?",
+      "answer": "L'outil 'Nettoyage de disque' (cleanmgr.exe) ou la section 'Stockage' des Paramètres Windows (Recommandations de nettoyage / Assistant Stockage).",
+      "explanation": "L'Assistant Stockage et cleanmgr permettent de purger rapidement les fichiers temporaires, le dossier Téléchargements et le répertoire Windows.old issu d'une mise à jour majeure sans risquer d'effacer les documents de l'utilisateur (CP 5).",
       "difficulty": "facile",
-      "context": "Linux & Diagnostic Stockage"
+      "context": "Diagnostic Disque & Espaces de Stockage Windows"
     },
     {
       "id": "eb7_q16",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de configuration d'une liaison Trunk 802.1Q entre deux commutateurs Cisco pour transporter les VLANs 10 et 20.",
-      "answer": "1. Accéder à l'interface en ligne de commande (CLI) du premier switch en mode de configuration globale\n2. Sélectionner l'interface physique reliant les deux switchs (ex: interface GigabitEthernet 0/1)[cite: 33]\n3. Définir l'encapsulation : switchport trunk encapsulation dot1q[cite: 33]\n4. Passer le port en mode Trunk : switchport mode trunk[cite: 33]\n5. Spécifier les VLANs autorisés : switchport trunk allowed vlan 10,20[cite: 33]\n6. Répéter exactement la même configuration sur l'interface du second commutateur et sauvegarder[cite: 33]",
+      "question": "Remets dans l'ordre chronologique les étapes de diagnostic lorsqu'un poste portable n'arrive pas à se connecter au réseau Wi-Fi de l'entreprise.",
+      "answer": "1. Vérifier que la carte Wi-Fi est bien activée sur le PC (pas de mode avion, raccourci clavier ou bouton physique actif)\n2. Ouvrir la liste des réseaux Wi-Fi disponibles et vérifier la visibilité du SSID de l'entreprise\n3. Tenter la connexion et vérifier la conformité du mot de passe de sécurité (WPA2/WPA3) ou du certificat de domaine\n4. Vérifier dans l'Invite de commandes avec 'ipconfig /all' si la carte obtient une adresse IP valide ou une adresse APIPA (169.254.x.x)\n5. Tester la connectivité vers la passerelle par défaut avec la commande ping\n6. Oublier le réseau Wi-Fi dans les paramètres et le reconnecter à nouveau si le profil réseau était corrompu",
       "items": [
-        "Accéder à l'interface en ligne de commande (CLI) du premier switch en mode de configuration globale",
-        "Sélectionner l'interface physique reliant les deux switchs (ex: interface GigabitEthernet 0/1)[cite: 33]",
-        "Définir l'encapsulation : switchport trunk encapsulation dot1q[cite: 33]",
-        "Passer le port en mode Trunk : switchport mode trunk[cite: 33]",
-        "Spécifier les VLANs autorisés : switchport trunk allowed vlan 10,20[cite: 33]",
-        "Répéter exactement la même configuration sur l'interface du second commutateur et sauvegarder[cite: 33]"
+        "Vérifier que la carte Wi-Fi est bien activée sur le PC (pas de mode avion, raccourci clavier ou bouton physique actif)",
+        "Ouvrir la liste des réseaux Wi-Fi disponibles et vérifier la visibilité du SSID de l'entreprise",
+        "Tenter la connexion et vérifier la conformité du mot de passe de sécurité (WPA2/WPA3) ou du certificat de domaine",
+        "Vérifier dans l'Invite de commandes avec 'ipconfig /all' si la carte obtient une adresse IP valide ou une adresse APIPA (169.254.x.x)",
+        "Tester la connectivité vers la passerelle par défaut avec la commande ping",
+        "Oublier le réseau Wi-Fi dans les paramètres et le reconnecter à nouveau si le profil réseau était corrompu"
       ],
-      "explanation": "La configuration symétrique des deux côtés de la liaison Trunk garantit l'acheminement étanche des trames taguées entre les différents étages (CP 7)[cite: 33].",
-      "difficulty": "difficile",
-      "context": "Configuration Trunk Cisco"
+      "explanation": "La méthode de dépannage pas à pas (de la couche physique radio aux paramètres IP) permet d'isoler rapidement l'origine d'un échec de connexion Wi-Fi (CP 3 et CP 7).",
+      "difficulty": "moyen",
+      "context": "Diagnostic Réseau & Dépannage Wi-Fi"
     },
     {
       "id": "eb7_q17",
@@ -270,11 +270,11 @@
     {
       "id": "eb7_q21",
       "type": "classic",
-      "question": "Quel est le rôle du protocole RADIUS (Remote Authentication Dial-In User Service) lors de la connexion d'un utilisateur au réseau Wi-Fi d'entreprise sécurisé en WPA2/WPA3 Enterprise (802.1X) ?",
-      "answer": "Le serveur RADIUS agit comme intermédiaire d'authentification : il reçoit les identifiants envoyés par le point d'accès Wi-Fi, les valide auprès de l'annuaire Active Directory (serveur NPS sous Windows Server), et renvoie l'autorisation d'accès au point d'accès avec le VLAN attribué.",
-      "explanation": "Le 802.1X couplé à RADIUS permet une révocation nominative immédiate des accès sans avoir à modifier le mot de passe Wi-Fi de toute l'entreprise (CP 7 et CP 8)[cite: 30, 33].",
-      "difficulty": "difficile",
-      "context": "Sécurité Réseau & 802.1X RADIUS"
+      "question": "Quelle est la différence essentielle entre un réseau Wi-Fi d'entreprise sécurisé en 'WPA2/WPA3 Personnel' (PSK) et en 'WPA2/WPA3 Entreprise' (802.1X) ?",
+      "answer": "En WPA Personnel, tous les collaborateurs partagent une seule et même clé de sécurité (mot de passe unique pour tous), tandis qu'en WPA Entreprise (802.1X), chaque utilisateur s'authentifie avec son propre compte et mot de passe individuel de domaine (Active Directory), ce qui permet de révoquer un accès nominativement dès le départ d'un collaborateur.",
+      "explanation": "Le mode Entreprise évite de devoir reconfigurer tous les appareils de la société chaque fois qu'un salarié quitte l'organisation (CP 6 et CP 7).",
+      "difficulty": "moyen",
+      "context": "Réseau Wi-Fi & Sécurité d'Entreprise"
     },
     {
       "id": "eb7_q22",
@@ -334,26 +334,26 @@
     {
       "id": "eb7_q26",
       "type": "classic",
-      "question": "Quelle est l'utilité du protocole SLAAC (Stateless Address Autoconfiguration) dans le fonctionnement d'un réseau IPv6 ?",
-      "answer": "Il permet à un équipement client de générer automatiquement et de manière autonome son adresse IPv6 globale valide sans avoir besoin d'un serveur DHCPv6, en combinant le préfixe réseau annoncé par le routeur local avec son identifiant d'interface.",
-      "explanation": "SLAAC simplifie grandement l'administration réseau en IPv6 en rendant le déploiement de serveurs DHCP optionnel (CP 7)[cite: 31].",
-      "difficulty": "moyen",
-      "context": "Réseaux IPv6 & SLAAC"
+      "question": "Sur un réseau d'entreprise Windows, quelle est la syntaxe du chemin réseau universel (chemin UNC) pour accéder directement à un dossier partagé nommé 'Comptabilite' hébergé sur un serveur dont le nom d'hôte est 'SRV-FICHIERS' ?",
+      "answer": "\\\\SRV-FICHIERS\\Comptabilite (ou \\\\192.168.1.10\\Comptabilite avec l'adresse IP).",
+      "explanation": "La syntaxe UNC (Universal Naming Convention) commençant par deux antislashs (\\\\) est la norme pour mapper un lecteur réseau ou accéder à un partage sous Windows (CP 8).",
+      "difficulty": "facile",
+      "context": "Réseau & Partage de Fichiers SMB"
     },
     {
       "id": "eb7_q27",
       "type": "ticket",
-      "question": "Ticket #4755 — 'Bonjour, notre serveur d'application sous Linux Debian ne démarre plus son serveur web. Le message d'erreur indique : No space left on device alors que le disque est un SSD de 500 Go.'",
-      "answer": "Vérifier la saturation du dossier de logs (/var/log) ou l'épuisement des numéros d'inœuds (inodes) causé par des millions de petits fichiers temporaires non purgés.",
+      "question": "Ticket #4755 — 'Bonjour, le poste d'un collaborateur affiche un message d'espace disque insuffisant sur le lecteur C: (moins de 200 Mo libres) et bloque le téléchargement des mises à jour de sécurité Windows.'",
+      "answer": "Nettoyer les fichiers temporaires et les anciens points de mise à jour système via l'utilitaire Nettoyage de disque (cleanmgr) en mode Administrateur.",
       "checklist": [
-        "Se connecter en session console/SSH root sur le serveur Linux[cite: 26, 34]",
-        "Vérifier l'espace disque avec 'df -h' et la table des inœuds avec 'df -i'[cite: 26]",
-        "Localiser les répertoires volumineux avec 'du -sh /var/log/*'[cite: 26]",
-        "Purger les anciens fichiers de journaux archivés (.gz) et relancer le service web (systemctl restart apache2/nginx)[cite: 26]"
+        "Lancer l'outil Nettoyage de disque (cleanmgr.exe) en mode Administrateur",
+        "Cocher 'Nettoyage de Windows Update', 'Fichiers temporaires' et 'Précédentes installations de Windows' (Windows.old)",
+        "Vider la corbeille et vérifier l'espace récupéré dans l'Explorateur de fichiers",
+        "Relancer la recherche de mises à jour dans Windows Update pour valider l'installation des correctifs"
       ],
-      "explanation": "Sous Linux, une partition peut afficher 0 octet libre à cause de logs saturés, ou refuser toute écriture si la table des inœuds est épuisée (CP 5)[cite: 26].",
-      "difficulty": "difficile",
-      "context": "Maintenance Linux & Inodes"
+      "explanation": "La purge des fichiers de mises à jour archivés dans WinSxS et des fichiers temporaires libère souvent plusieurs dizaines de gigaoctets nécessaires au bon fonctionnement de l'OS (CP 5).",
+      "difficulty": "moyen",
+      "context": "Dépannage Disque Saturé & Windows Update"
     },
     {
       "id": "eb7_q28",
@@ -391,28 +391,28 @@
     {
       "id": "eb7_q31",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de remplacement à chaud (Hot-Plug) d'une barrette de mémoire vive sur un serveur haute disponibilité équipé d'une carte mère compatible.",
-      "answer": "1. Vérifier dans la documentation constructeur et l'utilitaire de gestion matérielle (iDRAC/iLO) le slot exact de la barrette défaillante\n2. S'équiper d'un bracelet antistatique et préparer la barrette ECC certifiée constructeur de remplacement[cite: 14, 22]\n3. Ouvrir le capot du serveur en respectant les consignes de sécurité mécanique\n4. Déverrouiller les loquets latéraux du slot DIMM et extraire la barrette défectueuse[cite: 12, 14]\n5. Insérer fermement la nouvelle barrette dans le bon sens d'encoche jusqu'au verrouillage automatique des loquets[cite: 12, 14]\n6. Vérifier dans la console de supervision que l'état de la mémoire repasse au vert sans erreur ECC",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement d'une barrette de mémoire vive (RAM) défectueuse sur un ordinateur de bureau.",
+      "answer": "1. Éteindre l'ordinateur, débrancher le cordon secteur et appuyer 5 secondes sur le bouton Power pour décharger les condensateurs\n2. Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique (ESD) relié au châssis\n3. Écarter les loquets de fixation situés aux extrémités du slot DIMM pour libérer la barrette défectueuse et la retirer délicatement\n4. Vérifier la compatibilité (DDR4/DDR5) et aligner le détrompeur (l'encoche asymétrique) de la nouvelle barrette avec le slot\n5. Enfoncer fermement et perpendiculairement la barrette jusqu'au clic automatique de verrouillage des deux loquets\n6. Refermer le boîtier, rebrancher le secteur, démarrer le PC et exécuter un test de diagnostic mémoire Windows (mdsched.exe) ou Memtest86",
       "items": [
-        "Vérifier dans la documentation constructeur et l'utilitaire de gestion matérielle (iDRAC/iLO) le slot exact de la barrette défaillante",
-        "S'équiper d'un bracelet antistatique et préparer la barrette ECC certifiée constructeur de remplacement[cite: 14, 22]",
-        "Ouvrir le capot du serveur en respectant les consignes de sécurité mécanique",
-        "Déverrouiller les loquets latéraux du slot DIMM et extraire la barrette défectueuse[cite: 12, 14]",
-        "Insérer fermement la nouvelle barrette dans le bon sens d'encoche jusqu'au verrouillage automatique des loquets[cite: 12, 14]",
-        "Vérifier dans la console de supervision que l'état de la mémoire repasse au vert sans erreur ECC"
+        "Éteindre l'ordinateur, débrancher le cordon secteur et appuyer 5 secondes sur le bouton Power pour décharger les condensateurs",
+        "Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique (ESD) relié au châssis",
+        "Écarter les loquets de fixation situés aux extrémités du slot DIMM pour libérer la barrette défectueuse et la retirer délicatement",
+        "Vérifier la compatibilité (DDR4/DDR5) et aligner le détrompeur (l'encoche asymétrique) de la nouvelle barrette avec le slot",
+        "Enfoncer fermement et perpendiculairement la barrette jusqu'au clic automatique de verrouillage des deux loquets",
+        "Refermer le boîtier, rebrancher le secteur, démarrer le PC et exécuter un test de diagnostic mémoire Windows (mdsched.exe) ou Memtest86"
       ],
-      "explanation": "La maintenance sur serveur critique exige le respect scrupuleux des repères de slots et des précautions électrostatiques (CP 5)[cite: 14, 22].",
-      "difficulty": "difficile",
-      "context": "Maintenance Serveurs & RAM ECC"
+      "explanation": "Le respect des consignes antistatiques, l'alignement du détrompeur et le test de validation mémoire garantissent un dépannage matériel propre et fiable (CP 5).",
+      "difficulty": "moyen",
+      "context": "Maintenance Matérielle & Remplacement RAM PC"
     },
     {
       "id": "eb7_q32",
       "type": "classic",
-      "question": "Sur un commutateur réseau Cisco, pourquoi doit-on toujours renommer les VLANs créés avec des noms explicites (ex: vlan 10 / name COMPTA) lors de la configuration ?",
-      "answer": "Parce que sans nommage explicite, les VLANs reçoivent des identifiants génériques par défaut (ex: VLAN0010) qui rendent la lecture de la configuration (show vlan brief) et le dépannage très complexes lors des interventions futures.",
-      "explanation": "La rigueur de documentation et de nommage dans les équipements réseau évite les erreurs humaines lors des modifications de brassage (CP 7)[cite: 33, 34].",
+      "question": "Pourquoi est-il primordial pour un service informatique d'appliquer une convention de nommage standardisée et rigoureuse pour tous les ordinateurs du parc (ex: PC-SIEGE-COMPTA-01, PORT-LYON-DIR-02) ?",
+      "answer": "Pour identifier immédiatement le type d'équipement, son site géographique, son service d'affectation et son numéro unique lors des interventions de télé-assistance, dans l'inventaire GLPI et dans l'annuaire Active Directory.",
+      "explanation": "Une convention de nommage claire évite toute confusion lors des déploiements, du dépannage distant et du suivi d'inventaire (CP 1 et CP 4).",
       "difficulty": "facile",
-      "context": "Administration Commutateurs Cisco"
+      "context": "Gestion de Parc & Convention de Nommage"
     },
     {
       "id": "eb7_q33",

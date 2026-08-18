@@ -78,11 +78,11 @@
     {
       "id": "eb5_q6",
       "type": "classic",
-      "question": "Quelle est la commande PowerShell permettant de forcer immédiatement un cycle de synchronisation delta entre un serveur Active Directory local et Microsoft Entra ID ?",
-      "answer": "Start-ADSyncSyncCycle -PolicyType Delta[cite: 42]",
-      "explanation": "Cette commande exécutée sur le serveur hébergeant Entra Connect pousse immédiatement les modifications de comptes ou de mots de passe vers le Cloud sans attendre l'intervalle automatique de 30 minutes[cite: 42].",
-      "difficulty": "moyen",
-      "context": "PowerShell & Entra Connect"
+      "question": "Dans le centre d'administration Microsoft 365 (admin.microsoft.com), quelles sont les deux actions obligatoires à effectuer lors de la création d'un compte pour un nouvel arrivant afin qu'il puisse utiliser sa messagerie Outlook et les applications Teams et Word ?",
+      "answer": "Lui attribuer une licence utilisateur active (ex: Microsoft 365 Business Standard) et lui assigner un mot de passe temporaire tout en cochant l'option exigeant le changement de mot de passe à la première connexion.",
+      "explanation": "Sans licence attribuée, l'utilisateur possède un compte mais ne dispose d'aucune boîte aux lettres ni d'accès aux logiciels de la suite bureautique (CP 2 et CP 4).",
+      "difficulty": "facile",
+      "context": "Administration Microsoft 365 & Licences"
     },
     {
       "id": "eb5_q7",
@@ -140,9 +140,9 @@
       "question": "Un technicien constate qu'un ordinateur portable professionnel sous Windows 11 demande un mot de passe de récupération BitLocker à 48 chiffres à chaque démarrage. Identifie la cause racine.",
       "answer": "L'ordre de démarrage (Boot Order) a été modifié dans le BIOS/UEFI ou le microprogramme (firmware/BIOS) a été mis à jour sans suspendre temporairement la protection BitLocker, ce qui a déclenché l'alerte d'intégrité du module TPM[cite: 47].",
       "indices": [
-        "Indice 1 : Le disque SSD et le système d'exploitation ne présentent aucune corruption de fichiers[cite: 47, 52].",
-        "Indice 2 : La saisie manuelle de la clé à 48 chiffres stockée dans l'Active Directory permet de déverrouiller la session sans problème[cite: 47].",
-        "Indice 3 : L'Observateur d'événements consigne que le module TPM a rejeté la libération automatique de la clé suite à une modification des mesures PCR de la séquence de boot[cite: 47, 49]."
+        "Indice 1 : Le disque SSD d'origine est en parfait état de santé physique (100% dans CrystalDiskInfo)[cite: 22].",
+        "Indice 2 : L'incident est survenu juste après l'application d'une mise à jour de firmware constructeur (BIOS update)[cite: 21, 47].",
+        "Indice 3 : La saisie de la clé de récupération à 48 chiffres déverrouille le système avec succès, mais le problème se reproduit au redémarrage suivant[cite: 47]."
       ],
       "explanation": "Le TPM verrouille la clé s'il détecte un changement dans la séquence de démarrage matérielle pour prévenir les attaques physiques ; une mise à jour de BIOS exige de suspendre temporairement BitLocker avant flashage (CP 5 et CP 6)[cite: 21, 47].",
       "difficulty": "difficile",
@@ -163,10 +163,10 @@
       "question": "Ticket #4402 — 'Bonjour, notre collègue atteinte de daltonisme n'arrive pas à distinguer les états de validation colorés en rouge et vert sur le tableau de bord de notre progiciel métier.'",
       "answer": "Activer et paramétrer les 'Filtres de couleur' adaptés au type de daltonisme dans les paramètres d'accessibilité de Windows 11 (Win + U)[cite: 27].",
       "checklist": [
-        "Ouvrir les Paramètres d'accessibilité via le raccourci Windows + U[cite: 27]",
-        "Accéder à la rubrique 'Filtres de couleur' et activer l'option[cite: 27]",
-        "Sélectionner le filtre adapté (Deutéranopie, Protanopie ou Tritanopie) avec l'utilisatrice[cite: 27]",
-        "Faire valider la lisibilité des graphiques directement sur son logiciel métier[cite: 8, 27]"
+        "Ouvrir les Paramètres d'accessibilité Windows (Win + U) > Filtres de couleur[cite: 27]",
+        "Activer l'option et tester avec l'utilisatrice le profil adapté (Deutéranopie, Protanopie ou Tritanopie)[cite: 27]",
+        "Ajuster le contraste et la luminosité de l'écran pour un confort optimal[cite: 16, 27]",
+        "Documenter le paramétrage dans le ticket et clore avec confirmation de l'utilisatrice[cite: 6, 8]"
       ],
       "explanation": "L'adaptation de l'environnement visuel aux différentes formes de daltonisme fait partie intégrante des compétences d'accessibilité numérique (CP 2)[cite: 27, 67].",
       "difficulty": "facile",
@@ -199,18 +199,19 @@
     {
       "id": "eb5_q16",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes d'exécution du handshake sécurisé TLS 1.3 lors de l'ouverture d'une session HTTPS sécurisée.",
-      "answer": "1. Le client envoie un message 'ClientHello' indiquant les suites cryptographiques supportées et une clé temporaire[cite: 32]\n2. Le serveur répond avec un message 'ServerHello' et transmet son certificat numérique d'identité[cite: 32]\n3. Le client vérifie l'authenticité et la validité du certificat auprès d'une autorité de certification (CA) de confiance[cite: 32]\n4. Les deux parties génèrent une clé de session symétrique partagée chiffrée[cite: 32]\n5. Les échanges de données applicatives chiffrées débutent sur le port TCP 443[cite: 32]",
+      "question": "Remets dans l'ordre chronologique les étapes de diagnostic lorsqu'un utilisateur signale qu'un message d'erreur 'Votre connexion n'est pas privée / Erreur de certificat' s'affiche sur tous les sites web sécurisés (HTTPS).",
+      "answer": "1. Constater le message d'erreur SSL/TLS affiché par le navigateur web sur plusieurs sites distincts\n2. Vérifier immédiatement la date, l'heure et le fuseau horaire configurés sur le poste client dans la barre des tâches\n3. Corriger l'heure manuellement ou forcer la synchronisation avec le serveur de temps NTP de l'entreprise\n4. Vérifier si l'alerte réapparaît après un redémarrage du PC pour identifier une éventuelle pile CMOS CR2032 déchargée\n5. Remplacer la pile bouton CR2032 de la carte mère si l'horloge se dérègle à chaque coupure de courant\n6. Relancer le navigateur et valider l'accès fluide aux sites HTTPS sans alerte de sécurité",
       "items": [
-        "Le client envoie un message 'ClientHello' indiquant les suites cryptographiques supportées et une clé temporaire[cite: 32]",
-        "Le serveur répond avec un message 'ServerHello' et transmet son certificat numérique d'identité[cite: 32]",
-        "Le client vérifie l'authenticité et la validité du certificat auprès d'une autorité de certification (CA) de confiance[cite: 32]",
-        "Les deux parties génèrent une clé de session symétrique partagée chiffrée[cite: 32]",
-        "Les échanges de données applicatives chiffrées débutent sur le port TCP 443[cite: 32]"
+        "Constater le message d'erreur SSL/TLS affiché par le navigateur web sur plusieurs sites distincts",
+        "Vérifier immédiatement la date, l'heure et le fuseau horaire configurés sur le poste client dans la barre des tâches",
+        "Corriger l'heure manuellement ou forcer la synchronisation avec le serveur de temps NTP de l'entreprise",
+        "Vérifier si l'alerte réapparaît après un redémarrage du PC pour identifier une éventuelle pile CMOS CR2032 déchargée",
+        "Remplacer la pile bouton CR2032 de la carte mère si l'horloge se dérègle à chaque coupure de courant",
+        "Relancer le navigateur et valider l'accès fluide aux sites HTTPS sans alerte de sécurité"
       ],
-      "explanation": "Le protocole TLS garantit la confidentialité, l'intégrité et l'authentification du serveur web avant tout échange de données (CP 6 et CP 7)[cite: 32].",
-      "difficulty": "difficile",
-      "context": "Chiffrement & Sécurité TLS"
+      "explanation": "La très grande majorité des fausses alertes de certificat sur l'ensemble des sites HTTPS est causée par une horloge locale décalée qui rend les certificats mathématiquement non valides (CP 3 et CP 5).",
+      "difficulty": "moyen",
+      "context": "Diagnostic Navigateur & Certificat TLS"
     },
     {
       "id": "eb5_q17",
@@ -277,28 +278,28 @@
     {
       "id": "eb5_q22",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes d'installation et de configuration de base du rôle Serveur DHCP sur Windows Server.",
-      "answer": "1. Attribuer une adresse IPv4 fixe et un nom d'hôte explicite au serveur[cite: 43]\n2. Installer le rôle 'Serveur DHCP' via le Gestionnaire de serveur[cite: 34, 43]\n3. Autoriser le serveur DHCP dans l'annuaire Active Directory[cite: 43]\n4. Créer une nouvelle étendue IPv4 avec la plage d'adresses (ex: 192.168.1.50 à .200) et le masque de sous-réseau[cite: 34, 44]\n5. Renseigner les exclusions d'adresses et la durée du bail[cite: 34, 44]\n6. Configurer les options d'étendue (Passerelle 003, Serveur DNS 006, Nom de domaine 015) et activer l'étendue[cite: 34, 44]",
+      "question": "Remets dans l'ordre chronologique les étapes de configuration d'une réservation d'adresse IP statique pour une nouvelle imprimante réseau de bureau.",
+      "answer": "1. Relever l'adresse MAC physique et le nom de modèle de l'imprimante (sur l'étiquette ou via la page de configuration imprimée)\n2. Ouvrir la console de gestion DHCP sur le serveur ou le routeur de l'agence\n3. Dérouler l'étendue IPv4 du sous-réseau concerné et faire un clic droit sur 'Réservations > Nouvelle réservation...'\n4. Saisir le nom de l'équipement (ex: IMP-COMPTA-01), l'adresse IP fixe choisie (ex: 192.168.1.250) et l'adresse MAC relevée\n5. Raccorder l'imprimante au réseau local et redémarrer son interface réseau pour qu'elle récupère son IP réservée\n6. Tester la communication avec la commande 'ping 192.168.1.250' et déployer l'imprimante sur les postes",
       "items": [
-        "Attribuer une adresse IPv4 fixe et un nom d'hôte explicite au serveur[cite: 43]",
-        "Installer le rôle 'Serveur DHCP' via le Gestionnaire de serveur[cite: 34, 43]",
-        "Autoriser le serveur DHCP dans l'annuaire Active Directory[cite: 43]",
-        "Créer une nouvelle étendue IPv4 avec la plage d'adresses (ex: 192.168.1.50 à .200) et le masque de sous-réseau[cite: 34, 44]",
-        "Renseigner les exclusions d'adresses et la durée du bail[cite: 34, 44]",
-        "Configurer les options d'étendue (Passerelle 003, Serveur DNS 006, Nom de domaine 015) et activer l'étendue[cite: 34, 44]"
+        "Relever l'adresse MAC physique et le nom de modèle de l'imprimante (sur l'étiquette ou via la page de configuration imprimée)",
+        "Ouvrir la console de gestion DHCP sur le serveur ou le routeur de l'agence",
+        "Dérouler l'étendue IPv4 du sous-réseau concerné et faire un clic droit sur 'Réservations > Nouvelle réservation...'",
+        "Saisir le nom de l'équipement (ex: IMP-COMPTA-01), l'adresse IP fixe choisie (ex: 192.168.1.250) et l'adresse MAC relevée",
+        "Raccorder l'imprimante au réseau local et redémarrer son interface réseau pour qu'elle récupère son IP réservée",
+        "Tester la communication avec la commande 'ping 192.168.1.250' et déployer l'imprimante sur les postes"
       ],
-      "explanation": "L'autorisation dans l'AD et la configuration des options d'étendue sont obligatoires pour qu'un serveur DHCP d'entreprise distribue des paramètres valides (CP 7)[cite: 34, 43].",
+      "explanation": "La réservation DHCP garantit que l'imprimante conserve toujours la même adresse IP sans risque de conflit avec le pool dynamique et sans configuration manuelle lourde sur le panneau de l'imprimante (CP 4 et CP 7).",
       "difficulty": "moyen",
-      "context": "Services Réseau DHCP"
+      "context": "Réseau & Réservation DHCP Imprimante"
     },
     {
       "id": "eb5_q23",
       "type": "classic",
-      "question": "Sur un commutateur Cisco, quelle commande permet d'afficher la table de correspondance associant chaque port physique à l'adresse MAC de l'équipement raccordé ?",
-      "answer": "show mac address-table[cite: 32, 33]",
-      "explanation": "Cette commande permet de localiser sur quelle prise ou port de switch est branché un poste ou une imprimante lors du diagnostic (CP 7)[cite: 32, 33].",
+      "question": "Quelles sont les commandes Windows simples à exécuter dans l'Invite de commandes (cmd) pour relever respectivement le nom d'ordinateur et l'adresse physique (MAC) de la carte réseau d'un poste lors d'un recensement pour l'inventaire GLPI ?",
+      "answer": "La commande 'hostname' pour afficher le nom du poste, et 'getmac' (ou 'ipconfig /all') pour relever l'adresse MAC de la carte réseau.",
+      "explanation": "Ces deux commandes fondamentales permettent au technicien de renseigner rapidement et précisément les fiches d'équipements dans l'outil d'inventaire de parc (CP 1).",
       "difficulty": "facile",
-      "context": "Commutation Cisco & MAC"
+      "context": "Inventaire de Parc & Commandes Windows"
     },
     {
       "id": "eb5_q24",

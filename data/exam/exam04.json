@@ -190,28 +190,28 @@
     {
       "id": "eb4_q15",
       "type": "classic",
-      "question": "Quelle est la commande PowerShell permettant de lister l'ensemble des comptes utilisateurs désactivés dans un domaine Active Directory et de les exporter dans un fichier CSV ?",
-      "answer": "Get-ADUser -Filter {Enabled -eq $false} -Properties * | Select-Object Name, SamAccountName, LastLogonDate | Export-Csv -Path 'C:\\Rapports\\ComptesDesactives.csv' -Encoding UTF8",
-      "explanation": "L'automatisation des audits d'utilisateurs avec PowerShell fait gagner un temps précieux et permet de maintenir un annuaire conforme aux règles de sécurité (CP 8)[cite: 54].",
-      "difficulty": "difficile",
-      "context": "PowerShell & Active Directory"
+      "question": "Dans la console Utilisateurs et ordinateurs Active Directory (dsa.msc), pourquoi est-il recommandé de déplacer les comptes des collaborateurs ayant quitté l'entreprise dans une Unité d'Organisation (OU) dédiée aux anciens salariés plutôt que de supprimer immédiatement leur compte ?",
+      "answer": "Parce que supprimer le compte détruit définitivement son identifiant de sécurité unique (SID), rendant impossible la réattribution ultérieure des droits sur des documents archivés ou la consultation d'anciennes données, alors que le désactiver et le déplacer conserve l'historique en toute sécurité.",
+      "explanation": "La bonne pratique d'administration consiste à désactiver le compte, révoquer ses accès et le déplacer dans une OU d'archivage pendant le délai légal de conservation (CP 8).",
+      "difficulty": "facile",
+      "context": "Active Directory & Gestion des Comptes"
     },
     {
       "id": "eb4_q16",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de mise en place d'une session de déploiement en Multicast via WDS pour installer 40 postes simultanément.",
-      "answer": "1. Vérifier que les commutateurs réseau supportent et ont activé le protocole IGMP Snooping\n2. Ouvrir la console des Services de déploiement Windows (WDS) sur le serveur\n3. Faire un clic droit sur 'Transmissions par multidiffusion' et sélectionner 'Nouvelle transmission...'\n4. Sélectionner l'image d'installation de référence et choisir le mode 'Scheduled-Cast' (démarrage planifié)\n5. Définir le seuil de déclenchement (ex: démarrer dès que 40 clients sont connectés)\n6. Démarrer les 40 postes clients en PXE pour rejoindre automatiquement la session de diffusion unique",
+      "question": "Remets dans l'ordre chronologique les étapes de création d'une image Master de référence personnalisée pour les postes de l'entreprise.",
+      "answer": "1. Installer Windows 11 proprement sur une machine de référence physique ou virtuelle\n2. Démarrer en Mode Audit (Maj + Ctrl + F3) pour installer les logiciels bureautiques et pilotes communs\n3. Personnaliser le profil utilisateur par défaut et appliquer les mises à jour système\n4. Exécuter l'utilitaire Sysprep avec les options /generalize et /oobe pour supprimer les identifiants uniques (SID)\n5. Éteindre la machine et démarrer sur un support WinPE\n6. Capturer l'image de la partition système au format WIM à l'aide de l'outil DISM",
       "items": [
-        "Vérifier que les commutateurs réseau supportent et ont activé le protocole IGMP Snooping",
-        "Ouvrir la console des Services de déploiement Windows (WDS) sur le serveur",
-        "Faire un clic droit sur 'Transmissions par multidiffusion' et sélectionner 'Nouvelle transmission...'",
-        "Sélectionner l'image d'installation de référence et choisir le mode 'Scheduled-Cast' (démarrage planifié)",
-        "Définir le seuil de déclenchement (ex: démarrer dès que 40 clients sont connectés)",
-        "Démarrer les 40 postes clients en PXE pour rejoindre automatiquement la session de diffusion unique"
+        "Installer Windows 11 proprement sur une machine de référence physique ou virtuelle",
+        "Démarrer en Mode Audit (Maj + Ctrl + F3) pour installer les logiciels bureautiques et pilotes communs",
+        "Personnaliser le profil utilisateur par défaut et appliquer les mises à jour système",
+        "Exécuter l'utilitaire Sysprep avec les options /generalize et /oobe pour supprimer les identifiants uniques (SID)",
+        "Éteindre la machine et démarrer sur un support WinPE",
+        "Capturer l'image de la partition système au format WIM à l'aide de l'outil DISM"
       ],
-      "explanation": "Le mode Multicast diffuse un seul flux sur le réseau à destination d'une adresse IP multicast, évitant ainsi d'envoyer 40 fois l'image WIM et de saturer la bande passante (CP 4)[cite: 44].",
-      "difficulty": "difficile",
-      "context": "Déploiement Multicast WDS"
+      "explanation": "Le processus de masterisation standard repose sur le mode audit, la généralisation par Sysprep (pour attribuer un nouveau SID à chaque PC déployé) et la capture WIM avec DISM (CP 4).",
+      "difficulty": "moyen",
+      "context": "Masterisation & Déploiement Windows"
     },
     {
       "id": "eb4_q17",
@@ -294,12 +294,18 @@
     },
     {
       "id": "eb4_q23",
-      "type": "classic",
-      "question": "Sous Linux, dans quel répertoire principal de l'arborescence se trouvent stockés les fichiers de configuration texte de l'ensemble des services et du système d'exploitation ?",
-      "answer": "Dans le répertoire /etc.",
-      "explanation": "Sous Linux, '/etc' est le dossier central de configuration où l'on édite les fichiers de paramétrage réseau, de services (Apache, SSH) et de comptes utilisateurs[cite: 26].",
+      "type": "association",
+      "question": "Associe chaque dossier système de Windows à son rôle dans l'environnement de travail.",
+      "answer": "C:\\Windows\\System32 -> Fichiers binaires exécutables, bibliothèques DLL et pilotes du système d'exploitation, C:\\Program Files -> Répertoire d'installation des applications et logiciels 64 bits, C:\\Users\\NomUtilisateur -> Dossier personnel de l'utilisateur (Bureau, Documents, Téléchargements, AppData), C:\\ProgramData -> Données partagées et configurations communes à tous les utilisateurs du poste",
+      "pairs": [
+        ["C:\\Windows\\System32", "Fichiers binaires exécutables, bibliothèques DLL et pilotes du système d'exploitation"],
+        ["C:\\Program Files", "Répertoire d'installation des applications et logiciels 64 bits"],
+        ["C:\\Users\\NomUtilisateur", "Dossier personnel de l'utilisateur (Bureau, Documents, Téléchargements, AppData)"],
+        ["C:\\ProgramData", "Données partagées et configurations communes à tous les utilisateurs du poste"]
+      ],
+      "explanation": "La connaissance des dossiers clés de l'arborescence Windows est indispensable pour installer des programmes, dépanner des profils et sauvegarder les données (CP 4 et CP 5).",
       "difficulty": "facile",
-      "context": "Linux & Configuration"
+      "context": "Arborescence Système Windows"
     },
     {
       "id": "eb4_q24",
@@ -388,19 +394,19 @@
     {
       "id": "eb4_q31",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les actions de sécurisation d'un commutateur Cisco neuf avant sa mise en production dans une baie de brassage.",
-      "answer": "1. Définir un nom d'équipement explicite (hostname) et un mot de passe d'accès au mode privilégié chiffré (enable secret)\n2. Configurer le nom de domaine IP et générer une paire de clés cryptographiques RSA de 2048 bits\n3. Activer le protocole SSH version 2 sur les lignes VTY et désactiver le protocole Telnet\n4. Créer un compte administrateur local avec mot de passe robuste\n5. Configurer l'adresse IP de management sur le VLAN d'administration et renseigner la passerelle par défaut\n6. Sauvegarder la configuration active dans la mémoire non volatile (copy running-config startup-config)",
+      "question": "Remets dans l'ordre chronologique les étapes de réalisation et de validation du raccordement d'une prise réseau murale RJ45 vers le panneau de brassage.",
+      "answer": "1. Tirer le câble réseau Ethernet Cat 6a dans la goulotte jusqu'au boîtier mural\n2. Dénuder délicatement la gaine extérieure du câble sur 3 à 4 cm sans entailler les paires de cuivre torsadées\n3. Détorsader et insérer les fils dans le connecteur mural RJ45 en respectant scrupuleusement la norme de câblage T568B\n4. Enclencher ou sertir les conducteurs avec l'outil d'insertion (pince punch-down / connecteur auto-dénudant)\n5. Clipser le connecteur dans son plastron mural et repérer le numéro de prise sur l'étiquette\n6. Tester la continuité électrique et le respect du schéma des 8 fils avec un testeur de câble RJ45",
       "items": [
-        "Définir un nom d'équipement explicite (hostname) et un mot de passe d'accès au mode privilégié chiffré (enable secret)",
-        "Configurer le nom de domaine IP et générer une paire de clés cryptographiques RSA de 2048 bits",
-        "Activer le protocole SSH version 2 sur les lignes VTY et désactiver le protocole Telnet",
-        "Créer un compte administrateur local avec mot de passe robuste",
-        "Configurer l'adresse IP de management sur le VLAN d'administration et renseigner la passerelle par défaut",
-        "Sauvegarder la configuration active dans la mémoire non volatile (copy running-config startup-config)"
+        "Tirer le câble réseau Ethernet Cat 6a dans la goulotte jusqu'au boîtier mural",
+        "Dénuder délicatement la gaine extérieure du câble sur 3 à 4 cm sans entailler les paires de cuivre torsadées",
+        "Détorsader et insérer les fils dans le connecteur mural RJ45 en respectant scrupuleusement la norme de câblage T568B",
+        "Enclencher ou sertir les conducteurs avec l'outil d'insertion (pince punch-down / connecteur auto-dénudant)",
+        "Clipser le connecteur dans son plastron mural et repérer le numéro de prise sur l'étiquette",
+        "Tester la continuité électrique et le respect du schéma des 8 fils avec un testeur de câble RJ45"
       ],
-      "explanation": "La configuration sécurisée de base (Hardening) protège les équipements réseau contre les accès non autorisés et les écoutes clandestines (CP 7)[cite: 33, 34].",
-      "difficulty": "difficile",
-      "context": "Sécurisation Réseau Cisco"
+      "explanation": "Le raccordement physique selon la norme T568B et la validation systématique au testeur de câble garantissent la transmission Gigabit sans faux contacts ni inversion de paires (CP 7).",
+      "difficulty": "moyen",
+      "context": "Câblage & Prise Réseau RJ45"
     },
     {
       "id": "eb4_q32",

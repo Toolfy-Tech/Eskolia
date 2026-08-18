@@ -9,9 +9,9 @@
     {
       "id": "eb2_q1",
       "type": "classic",
-      "question": "Un utilisateur appelle le centre de services car il n'arrive plus à ouvrir sa session Windows avec son mot de passe habituel. Après vérification dans la console Active Directory (dsa.msc), le compte est verrouillé (Event ID 4740). Quelle est la procédure de sécurité obligatoire à respecter avant de déverrouiller le compte ou réinitialiser le mot de passe ?",
+      "question": "Un utilisateur appelle le centre de services car il n'arrive plus à ouvrir sa session Windows avec son mot de passe habituel. Après vérification dans la console Active Directory (dsa.msc), le compte utilisateur apparaît comme verrouillé suite à plusieurs tentatives erronées. Quelle est la procédure de sécurité obligatoire à respecter avant de déverrouiller le compte ou réinitialiser le mot de passe ?",
       "answer": "Vérifier formellement l'identité de l'utilisateur par un canal de confiance (rappel sur son numéro professionnel officiel, validation auprès de son manager ou contact visuel) afin de prévenir une attaque par ingénierie sociale (pretexting / vishing).",
-      "explanation": "La réinitialisation d'un mot de passe ou le déverrouillage de compte sans contrôle d'identité préalable est l'une des failles d'ingénierie sociale les plus exploitées pour usurper des accès en entreprise[cite: 9, 59].",
+      "explanation": "La réinitialisation d'un mot de passe ou le déverrouillage de compte sans contrôle d'identité préalable est l'une des failles d'ingénierie sociale les plus exploitées pour usurper des accès en entreprise.",
       "difficulty": "moyen",
       "context": "Support & Sécurité des Accès"
     },

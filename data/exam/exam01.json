@@ -189,11 +189,11 @@
     {
       "id": "eb1_q15",
       "type": "classic",
-      "question": "Dans un sous-réseau IPv4 défini par l'adresse réseau 192.168.50.0/26, calcule le masque sous forme décimale, le nombre d'adresses IP utilisables pour les hôtes, ainsi que l'adresse de broadcast.",
-      "answer": "Masque : 255.255.255.192. Nombre d'hôtes utilisables : 62 (2^6 - 2). Adresse de broadcast : 192.168.50.63.",
-      "explanation": "Un préfixe /26 laisse 6 bits pour la partie hôte (32 - 26 = 6). 2^6 = 64 adresses totales. La plage s'étend de 192.168.50.0 (réseau) à 192.168.50.63 (broadcast), avec 62 adresses assignables de .1 à .62.",
-      "difficulty": "difficile",
-      "context": "Calculs de Sous-Réseaux"
+      "question": "Un technicien configure manuellement un poste de travail avec l'adresse IP 192.168.1.45 et le masque 255.255.255.0. Pourquoi ce poste ne peut-il pas communiquer directement avec un serveur situé à l'adresse 192.168.2.10 portant le même masque sans passer par une passerelle (routeur) ?",
+      "answer": "Parce que le masque 255.255.255.0 (/24) indique que les 3 premiers octets correspondent à l'identifiant du réseau : 192.168.1.0 et 192.168.2.0 sont deux sous-réseaux logiques distincts, nécessitant un équipement de routage de couche 3 pour relier les flux.",
+      "explanation": "Sur un sous-réseau en /24, seuls les hôtes partageant les 24 premiers bits (les trois premiers octets) peuvent communiquer directement en couche 2 sans traverser de passerelle par défaut.",
+      "difficulty": "moyen",
+      "context": "Réseau & Masque de Sous-Réseau"
     },
     {
       "id": "eb1_q16",
@@ -297,17 +297,17 @@
     {
       "id": "eb1_q24",
       "type": "association",
-      "question": "Associe chaque type d'événement Windows à son Event ID critique dans l'Observateur d'événements (eventvwr).",
-      "answer": "Connexion d'une session réussie -> Event ID 4624 (Sécurité), Échec d'authentification (mot de passe incorrect) -> Event ID 4625 (Sécurité), Verrouillage automatique d'un compte utilisateur -> Event ID 4740 (Sécurité), Arrêt critique ou coupure d'alimentation inattendue -> Event ID 41 (Système)",
+      "question": "Associe chaque journal principal de l'Observateur d'événements Windows (eventvwr.msc) à la nature des informations qu'il enregistre.",
+      "answer": "Journal Application -> Enregistre les événements et erreurs générés par les logiciels et programmes installés, Journal Sécurité -> Enregistre les événements d'audit (ouvertures/fermetures de session, tentatives d'accès), Journal Système -> Enregistre les événements générés par les composants de Windows et les pilotes matériels, Journal Installation -> Enregistre les événements liés à l'installation des mises à jour et composants Windows",
       "pairs": [
-        ["Connexion d'une session réussie", "Event ID 4624 (Sécurité)"],
-        ["Échec d'authentification (mot de passe incorrect)", "Event ID 4625 (Sécurité)"],
-        ["Verrouillage automatique d'un compte utilisateur", "Event ID 4740 (Sécurité)"],
-        ["Arrêt critique ou coupure d'alimentation inattendue", "Event ID 41 (Système)"]
+        ["Journal Application", "Enregistre les événements et erreurs générés par les logiciels et programmes installés"],
+        ["Journal Sécurité", "Enregistre les événements d'audit (ouvertures/fermetures de session, tentatives d'accès)"],
+        ["Journal Système", "Enregistre les événements générés par les composants de Windows et les pilotes matériels"],
+        ["Journal Installation", "Enregistre les événements liés à l'installation des mises à jour et composants Windows"]
       ],
-      "explanation": "Ces identifiants d'événements sont les premiers filtres à appliquer pour auditer les tentatives d'intrusion et les arrêts brutaux du matériel.",
+      "explanation": "La maîtrise des catégories de journaux dans eventvwr.msc permet au technicien de cibler immédiatement le bon volet lors du diagnostic d'un incident matériel, logiciel ou d'authentification.",
       "difficulty": "moyen",
-      "context": "Audit & Logs"
+      "context": "Observateur d'Événements & Diagnostic"
     },
     {
       "id": "eb1_q25",
@@ -374,11 +374,11 @@
     {
       "id": "eb1_q30",
       "type": "classic",
-      "question": "Sous Linux, quelle est la commande permettant d'attribuer les permissions Lecture/Écriture/Exécution au propriétaire, et Lecture/Exécution au groupe et aux autres utilisateurs sur un script nommé backup.sh ?",
-      "answer": "chmod 755 backup.sh (ou chmod u=rwx,go=rx backup.sh)",
-      "explanation": "En notation octale : r(4) + w(2) + x(1) = 7 pour l'utilisateur propriétaire, et r(4) + x(1) = 5 pour le groupe et les autres.",
+      "question": "Lors du remplacement d'un poste de travail d'un collaborateur, quels sont les dossiers et données essentiels situés dans son profil utilisateur local (C:\\Users\\NomUtilisateur) à sauvegarder en priorité avant le reconditionnement de l'ancienne machine ?",
+      "answer": "Les dossiers Bureau (Desktop), Documents, Images, Téléchargements, les Favoris/Signets des navigateurs web, ainsi que les éventuels fichiers d'archives d'e-mails locaux (.pst pour Outlook) et les certificats personnels.",
+      "explanation": "La sauvegarde méthodique des répertoires personnels du profil utilisateur garantit qu'aucune donnée de travail ni archive de messagerie locale ne soit perdue lors du changement d'ordinateur.",
       "difficulty": "facile",
-      "context": "Linux Fondamental"
+      "context": "Sauvegarde & Profil Utilisateur"
     },
     {
       "id": "eb1_q31",

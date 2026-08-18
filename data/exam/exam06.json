@@ -50,14 +50,14 @@
     {
       "id": "eb6_q4",
       "type": "diagnostic_indices",
-      "question": "Un administrateur réseau constate qu'un commutateur central d'étage est totalement saturé : l'ensemble des voyants LED clignotent frénétiquement en vert et le trafic réseau est paralysé à 100%. Identifie la cause racine.",
-      "answer": "Une boucle réseau physique (Broadcast Storm / Tempête de diffusion) causée par un double raccordement Ethernet accidentel sur un switch non protégé par le protocole Spanning Tree (STP).",
+      "question": "Un technicien constate qu'un commutateur de bureau (switch d'étage) est totalement saturé : l'ensemble des voyants LED clignotent frénétiquement en vert et le réseau local est paralysé. L'inspection révèle qu'un utilisateur a relié deux prises murales RJ45 avec un même câble réseau. Quel est le nom de ce phénomène et quelle en est la cause ?",
+      "answer": "Une boucle réseau physique (ou tempête de diffusion / broadcast storm), où les trames réseau tournent indéfiniment en boucle et se multiplient, saturant la bande passante du commutateur.",
       "indices": [
-        "Indice 1 : Un utilisateur a branché les deux extrémités d'un même câble RJ45 sur deux prises murales voisines de son bureau[cite: 30].",
-        "Indice 2 : Les trames de diffusion broadcast (ARP, DHCP) tournent en boucle infinie et se multiplient de manière exponentielle[cite: 30, 32].",
-        "Indice 3 : Débrancher l'un des câbles incriminés rétablit instantanément la fluidité du trafic sur le commutateur[cite: 30, 33]."
+        "Indice 1 : Un utilisateur a branché par erreur les deux extrémités d'un même câble RJ45 sur deux prises murales voisines.",
+        "Indice 2 : Les trames de diffusion (broadcast) tournent en boucle et paralysent les échanges locaux.",
+        "Indice 3 : Débrancher le câble en boucle rétablit instantanément le trafic sur le commutateur."
       ],
-      "explanation": "Sans Spanning Tree Protocol (STP) actif pour bloquer les liaisons redondantes, une boucle physique génère une tempête de broadcast qui paralyse intégralement la couche 2 du réseau (CP 7)[cite: 30, 32, 33].",
+      "explanation": "Une boucle physique sur un équipement réseau sature immédiatement la table MAC et la bande passante en créant une tempête de broadcast.",
       "difficulty": "moyen",
       "context": "Diagnostic Réseau & Tempête de Broadcast"
     },
@@ -138,104 +138,104 @@
     {
       "id": "eb6_q11",
       "type": "diagnostic_indices",
-      "question": "Un utilisateur signale que son ordinateur portable se bloque complètement et que la souris saccade dès qu'il ouvre plus de 5 onglets sur son navigateur web en même temps qu'un tableur. Le Gestionnaire des tâches indique que le processeur n'est utilisé qu'à 15%, mais que le disque SSD tourne à 100% en continu. Trouve la cause de l'anomalie.",
-      "answer": "Saturation totale de la mémoire vive (RAM) qui force Windows à utiliser massivement le fichier d'échange sur disque (Pagination / Paging file / Swap), créant un goulet d'étranglement sévère.",
+      "question": "Un utilisateur signale que son PC de bureau s'éteint brutalement et instantanément au bout de 5 à 10 minutes d'utilisation lorsqu'il lance des logiciels exigeants, sans écran bleu (BSOD). Identifie la cause racine.",
+      "answer": "Une surchauffe critique du processeur (Thermal Throttling / Sécurité thermique) causée par un ventilateur CPU à l'arrêt ou une pâte thermique totalement desséchée.",
       "indices": [
-        "Indice 1 : La mémoire vive physique installée est de seulement 4 Go et l'occupation mémoire est affichée à 96%[cite: 14, 50].",
-        "Indice 2 : Le moniteur de ressources (resmon) montre une activité d'écriture massive sur le fichier C:\\pagefile.sys[cite: 23, 50].",
-        "Indice 3 : La fermeture des onglets superflus libère immédiatement la réactivité de la machine[cite: 50]."
+        "Indice 1 : Le PC redémarre parfaitement après quelques minutes de repos sans aucune erreur de fichier système[cite: 13, 20, 24].",
+        "Indice 2 : L'utilitaire HWMonitor ou le BIOS indique une température CPU grimpant rapidement à 100°C avant la coupure[cite: 20, 21].",
+        "Indice 3 : Le ventilateur du ventirad ne tourne plus ou le radiateur est complètement obstrué par une épaisse couche de poussière[cite: 20, 22]."
       ],
-      "explanation": "Lorsque la RAM est saturée, Windows déplace les blocs mémoire sur le disque (mémoire virtuelle) : bien qu'un SSD soit rapide, il reste des dizaines de fois plus lent que la RAM, provoquant des gels du système (CP 3 et CP 5)[cite: 14, 23, 50].",
-      "difficulty": "moyen",
-      "context": "Diagnostic Performances & RAM"
+      "explanation": "Les processeurs modernes intègrent une sécurité thermique matérielle (PROCHOT / Thermal Shutdown) coupant net l'alimentation pour éviter la destruction du silicium en cas de surchauffe (CP 5)[cite: 13, 20].",
+      "difficulty": "facile",
+      "context": "Diagnostic Matériel & Thermique"
     },
     {
       "id": "eb6_q12",
       "type": "classic",
-      "question": "Dans le protocole TCP, quel est le mécanisme en 3 étapes (Three-Way Handshake) utilisé pour établir une connexion fiable entre un client et un serveur ?",
-      "answer": "1. Le client envoie un paquet SYN (Synchronize), 2. Le serveur répond avec un paquet SYN-ACK (Synchronize-Acknowledge), 3. Le client confirme avec un paquet ACK (Acknowledge).",
-      "explanation": "Ce handshake garantit que les deux hôtes sont prêts à communiquer et synchronise les numéros de séquence pour assurer la remise ordonnée des paquets (CP 7)[cite: 32].",
-      "difficulty": "moyen",
-      "context": "Protocoles Réseau & TCP"
+      "question": "Quel est le rôle du connecteur RJ45 femelle mural et du panneau de brassage (Patch Panel) dans la structure du câblage réseau d'entreprise ?",
+      "answer": "Ils terminent le câblage horizontal rigide fixe reliant les prises des bureaux à la baie informatique, permettant d'affecter facilement n'importe quelle prise à un port de commutateur ou de téléphonie via un simple cordon de brassage (patch cord).",
+      "explanation": "Le panneau de brassage offre la flexibilité indispensable pour modifier les attributions réseau sans jamais manipuler le câblage encastré (CP 7)[cite: 30].",
+      "difficulty": "facile",
+      "context": "Câblage & Baie de Brassage"
     },
     {
       "id": "eb6_q13",
       "type": "ticket",
-      "question": "Ticket #4920 — 'Bonjour, une utilisatrice malvoyante n'arrive pas à utiliser sa souris et demande comment piloter son poste Windows 11 uniquement à la voix pour dicter ses comptes rendus.'",
-      "answer": "Activer et configurer la fonctionnalité native de 'Saisie vocale / Dictée' (Raccourci Win + H) et l'outil d'accès vocal dans les paramètres d'accessibilité de Windows (Win + U)[cite: 27].",
+      "question": "Ticket #3889 — 'Bonjour, notre collègue atteinte de tremblements moteurs importants a du mal à utiliser sa souris et clique souvent deux fois par erreur au lieu d'un simple clic.'",
+      "answer": "Régler la vitesse du double-clic et activer les 'Touches filtres' ou les fonctions d'accessibilité du pointeur dans les paramètres Windows (Win + U)[cite: 27].",
       "checklist": [
-        "Vérifier le bon fonctionnement et le réglage du microphone dans les paramètres audio[cite: 11]",
-        "Présenter à l'utilisatrice le raccourci Windows + H pour lancer la dictée vocale dans Word ou les e-mails[cite: 27]",
-        "Configurer la ponctuation automatique dans les options de saisie vocale",
-        "Faire réaliser un essai pratique de dictée de texte pour valider la précision de la reconnaissance[cite: 8, 27]"
+        "Ouvrir les Paramètres d'accessibilité Windows (Win + U) > Souris / Clavier[cite: 27]",
+        "Augmenter l'intervalle de tolérance de vitesse du double-clic dans les propriétés de la souris[cite: 27]",
+        "Activer les touches filtres pour ignorer les frappes brèves ou répétées involontaires[cite: 27]",
+        "Proposer si nécessaire un périphérique ergonomique adapté (Trackball ou souris ergonomique verticale)[cite: 16, 27]"
       ],
-      "explanation": "La maîtrise des outils de reconnaissance vocale intégrés fait partie des réponses indispensables pour adapter l'environnement de travail aux situations de handicap moteur ou visuel (CP 2)[cite: 8, 27].",
+      "explanation": "L'ajustement logiciel des périphériques de saisie et la proposition de matériel ergonomique compensent efficacement les troubles moteurs (CP 2)[cite: 27, 67].",
       "difficulty": "facile",
-      "context": "Accessibilité & Saisie Vocale"
+      "context": "Accessibilité & Périphériques"
     },
     {
       "id": "eb6_q14",
       "type": "association",
-      "question": "Associe chaque outil de ligne de commande Windows à son usage de diagnostic spécialisé.",
-      "answer": "nslookup -> Interroge les serveurs DNS pour tester la résolution directe et inverse des noms d'hôtes[cite: 34], pathping -> Combine les fonctions de Ping et Tracert en mesurant les pertes de paquets par routeur intermédiaire[cite: 34], diskpart -> Utilitaire d'administration avancée en ligne de commande pour partitionner, formater et convertir les disques[cite: 23, 24], getmac -> Affiche les adresses physiques (MAC) associées à l'ensemble des cartes réseau de la machine[cite: 30]",
+      "question": "Associe chaque type de support de transmission réseau à ses caractéristiques principales.",
+      "answer": "Câble cuivre Cat 6a (UTP/STP) -> Débit 10 Gbit/s sur une distance maximale de 100 mètres (standard cuivre universel)[cite: 30], Fibre optique Monomode (SMF) -> Cœur très fin (~9 µm) pour liaisons très longue distance (plusieurs dizaines de kilomètres)[cite: 30], Fibre optique Multimode (MMF) -> Cœur plus large (50/62.5 µm) adapté aux liaisons d'interconnexion intra-bâtiment (jusqu'à 300-500 m)[cite: 30], Câble coaxial -> Ancien standard avec blindage central utilisé pour la télévision par câble et anciennes liaisons 10BASE2[cite: 30]",
       "pairs": [
-        ["nslookup", "Interroge les serveurs DNS pour tester la résolution directe et inverse des noms d'hôtes[cite: 34]"],
-        ["pathping", "Combine les fonctions de Ping et Tracert en mesurant les pertes de paquets par routeur intermédiaire[cite: 34]"],
-        ["diskpart", "Utilitaire d'administration avancée en ligne de commande pour partitionner, formater et convertir les disques[cite: 23, 24]"],
-        ["getmac", "Affiche les adresses physiques (MAC) associées à l'ensemble des cartes réseau de la machine[cite: 30]"]
+        ["Câble cuivre Cat 6a (UTP/STP)", "Débit 10 Gbit/s sur une distance maximale de 100 mètres (standard cuivre universel)[cite: 30]"],
+        ["Fibre optique Monomode (SMF)", "Cœur très fin (~9 µm) pour liaisons très longue distance (plusieurs dizaines de kilomètres)[cite: 30]"],
+        ["Fibre optique Multimode (MMF)", "Cœur plus large (50/62.5 µm) adapté aux liaisons d'interconnexion intra-bâtiment (jusqu'à 300-500 m)[cite: 30]"],
+        ["Câble coaxial", "Ancien standard avec blindage central utilisé pour la télévision par câble et anciennes liaisons 10BASE2[cite: 30]"]
       ],
-      "explanation": "Ces commandes réseau et disque fournissent des informations précises sans dépendre des interfaces graphiques lors des dépannages (CP 3, CP 5 et CP 7)[cite: 24, 34].",
+      "explanation": "Le choix du bon support physique dépend des contraintes de distance, de débit et d'immunité aux perturbations électromagnétiques (CP 7)[cite: 30].",
       "difficulty": "moyen",
-      "context": "Ligne de Commande & Diagnostic"
+      "context": "Supports Physiques Réseau"
     },
     {
       "id": "eb6_q15",
       "type": "classic",
-      "question": "Quelle est la règle d'or concernant le branchement d'une imprimante laser professionnelle sur un onduleur (UPS) de bureau ?",
-      "answer": "Il est strictement interdit de brancher une imprimante laser sur les prises ondulées (secourues par batterie) d'un onduleur, car l'élément chauffant du four (fuser) génère des pointes de courant instantanées massives qui surchargent et détruisent l'onduleur.",
-      "explanation": "Les imprimantes laser doivent être branchées soit sur une prise murale directe, soit sur les prises uniquement parafoudres (non ondulées) de l'onduleur (CP 5 et CP 6)[cite: 17].",
-      "difficulty": "moyen",
-      "context": "Sécurité Électrique & Onduleurs"
+      "question": "Quelle est la règle des 3-2-1 universellement reconnue en stratégie de sauvegarde de données d'entreprise ?",
+      "answer": "Conserver au moins 3 copies de ses données, sur 2 supports physiques différents (ex: disque interne NAS et bande LTO/disque externe), avec 1 copie externalisée hors site (Cloud ou coffre-fort distant).",
+      "explanation": "La règle 3-2-1 garantit qu'aucun événement unique (panne matérielle, incendie, vol ou rançongiciel) ne puisse détruire l'ensemble des copies de sauvegarde (CP 6)[cite: 35, 36, 56].",
+      "difficulty": "facile",
+      "context": "Stratégie de Sauvegarde 3-2-1"
     },
     {
       "id": "eb6_q16",
       "type": "sequence",
-      "question": "Remets dans l'ordre chronologique les étapes de résolution d'un incident de conflit d'adresses IP détecté sur un poste de travail.",
-      "answer": "1. Identifier l'adresse IP et l'adresse MAC du poste client en conflit via ipconfig /all et l'Observateur d'événements[cite: 24, 34, 49]\n2. Isoler le poste du réseau et exécuter 'arp -a' sur une autre machine pour repérer la MAC de l'équipement usurpateur[cite: 32, 34]\n3. Libérer le bail IP actuel sur le poste client avec la commande 'ipconfig /release'[cite: 34]\n4. Reconfigurer l'équipement statique fautif ou créer une exclusion sur le serveur DHCP[cite: 34]\n5. Demander un nouveau bail IP propre sur le poste client avec la commande 'ipconfig /renew'[cite: 34]\n6. Vérifier la connectivité et la reprise normale des communications réseau[cite: 30, 34]",
+      "question": "Remets dans l'ordre chronologique les étapes de remplacement d'un bloc d'alimentation (PSU) défectueux dans un ordinateur de bureau ATX.",
+      "answer": "1. Débrancher le câble secteur externe et basculer l'interrupteur I/O sur 0\n2. Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique relié à la terre\n3. Déconnecter tous les câbles d'alimentation internes (ATX 24 broches, CPU 8 broches, PCIe GPU, SATA)\n4. Dévisser les 4 vis maintenant le bloc d'alimentation à l'arrière du châssis et extraire le bloc\n5. Insérer la nouvelle alimentation certifiée, visser solidement et reconnecter l'ensemble des câbles internes\n6. Refermer le boîtier, brancher le secteur et tester l'allumage complet",
       "items": [
-        "Identifier l'adresse IP et l'adresse MAC du poste client en conflit via ipconfig /all et l'Observateur d'événements[cite: 24, 34, 49]",
-        "Isoler le poste du réseau et exécuter 'arp -a' sur une autre machine pour repérer la MAC de l'équipement usurpateur[cite: 32, 34]",
-        "Libérer le bail IP actuel sur le poste client avec la commande 'ipconfig /release'[cite: 34]",
-        "Reconfigurer l'équipement statique fautif ou créer une exclusion sur le serveur DHCP[cite: 34]",
-        "Demander un nouveau bail IP propre sur le poste client avec la commande 'ipconfig /renew'[cite: 34]",
-        "Vérifier la connectivité et la reprise normale des communications réseau[cite: 30, 34]"
+        "Débrancher le câble secteur externe et basculer l'interrupteur I/O sur 0",
+        "Ouvrir le panneau latéral du boîtier et porter un bracelet antistatique relié à la terre",
+        "Déconnecter tous les câbles d'alimentation internes (ATX 24 broches, CPU 8 broches, PCIe GPU, SATA)",
+        "Dévisser les 4 vis maintenant le bloc d'alimentation à l'arrière du châssis et extraire le bloc",
+        "Insérer la nouvelle alimentation certifiée, visser solidement et reconnecter l'ensemble des câbles internes",
+        "Refermer le boîtier, brancher le secteur et tester l'allumage complet"
       ],
-      "explanation": "La commande ipconfig /release suivie de /renew réinitialise la pile DHCP une fois la source du doublon isolée (CP 3 et CP 7)[cite: 34].",
+      "explanation": "Le remplacement méthodique d'un bloc d'alimentation prévient les erreurs de branchement et assure la sécurité électrique du technicien et des composants (CP 5)[cite: 17, 22].",
       "difficulty": "moyen",
-      "context": "Dépannage Réseau DHCP"
+      "context": "Maintenance Matérielle & Alimentation"
     },
     {
       "id": "eb6_q17",
       "type": "classic",
-      "question": "Quelle est l'utilité du protocole Syslog (port UDP 514) dans l'administration et la sécurité d'une infrastructure réseau ?",
-      "answer": "Syslog permet de centraliser en temps réel l'ensemble des journaux d'événements, alertes et logs de sécurité émis par les commutateurs, routeurs, pare-feux et serveurs vers un serveur de collecte unique pour faciliter l'audit et la détection d'intrusions.",
-      "explanation": "La centralisation Syslog évite de consulter les logs équipement par équipement et garantit la conservation des traces en cas de compromission d'un matériel (CP 6 et CP 7)[cite: 32, 49].",
+      "question": "Sous Windows, quel outil en ligne de commande permet de réparer les secteurs de démarrage (MBR / VBR) et de reconstruire les fichiers de configuration de démarrage (BCD) en cas d'erreur 'No bootable device found' ?",
+      "answer": "L'utilitaire bootrec (avec les commandes bootrec /fixmbr, bootrec /fixboot, bootrec /rebuildbcd) ou bcdboot.",
+      "explanation": "Ces commandes exécutées depuis l'environnement Windows PE permettent de régénérer les fichiers de démarrage corrompus sans réinstaller l'OS (CP 5)[cite: 23, 24].",
       "difficulty": "moyen",
-      "context": "Supervision & Logs Syslog"
+      "context": "Dépannage Boot & BCD"
     },
     {
       "id": "eb6_q18",
       "type": "diagnostic_indices",
-      "question": "Un technicien constate qu'un disque SSD NVMe neuf installé sur une carte mère ancienne ne dépasse pas 1600 Mo/s en lecture sous CrystalDiskMark, alors que le constructeur garantit 7000 Mo/s (PCIe 4.0). Trouve la cause de ce bridage.",
-      "answer": "Le SSD NVMe PCIe 4.0 est bridé car il est installé sur un slot M.2 ou une carte mère fonctionnant en norme PCIe 3.0 (ou bridé en x2 lignes au lieu de x4 lignes PCIe).",
+      "question": "Un utilisateur signale qu'il ne parvient pas à joindre un serveur de fichiers situé dans une autre filiale (10.20.0.15) depuis son poste (192.168.1.50). La commande ping vers le serveur échoue. Identifie la méthode pour localiser le routeur bloquant.",
+      "answer": "Exécuter la commande tracert (traceroute) 10.20.0.15 pour identifier le dernier routeur intermédiaire ayant relayé le paquet avant l'arrêt de la communication.",
       "indices": [
-        "Indice 1 : Le SSD fonctionne de manière parfaitement stable et la santé SMART est à 100%[cite: 20, 22].",
-        "Indice 2 : La documentation de la carte mère indique que le slot M.2 secondaire est câblé sur le chipset en PCIe Gen3 x2[cite: 12, 19].",
-        "Indice 3 : Le bus PCIe est rétrocompatible mais s'aligne automatiquement sur la vitesse de la génération la plus basse présente sur la liaison[cite: 19]."
+        "Indice 1 : Le poste client joint sans problème sa propre passerelle locale 192.168.1.1[cite: 30, 31].",
+        "Indice 2 : La commande tracert affiche avec succès les sauts 1 (192.168.1.1) et 2 (10.0.0.1)[cite: 32, 34].",
+        "Indice 3 : Au saut 3 (routeur d'interconnexion VPN), des étoiles (*) apparaissent avec 'Délai d'attente dépassé'[cite: 32, 34]."
       ],
-      "explanation": "La rétrocompatibilité PCIe garantit le fonctionnement matériel mais limite les débits à la bande passante maximale du bus le plus ancien présent sur la carte mère (CP 5)[cite: 19].",
+      "explanation": "La commande tracert mesure le temps de réponse de chaque saut (hop) et permet de pointer avec exactitude le routeur ou l'équipement défaillant sur le chemin réseau (CP 3 et CP 7)[cite: 32, 34].",
       "difficulty": "moyen",
-      "context": "Diagnostic Hardware PCIe"
+      "context": "Diagnostic Réseau & Tracert"
     },
     {
       "id": "eb6_q19",
@@ -255,17 +255,17 @@
     {
       "id": "eb6_q20",
       "type": "ticket",
-      "question": "Ticket #5540 — 'Bonjour, nous constatons que l'heure de plusieurs serveurs et postes clients dérive de 5 minutes par rapport à l'heure réelle, provoquant des rejets d'authentification sur le domaine Active Directory.'",
-      "answer": "Reconfigurer le service de temps Windows (w32time) sur le contrôleur de domaine principal (rôle PDC Emulator) pour se synchroniser sur un serveur de temps NTP externe de référence (ex: pool.ntp.org)[cite: 43].",
+      "question": "Ticket #5540 — 'Bonjour, le compte d'une responsable comptable se verrouille systématiquement toutes les 15 minutes dès qu'elle ouvre sa session, même si elle saisit son nouveau mot de passe correctement.'",
+      "answer": "Identifier un équipement secondaire ou une application (smartphone avec compte mail pro, session persistante sur un autre PC, lecteur réseau mappé avec d'anciens identifiants) qui continue d'envoyer en arrière-plan l'ancien mot de passe mémorisé.",
       "checklist": [
-        "Vérifier le contrôleur de domaine détenant le rôle FSMO PDC Emulator via la commande netdom query fsmo",
-        "Configurer la source NTP externe sur le PDC : w32tm /config /manualpeerlist:pool.ntp.org /syncfromflags:manual /reliable:yes /update",
-        "Forcer la resynchronisation du temps : w32tm /resync",
-        "Vérifier que les postes clients et serveurs membres se synchronisent automatiquement auprès du DC[cite: 43]"
+        "Vérifier dans la console dsa.msc l'état du compte et le déverrouiller",
+        "Demander à l'utilisatrice de mettre à jour le mot de passe sur son smartphone professionnel et sa tablette connectés à la messagerie",
+        "Vérifier dans le Gestionnaire d'identificateurs Windows (cmdkey /list) s'il existe de vieux identifiants enregistrés pour un lecteur réseau ou une imprimante",
+        "Fermer les sessions ouvertes sur d'autres postes de l'entreprise et tester"
       ],
-      "explanation": "Le protocole d'authentification Kerberos d'Active Directory tolère un décalage d'horloge maximal de 5 minutes par défaut : au-delà, toute ouverture de session échoue (CP 8)[cite: 43].",
-      "difficulty": "difficile",
-      "context": "Active Directory & Synchronisation NTP"
+      "explanation": "Les verrouillages récurrents de compte utilisateur après changement de mot de passe sont quasi-systématiquement causés par un appareil mobile ou un identifiant Windows mémorisé qui continue d'émettre l'ancien mot de passe à intervalles réguliers (CP 1 et CP 8).",
+      "difficulty": "moyen",
+      "context": "Dépannage Active Directory & Comptes Déverrouillés"
     },
     {
       "id": "eb6_q21",
@@ -296,11 +296,11 @@
     {
       "id": "eb6_q23",
       "type": "classic",
-      "question": "Quelle est l'utilité du mécanisme 'DHCP Snooping' configuré sur les commutateurs réseau managés d'une entreprise ?",
-      "answer": "Il empêche les attaques par faux serveur DHCP (Rogue DHCP Server) en bloquant les offres DHCP (DHCPOFFER) émises sur des ports non explicitement déclarés comme 'de confiance' (Trusted ports).",
-      "explanation": "Le DHCP Snooping protège le réseau contre les routeurs pirates branchés par erreur ou malveillance qui distribueraient de mauvaises passerelles ou DNS aux utilisateurs (CP 7)[cite: 30, 34].",
-      "difficulty": "difficile",
-      "context": "Sécurité Réseau & DHCP Snooping"
+      "question": "Un utilisateur signale qu'un message d'alerte Windows 'Conflit d'adresse IP détecté' s'affiche sur son écran et qu'il n'a plus accès au réseau. Quelle est la cause technique de cet incident et comment le résoudre ?",
+      "answer": "Deux équipements sur le même réseau local possèdent la même adresse IP statique ou un équipement configuré manuellement utilise une adresse appartenant à la plage dynamique du serveur DHCP. La solution consiste à renouveler le bail DHCP ('ipconfig /renew') ou à modifier l'adresse IP statique en double.",
+      "explanation": "Sur un réseau TCP/IP, chaque adresse IP doit être unique par interface. L'outil ARP de Windows détecte les doublons et désactive la carte réseau en conflit pour éviter la corruption du trafic (CP 3 et CP 7).",
+      "difficulty": "facile",
+      "context": "Réseau Local & Conflit d'Adresses IP"
     },
     {
       "id": "eb6_q24",
@@ -334,11 +334,11 @@
     {
       "id": "eb6_q26",
       "type": "classic",
-      "question": "Quelle est l'utilité du fichier '/etc/hosts' sous Linux et 'C:\\Windows\\System32\\drivers\\etc\\hosts' sous Windows ?",
-      "answer": "C'est un fichier texte local qui permet de mapper manuellement des adresses IP à des noms d'hôtes statiques, prioritaire sur les requêtes DNS envoyées au serveur réseau.",
-      "explanation": "Le fichier hosts est très utilisé par les techniciens pour tester un serveur web en pré-production avant la propagation DNS officielle, mais peut aussi être corrompu par des malwares pour détourner le trafic (CP 3 et CP 5)[cite: 23, 26, 56].",
+      "question": "Quel est le rôle du fichier 'C:\\Windows\\System32\\drivers\\etc\\hosts' sous Windows et pour quelle raison un technicien peut-il être amené à le consulter lors d'un dépannage ou d'une analyse antivirus ?",
+      "answer": "C'est un fichier texte local qui permet de mapper manuellement des adresses IP à des noms de domaine avant toute requête DNS. Le technicien le vérifie car certains logiciels malveillants y ajoutent des lignes pour détourner des sites de confiance ou bloquer l'accès aux sites d'antivirus.",
+      "explanation": "Le fichier hosts est prioritaire sur les requêtes DNS : sa modification non sollicitée est une technique classique utilisée par les rogues et adwares (CP 3 et CP 5).",
       "difficulty": "facile",
-      "context": "Systèmes & Fichier Hosts"
+      "context": "Système Windows & Fichier Hosts"
     },
     {
       "id": "eb6_q27",
@@ -382,11 +382,11 @@
     {
       "id": "eb6_q30",
       "type": "classic",
-      "question": "Quelle est la commande Linux permettant de modifier le propriétaire et le groupe d'un dossier nommé '/var/www/html' pour les attribuer à l'utilisateur 'www-data' et au groupe 'www-data' de manière récursive ?",
-      "answer": "sudo chown -R www-data:www-data /var/www/html[cite: 26]",
-      "explanation": "La commande chown modifie l'appartenance utilisateur et groupe, et l'option -R applique le changement à l'ensemble des sous-dossiers et fichiers contenus (CP 5)[cite: 26].",
+      "question": "Dans le cadre de ses interventions sur le matériel informatique, pourquoi un technicien informatique de proximité doit-il être titulaire du titre d'habilitation électrique 'BS' (ou B0/BF-HF) ?",
+      "answer": "L'habilitation BS (Chargé d'interventions élémentaires) autorise légalement le technicien à effectuer des opérations simples de raccordement, de remplacement à l'identique d'un équipement ou de réarmement de disjoncteur en basse tension en toute sécurité, dans le respect des règles de prévention des risques électriques (norme NF C 18-510).",
+      "explanation": "L'habilitation électrique BS est une exigence réglementaire du REAC pour intervenir sur les armoires, prises, alimentations et baies de brassage en entreprise (CP 5).",
       "difficulty": "facile",
-      "context": "Linux & Permissions"
+      "context": "Sécurité & Habilitation Électrique BS"
     },
     {
       "id": "eb6_q31",
