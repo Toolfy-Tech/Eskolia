@@ -916,7 +916,14 @@ class LobbyRepository {
         checklist: map['checklist'] is List ? List<String>.from(map['checklist']) : null,
         options: map['options'] is List ? List<String>.from(map['options']) : null,
         answerSequence: map['answerSequence'] is List ? List<String>.from(map['answerSequence']) : null,
-        categoryGroup: QuestionCategoryGroup.values[map['categoryGroup'] ?? 0],
+        categoryGroup: () {
+          final raw = map['categoryGroup'];
+          final idx = raw is num ? raw.toInt() : 0;
+          if (idx >= 0 && idx < QuestionCategoryGroup.values.length) {
+            return QuestionCategoryGroup.values[idx];
+          }
+          return QuestionCategoryGroup.values.first;
+        }(),
         authorName: map['authorName'] ?? 'Eskolia Team',
       );
     }).toList();

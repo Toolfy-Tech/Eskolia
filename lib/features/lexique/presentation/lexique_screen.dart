@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/eskolia_layout.dart';
-import '../../../../core/theme/eskolia_visual.dart';
-import '../../../../shared/widgets/eskolia_ambient_background.dart';
-import '../../../../shared/widgets/eskolia_app_bar.dart';
-import '../../../../shared/widgets/eskolia_card.dart';
-import '../../../../shared/widgets/eskolia_shell_body.dart';
+import '../../../core/theme/eskolia_layout.dart';
+import '../../../core/theme/eskolia_visual.dart';
+import '../../../shared/widgets/eskolia_ambient_background.dart';
+import '../../../shared/widgets/eskolia_app_bar.dart';
+import '../../../shared/widgets/eskolia_card.dart';
+import '../../../shared/widgets/eskolia_shell_body.dart';
 import '../data/lexique_data.dart';
-import '../../../../core/constants/eskolia_tokens.dart';
+import '../../../core/constants/eskolia_tokens.dart';
 
 enum _Phase { intro, worksheet, corrected }
 

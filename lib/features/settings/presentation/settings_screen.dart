@@ -84,11 +84,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const EskoliaAmbientBackground(),
           EskoliaShellBody(
             showBack: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: _loadError != null
+            child: _loadError != null
                       ? Center(
                           child: Padding(
                             padding: const EdgeInsets.all(24),
@@ -556,9 +552,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 ),
                               ],
                             ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
